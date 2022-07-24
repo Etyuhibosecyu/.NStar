@@ -1,6 +1,6 @@
 ﻿#include "msclr\marshal_cppstd.h"
 using std::wstring;
-#define NAMEOF(name) #name
+#define nameof(name) #name
 
 using namespace System;
 using namespace System::Collections::Generic;
@@ -14,9 +14,9 @@ namespace NativeFunctions
 		static array<unsigned>^ Sort(array<unsigned>^ source, int index, int count)
 		{
 			if (index < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(index));
+				throw gcnew ArgumentOutOfRangeException(nameof(index));
 			if (count < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(count));
+				throw gcnew ArgumentOutOfRangeException(nameof(count));
 			if (index + count > source->Length)
 				throw gcnew ArgumentException(nullptr);
 			if (count <= 1)
@@ -30,9 +30,9 @@ namespace NativeFunctions
 		generic<class T> static array<T>^ Sort(array<T>^ source, Func<T, unsigned>^ function, int index, int count)
 		{
 			if (index < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(index));
+				throw gcnew ArgumentOutOfRangeException(nameof(index));
 			if (count < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(count));
+				throw gcnew ArgumentOutOfRangeException(nameof(count));
 			if (index + count > source->Length)
 				throw gcnew ArgumentException(nullptr);
 			if (count <= 1)
@@ -58,9 +58,9 @@ namespace NativeFunctions
 		static array<String^>^ Sort(array<String^>^ source, int index, int count)
 		{
 			if (index < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(index));
+				throw gcnew ArgumentOutOfRangeException(nameof(index));
 			if (count < 0)
-				throw gcnew ArgumentOutOfRangeException(NAMEOF(count));
+				throw gcnew ArgumentOutOfRangeException(nameof(count));
 			if (index + count > source->Length)
 				throw gcnew ArgumentException(nullptr);
 			if (count <= 1)
@@ -121,12 +121,12 @@ namespace NativeFunctions
 			UCHAR** cstr = new UCHAR * [n];
 			size_t max = getMaxWString(in, sizes, cstr, n);
 			int* counters = new int[max * 256], * count;
-			createCountersWString(in, max, sizes, cstr, counters, n);
+			createCountersWString(max, sizes, cstr, counters, n);
 			for (size_t i = max; i > 0; i--)
 			{
 				count = counters + 256 * (i - 1);
 				if (count[0] == n) continue;
-				radixPassWString(i - 1, n, max, sizes, cstr, in, out, count);
+				radixPassWString(i - 1, n, sizes, cstr, in, out, count);
 				std::swap(in, out);
 			}
 			delete[] out;
@@ -147,7 +147,7 @@ namespace NativeFunctions
 			return max;
 		}
 
-		static void createCountersWString(wstring* in, size_t max, size_t* sizes, UCHAR** cstr, int* counters, int n)
+		static void createCountersWString(size_t max, size_t* sizes, UCHAR** cstr, int* counters, int n)
 		{
 			memset(counters, 0, 256 * max * sizeof(int));
 			int* count, * cp;
@@ -171,7 +171,7 @@ namespace NativeFunctions
 			}
 		}
 
-		static void radixPassWString(size_t offset, int n, size_t max, size_t* sizes, UCHAR** cstr, wstring* in, wstring* out, int* count)
+		static void radixPassWString(size_t offset, int n, size_t* sizes, UCHAR** cstr, wstring* in, wstring* out, int* count)
 		{
 			int s, c, i, * cp;
 			s = 0;
@@ -182,7 +182,7 @@ namespace NativeFunctions
 				*cp = s;
 				s += c;
 			}
-			for (int i = 0; i < n; ++i)
+			for (i = 0; i < n; ++i)
 				out[count[offset < sizes[i] ? (int)*(cstr[i] + offset) : 0]++] = in[i];
 		}
 	};

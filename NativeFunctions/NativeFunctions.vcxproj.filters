@@ -26,9 +26,6 @@
     <ClCompile Include="NativeFunctions.h">
       <Filter>Файлы заголовков</Filter>
     </ClCompile>
-    <ClCompile Include="Source.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
