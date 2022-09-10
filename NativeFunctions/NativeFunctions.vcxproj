@@ -142,6 +142,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies />
+      <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -270,7 +270,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, ICloneable
 		_size = 0;
 	}
 
-	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetNonEnumeratedCount(out int count) ? count : 32)
+	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
 	{
 		IEnumerator<T> en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -519,7 +519,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		_size = 0;
 	}
 
-	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetNonEnumeratedCount(out int count) ? count : 32)
+	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
 	{
 		IEnumerator<T> en = col.GetEnumerator();
 		while (en.MoveNext())

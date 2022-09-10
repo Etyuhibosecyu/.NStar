@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
@@ -103,9 +104,19 @@ public interface IBigList<T> : IBigCollection<T>
 
 public static class Extents
 {
+	[DllImport("kernel32.dll", EntryPoint = "RtlCopyMemory", SetLastError = false)]
+	private static extern void CopyMemory(IntPtr destination, IntPtr source, uint length);
+
+	[DllImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
+	private static extern void FillMemory(IntPtr destination, uint length, byte fill);
+
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
+
+	public static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
+
+	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
 	public static T Create<T>(int capacity, Func<int, T> creator) => creator(capacity);
 
@@ -124,6 +135,8 @@ public static class Extents
 		mpz_t quotient = left.Divide(right, out mpz_t remainder);
 		return (quotient, remainder);
 	}
+
+	public static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 

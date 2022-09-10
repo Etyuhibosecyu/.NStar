@@ -1,5 +1,7 @@
 ﻿using Mpir.NET;
+#if !RELEASE
 using NativeFunctions;
+#endif
 using System.Collections;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -13,7 +15,7 @@ namespace BigCollections;
 [DebuggerDisplay("Count = {Count}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>/*, IComparable<ListBase<T, TCertain>>, IEquatable<ListBase<T, TCertain>>*/ where TCertain : ListBase<T, TCertain>, new()
+public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>, IEquatable<ListBase<T, TCertain>>*/ where TCertain : ListBase<T, TCertain>, new()
 {
 	protected int _size;
 	[NonSerialized]
@@ -132,13 +134,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>/
 
 	protected abstract void ClearInternal(int index, int count);
 
-	public virtual TCertain Concat(TCertain collection)
-	{
-		TCertain result = Create(this, CollectionCreator);
-		if (collection != null)
-			result.AddRange(collection);
-		return result;
-	}
+	public virtual TCertain Concat(TCertain collection) => Create(this, CollectionCreator).AddRange(collection);
 
 	//public virtual int CompareTo(ListBase<T, TCertain>? other)
 	//{
@@ -237,6 +233,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>/
 	protected abstract void CopyToInternal(Array array, int arrayIndex);
 
 	protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int count);
+
+	public abstract void Dispose();
 
 	protected virtual void EnsureCapacity(int min)
 	{
@@ -1457,6 +1455,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 }
+#if RELEASE
 
 [DebuggerDisplay("Count = {Count}")]
 [ComVisible(true)]
@@ -1660,7 +1659,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return item;
 	}
 
-internal override void SetInternal(int index, bool value)
+	internal override void SetInternal(int index, bool value)
 	{
 		if (value)
 			_items[index / BitsPerInt] |= (uint)1 << (index % BitsPerInt);
@@ -1958,6 +1957,8 @@ internal override void SetInternal(int index, bool value)
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
+	public override void Dispose() => GC.SuppressFinalize(this);
+
 	//protected override bool EqualsInternal(BitList other)
 	//{
 	//	int count = Min(_size, other._size);
@@ -2102,9 +2103,9 @@ internal override void SetInternal(int index, bool value)
 	{
 		for (int i = 0; i < count / 2; i++)
 		{
-            (this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
-        }
-        ListChanged?.Invoke(this);
+			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
+		}
+		ListChanged?.Invoke(this);
 		return this;
 	}
 
@@ -2161,6 +2162,778 @@ internal class BitList2 : BitList
 	{
 	}
 }
+#else
+
+[DebuggerDisplay("Count = {Count}")]
+[ComVisible(true)]
+[Serializable]
+public unsafe class BitList : ListBase<bool, BitList>, ICloneable
+{
+	private uint* _items;
+	private int _capacity = 0;
+
+	private const int _shrinkThreshold = 256;
+
+	// XPerY=n means that n Xs can be stored in 1 Y. 
+	private const int BitsPerInt = sizeof(int) * BitsPerByte;
+	private const int BytesPerInt = sizeof(int);
+	private const int BitsPerByte = 8;
+
+	private static readonly uint* _emptyPointer = null;
+
+	public BitList()
+	{
+		_items = _emptyPointer;
+		_size = 0;
+	}
+
+	public BitList(int capacity)
+	{
+		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity == 0)
+			_items = _emptyPointer;
+		else
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(capacity, BitsPerInt)));
+	}
+
+	public BitList(int length, bool defaultValue)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(length, BitsPerInt)));
+		_size = length;
+		uint fillValue = defaultValue ? 0xffffffff : 0;
+		for (int i = 0; i < _capacity; i++)
+			_items[i] = fillValue;
+	}
+
+	public BitList(int length, uint* ptr)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(length, BitsPerInt)));
+		_size = length;
+		CopyMemory(ptr, _items, length);
+	}
+
+	public BitList(uint[] values)
+	{
+		if (values == null)
+			throw new ArgumentNullException(nameof(values));
+		// this value is chosen to prevent overflow when computing m_length
+		if (values.Length > int.MaxValue / BitsPerInt)
+			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = values.Length));
+		_size = values.Length * BitsPerInt;
+		fixed (uint* values2 = values)
+			CopyMemory(values2, _items, values.Length);
+	}
+
+	public BitList(IEnumerable bits)
+	{
+		if (bits == null)
+			throw new ArgumentNullException(nameof(bits));
+		else if (bits is BitList bitList)
+		{
+			int arrayLength = _capacity = GetArrayLength(bitList._size, BitsPerInt);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			_size = bitList._size;
+			CopyMemory(bitList._items, _items, arrayLength);
+		}
+		else if (bits is BitArray bitArray)
+		{
+			int arrayLength = _capacity = GetArrayLength(bitArray.Length, BitsPerInt);
+			int[] array = new int[arrayLength];
+			bitArray.CopyTo(array, 0);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			fixed (int* array2 = array)
+				CopyMemory((uint*)array2, _items, arrayLength);
+			_size = bitArray.Length;
+		}
+		else if (bits is byte[] byteArray)
+		{
+			if (byteArray.Length > int.MaxValue / BitsPerByte)
+				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(byteArray.Length, BytesPerInt)));
+			_size = byteArray.Length * BitsPerByte;
+			int i = 0;
+			int j = 0;
+			while (byteArray.Length - j >= 4)
+			{
+				_items[i++] = (uint)((byteArray[j] & 0xff) |
+							  ((byteArray[j + 1] & 0xff) << 8) |
+							  ((byteArray[j + 2] & 0xff) << 16) |
+							  ((byteArray[j + 3] & 0xff) << 24));
+				j += 4;
+			}
+			switch (byteArray.Length - j)
+			{
+				case 3:
+					_items[i] = (uint)(byteArray[j + 2] & 0xff) << 16;
+					goto case 2;
+				case 2:
+					_items[i] |= (uint)(byteArray[j + 1] & 0xff) << 8;
+					goto case 1;
+				case 1:
+					_items[i] |= (uint)(byteArray[j] & 0xff);
+					break;
+			}
+		}
+		else if (bits is bool[] boolArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(boolArray.Length, BitsPerInt)));
+			_size = boolArray.Length;
+			for (int i = 0; i < boolArray.Length; i++)
+				if (boolArray[i])
+					_items[i / BitsPerInt] |= (uint)1 << (i % BitsPerInt);
+		}
+		else if (bits is IEnumerable<int> ints)
+		{
+			uint[] uintArray = List<uint>.ToArrayEnumerable(ints, x => (uint)x);
+			fixed (uint* ptr = uintArray)
+				_items = ptr;
+			_size = (_capacity = uintArray.Length) * BitsPerInt;
+		}
+		else if (bits is IEnumerable<uint> uints)
+		{
+			uint[] uintArray = List<uint>.ToArrayEnumerable(uints);
+			fixed (uint* ptr = uintArray)
+				_items = ptr;
+			_size = (_capacity = uintArray.Length) * BitsPerInt;
+		}
+		else if (bits is IEnumerable<byte> bytes)
+		{
+			if (!List<byte>.TryGetCountEasilyEnumerable(bytes, out int count))
+				count = bytes.Count();
+			if (count > int.MaxValue / BitsPerByte)
+				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
+			int arrayLength = _capacity = GetArrayLength(count, BytesPerInt);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			int i = 0;
+			using IEnumerator<byte> en = bytes.GetEnumerator();
+			while (en.MoveNext())
+			{
+				(int index, int remainder) = DivRem(i++, BytesPerInt);
+				_items[index] |= (uint)en.Current << remainder * BitsPerByte;
+			}
+			_size = count * BitsPerByte;
+		}
+		else if (bits is IEnumerable<bool> bools)
+		{
+			if (!List<bool>.TryGetCountEasilyEnumerable(bools, out int count))
+				count = bools.Count();
+			int arrayLength = _capacity = GetArrayLength(count, BitsPerInt);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			int i = 0;
+			using IEnumerator<bool> en = bools.GetEnumerator();
+			while (en.MoveNext())
+			{
+				(int index, int remainder) = DivRem(i++, BitsPerInt);
+				if (en.Current)
+					_items[index] |= (uint)1 << remainder;
+			}
+			_size = count;
+		}
+		else
+			throw new ArgumentException(null, nameof(bits));
+	}
+
+	public override int Capacity
+	{
+		get => _capacity * BitsPerInt;
+		set
+		{
+			if (value < 0)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			int newints = GetArrayLength(value, BitsPerInt);
+			if (newints > _capacity || newints + _shrinkThreshold < _capacity)
+			{
+				uint* newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
+				CopyMemory(_items, newarray, newints > _capacity ? _capacity : newints);
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = newarray;
+				_capacity = newints;
+			}
+			if (value > _size)
+			{
+				int last = GetArrayLength(_size, BitsPerInt) - 1;
+				int bits = _size % BitsPerInt;
+				if (bits > 0)
+					_items[last] &= ((uint)1 << bits) - 1;
+				FillMemory(_items + (last + 1), newints - last - 1, 0);
+			}
+			ListChanged?.Invoke(this);
+		}
+	}
+
+	protected override Func<int, BitList> CapacityCreator => CapacityCreatorStatic;
+
+	private static Func<int, BitList> CapacityCreatorStatic => capacity => new(capacity);
+
+	protected override Func<IEnumerable<bool>, BitList> CollectionCreator => CollectionCreatorStatic;
+
+	private static Func<IEnumerable<bool>, BitList> CollectionCreatorStatic => collection => new(collection);
+
+	protected override int DefaultCapacity => 64;
+
+	public event ListChangedHandler? ListChanged;
+
+	internal override bool GetInternal(int index, bool invoke = true)
+	{
+		bool item = (_items[index / BitsPerInt] & (1 << (index % BitsPerInt))) != 0;
+		if (invoke)
+			ListChanged?.Invoke(this);
+		return item;
+	}
+
+internal override void SetInternal(int index, bool value)
+	{
+		if (value)
+			_items[index / BitsPerInt] |= (uint)1 << (index % BitsPerInt);
+		else
+			_items[index / BitsPerInt] &= ~((uint)1 << (index % BitsPerInt));
+		ListChanged?.Invoke(this);
+	}
+
+	public void SetAll(bool value)
+	{
+		uint fillValue = value ? 0xffffffff : 0;
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] = fillValue;
+	}
+
+	public BitList And(BitList value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (_size != value._size)
+			throw new ArgumentException(null, nameof(value));
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] &= value._items[i];
+		return this;
+	}
+
+	public BitList Or(BitList value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (_size != value._size)
+			throw new ArgumentException(null, nameof(value));
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] |= value._items[i];
+		return this;
+	}
+
+	public BitList Xor(BitList value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (_size != value._size)
+			throw new ArgumentException(null, nameof(value));
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] ^= value._items[i];
+		return this;
+	}
+
+	public BitList Not()
+	{
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] = ~_items[i];
+		return this;
+	}
+
+	protected override void ClearInternal(int index, int count)
+	{
+		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
+		uint startMask = ((uint)1 << startRemainder) - 1;
+		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
+		uint endMask = ~0u << endRemainder;
+		if (startIndex == endIndex)
+			_items[startIndex] &= startMask | endMask;
+		else
+		{
+			_items[startIndex] &= startMask;
+			for (int i = startIndex + 1; i < endIndex; i++)
+				_items[i] = 0;
+			_items[endIndex] &= endMask;
+		}
+		ListChanged?.Invoke(this);
+	}
+
+	//protected override int CompareToInternal(BitList other)
+	//{
+	//	int count = Min(_size, other._size), c;
+	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
+	//	for (int i = 0; i < intCount; i++)
+	//		if ((c = _items[i].CompareTo(other._items[i])) != 0)
+	//			return c;
+	//	if (bitsCount != 0)
+	//	{
+	//		uint mask = ((uint)1 << bitsCount) - 1;
+	//		if ((c = (_items[intCount] & mask).CompareTo(other._items[intCount] & mask)) != 0)
+	//			return c;
+	//	}
+	//	return _size.CompareTo(other._size);
+	//}
+
+	public override bool Contains(bool item)
+	{
+		int emptyValue = item ? 0 : unchecked((int)0xffffffff);
+		for (int i = 0; i < _size / BitsPerInt; i++)
+			if (_items[i] != emptyValue)
+				return true;
+		(int last, int remainder) = DivRem(_size, BitsPerInt);
+		if (last != 0)
+			if ((_items[last] & (1 << remainder)) != (item ? 0 : (1 << remainder) - 1))
+				return true;
+		return false;
+	}
+
+	public static void CopyBits(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
+	{
+		fixed (uint* sourcePtr = sourceBits.AsSpan(), destinationPtr = destinationBits.AsSpan())
+			CopyBits(sourcePtr, sourceBits.Count, sourceIndex, destinationPtr, destinationBits.Count, destinationIndex, length);
+	}
+
+	public static void CopyBits(uint* sourceBits, int sourceBound, int sourceIndex, uint* destinationBits, int destinationBound, int destinationIndex, int length)
+	{
+		CheckParams(sourceBits, sourceBound, sourceIndex, destinationBits, destinationBound, destinationIndex, length);
+		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
+			return;
+		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
+			return;
+		(int sourceIntIndex, int sourceBitsIndex) = DivRem(sourceIndex, BitsPerInt);               // Целый индех в исходном массиве.
+		(int destinationIntIndex, int destinationBitsIndex) = DivRem(destinationIndex, BitsPerInt);     // Целый индекс в целевом массиве.
+		int bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
+		int intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
+		uint sourceStartMask = ~0u << sourceBitsIndex; // Маска "головы" источника
+		int destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
+		(int destinationEndIntIndex, int destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);  // Индекс инта последнего бита.
+		if (destinationEndIntIndex == destinationIntIndex)
+		{
+			uint buff = sourceBits[sourceIntIndex] & sourceStartMask;
+			uint destinationMask = (~(~0u << length)) << destinationBitsIndex;
+			if (bitsOffset >= 0)
+				buff <<= bitsOffset;
+			else
+			{
+				buff >>= -bitsOffset;
+				if (length + sourceBitsIndex > BitsPerInt)
+					buff |= sourceBits[sourceIntIndex + 1] << (BitsPerInt + bitsOffset);
+			}
+			buff &= destinationMask;
+			destinationBits[destinationIntIndex] &= ~destinationMask;
+			destinationBits[destinationIntIndex] |= buff;
+		}
+		else if (sourceIndex >= destinationIndex)
+		{
+			if (bitsOffset < 0)
+			{
+				bitsOffset = -bitsOffset;
+				ulong buff = destinationBits[destinationIntIndex];
+				buff &= ((ulong)1 << destinationBitsIndex) - 1;
+				buff |= (ulong)(sourceBits[sourceIntIndex] & sourceStartMask) >> bitsOffset;
+				int sourceEndIntIndex = (sourceIndex + length - 1) / BitsPerInt; // Индекс инта "хвоста".
+				for (int sourceCurrentIntIndex = sourceIntIndex + 1; sourceCurrentIntIndex <= sourceEndIntIndex; sourceCurrentIntIndex++)
+				{
+					buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << (BitsPerInt - bitsOffset);
+					destinationBits[sourceCurrentIntIndex + intOffset - 1] = (uint)buff;
+					buff >>= BitsPerInt;
+				}
+				if (sourceEndIntIndex + intOffset < destinationBound)
+				{
+					ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+					buff &= destinationMask;
+					destinationBits[sourceEndIntIndex + intOffset] &= (uint)~destinationMask;
+					destinationBits[sourceEndIntIndex + intOffset] |= (uint)buff;
+				}
+			}
+			else
+			{
+				ulong buff = destinationBits[destinationIntIndex];
+				buff &= ((ulong)1 << destinationBitsIndex) - 1;
+				buff |= ((ulong)(sourceBits[sourceIntIndex] & sourceStartMask)) << bitsOffset;
+				int sourceEndIntIndex = (sourceIndex + length - 1) / BitsPerInt; // Индекс инта "хвоста".
+				for (int sourceCurrentIntIndex = sourceIntIndex; sourceCurrentIntIndex < sourceEndIntIndex; sourceCurrentIntIndex++)
+				{
+					destinationBits[sourceCurrentIntIndex + intOffset] = (uint)buff;
+					buff >>= BitsPerInt;
+					if (sourceCurrentIntIndex + 1 < sourceBound) buff |= ((ulong)sourceBits[sourceCurrentIntIndex + 1]) << bitsOffset;
+				}
+				if (sourceEndIntIndex + intOffset < destinationBound)
+				{
+					ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+					buff &= destinationMask;
+					destinationBits[sourceEndIntIndex + intOffset] &= (uint)~destinationMask;
+					destinationBits[sourceEndIntIndex + intOffset] |= (uint)buff;
+				}
+			}
+		}
+		else
+		{
+			var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+			var sourceEndBitsIndex = sourceEndIndex % BitsPerInt; // Индекс последнего бита в инт.
+			var sourceEndIntIndex = sourceEndIndex / BitsPerInt;  // Индекс инта последнего бита.
+			uint sourceEndMask = ~0u >> (BitsPerInt - sourceEndBitsIndex - 1); // Маска "хвоста" источника
+			if (bitsOffset < 0)
+			{
+				bitsOffset = -bitsOffset;
+				ulong buff = destinationBits[destinationEndIntIndex];
+				buff &= ~0ul << (destinationEndBitsIndex + 1);
+				buff <<= BitsPerInt;
+				buff |= ((ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask)) << (BitsPerInt - bitsOffset);
+				for (int sourceCurrentIntIndex = sourceEndIntIndex; sourceCurrentIntIndex > sourceIntIndex; sourceCurrentIntIndex--)
+				{
+					destinationBits[sourceCurrentIntIndex + intOffset] = (uint)(buff >> BitsPerInt);
+					buff <<= BitsPerInt;
+					buff |= ((ulong)sourceBits[sourceCurrentIntIndex - 1]) << (BitsPerInt - bitsOffset);
+				}
+				ulong destinationMask = ~0ul << (BitsPerInt + destinationBitsIndex);
+				buff &= destinationMask;
+				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
+				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
+			}
+			else
+			{
+				ulong buff = destinationBits[destinationEndIntIndex];
+				buff &= ~0ul << (destinationEndBitsIndex + 1);
+				buff <<= BitsPerInt;
+				buff |= (ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask) << (BitsPerInt + bitsOffset);
+				for (int sourceCurrentIntIndex = sourceEndIntIndex - 1; sourceCurrentIntIndex >= sourceIntIndex; sourceCurrentIntIndex--)
+				{
+					buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
+					destinationBits[sourceCurrentIntIndex + intOffset + 1] = (uint)(buff >> BitsPerInt);
+					buff <<= BitsPerInt;
+				}
+				ulong destinationMask = ~0ul << (BitsPerInt + destinationBitsIndex);
+				buff &= destinationMask;
+				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
+				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
+			}
+		}
+	}
+
+	private static void CheckParams(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
+	{
+		if (sourceBits == null)
+			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
+		if (sourceBits.Count == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
+		if (destinationBits == null)
+			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
+		if (destinationBits.Count == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
+		int sourceLengthBits = sourceBits.Count * BitsPerInt; // Длина массивов в битах.
+		int destinationLengthBits = destinationBits.Count * BitsPerInt; // Длина массивов в битах.
+		if (sourceIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
+		if (destinationIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
+		if (sourceIndex + length > sourceLengthBits)
+			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
+		if (destinationIndex + length > destinationLengthBits)
+			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
+	}
+
+	private static void CheckParams(uint* sourceBits, int sourceBound, int sourceIndex, uint* destinationBits, int destinationBound, int destinationIndex, int length)
+	{
+		if (sourceBits == null)
+			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
+		if (sourceBound == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
+		if (destinationBits == null)
+			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
+		if (destinationBound == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
+		int sourceLengthBits = sourceBound * BitsPerInt; // Длина массивов в битах.
+		int destinationLengthBits = destinationBound * BitsPerInt; // Длина массивов в битах.
+		if (sourceIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
+		if (destinationIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
+		if (sourceIndex + length > sourceLengthBits)
+			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
+		if (destinationIndex + length > destinationLengthBits)
+			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
+	}
+
+	public object Clone()
+	{
+		BitList bitList = new(_size, _items);
+		return bitList;
+	}
+
+	protected override void Copy(ListBase<bool, BitList> source, int sourceIndex, ListBase<bool, BitList> destination, int destinationIndex, int count)
+	{
+		BitList source2 = source as BitList ?? throw new ArgumentException(null, nameof(source));
+		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
+		CopyBits(source2._items, source2._capacity, sourceIndex, destination2._items, destination2._capacity, destinationIndex, count);
+		destination2.ListChanged?.Invoke(this);
+	}
+
+	protected override void CopyToInternal(Array array, int index)
+	{
+		if (array.Rank != 1)
+			throw new RankException();
+		if (array is int[] intArray)
+			fixed (int* ptr = intArray)
+				CopyMemory(_items, (uint*)(ptr + index), GetArrayLength(_size, BitsPerInt));
+		else if (array is byte[] byteArray)
+		{
+			int arrayLength = GetArrayLength(_size, BitsPerByte);
+			if (array.Length - index < arrayLength)
+				throw new ArgumentException(null);
+			byte[] b = byteArray;
+			int mask = unchecked((1 << BitsPerByte) - 1);
+			for (int i = 0; i < arrayLength; i++)
+				b[index + i] = (byte)((_items[i / BytesPerInt] >> (i % BytesPerInt * BitsPerByte)) & mask); // Shift to bring the required byte to LSB, then mask
+		}
+		else if (array is bool[] boolArray)
+			CopyToInternal(boolArray, index);
+		else
+			throw new ArgumentException(null, nameof(array));
+	}
+
+	private void CopyToInternal(bool[] array, int index)
+	{
+		if (array.Length - index < _size)
+			throw new ArgumentException(null);
+		CopyToInternal(index, array, 0, array.Length);
+	}
+
+	protected override void CopyToInternal(int index, bool[] array, int arrayIndex, int count)
+	{
+		for (int i = 0; i < count; i++)
+			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
+	}
+
+	public override void Dispose()
+	{
+		Marshal.FreeHGlobal((IntPtr)_items);
+		GC.SuppressFinalize(this);
+	}
+
+	//protected override bool EqualsInternal(BitList other)
+	//{
+	//	int count = Min(_size, other._size);
+	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
+	//	for (int i = 0; i < intCount; i++)
+	//		if (_items[i] != other._items[i])
+	//			return false;
+	//	if (bitsCount != 0)
+	//	{
+	//		uint mask = ((uint)1 << bitsCount) - 1;
+	//		if ((_items[intCount] & mask) != (other._items[intCount] & mask))
+	//			return false;
+	//	}
+	//	return true;
+	//}
+
+	//public override int GetHashCode()
+	//{
+	//	return _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
+	//}
+
+	public virtual uint GetSmallRange(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return new();
+		if (count > BitsPerInt)
+			throw new ArgumentException(null, nameof(count));
+		(int quotient, int remainder) = DivRem(index, BitsPerInt);
+		(int quotient2, int remainder2) = DivRem(index + count, BitsPerInt);
+		uint result;
+		if (quotient == quotient2)
+			result = _items[quotient] & (~(~0u << count) << remainder);
+		else
+		{
+			result = _items[quotient] & (~0u << remainder);
+			result |= (_items[quotient + 1] & (((uint)1 << remainder2) - 1)) << (BitsPerInt - remainder2);
+		}
+		return result;
+	}
+
+	protected override int IndexOfInternal(bool item, int index, int count)
+	{
+		int fillValue = item ? 0 : unchecked((int)0xffffffff);
+		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
+		int startRemainder = index % BitsPerInt;
+		int endRemainder = (index + count) % BitsPerInt;
+		if (startIndex == endIndex && startRemainder != 0)
+			for (int i = startRemainder; i < endRemainder; i++)
+				if ((_items[startIndex] & (1 << i)) != 0)
+					return startIndex * BitsPerInt + i;
+		if (startRemainder != 0)
+		{
+			int invRemainder = BitsPerInt - startRemainder;
+			int mask = (1 << invRemainder) - 1;
+			uint first = _items[startIndex - 1] >> startRemainder;
+			if (first != (item ? 0 : mask))
+				for (int i = 0; i < invRemainder; i++)
+					if ((first & (1 << i)) != 0)
+						return index + i;
+		}
+		for (int i = startIndex; i < endIndex; i++)
+			if (_items[i] != fillValue)
+				for (int j = 0; j < BitsPerInt; j++)
+					if ((_items[i] & (1 << j)) != 0)
+						return i * BitsPerInt + j;
+		if (endRemainder != 0)
+			for (int i = 0; i < endRemainder; i++)
+				if ((_items[endIndex] & (1 << i)) != 0)
+					return endIndex * BitsPerInt + i;
+		return -1;
+	}
+
+	public void InsertRange(int index, IEnumerable collection)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (collection is BitList bitList)
+		{
+			int count = bitList._size;
+			if (count == 0)
+				return;
+			EnsureCapacity(_size + count);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + count, _size - index);
+			CopyBits(bitList._items, bitList._capacity, 0, _items, _capacity, index, count);
+			_size += count;
+		}
+		else if (collection is uint[] uintArray)
+		{
+			int count = uintArray.Length * BitsPerInt;
+			if (count == 0)
+				return;
+			EnsureCapacity(_size + count);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + count, _size - index);
+			fixed (uint* uintPtr = uintArray)
+				CopyBits(uintPtr, uintArray.Length, 0, _items, _capacity, index, count);
+			_size += count;
+		}
+		else
+			InsertRange(index, new BitList(collection));
+	}
+
+	protected override int LastIndexOfInternal(bool item, int index, int count)
+	{
+		int fillValue = item ? 0 : unchecked((int)0xffffffff);
+		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
+		int startRemainder = index % BitsPerInt;
+		int endRemainder = (index + count) % BitsPerInt;
+		if (startIndex == endIndex && startRemainder != 0)
+			for (int i = endRemainder - 1; i >= startRemainder; i--)
+				if ((_items[startIndex] & (1 << i)) != 0)
+					return startIndex * BitsPerInt + i;
+		if (endRemainder != 0)
+			for (int i = endRemainder - 1; i >= 0; i--)
+				if ((_items[endIndex] & (1 << i)) != 0)
+					return endIndex * BitsPerInt + i;
+		for (int i = endIndex - 1; i >= startIndex; i--)
+			if (_items[i] != fillValue)
+				for (int j = BitsPerInt; j >= 0; j--)
+					if ((_items[i] & (1 << j)) != 0)
+						return i * BitsPerInt + j;
+		if (startRemainder != 0)
+		{
+			int invRemainder = BitsPerInt - startRemainder;
+			int mask = (1 << invRemainder) - 1;
+			uint first = _items[startIndex - 1] >> startRemainder;
+			if (first != (item ? 0 : mask))
+				for (int i = invRemainder - 1; i >= 0; i--)
+					if ((first & (1 << i)) != 0)
+						return index + i;
+		}
+		return -1;
+	}
+
+	protected override BitList ReverseInternal(int index, int count)
+	{
+		for (int i = 0; i < count / 2; i++)
+		{
+			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
+		}
+		ListChanged?.Invoke(this);
+		return this;
+	}
+
+	public void SetRange(int index, IEnumerable collection)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (collection is BitList bitList)
+		{
+			int count = bitList._size;
+			if (index + count > _size)
+				throw new ArgumentException(null);
+			if (count > 0)
+				CopyBits(bitList._items, bitList._capacity, 0, _items, _capacity, index, count);
+		}
+		else
+			SetRange(index, new BitList(collection));
+	}
+
+	public List<uint> ToUIntList()
+	{
+		int length = GetArrayLength(_size, BitsPerInt);
+		List<uint> result = new(length);
+		for (int i = 0; i < length; i++)
+			result.Add(_items[i]);
+		return result;
+	}
+
+	public object SyncRoot
+	{
+		get
+		{
+			if (_syncRoot == null)
+				Interlocked.CompareExchange<object?>(ref _syncRoot, new(), null);
+			return _syncRoot;
+		}
+	}
+
+	public bool IsReadOnly => false;
+
+	public bool IsSynchronized => false;
+}
+
+internal class BitList2 : BitList
+{
+	public BitList2() : base()
+	{
+	}
+
+	public BitList2(int capacity) : base(capacity)
+	{
+	}
+
+	public BitList2(int length, bool defaultValue) : base(length, defaultValue)
+	{
+	}
+
+	public BitList2(IEnumerable bits) : base(bits)
+	{
+	}
+}
+#endif
 
 [DebuggerDisplay("Count = {Count}")]
 [ComVisible(true)]
@@ -2685,6 +3458,8 @@ public partial class List<T> : ListBase<T, List<T>>
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => Array.Copy(_items, index, array, arrayIndex, count);
 
+	public override void Dispose() => GC.SuppressFinalize(this);
+
 	internal override T GetInternal(int index, bool invoke = true)
 	{
 		T item = _items[index];
@@ -2858,6 +3633,7 @@ public partial class List<T> : ListBase<T, List<T>>
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, index, count);
+#if !RELEASE
 
 	public List<T> NSort() => NSort(0, _size);
 
@@ -2879,6 +3655,7 @@ public partial class List<T> : ListBase<T, List<T>>
 		Radix.Sort(_items, function, index, count);
 		return this;
 	}
+#endif
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
 
@@ -2930,6 +3707,8 @@ public partial class List<T> : ListBase<T, List<T>>
 	}
 
 	public static implicit operator List<T>(T x) => new List<T>().Add(x);
+
+	public static implicit operator List<T>(T[] x) => new(x);
 }
 
 [DebuggerDisplay("Count = {Count}")]
@@ -2974,7 +3753,7 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 		_capacity = capacity;
 	}
 
-	public BigList(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetNonEnumeratedCount(out int count) ? count : 32)
+	public BigList(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
 	{
 		IEnumerator<T> en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -3158,6 +3937,455 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 		if (destinationIndex + length > destinationBits.Count)
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
+}
+
+[DebuggerDisplay("Count = {Count}")]
+[ComVisible(true)]
+[Serializable]
+public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
+{
+	private T* _items;
+	private int _capacity = 0;
+
+	private static readonly T* _emptyArray = null;
+
+	public NList() => _items = _emptyArray;
+
+	public NList(int capacity)
+	{
+		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity == 0)
+			_items = _emptyArray;
+		else
+			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
+	}
+
+	public NList(IEnumerable<T> collection)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is ICollection<T> c)
+		{
+			int count = c.Count;
+			if (count == 0)
+				_items = _emptyArray;
+			else
+			{
+				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = count));
+				fixed (T* ptr = c.AsSpan())
+					CopyMemory(ptr, _items, c.Count);
+				_size = count;
+			}
+		}
+		else
+		{
+			_size = 0;
+			_items = _emptyArray;
+			using IEnumerator<T> en = collection.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+	}
+
+	public NList(int capacity, IEnumerable<T> collection) : this(capacity)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is ICollection<T> c)
+		{
+			int count = c.Count;
+			if (count == 0)
+				return;
+			if (count > capacity)
+				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = count));
+			fixed (T* ptr = c.AsSpan())
+				CopyMemory(ptr, _items, c.Count);
+			_size = count;
+		}
+		else
+		{
+			using IEnumerator<T> en = collection.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+	}
+
+	public NList(T[] array)
+	{
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		_size = _capacity = array.Length;
+		fixed (T* ptr = array.ToArray())
+			_items = ptr;
+	}
+
+	public NList(int capacity, T[] array)
+	{
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		_size = array.Length;
+		if (array.Length > (_capacity = capacity))
+			fixed (T* ptr = array)
+				_items = ptr;
+		else
+		{
+			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
+			fixed (T* ptr = array)
+				CopyMemory(ptr, _items, array.Length);
+		}
+	}
+
+	public NList(ReadOnlySpan<T> span)
+	{
+		if (span == null)
+			throw new ArgumentNullException(nameof(span));
+		_size = _capacity = span.Length;
+		fixed (T* ptr = span.ToArray())
+			_items = ptr;
+	}
+
+	public NList(int capacity, ReadOnlySpan<T> span)
+	{
+		if (span == null)
+			throw new ArgumentNullException(nameof(span));
+		_size = span.Length;
+		if (span.Length > capacity)
+			fixed (T* ptr = span.ToArray())
+				_items = ptr;
+		else
+		{
+			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * capacity);
+			fixed (T* ptr = span)
+				CopyMemory(ptr, _items, span.Length);
+		}
+	}
+
+	public override int Capacity
+	{
+		get => _capacity;
+		set
+		{
+			if (value < _size)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			if (value != _capacity)
+			{
+				if (value > 0)
+				{
+					T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
+					if (_size > 0)
+						CopyMemory(_items, newItems, _size);
+					Marshal.FreeHGlobal((IntPtr)_items);
+					_items = newItems;
+				}
+				else
+				{
+					Marshal.FreeHGlobal((IntPtr)_items);
+					_items = _emptyArray;
+				}
+				_capacity = value;
+				ListChanged?.Invoke(this);
+			}
+		}
+	}
+
+	protected override Func<int, NList<T>> CapacityCreator => CapacityCreatorStatic;
+
+	private static Func<int, NList<T>> CapacityCreatorStatic => capacity => new(capacity);
+
+	protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => CollectionCreatorStatic;
+
+	private static Func<IEnumerable<T>, NList<T>> CollectionCreatorStatic => collection => new(collection);
+
+	public event ListChangedHandler? ListChanged;
+
+	public NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
+
+	public Span<T> AsSpan() => AsSpan(0, _size);
+
+	public Span<T> AsSpan(int index) => AsSpan(index, _size - index);
+
+	public Span<T> AsSpan(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return new();
+		return new(_items + index, count);
+	}
+
+	protected override void ClearInternal(int index, int count)
+	{
+		FillMemory(_items + index, count, 0);
+		ListChanged?.Invoke(this);
+	}
+
+	public NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
+
+	public NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
+
+	protected override void Copy(ListBase<T, NList<T>> source, int sourceIndex, ListBase<T, NList<T>> destination, int destinationIndex, int count)
+	{
+		CopyMemory((source as NList<T> ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as NList<T> ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
+		ListChanged?.Invoke(this);
+	}
+
+	protected override void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is not T[] array2)
+			throw new ArgumentException(null, nameof(array));
+		fixed (T* ptr = array2)
+			CopyMemory(_items, 0, ptr, arrayIndex, _size);
+	}
+
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	{
+		fixed (T* ptr = array)
+			CopyMemory(_items, index, ptr, arrayIndex, count);
+	}
+
+	public override void Dispose() => GC.SuppressFinalize(this);
+
+	internal override T GetInternal(int index, bool invoke = true)
+	{
+		T item = _items[index];
+		if (invoke)
+			ListChanged?.Invoke(this);
+		return item;
+	}
+
+	protected override int IndexOfInternal(T item, int index, int count)
+	{
+		T* ptr = _items + index;
+		for (int i = 0; i < count; i++)
+			if (ptr[i].Equals(item))
+				return index + i;
+		return -1;
+	}
+
+	public override NList<T> Insert(int index, T item)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (_size == Capacity)
+		{
+			int min = _size + 1;
+			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			if (newCapacity < min) newCapacity = min;
+			T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+			if (index > 0)
+				CopyMemory(_items, 0, newItems, 0, index);
+			if (index < _size)
+				CopyMemory(_items, index, newItems, index + 1, _size - index);
+			newItems[index] = item;
+			Marshal.FreeHGlobal((IntPtr)_items);
+			_items = newItems;
+		}
+		else
+		{
+			if (index < _size)
+				Copy(this, index, this, index + 1, _size - index);
+			_items[index] = item;
+		}
+		_size++;
+		ListChanged?.Invoke(this);
+		return this;
+	}
+
+	public NList<T> InsertRange(int index, ReadOnlySpan<T> span)
+	{
+		int count = span.Length;
+		if (count == 0)
+			return this;
+		if (Capacity < _size + count)
+		{
+			int min = _size + count;
+			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			if (newCapacity < min) newCapacity = min;
+			T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+			if (index > 0)
+				CopyMemory(_items, 0, newItems, 0, index);
+			if (index < _size)
+				CopyMemory(_items, index, newItems, index + count, _size - index);
+			span.CopyTo(new(newItems + index, newCapacity - index));
+			Marshal.FreeHGlobal((IntPtr)_items);
+			_items = newItems;
+		}
+		else
+		{
+			if (index < _size)
+				CopyMemory(_items, index, _items, index + count, _size - index);
+			span.CopyTo(new(_items + index, Capacity - index));
+		}
+		_size += count;
+		ListChanged?.Invoke(this);
+		return this;
+	}
+
+	protected override NList<T> InsertRangeInternal(int index, IEnumerable<T> collection)
+	{
+		if (collection is NList<T> list)
+		{
+			int count = list._size;
+			if (count == 0)
+				return this;
+			if (Capacity < _size + count)
+			{
+				int min = _size + count;
+				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				if (newCapacity < min) newCapacity = min;
+				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				if (index > 0)
+					CopyMemory(_items, 0, newItems, 0, index);
+				if (index < _size)
+					CopyMemory(_items, index, newItems, index + count, _size - index);
+				if (this == list)
+				{
+					CopyMemory(_items, 0, newItems, index, index);
+					CopyMemory(_items, index + count, newItems, index * 2, _size - index);
+				}
+				else
+					CopyMemory(list._items, 0, newItems, index, count);
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = newItems;
+			}
+			else
+			{
+				if (index < _size)
+					CopyMemory(_items, index, _items, index + count, _size - index);
+				if (this == list)
+				{
+					CopyMemory(_items, 0, _items, index, index);
+					CopyMemory(_items, index + count, _items, index * 2, _size - index);
+				}
+				else
+					CopyMemory(list._items, 0, _items, index, count);
+			}
+			_size += count;
+			return this;
+		}
+		else if (collection is T[] array)
+		{
+			int count = array.Length;
+			if (count == 0)
+				return this;
+			if (Capacity < _size + count)
+			{
+				int min = _size + count;
+				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				if (newCapacity < min) newCapacity = min;
+				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				if (index > 0)
+					CopyMemory(_items, 0, newItems, 0, index);
+				if (index < _size)
+					CopyMemory(_items, index, newItems, index + count, _size - index);
+				fixed (T* ptr = array)
+					CopyMemory(ptr, 0, newItems, index, count);
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = newItems;
+			}
+			else
+			{
+				if (index < _size)
+					CopyMemory(_items, index, _items, index + count, _size - index);
+				fixed (T* ptr = array)
+					CopyMemory(ptr, 0, _items, index, count);
+			}
+			_size += count;
+			return this;
+		}
+		else if (collection is ICollection<T> list2)
+		{
+			int count = list2.Count;
+			if (count == 0)
+				return this;
+			if (Capacity < _size + count)
+			{
+				int min = _size + count;
+				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				if (newCapacity < min) newCapacity = min;
+				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				if (index > 0)
+					CopyMemory(_items, 0, newItems, 0, index);
+				if (index < _size)
+					CopyMemory(_items, index, newItems, index + count, _size - index);
+				fixed (T* ptr = list2.AsSpan())
+					CopyMemory(ptr, 0, newItems, index, list2.Count);
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = newItems;
+			}
+			else
+			{
+				if (index < _size)
+					CopyMemory(_items, index, _items, index + count, _size - index);
+				fixed (T* ptr = list2.AsSpan())
+					CopyMemory(ptr, 0, _items, index, list2.Count);
+			}
+			_size += count;
+			ListChanged?.Invoke(this);
+			return this;
+		}
+		else
+			return InsertRangeInternal(index, new NList<T>(collection));
+	}
+
+	protected override int LastIndexOfInternal(T item, int index, int count)
+	{
+		int endIndex = index - count + 1;
+		for (int i = index; i >= endIndex; i--)
+			if (_items[i].Equals(item))
+				return i;
+		return -1;
+	}
+
+	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : new(collection);
+
+	protected override NList<T> ReverseInternal(int index, int count)
+	{
+		for (int i = 0; i < _size / 2; i++)
+			(_items[i], _items[_size - 1 - i]) = (_items[_size - 1 - i], _items[i]);
+		ListChanged?.Invoke(this);
+		return this;
+	}
+
+	internal override void SetInternal(int index, T value)
+	{
+		_items[index] = value;
+		ListChanged?.Invoke(this);
+	}
+
+	public NList<T> Sort() => Sort(0, _size);
+
+	public NList<T> Sort(int index, int count)
+	{
+		if (this is NList<uint> uintList)
+		{
+#if !RELEASE
+			Radix.Sort(uintList._items + index, count);
+#endif
+			return this;
+		}
+		else
+			throw new NotSupportedException();
+	}
+
+	public NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
+
+	public NList<T> Sort(Func<T, uint> function, int index, int count) =>
+#if !RELEASE
+		//Radix.Sort(_items + index, function, count);
+#endif
+		this;
+
+	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
 }
 
 [DebuggerDisplay("Count = {Count}")]

@@ -55,6 +55,16 @@ namespace NativeFunctions
 			return source;
 		}
 
+		static void Sort(unsigned* in, int n)
+		{
+			return radixSortUnsigned(in, n);
+		}
+
+		//generic<class T> where T : value class static void Sort(T* in, unsigned* in2, int n)
+		//{
+		//	return radixSortUnsigned(in, in2, n);
+		//}
+
 		static array<String^>^ Sort(array<String^>^ source, int index, int count)
 		{
 			if (index < 0)
@@ -188,6 +198,7 @@ namespace NativeFunctions
 	};
 }
 
+#pragma managed(push, off)
 template<class T> void createCountersUnsigned(T* data, int* counters, int n)
 {
 	memset(counters, 0, 256 * sizeof(T) * sizeof(int));
@@ -258,6 +269,8 @@ template<class T, class T2> void radixPassUnsigned(short offset, int n, T* in, T
 		++(*cp);
 	}
 }
+
+#pragma managed(pop)
 
 template<class T, class T2> T as(T2 obj)
 {

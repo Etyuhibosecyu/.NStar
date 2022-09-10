@@ -354,15 +354,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	internal KeyList GetKeyListHelper()
 	{
-		if (keyList == null)
-			keyList = new(this);
+		keyList ??= new(this);
 		return keyList;
 	}
 
 	internal ValueList GetValueListHelper()
 	{
-		if (valueList == null)
-			valueList = new(this);
+		valueList ??= new(this);
 		return valueList;
 	}
 
@@ -825,8 +823,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public Dictionary(int capacity, IEqualityComparer<TKey>? comparer)
 	{
-		if (comparer == null)
-			comparer = EqualityComparer<TKey>.Default;
+		comparer ??= EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		if (capacity < 0)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
@@ -1304,10 +1301,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		public bool ContainsKey(TKey key) => keys.Contains(key);
 
-		public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-		{
-			throw new NotSupportedException();
-		}
+		public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
 
 		public Enumerator GetEnumerator() => new(this);
 
@@ -1317,15 +1311,9 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		private int IndexOfKey(TKey key) => keys.IndexOf(key);
 
-		public bool Remove(TKey key)
-		{
-			throw new NotSupportedException();
-		}
+		public bool Remove(TKey key) => throw new NotSupportedException();
 
-		public bool Remove(KeyValuePair<TKey, TValue> item)
-		{
-			throw new NotSupportedException();
-		}
+		public bool Remove(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
 
 		public bool TryGetValue(TKey key, out TValue value)
 		{
