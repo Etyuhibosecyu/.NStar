@@ -1,6 +1,6 @@
 <FONT size=20><B>BigCollections</B></FONT> - изначально задумывалась для одного из моих проектов, но потом стала использоваться во многих. Содержит несколько типов коллекций - List, BitList, Dictionary и прочие. Несмотря на название, именно коллекции с префиксом Big как раз пока что и не работают как надо. А для того, чтобы работали остальные коллекции, необходимо:
 <OL><LI>В "Обозревателе решений" выделить основной проект и нажать "Показать все файлы".</LI>
-<LI>Открыть файл <TT>obj\Debug\net6.0\&lt;ProjectName&gt;.GlobalUsings.g.cs.</TT></LI>
+<LI>Открыть файл <TT>obj\Debug\net6.0\&lt;ProjectName&gt;.GlobalUsings.g.cs</TT>.</LI>
 <LI>Скопировать содержимое и вставить его в любой пользовательский файл (например, Program.cs), удалив строки <TT>global using global::System.Collections.Generic;</TT> и <TT>global using global::System.Linq;</TT>.</LI>
 <LI>Если некоторые типы из этих пространств имен вам все же нужны (например, HashSet), добавьте в конец вставленного на предыдущем шаге блока <TT>global using G = global::System.Collections.Generic;</TT> и перед именами этих типов вставьте <TT>G.</TT>.</LI>
 <LI>Открыть файл &lt;ProjectName&gt;.csproj и удалить строку <TT>&lt;ImplicitUsings&gt;enable&lt;/ImplicitUsings&gt;</TT>.<BR></LI></OL>
