@@ -665,10 +665,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		private readonly SortedDictionary<TKey, TValue> _dict;
 
-		internal KeyList(SortedDictionary<TKey, TValue> dictionary)
-		{
-			_dict = dictionary;
-		}
+		internal KeyList(SortedDictionary<TKey, TValue> dictionary) => _dict = dictionary;
 
 		public TKey this[int index] { get => _dict.GetKey(index); set => throw new NotSupportedException(); }
 
@@ -792,9 +789,9 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 // лишнее дублирование), а при увеличении числа элементов действует как классический словарь от Microsoft.
 public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
 {
-	private SortedDictionary<TKey, TValue>? low = null;
-	private G.Dictionary<TKey, TValue>? high = null;
-	private bool isHigh = false;
+	private SortedDictionary<TKey, TValue>? low;
+	private G.Dictionary<TKey, TValue>? high;
+	private bool isHigh;
 	private readonly IEqualityComparer<TKey> comparer;
 	[NonSerialized]
 	private object? _syncRoot;
@@ -854,7 +851,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			low = new(dictionary);
 		else
 		{
-			high = new(dictionary);
+			high = new(dictionary, comparer);
 			isHigh = true;
 		}
 	}
@@ -936,7 +933,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 			if (!isHigh && low != null && Count >= _hashThreshold)
 			{
-				high = new(low);
+				high = new(low, comparer);
 				low = null;
 				isHigh = true;
 			}
@@ -1071,7 +1068,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 	{
 		if (!isHigh && low != null && Count >= _hashThreshold)
 		{
-			high = new(low);
+			high = new(low, comparer);
 			low = null;
 			isHigh = true;
 		}
@@ -1245,20 +1242,11 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		private readonly List<TKey> keys;
 		private readonly List<TValue> values;
 
-		public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection)
-		{
-			(keys, values) = (keyCollection, valueCollection).RemoveDoubles();
-		}
+		public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection) => (keys, values) = (keyCollection, valueCollection).RemoveDoubles();
 
-		public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection)
-		{
-			(keys, values) = collection.RemoveDoubles(x => x.Key).Break();
-		}
+		public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection) => (keys, values) = collection.RemoveDoubles(x => x.Key).Break();
 
-		public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection)
-		{
-			(keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
-		}
+		public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) => (keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
 
 		public TValue this[TKey key] => throw new NotSupportedException();
 
@@ -1333,11 +1321,12 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
 		{
 			private readonly UnsortedDictionary _dict;
-			private int index = 0;
+			private int index;
 
 			public Enumerator(UnsortedDictionary dictionary)
 			{
 				_dict = dictionary;
+				index = 0;
 				Current = default!;
 			}
 

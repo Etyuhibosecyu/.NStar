@@ -1062,7 +1062,7 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1076,7 +1076,7 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1090,7 +1090,7 @@ public partial class List<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1112,7 +1112,7 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1126,7 +1126,7 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1140,7 +1140,7 @@ public partial class List<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1160,7 +1160,7 @@ public partial class List<T>
 	{
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
 			List<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1174,7 +1174,7 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			List<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -1188,7 +1188,7 @@ public partial class List<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -2306,13 +2306,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2332,13 +2332,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2359,13 +2359,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2385,13 +2385,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2421,13 +2421,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2447,13 +2447,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2474,13 +2474,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2500,13 +2500,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2536,13 +2536,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2562,13 +2562,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2589,13 +2589,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2615,13 +2615,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2651,13 +2651,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2677,13 +2677,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2704,13 +2704,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2730,13 +2730,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2766,13 +2766,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2792,13 +2792,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2819,13 +2819,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2845,13 +2845,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -2881,13 +2881,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2907,13 +2907,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2934,13 +2934,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2960,13 +2960,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -2996,13 +2996,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3022,13 +3022,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3049,13 +3049,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3075,13 +3075,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3111,13 +3111,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3137,13 +3137,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3164,13 +3164,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3190,13 +3190,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3226,13 +3226,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3252,13 +3252,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3279,13 +3279,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3305,13 +3305,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3341,13 +3341,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3367,13 +3367,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3394,13 +3394,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3420,13 +3420,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3456,13 +3456,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3482,13 +3482,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3509,13 +3509,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3535,13 +3535,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -3571,13 +3571,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3597,13 +3597,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3624,13 +3624,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -3650,13 +3650,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4478,13 +4478,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4504,13 +4504,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4531,13 +4531,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4557,13 +4557,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4593,13 +4593,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4619,13 +4619,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4646,13 +4646,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4672,13 +4672,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4708,13 +4708,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4734,13 +4734,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4761,13 +4761,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4787,13 +4787,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4823,13 +4823,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4849,13 +4849,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4876,13 +4876,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4902,13 +4902,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -4938,13 +4938,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4964,13 +4964,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -4991,13 +4991,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5017,13 +5017,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5053,13 +5053,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5079,13 +5079,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5106,13 +5106,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5132,13 +5132,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5168,13 +5168,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5194,13 +5194,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5221,13 +5221,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5247,13 +5247,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5283,13 +5283,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5309,13 +5309,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5336,13 +5336,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5362,13 +5362,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5398,13 +5398,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5424,13 +5424,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5451,13 +5451,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5477,13 +5477,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5513,13 +5513,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5539,13 +5539,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5566,13 +5566,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5592,13 +5592,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5628,13 +5628,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5654,13 +5654,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5681,13 +5681,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5707,13 +5707,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = item;
@@ -5743,13 +5743,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5769,13 +5769,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5796,13 +5796,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -5822,13 +5822,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<TSource> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = item;
@@ -6231,12 +6231,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6253,12 +6253,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6275,12 +6275,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6305,12 +6305,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6327,12 +6327,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6349,12 +6349,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6379,12 +6379,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6401,12 +6401,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6423,12 +6423,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6453,12 +6453,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6475,12 +6475,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6497,12 +6497,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6527,12 +6527,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6549,12 +6549,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6571,12 +6571,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6601,12 +6601,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6623,12 +6623,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6645,12 +6645,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6675,12 +6675,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6697,12 +6697,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6719,12 +6719,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6749,12 +6749,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6771,12 +6771,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6793,12 +6793,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6823,12 +6823,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6845,12 +6845,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6867,12 +6867,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6897,12 +6897,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6919,12 +6919,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6941,12 +6941,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -6971,12 +6971,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -6993,12 +6993,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7015,12 +7015,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7045,12 +7045,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7067,12 +7067,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7089,12 +7089,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7779,12 +7779,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7801,12 +7801,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7823,12 +7823,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7853,12 +7853,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7875,12 +7875,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7897,12 +7897,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -7927,12 +7927,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7949,12 +7949,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -7971,12 +7971,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8001,12 +8001,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8023,12 +8023,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8045,12 +8045,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8075,12 +8075,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8097,12 +8097,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8119,12 +8119,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8149,12 +8149,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8171,12 +8171,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8193,12 +8193,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8223,12 +8223,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8245,12 +8245,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8267,12 +8267,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8297,12 +8297,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8319,12 +8319,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8341,12 +8341,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8371,12 +8371,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8393,12 +8393,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8415,12 +8415,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8445,12 +8445,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8467,12 +8467,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8489,12 +8489,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8519,12 +8519,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8541,12 +8541,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8563,12 +8563,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -8593,12 +8593,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8615,12 +8615,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8637,12 +8637,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -8667,12 +8667,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8689,12 +8689,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8711,12 +8711,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8741,12 +8741,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8763,12 +8763,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8785,12 +8785,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8815,12 +8815,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8837,12 +8837,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8859,12 +8859,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8889,12 +8889,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8911,12 +8911,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8933,12 +8933,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -8963,12 +8963,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -8985,12 +8985,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9007,12 +9007,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9037,12 +9037,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9059,12 +9059,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9081,12 +9081,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9111,12 +9111,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9133,12 +9133,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9155,12 +9155,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9185,12 +9185,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9207,12 +9207,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9229,12 +9229,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9259,12 +9259,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9281,12 +9281,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9303,12 +9303,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9333,12 +9333,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9355,12 +9355,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9377,12 +9377,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9407,12 +9407,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9429,12 +9429,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9451,12 +9451,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -9481,12 +9481,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9503,12 +9503,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -9525,12 +9525,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10215,12 +10215,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10237,12 +10237,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10259,12 +10259,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10289,12 +10289,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10311,12 +10311,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10333,12 +10333,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10363,12 +10363,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10385,12 +10385,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10407,12 +10407,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10437,12 +10437,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10459,12 +10459,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10481,12 +10481,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10511,12 +10511,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10533,12 +10533,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10555,12 +10555,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10585,12 +10585,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10607,12 +10607,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10629,12 +10629,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10659,12 +10659,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10681,12 +10681,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10703,12 +10703,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10733,12 +10733,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10755,12 +10755,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10777,12 +10777,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10807,12 +10807,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10829,12 +10829,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10851,12 +10851,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10881,12 +10881,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10903,12 +10903,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10925,12 +10925,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -10955,12 +10955,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10977,12 +10977,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -10999,12 +10999,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -11029,12 +11029,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -11051,12 +11051,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -11073,12 +11073,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -11103,12 +11103,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11124,12 +11124,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11146,12 +11146,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11167,12 +11167,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11198,12 +11198,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11219,12 +11219,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11241,12 +11241,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11262,12 +11262,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11293,12 +11293,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11314,12 +11314,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11336,12 +11336,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11357,12 +11357,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11388,12 +11388,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11409,12 +11409,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11431,12 +11431,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11452,12 +11452,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11483,12 +11483,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11504,12 +11504,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11526,12 +11526,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11547,12 +11547,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11578,12 +11578,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11599,12 +11599,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11621,12 +11621,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11642,12 +11642,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11673,12 +11673,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11694,12 +11694,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11716,12 +11716,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11737,12 +11737,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11768,12 +11768,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11789,12 +11789,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11811,12 +11811,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11832,12 +11832,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11863,12 +11863,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11884,12 +11884,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11906,12 +11906,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11927,12 +11927,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -11958,12 +11958,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -11979,12 +11979,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12001,12 +12001,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12022,12 +12022,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12053,12 +12053,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -12074,12 +12074,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -12096,12 +12096,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -12117,12 +12117,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -12148,12 +12148,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12169,12 +12169,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12191,12 +12191,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -12212,12 +12212,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13035,12 +13035,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13056,12 +13056,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13078,12 +13078,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13099,12 +13099,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13130,12 +13130,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13151,12 +13151,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13173,12 +13173,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13194,12 +13194,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13225,12 +13225,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13246,12 +13246,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13268,12 +13268,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13289,12 +13289,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13320,12 +13320,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13341,12 +13341,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13363,12 +13363,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13384,12 +13384,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13415,12 +13415,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13436,12 +13436,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13458,12 +13458,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13479,12 +13479,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13510,12 +13510,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13531,12 +13531,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13553,12 +13553,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13574,12 +13574,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13605,12 +13605,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13626,12 +13626,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13648,12 +13648,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13669,12 +13669,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13700,12 +13700,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13721,12 +13721,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13743,12 +13743,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13764,12 +13764,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13795,12 +13795,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13816,12 +13816,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13838,12 +13838,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13859,12 +13859,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -13890,12 +13890,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13911,12 +13911,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13933,12 +13933,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13954,12 +13954,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -13985,12 +13985,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -14006,12 +14006,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -14028,12 +14028,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -14049,12 +14049,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = item;
@@ -14080,12 +14080,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -14101,12 +14101,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -14123,12 +14123,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -14144,12 +14144,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			TSource? result = default;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = item;
@@ -14175,13 +14175,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14201,13 +14201,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14228,13 +14228,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14254,13 +14254,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14290,13 +14290,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14316,13 +14316,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14343,13 +14343,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14369,13 +14369,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14405,13 +14405,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14431,13 +14431,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14458,13 +14458,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14484,13 +14484,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14520,13 +14520,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14546,13 +14546,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14573,13 +14573,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14599,13 +14599,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14635,13 +14635,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14661,13 +14661,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14688,13 +14688,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14714,13 +14714,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14750,13 +14750,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14776,13 +14776,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14803,13 +14803,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14829,13 +14829,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -14865,13 +14865,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14891,13 +14891,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14918,13 +14918,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14944,13 +14944,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -14980,13 +14980,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15006,13 +15006,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15033,13 +15033,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15059,13 +15059,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15095,13 +15095,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15121,13 +15121,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15148,13 +15148,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15174,13 +15174,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15210,13 +15210,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15236,13 +15236,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15263,13 +15263,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15289,13 +15289,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15325,13 +15325,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15351,13 +15351,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15378,13 +15378,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15404,13 +15404,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -15440,13 +15440,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15466,13 +15466,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15493,13 +15493,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -15519,13 +15519,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16347,13 +16347,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16373,13 +16373,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16400,13 +16400,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16426,13 +16426,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16462,13 +16462,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16488,13 +16488,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16515,13 +16515,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16541,13 +16541,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16577,13 +16577,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16603,13 +16603,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16630,13 +16630,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16656,13 +16656,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16692,13 +16692,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16718,13 +16718,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16745,13 +16745,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16771,13 +16771,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16807,13 +16807,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16833,13 +16833,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16860,13 +16860,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16886,13 +16886,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -16922,13 +16922,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16948,13 +16948,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -16975,13 +16975,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17001,13 +17001,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17037,13 +17037,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17063,13 +17063,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17090,13 +17090,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17116,13 +17116,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17152,13 +17152,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17178,13 +17178,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17205,13 +17205,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17231,13 +17231,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17267,13 +17267,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17293,13 +17293,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17320,13 +17320,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17346,13 +17346,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17382,13 +17382,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17408,13 +17408,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17435,13 +17435,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17461,13 +17461,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17497,13 +17497,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17523,13 +17523,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17550,13 +17550,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17576,13 +17576,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -17612,13 +17612,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17638,13 +17638,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17665,13 +17665,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17691,13 +17691,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -17727,12 +17727,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17748,12 +17748,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17770,12 +17770,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17791,12 +17791,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17822,12 +17822,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -17843,12 +17843,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -17865,12 +17865,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -17886,12 +17886,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -17917,12 +17917,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17938,12 +17938,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17960,12 +17960,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -17981,12 +17981,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18012,12 +18012,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18033,12 +18033,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18055,12 +18055,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18076,12 +18076,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18107,12 +18107,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18128,12 +18128,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18150,12 +18150,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18171,12 +18171,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18202,12 +18202,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18223,12 +18223,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18245,12 +18245,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18266,12 +18266,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18297,12 +18297,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18318,12 +18318,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18340,12 +18340,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18361,12 +18361,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18392,12 +18392,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18413,12 +18413,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18435,12 +18435,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18456,12 +18456,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18487,12 +18487,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18508,12 +18508,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18530,12 +18530,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18551,12 +18551,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18582,12 +18582,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18603,12 +18603,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18625,12 +18625,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18646,12 +18646,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18677,12 +18677,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18698,12 +18698,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18720,12 +18720,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18741,12 +18741,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -18772,12 +18772,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18793,12 +18793,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18815,12 +18815,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -18836,12 +18836,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19659,12 +19659,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19680,12 +19680,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19702,12 +19702,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19723,12 +19723,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19754,12 +19754,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19775,12 +19775,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19797,12 +19797,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19818,12 +19818,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19849,12 +19849,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19870,12 +19870,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19892,12 +19892,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19913,12 +19913,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -19944,12 +19944,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19965,12 +19965,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -19987,12 +19987,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20008,12 +20008,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20039,12 +20039,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20060,12 +20060,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20082,12 +20082,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20103,12 +20103,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20134,12 +20134,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20155,12 +20155,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20177,12 +20177,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20198,12 +20198,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20229,12 +20229,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20250,12 +20250,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20272,12 +20272,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20293,12 +20293,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20324,12 +20324,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20345,12 +20345,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20367,12 +20367,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20388,12 +20388,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20419,12 +20419,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20440,12 +20440,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20462,12 +20462,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20483,12 +20483,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20514,12 +20514,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20535,12 +20535,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20557,12 +20557,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20578,12 +20578,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20609,12 +20609,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20630,12 +20630,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20652,12 +20652,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20673,12 +20673,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -20704,12 +20704,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20725,12 +20725,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20747,12 +20747,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -20768,12 +20768,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -23056,13 +23056,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23082,13 +23082,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23109,13 +23109,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23135,13 +23135,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23171,13 +23171,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23197,13 +23197,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23224,13 +23224,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23250,13 +23250,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23286,13 +23286,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23312,13 +23312,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23339,13 +23339,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23365,13 +23365,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23401,13 +23401,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23427,13 +23427,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23454,13 +23454,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23480,13 +23480,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23516,13 +23516,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23542,13 +23542,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23569,13 +23569,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23595,13 +23595,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23631,13 +23631,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23657,13 +23657,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23684,13 +23684,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23710,13 +23710,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23746,13 +23746,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23772,13 +23772,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23799,13 +23799,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23825,13 +23825,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -23861,13 +23861,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23887,13 +23887,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23914,13 +23914,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23940,13 +23940,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -23976,13 +23976,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24002,13 +24002,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24029,13 +24029,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24055,13 +24055,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24091,13 +24091,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24117,13 +24117,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24144,13 +24144,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24170,13 +24170,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24206,13 +24206,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24232,13 +24232,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24259,13 +24259,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24285,13 +24285,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -24321,13 +24321,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24347,13 +24347,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24374,13 +24374,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24400,13 +24400,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -24434,13 +24434,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24460,13 +24460,13 @@ public partial class List<T>
 		else if (source is decimal[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24487,13 +24487,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24513,13 +24513,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24547,13 +24547,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24573,13 +24573,13 @@ public partial class List<T>
 		else if (source is double[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24600,13 +24600,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24626,13 +24626,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24660,13 +24660,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24686,13 +24686,13 @@ public partial class List<T>
 		else if (source is int[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24713,13 +24713,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24739,13 +24739,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24773,13 +24773,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24799,13 +24799,13 @@ public partial class List<T>
 		else if (source is uint[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24826,13 +24826,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24852,13 +24852,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24886,13 +24886,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24912,13 +24912,13 @@ public partial class List<T>
 		else if (source is long[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24939,13 +24939,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24965,13 +24965,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -24999,13 +24999,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -25025,13 +25025,13 @@ public partial class List<T>
 		else if (source is mpz_t[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -25052,13 +25052,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -25078,13 +25078,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -26362,13 +26362,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26388,13 +26388,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26415,13 +26415,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26441,13 +26441,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26477,13 +26477,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26503,13 +26503,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26530,13 +26530,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26556,13 +26556,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26592,13 +26592,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26618,13 +26618,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26645,13 +26645,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26671,13 +26671,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26707,13 +26707,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26733,13 +26733,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26760,13 +26760,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26786,13 +26786,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26822,13 +26822,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26848,13 +26848,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26875,13 +26875,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26901,13 +26901,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -26937,13 +26937,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26963,13 +26963,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -26990,13 +26990,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27016,13 +27016,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27052,13 +27052,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27078,13 +27078,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27105,13 +27105,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27131,13 +27131,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27167,13 +27167,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27193,13 +27193,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27220,13 +27220,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27246,13 +27246,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27282,13 +27282,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27308,13 +27308,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27335,13 +27335,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27361,13 +27361,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27397,13 +27397,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27423,13 +27423,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27450,13 +27450,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27476,13 +27476,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27512,13 +27512,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27538,13 +27538,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27565,13 +27565,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27591,13 +27591,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result._items[j++] = i;
@@ -27627,13 +27627,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27653,13 +27653,13 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27680,13 +27680,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27706,13 +27706,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result._items[j++] = i;
@@ -27740,13 +27740,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27766,13 +27766,13 @@ public partial class List<T>
 		else if (source is decimal[] array)
 		{
 			List<int> result = new(array.Length);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27793,13 +27793,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27819,13 +27819,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			decimal? indicator = default;
+			decimal indicator = 0;
 			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27853,13 +27853,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27879,13 +27879,13 @@ public partial class List<T>
 		else if (source is double[] array)
 		{
 			List<int> result = new(array.Length);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27906,13 +27906,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27932,13 +27932,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			double? indicator = default;
+			double indicator = 0;
 			int j = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27966,13 +27966,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -27992,13 +27992,13 @@ public partial class List<T>
 		else if (source is int[] array)
 		{
 			List<int> result = new(array.Length);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28019,13 +28019,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28045,13 +28045,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			int? indicator = default;
+			int indicator = 0;
 			int j = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28079,13 +28079,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28105,13 +28105,13 @@ public partial class List<T>
 		else if (source is uint[] array)
 		{
 			List<int> result = new(array.Length);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28132,13 +28132,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28158,13 +28158,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			uint? indicator = default;
+			uint indicator = 0;
 			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28192,13 +28192,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28218,13 +28218,13 @@ public partial class List<T>
 		else if (source is long[] array)
 		{
 			List<int> result = new(array.Length);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28245,13 +28245,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28271,13 +28271,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			long? indicator = default;
+			long indicator = 0;
 			int j = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28305,13 +28305,13 @@ public partial class List<T>
 		{
 			int count = list._size;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28331,13 +28331,13 @@ public partial class List<T>
 		else if (source is mpz_t[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28358,13 +28358,13 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28384,13 +28384,13 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			List<int> result = new(count);
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result._items[j++] = i;
@@ -28610,12 +28610,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28631,12 +28631,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28653,12 +28653,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28674,12 +28674,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28705,12 +28705,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28726,12 +28726,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28748,12 +28748,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28769,12 +28769,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28800,12 +28800,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28821,12 +28821,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28843,12 +28843,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28864,12 +28864,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -28895,12 +28895,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28916,12 +28916,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28938,12 +28938,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28959,12 +28959,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -28990,12 +28990,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29011,12 +29011,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29033,12 +29033,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29054,12 +29054,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29085,12 +29085,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29106,12 +29106,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29128,12 +29128,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29149,12 +29149,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29180,12 +29180,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29201,12 +29201,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29223,12 +29223,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29244,12 +29244,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29275,12 +29275,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29296,12 +29296,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29318,12 +29318,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29339,12 +29339,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29370,12 +29370,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29391,12 +29391,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29413,12 +29413,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29434,12 +29434,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29465,12 +29465,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29486,12 +29486,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29508,12 +29508,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29529,12 +29529,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29560,12 +29560,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29581,12 +29581,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29603,12 +29603,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29624,12 +29624,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -29655,12 +29655,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29676,12 +29676,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29698,12 +29698,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29719,12 +29719,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -29748,12 +29748,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29769,12 +29769,12 @@ public partial class List<T>
 		else if (source is decimal[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29791,12 +29791,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29812,12 +29812,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29839,12 +29839,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29860,12 +29860,12 @@ public partial class List<T>
 		else if (source is double[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29882,12 +29882,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29903,12 +29903,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29930,12 +29930,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29951,12 +29951,12 @@ public partial class List<T>
 		else if (source is int[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29973,12 +29973,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -29994,12 +29994,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30021,12 +30021,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30042,12 +30042,12 @@ public partial class List<T>
 		else if (source is uint[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30064,12 +30064,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30085,12 +30085,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30112,12 +30112,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30133,12 +30133,12 @@ public partial class List<T>
 		else if (source is long[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30155,12 +30155,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30176,12 +30176,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30203,12 +30203,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30224,12 +30224,12 @@ public partial class List<T>
 		else if (source is mpz_t[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30246,12 +30246,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -30267,12 +30267,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -31520,12 +31520,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31541,12 +31541,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31563,12 +31563,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31584,12 +31584,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31615,12 +31615,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31636,12 +31636,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31658,12 +31658,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31679,12 +31679,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31710,12 +31710,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31731,12 +31731,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31753,12 +31753,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31774,12 +31774,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31805,12 +31805,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31826,12 +31826,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31848,12 +31848,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31869,12 +31869,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31900,12 +31900,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31921,12 +31921,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31943,12 +31943,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31964,12 +31964,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -31995,12 +31995,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32016,12 +32016,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32038,12 +32038,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32059,12 +32059,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32090,12 +32090,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32111,12 +32111,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32133,12 +32133,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32154,12 +32154,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32185,12 +32185,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32206,12 +32206,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32228,12 +32228,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32249,12 +32249,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32280,12 +32280,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32301,12 +32301,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32323,12 +32323,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32344,12 +32344,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32375,12 +32375,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32396,12 +32396,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32418,12 +32418,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32439,12 +32439,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32470,12 +32470,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32491,12 +32491,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32513,12 +32513,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32534,12 +32534,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -32565,12 +32565,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32586,12 +32586,12 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32608,12 +32608,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32629,12 +32629,12 @@ public partial class List<T>
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -32658,12 +32658,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32679,12 +32679,12 @@ public partial class List<T>
 		else if (source is decimal[] array)
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32701,12 +32701,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32722,12 +32722,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32749,12 +32749,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32770,12 +32770,12 @@ public partial class List<T>
 		else if (source is double[] array)
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32792,12 +32792,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32813,12 +32813,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32840,12 +32840,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32861,12 +32861,12 @@ public partial class List<T>
 		else if (source is int[] array)
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32883,12 +32883,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32904,12 +32904,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32931,12 +32931,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32952,12 +32952,12 @@ public partial class List<T>
 		else if (source is uint[] array)
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32974,12 +32974,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -32995,12 +32995,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33022,12 +33022,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33043,12 +33043,12 @@ public partial class List<T>
 		else if (source is long[] array)
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33065,12 +33065,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33086,12 +33086,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33113,12 +33113,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33134,12 +33134,12 @@ public partial class List<T>
 		else if (source is mpz_t[] array)
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33156,12 +33156,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33177,12 +33177,12 @@ public partial class List<T>
 		else
 		{
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -33597,12 +33597,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33619,12 +33619,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33641,12 +33641,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33671,12 +33671,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33693,12 +33693,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33715,12 +33715,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33745,12 +33745,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33767,12 +33767,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33789,12 +33789,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33819,12 +33819,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33841,12 +33841,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33863,12 +33863,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33893,12 +33893,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33915,12 +33915,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33937,12 +33937,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -33967,12 +33967,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33989,12 +33989,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34011,12 +34011,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34041,12 +34041,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34063,12 +34063,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34085,12 +34085,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34115,12 +34115,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34137,12 +34137,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34159,12 +34159,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34189,12 +34189,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34211,12 +34211,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34233,12 +34233,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34263,12 +34263,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34285,12 +34285,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34307,12 +34307,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34337,12 +34337,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34359,12 +34359,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34381,12 +34381,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -34411,12 +34411,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34433,12 +34433,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34455,12 +34455,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34483,12 +34483,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34505,12 +34505,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34527,12 +34527,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34555,12 +34555,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34577,12 +34577,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34599,12 +34599,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34627,12 +34627,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34649,12 +34649,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34671,12 +34671,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34699,12 +34699,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34721,12 +34721,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34743,12 +34743,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34771,12 +34771,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34793,12 +34793,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34815,12 +34815,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34843,12 +34843,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34865,12 +34865,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -34887,12 +34887,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -35937,12 +35937,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -35959,12 +35959,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -35981,12 +35981,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36011,12 +36011,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36033,12 +36033,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36055,12 +36055,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36085,12 +36085,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36107,12 +36107,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36129,12 +36129,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36159,12 +36159,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36181,12 +36181,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36203,12 +36203,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36233,12 +36233,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36255,12 +36255,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36277,12 +36277,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36307,12 +36307,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36329,12 +36329,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36351,12 +36351,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36381,12 +36381,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36403,12 +36403,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36425,12 +36425,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36455,12 +36455,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36477,12 +36477,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36499,12 +36499,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36529,12 +36529,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36551,12 +36551,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36573,12 +36573,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36603,12 +36603,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36625,12 +36625,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36647,12 +36647,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36677,12 +36677,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36699,12 +36699,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36721,12 +36721,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item);
 					result = i;
@@ -36751,12 +36751,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36773,12 +36773,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36795,12 +36795,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -36823,12 +36823,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36845,12 +36845,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36867,12 +36867,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36895,12 +36895,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36917,12 +36917,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36939,12 +36939,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36967,12 +36967,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -36989,12 +36989,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37011,12 +37011,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37039,12 +37039,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37061,12 +37061,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37083,12 +37083,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37111,12 +37111,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37133,12 +37133,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37155,12 +37155,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37183,12 +37183,12 @@ public partial class List<T>
 		{
 			int count = list._size;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37205,12 +37205,12 @@ public partial class List<T>
 		{
 			int count = array.Length;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37227,12 +37227,12 @@ public partial class List<T>
 		{
 			int count = list2.Count;
 			int result = -1;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = count - 1; i >= 0; i--)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 				{
 					indicator = item;
 					result = i;
@@ -37249,19 +37249,19 @@ public partial class List<T>
 			return LastIndexOfMinEnumerable(new List<mpz_t>(source));
 	}
 
-	internal static decimal? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37270,12 +37270,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37285,12 +37285,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37299,12 +37299,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37316,19 +37316,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37337,12 +37337,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37352,12 +37352,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37366,12 +37366,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37383,19 +37383,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
+	internal static double MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37404,12 +37404,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37419,12 +37419,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37433,12 +37433,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37450,19 +37450,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
+	internal static double MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37471,12 +37471,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37486,12 +37486,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37500,12 +37500,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37517,19 +37517,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
+	internal static int MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37538,12 +37538,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37553,12 +37553,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37567,12 +37567,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37584,19 +37584,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
+	internal static int MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37605,12 +37605,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37620,12 +37620,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37634,12 +37634,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37651,19 +37651,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
+	internal static uint MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37672,12 +37672,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37687,12 +37687,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37701,12 +37701,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37718,19 +37718,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37739,12 +37739,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37754,12 +37754,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37768,12 +37768,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37785,19 +37785,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
+	internal static long MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37806,12 +37806,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37821,12 +37821,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37835,12 +37835,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37852,19 +37852,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
+	internal static long MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37873,12 +37873,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37888,12 +37888,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37902,12 +37902,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -37919,19 +37919,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37940,12 +37940,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37955,12 +37955,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37969,12 +37969,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
 					indicator = f;
@@ -37986,19 +37986,19 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -38007,12 +38007,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -38022,12 +38022,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -38036,12 +38036,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
 					indicator = f;
@@ -38053,17 +38053,17 @@ public partial class List<T>
 			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MaxEnumerable(IEnumerable<decimal> source)
+	internal static decimal MaxEnumerable(IEnumerable<decimal> source)
 	{
 		if (source is List<decimal> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38072,12 +38072,12 @@ public partial class List<T>
 		}
 		else if (source is decimal[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38087,12 +38087,12 @@ public partial class List<T>
 		else if (source is IList<decimal> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38101,12 +38101,12 @@ public partial class List<T>
 		}
 		else
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38116,17 +38116,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static double? MaxEnumerable(IEnumerable<double> source)
+	internal static double MaxEnumerable(IEnumerable<double> source)
 	{
 		if (source is List<double> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38135,12 +38135,12 @@ public partial class List<T>
 		}
 		else if (source is double[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38150,12 +38150,12 @@ public partial class List<T>
 		else if (source is IList<double> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38164,12 +38164,12 @@ public partial class List<T>
 		}
 		else
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38179,17 +38179,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static int? MaxEnumerable(IEnumerable<int> source)
+	internal static int MaxEnumerable(IEnumerable<int> source)
 	{
 		if (source is List<int> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38198,12 +38198,12 @@ public partial class List<T>
 		}
 		else if (source is int[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38213,12 +38213,12 @@ public partial class List<T>
 		else if (source is IList<int> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38227,12 +38227,12 @@ public partial class List<T>
 		}
 		else
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38242,17 +38242,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static uint? MaxEnumerable(IEnumerable<uint> source)
+	internal static uint MaxEnumerable(IEnumerable<uint> source)
 	{
 		if (source is List<uint> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38261,12 +38261,12 @@ public partial class List<T>
 		}
 		else if (source is uint[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38276,12 +38276,12 @@ public partial class List<T>
 		else if (source is IList<uint> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38290,12 +38290,12 @@ public partial class List<T>
 		}
 		else
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38305,17 +38305,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static long? MaxEnumerable(IEnumerable<long> source)
+	internal static long MaxEnumerable(IEnumerable<long> source)
 	{
 		if (source is List<long> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38324,12 +38324,12 @@ public partial class List<T>
 		}
 		else if (source is long[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38339,12 +38339,12 @@ public partial class List<T>
 		else if (source is IList<long> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38353,12 +38353,12 @@ public partial class List<T>
 		}
 		else
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38368,17 +38368,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static mpz_t? MaxEnumerable(IEnumerable<mpz_t> source)
+	internal static mpz_t MaxEnumerable(IEnumerable<mpz_t> source)
 	{
 		if (source is List<mpz_t> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38387,12 +38387,12 @@ public partial class List<T>
 		}
 		else if (source is mpz_t[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38402,12 +38402,12 @@ public partial class List<T>
 		else if (source is IList<mpz_t> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38416,12 +38416,12 @@ public partial class List<T>
 		}
 		else
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
 					indicator = f;
@@ -38431,7 +38431,7 @@ public partial class List<T>
 		}
 	}
 
-	internal static decimal? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38473,7 +38473,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38524,7 +38524,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38566,7 +38566,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38617,7 +38617,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38659,7 +38659,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38710,7 +38710,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38752,7 +38752,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38803,7 +38803,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38845,7 +38845,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38896,7 +38896,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38938,7 +38938,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static double MeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38989,7 +38989,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MeanEnumerable(IEnumerable<decimal> source)
+	internal static decimal MeanEnumerable(IEnumerable<decimal> source)
 	{
 		if (source is List<decimal> list)
 		{
@@ -39038,7 +39038,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<decimal>(source));
 	}
 
-	internal static double? MeanEnumerable(IEnumerable<double> source)
+	internal static double MeanEnumerable(IEnumerable<double> source)
 	{
 		if (source is List<double> list)
 		{
@@ -39087,7 +39087,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<double>(source));
 	}
 
-	internal static double? MeanEnumerable(IEnumerable<int> source)
+	internal static double MeanEnumerable(IEnumerable<int> source)
 	{
 		if (source is List<int> list)
 		{
@@ -39136,7 +39136,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<int>(source));
 	}
 
-	internal static double? MeanEnumerable(IEnumerable<uint> source)
+	internal static double MeanEnumerable(IEnumerable<uint> source)
 	{
 		if (source is List<uint> list)
 		{
@@ -39185,7 +39185,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<uint>(source));
 	}
 
-	internal static double? MeanEnumerable(IEnumerable<long> source)
+	internal static double MeanEnumerable(IEnumerable<long> source)
 	{
 		if (source is List<long> list)
 		{
@@ -39234,7 +39234,7 @@ public partial class List<T>
 			return MeanEnumerable(new List<long>(source));
 	}
 
-	internal static double? MeanEnumerable(IEnumerable<mpz_t> source)
+	internal static double MeanEnumerable(IEnumerable<mpz_t> source)
 	{
 		if (source is List<mpz_t> list)
 		{
@@ -39283,386 +39283,386 @@ public partial class List<T>
 			return MeanEnumerable(new List<mpz_t>(source));
 	}
 
-	internal static decimal? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
+	internal static double MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
+	internal static double MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
+	internal static int MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
+	internal static int MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
+	internal static uint MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
+	internal static long MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
+	internal static long MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MedianEnumerable(IEnumerable<decimal> source)
+	internal static decimal MedianEnumerable(IEnumerable<decimal> source)
 	{
 		if (source is List<decimal> list)
-			return list._size == 0 ? default : new List<decimal>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<decimal>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is decimal[] array)
-			return array.Length == 0 ? default : new List<decimal>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<decimal>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<decimal> list2)
-			return list2.Count == 0 ? default : new List<decimal>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<decimal>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<decimal>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<decimal>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<decimal>(source));
 	}
 
-	internal static double? MedianEnumerable(IEnumerable<double> source)
+	internal static double MedianEnumerable(IEnumerable<double> source)
 	{
 		if (source is List<double> list)
-			return list._size == 0 ? default : new List<double>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<double>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is double[] array)
-			return array.Length == 0 ? default : new List<double>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<double>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<double> list2)
-			return list2.Count == 0 ? default : new List<double>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<double>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<double>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<double>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<double>(source));
 	}
 
-	internal static int? MedianEnumerable(IEnumerable<int> source)
+	internal static int MedianEnumerable(IEnumerable<int> source)
 	{
 		if (source is List<int> list)
-			return list._size == 0 ? default : new List<int>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<int>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is int[] array)
-			return array.Length == 0 ? default : new List<int>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<int>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<int> list2)
-			return list2.Count == 0 ? default : new List<int>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<int>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<int>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<int>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<int>(source));
 	}
 
-	internal static uint? MedianEnumerable(IEnumerable<uint> source)
+	internal static uint MedianEnumerable(IEnumerable<uint> source)
 	{
 		if (source is List<uint> list)
-			return list._size == 0 ? default : new List<uint>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<uint>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is uint[] array)
-			return array.Length == 0 ? default : new List<uint>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<uint>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<uint> list2)
-			return list2.Count == 0 ? default : new List<uint>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<uint>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<uint>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<uint>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<uint>(source));
 	}
 
-	internal static long? MedianEnumerable(IEnumerable<long> source)
+	internal static long MedianEnumerable(IEnumerable<long> source)
 	{
 		if (source is List<long> list)
-			return list._size == 0 ? default : new List<long>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<long>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is long[] array)
-			return array.Length == 0 ? default : new List<long>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<long>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<long> list2)
-			return list2.Count == 0 ? default : new List<long>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<long>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<long>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<long>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<long>(source));
 	}
 
-	internal static mpz_t? MedianEnumerable(IEnumerable<mpz_t> source)
+	internal static mpz_t MedianEnumerable(IEnumerable<mpz_t> source)
 	{
 		if (source is List<mpz_t> list)
-			return list._size == 0 ? default : new List<mpz_t>(list).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : new List<mpz_t>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is mpz_t[] array)
-			return array.Length == 0 ? default : new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 :new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is IList<mpz_t> list2)
-			return list2.Count == 0 ? default : new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 :new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? default : new List<mpz_t>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 :new List<mpz_t>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<mpz_t>(source));
 	}
@@ -39731,19 +39731,19 @@ public partial class List<T>
 			return MedianEnumerable(new List<TSource>(source));
 	}
 
-	internal static decimal? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39752,12 +39752,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39767,12 +39767,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39781,12 +39781,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39798,19 +39798,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39819,12 +39819,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39834,12 +39834,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39848,12 +39848,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39865,19 +39865,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
+	internal static double MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39886,12 +39886,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39901,12 +39901,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39915,12 +39915,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -39932,19 +39932,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static double? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
+	internal static double MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39953,12 +39953,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39968,12 +39968,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39982,12 +39982,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -39999,19 +39999,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
+	internal static int MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40020,12 +40020,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40035,12 +40035,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40049,12 +40049,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40066,19 +40066,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static int? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
+	internal static int MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40087,12 +40087,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40102,12 +40102,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40116,12 +40116,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40133,19 +40133,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
+	internal static uint MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40154,12 +40154,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40169,12 +40169,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40183,12 +40183,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40200,19 +40200,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static uint? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40221,12 +40221,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40236,12 +40236,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40250,12 +40250,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40267,19 +40267,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
+	internal static long MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40288,12 +40288,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40303,12 +40303,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40317,12 +40317,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40334,19 +40334,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static long? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
+	internal static long MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40355,12 +40355,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40370,12 +40370,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40384,12 +40384,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40401,19 +40401,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40422,12 +40422,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40437,12 +40437,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40451,12 +40451,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
 					indicator = f;
@@ -40468,19 +40468,19 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static mpz_t? MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40489,12 +40489,12 @@ public partial class List<T>
 		}
 		else if (source is TSource[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40504,12 +40504,12 @@ public partial class List<T>
 		else if (source is IList<TSource> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40518,12 +40518,12 @@ public partial class List<T>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
 					indicator = f;
@@ -40535,17 +40535,17 @@ public partial class List<T>
 			return MinEnumerable(new List<TSource>(source), function);
 	}
 
-	internal static decimal? MinEnumerable(IEnumerable<decimal> source)
+	internal static decimal MinEnumerable(IEnumerable<decimal> source)
 	{
 		if (source is List<decimal> list)
 		{
 			int count = list._size;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40554,12 +40554,12 @@ public partial class List<T>
 		}
 		else if (source is decimal[] array)
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				decimal item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40569,12 +40569,12 @@ public partial class List<T>
 		else if (source is IList<decimal> list2)
 		{
 			int count = list2.Count;
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
 				decimal item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40583,12 +40583,12 @@ public partial class List<T>
 		}
 		else
 		{
-			decimal? indicator = default;
+			decimal indicator = 0;
 			decimal f;
 			int i = 0;
 			foreach (decimal item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40598,17 +40598,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static double? MinEnumerable(IEnumerable<double> source)
+	internal static double MinEnumerable(IEnumerable<double> source)
 	{
 		if (source is List<double> list)
 		{
 			int count = list._size;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40617,12 +40617,12 @@ public partial class List<T>
 		}
 		else if (source is double[] array)
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				double item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40632,12 +40632,12 @@ public partial class List<T>
 		else if (source is IList<double> list2)
 		{
 			int count = list2.Count;
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
 				double item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40646,12 +40646,12 @@ public partial class List<T>
 		}
 		else
 		{
-			double? indicator = default;
+			double indicator = 0;
 			double f;
 			int i = 0;
 			foreach (double item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40661,17 +40661,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static int? MinEnumerable(IEnumerable<int> source)
+	internal static int MinEnumerable(IEnumerable<int> source)
 	{
 		if (source is List<int> list)
 		{
 			int count = list._size;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40680,12 +40680,12 @@ public partial class List<T>
 		}
 		else if (source is int[] array)
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				int item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40695,12 +40695,12 @@ public partial class List<T>
 		else if (source is IList<int> list2)
 		{
 			int count = list2.Count;
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
 				int item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40709,12 +40709,12 @@ public partial class List<T>
 		}
 		else
 		{
-			int? indicator = default;
+			int indicator = 0;
 			int f;
 			int i = 0;
 			foreach (int item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40724,17 +40724,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static uint? MinEnumerable(IEnumerable<uint> source)
+	internal static uint MinEnumerable(IEnumerable<uint> source)
 	{
 		if (source is List<uint> list)
 		{
 			int count = list._size;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40743,12 +40743,12 @@ public partial class List<T>
 		}
 		else if (source is uint[] array)
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				uint item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40758,12 +40758,12 @@ public partial class List<T>
 		else if (source is IList<uint> list2)
 		{
 			int count = list2.Count;
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
 				uint item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40772,12 +40772,12 @@ public partial class List<T>
 		}
 		else
 		{
-			uint? indicator = default;
+			uint indicator = 0;
 			uint f;
 			int i = 0;
 			foreach (uint item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40787,17 +40787,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static long? MinEnumerable(IEnumerable<long> source)
+	internal static long MinEnumerable(IEnumerable<long> source)
 	{
 		if (source is List<long> list)
 		{
 			int count = list._size;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40806,12 +40806,12 @@ public partial class List<T>
 		}
 		else if (source is long[] array)
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				long item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40821,12 +40821,12 @@ public partial class List<T>
 		else if (source is IList<long> list2)
 		{
 			int count = list2.Count;
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
 				long item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40835,12 +40835,12 @@ public partial class List<T>
 		}
 		else
 		{
-			long? indicator = default;
+			long indicator = 0;
 			long f;
 			int i = 0;
 			foreach (long item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40850,17 +40850,17 @@ public partial class List<T>
 		}
 	}
 
-	internal static mpz_t? MinEnumerable(IEnumerable<mpz_t> source)
+	internal static mpz_t MinEnumerable(IEnumerable<mpz_t> source)
 	{
 		if (source is List<mpz_t> list)
 		{
 			int count = list._size;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list._items[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40869,12 +40869,12 @@ public partial class List<T>
 		}
 		else if (source is mpz_t[] array)
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
 				mpz_t item = array[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40884,12 +40884,12 @@ public partial class List<T>
 		else if (source is IList<mpz_t> list2)
 		{
 			int count = list2.Count;
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
 				mpz_t item = list2[i];
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -40898,12 +40898,12 @@ public partial class List<T>
 		}
 		else
 		{
-			mpz_t? indicator = default;
+			mpz_t indicator = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (mpz_t item in source)
 			{
-				if (indicator == null || i == 0)
+				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
 					indicator = f;
@@ -44756,7 +44756,7 @@ public partial class List<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan()) ?? 0;
+		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
 		List<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source[i], source2[i], source3[i]);
@@ -44768,7 +44768,7 @@ public partial class List<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan()) ?? 0;
+		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
 		List<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source[i], source2[i], source3[i], i);
@@ -44778,7 +44778,7 @@ public partial class List<T>
 
 	internal static List<(TSource, TSource2, TSource3)> CombineEnumerable<TSource, TSource2, TSource3>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, ReadOnlySpan<TSource3> source3)
 	{
-		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan()) ?? 0;
+		int count = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
 		List<(TSource, TSource2, TSource3)> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = (source[i], source2[i], source3[i]);
@@ -45006,13 +45006,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45036,13 +45036,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45066,13 +45066,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45096,13 +45096,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45126,13 +45126,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45156,13 +45156,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45186,13 +45186,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45216,13 +45216,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45246,13 +45246,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45276,13 +45276,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45306,13 +45306,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45336,13 +45336,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45594,13 +45594,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45624,13 +45624,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45654,13 +45654,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45684,13 +45684,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45714,13 +45714,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45744,13 +45744,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45774,13 +45774,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45804,13 +45804,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45834,13 +45834,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45864,13 +45864,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -45894,13 +45894,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = item;
@@ -45924,13 +45924,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<TSource> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = item;
@@ -46056,12 +46056,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46081,12 +46081,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46106,12 +46106,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46131,12 +46131,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46156,12 +46156,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46181,12 +46181,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46206,12 +46206,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46231,12 +46231,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46256,12 +46256,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46281,12 +46281,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46306,12 +46306,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46331,12 +46331,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46584,12 +46584,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46609,12 +46609,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46634,12 +46634,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46659,12 +46659,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46684,12 +46684,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46709,12 +46709,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46734,12 +46734,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46759,12 +46759,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46784,12 +46784,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46809,12 +46809,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46834,12 +46834,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -46859,12 +46859,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -46884,12 +46884,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -46909,12 +46909,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -46934,12 +46934,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -46959,12 +46959,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -46984,12 +46984,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47009,12 +47009,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47034,12 +47034,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47059,12 +47059,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47084,12 +47084,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47109,12 +47109,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47134,12 +47134,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47159,12 +47159,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47412,12 +47412,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47437,12 +47437,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47462,12 +47462,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47487,12 +47487,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47512,12 +47512,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47537,12 +47537,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47562,12 +47562,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47587,12 +47587,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47612,12 +47612,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47637,12 +47637,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47662,12 +47662,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -47687,12 +47687,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -47712,12 +47712,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47737,12 +47737,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -47762,12 +47762,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47787,12 +47787,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -47812,12 +47812,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47837,12 +47837,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -47862,12 +47862,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47887,12 +47887,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -47912,12 +47912,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47937,12 +47937,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -47962,12 +47962,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -47987,12 +47987,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48240,12 +48240,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48265,12 +48265,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48290,12 +48290,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48315,12 +48315,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48340,12 +48340,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48365,12 +48365,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48390,12 +48390,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48415,12 +48415,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48440,12 +48440,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48465,12 +48465,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48490,12 +48490,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = item;
@@ -48515,12 +48515,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		TSource? result = default;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = item;
@@ -48540,13 +48540,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48570,13 +48570,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -48600,13 +48600,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48630,13 +48630,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -48660,13 +48660,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48690,13 +48690,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -48720,13 +48720,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48750,13 +48750,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -48780,13 +48780,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48810,13 +48810,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -48840,13 +48840,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -48870,13 +48870,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49128,13 +49128,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49158,13 +49158,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49188,13 +49188,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49218,13 +49218,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49248,13 +49248,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49278,13 +49278,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49308,13 +49308,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49338,13 +49338,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49368,13 +49368,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49398,13 +49398,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49428,13 +49428,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -49458,13 +49458,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -49488,12 +49488,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49513,12 +49513,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -49538,12 +49538,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49563,12 +49563,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -49588,12 +49588,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49613,12 +49613,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -49638,12 +49638,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49663,12 +49663,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -49688,12 +49688,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49713,12 +49713,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -49738,12 +49738,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -49763,12 +49763,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50016,12 +50016,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50041,12 +50041,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50066,12 +50066,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50091,12 +50091,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50116,12 +50116,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50141,12 +50141,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50166,12 +50166,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50191,12 +50191,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50216,12 +50216,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50241,12 +50241,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50266,12 +50266,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -50291,12 +50291,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -50831,13 +50831,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -50861,13 +50861,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -50891,13 +50891,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -50921,13 +50921,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -50951,13 +50951,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -50981,13 +50981,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51011,13 +51011,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51041,13 +51041,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51071,13 +51071,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51101,13 +51101,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51131,13 +51131,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51161,13 +51161,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51189,13 +51189,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51217,13 +51217,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51245,13 +51245,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51273,13 +51273,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51301,13 +51301,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51329,13 +51329,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -51689,13 +51689,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51719,13 +51719,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51749,13 +51749,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51779,13 +51779,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51809,13 +51809,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51839,13 +51839,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51869,13 +51869,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51899,13 +51899,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51929,13 +51929,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -51959,13 +51959,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -51989,13 +51989,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result._items[j++] = i;
@@ -52019,13 +52019,13 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result._items[j++] = i;
@@ -52047,13 +52047,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		decimal? indicator = default;
+		decimal indicator = 0;
 		int j = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52075,13 +52075,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		double? indicator = default;
+		double indicator = 0;
 		int j = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52103,13 +52103,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		int? indicator = default;
+		int indicator = 0;
 		int j = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52131,13 +52131,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		uint? indicator = default;
+		uint indicator = 0;
 		int j = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52159,13 +52159,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		long? indicator = default;
+		long indicator = 0;
 		int j = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52187,13 +52187,13 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		List<int> result = new(count);
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		int j = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result._items[j++] = i;
@@ -52226,12 +52226,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52251,12 +52251,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52276,12 +52276,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52301,12 +52301,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52326,12 +52326,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52351,12 +52351,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52376,12 +52376,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52401,12 +52401,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52426,12 +52426,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52451,12 +52451,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52476,12 +52476,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -52501,12 +52501,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52524,12 +52524,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52547,12 +52547,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52570,12 +52570,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52593,12 +52593,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52616,12 +52616,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52639,12 +52639,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -52994,12 +52994,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53019,12 +53019,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53044,12 +53044,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53069,12 +53069,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53094,12 +53094,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53119,12 +53119,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53144,12 +53144,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53169,12 +53169,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53194,12 +53194,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53219,12 +53219,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53244,12 +53244,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53269,12 +53269,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53292,12 +53292,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53315,12 +53315,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53338,12 +53338,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53361,12 +53361,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53384,12 +53384,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53407,12 +53407,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53498,12 +53498,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53523,12 +53523,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53548,12 +53548,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53573,12 +53573,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53598,12 +53598,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53623,12 +53623,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53648,12 +53648,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53673,12 +53673,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53698,12 +53698,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53723,12 +53723,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53748,12 +53748,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -53773,12 +53773,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -53796,12 +53796,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53819,12 +53819,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53842,12 +53842,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53865,12 +53865,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53888,12 +53888,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -53911,12 +53911,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54266,12 +54266,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54291,12 +54291,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54316,12 +54316,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54341,12 +54341,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54366,12 +54366,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54391,12 +54391,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54416,12 +54416,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54441,12 +54441,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54466,12 +54466,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54491,12 +54491,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54516,12 +54516,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item);
 				result = i;
@@ -54541,12 +54541,12 @@ public partial class List<T>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -54564,12 +54564,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54587,12 +54587,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54610,12 +54610,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54633,12 +54633,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54656,12 +54656,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54679,12 +54679,12 @@ public partial class List<T>
 	{
 		int count = source.Length;
 		int result = -1;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = count - 1; i >= 0; i--)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 			{
 				indicator = item;
 				result = i;
@@ -54698,17 +54698,17 @@ public partial class List<T>
 		return result;
 	}
 
-	internal static decimal? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54716,17 +54716,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static decimal? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54734,17 +54734,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
+	internal static double MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54752,17 +54752,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
+	internal static double MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54770,17 +54770,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
+	internal static int MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54788,17 +54788,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
+	internal static int MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54806,17 +54806,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
+	internal static uint MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54824,17 +54824,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54842,17 +54842,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
+	internal static long MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54860,17 +54860,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
+	internal static long MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54878,17 +54878,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
 				indicator = f;
@@ -54896,17 +54896,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MaxEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
 				indicator = f;
@@ -54914,15 +54914,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static decimal? MaxEnumerable(ReadOnlySpan<decimal> source)
+	internal static decimal MaxEnumerable(ReadOnlySpan<decimal> source)
 	{
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -54930,15 +54930,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MaxEnumerable(ReadOnlySpan<double> source)
+	internal static double MaxEnumerable(ReadOnlySpan<double> source)
 	{
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -54946,15 +54946,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MaxEnumerable(ReadOnlySpan<int> source)
+	internal static int MaxEnumerable(ReadOnlySpan<int> source)
 	{
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -54962,15 +54962,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MaxEnumerable(ReadOnlySpan<uint> source)
+	internal static uint MaxEnumerable(ReadOnlySpan<uint> source)
 	{
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -54978,15 +54978,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MaxEnumerable(ReadOnlySpan<long> source)
+	internal static long MaxEnumerable(ReadOnlySpan<long> source)
 	{
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -54994,15 +54994,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MaxEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static mpz_t MaxEnumerable(ReadOnlySpan<mpz_t> source)
 	{
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
 				indicator = f;
@@ -55010,7 +55010,7 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static decimal? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55021,7 +55021,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static decimal? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55032,7 +55032,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55043,7 +55043,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55054,7 +55054,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55065,7 +55065,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55076,7 +55076,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55087,7 +55087,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55098,7 +55098,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55109,7 +55109,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55120,7 +55120,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55131,7 +55131,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static double MeanEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55142,7 +55142,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static decimal? MeanEnumerable(ReadOnlySpan<decimal> source)
+	internal static decimal MeanEnumerable(ReadOnlySpan<decimal> source)
 	{
 		int count = source.Length;
 		decimal result = 0;
@@ -55154,7 +55154,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable(ReadOnlySpan<double> source)
+	internal static double MeanEnumerable(ReadOnlySpan<double> source)
 	{
 		int count = source.Length;
 		double result = 0;
@@ -55166,7 +55166,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable(ReadOnlySpan<int> source)
+	internal static double MeanEnumerable(ReadOnlySpan<int> source)
 	{
 		int count = source.Length;
 		double result = 0;
@@ -55178,7 +55178,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable(ReadOnlySpan<uint> source)
+	internal static double MeanEnumerable(ReadOnlySpan<uint> source)
 	{
 		int count = source.Length;
 		double result = 0;
@@ -55190,7 +55190,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable(ReadOnlySpan<long> source)
+	internal static double MeanEnumerable(ReadOnlySpan<long> source)
 	{
 		int count = source.Length;
 		double result = 0;
@@ -55202,7 +55202,7 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static double? MeanEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static double MeanEnumerable(ReadOnlySpan<mpz_t> source)
 	{
 		int count = source.Length;
 		double result = 0;
@@ -55214,115 +55214,115 @@ public partial class List<T>
 		return result / source.Length;
 	}
 
-	internal static decimal? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<decimal>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static decimal? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<decimal>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static double? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
+	internal static double MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<double>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static double? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
+	internal static double MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<double>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static int? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
+	internal static int MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<int>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static int? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
+	internal static int MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<int>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static uint? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
+	internal static uint MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<uint>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static uint? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<uint>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static long? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
+	internal static long MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<long>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static long? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
+	internal static long MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		return source.Length == 0 ? default : List<long>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static mpz_t? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		return source.Length == 0 ? default : List<mpz_t>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+		return source.Length == 0 ? 0 : List<mpz_t>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static mpz_t? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MedianEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		return source.Length == 0 ? default : List<mpz_t>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+		return source.Length == 0 ? 0 : List<mpz_t>.ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 	}
 
-	internal static decimal? MedianEnumerable(ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new List<decimal>(source).Sort()[(source.Length - 1) / 2];
+	internal static decimal MedianEnumerable(ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new List<decimal>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static double? MedianEnumerable(ReadOnlySpan<double> source) => source.Length == 0 ? default : new List<double>(source).Sort()[(source.Length - 1) / 2];
+	internal static double MedianEnumerable(ReadOnlySpan<double> source) => source.Length == 0 ? default : new List<double>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static int? MedianEnumerable(ReadOnlySpan<int> source) => source.Length == 0 ? default : new List<int>(source).Sort()[(source.Length - 1) / 2];
+	internal static int MedianEnumerable(ReadOnlySpan<int> source) => source.Length == 0 ? default : new List<int>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static uint? MedianEnumerable(ReadOnlySpan<uint> source) => source.Length == 0 ? default : new List<uint>(source).Sort()[(source.Length - 1) / 2];
+	internal static uint MedianEnumerable(ReadOnlySpan<uint> source) => source.Length == 0 ? default : new List<uint>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static long? MedianEnumerable(ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).Sort()[(source.Length - 1) / 2];
+	internal static long MedianEnumerable(ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static mpz_t? MedianEnumerable(ReadOnlySpan<mpz_t> source) => source.Length == 0 ? default : new List<mpz_t>(source).Sort()[(source.Length - 1) / 2];
+	internal static mpz_t MedianEnumerable(ReadOnlySpan<mpz_t> source) => source.Length == 0 ? 0 : new List<mpz_t>(source).Sort()[(source.Length - 1) / 2];
 
 	internal static TSource? MedianEnumerable<TSource>(ReadOnlySpan<TSource> source) => source.Length == 0 ? default : new List<TSource>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static decimal? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
+	internal static decimal MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55330,17 +55330,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static decimal? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
+	internal static decimal MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55348,17 +55348,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
+	internal static double MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55366,17 +55366,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
+	internal static double MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, double> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55384,17 +55384,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
+	internal static int MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55402,17 +55402,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
+	internal static int MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, int> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55420,17 +55420,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
+	internal static uint MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55438,17 +55438,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
+	internal static uint MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, uint> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55456,17 +55456,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
+	internal static long MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55474,17 +55474,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
+	internal static long MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, long> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55492,17 +55492,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
+	internal static mpz_t MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
 				indicator = f;
@@ -55510,17 +55510,17 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
+	internal static mpz_t MinEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
 				indicator = f;
@@ -55528,15 +55528,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static decimal? MinEnumerable(ReadOnlySpan<decimal> source)
+	internal static decimal MinEnumerable(ReadOnlySpan<decimal> source)
 	{
 		int count = source.Length;
-		decimal? indicator = default;
+		decimal indicator = 0;
 		decimal f;
 		for (int i = 0; i < count; i++)
 		{
 			decimal item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -55544,15 +55544,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static double? MinEnumerable(ReadOnlySpan<double> source)
+	internal static double MinEnumerable(ReadOnlySpan<double> source)
 	{
 		int count = source.Length;
-		double? indicator = default;
+		double indicator = 0;
 		double f;
 		for (int i = 0; i < count; i++)
 		{
 			double item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -55560,15 +55560,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static int? MinEnumerable(ReadOnlySpan<int> source)
+	internal static int MinEnumerable(ReadOnlySpan<int> source)
 	{
 		int count = source.Length;
-		int? indicator = default;
+		int indicator = 0;
 		int f;
 		for (int i = 0; i < count; i++)
 		{
 			int item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -55576,15 +55576,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static uint? MinEnumerable(ReadOnlySpan<uint> source)
+	internal static uint MinEnumerable(ReadOnlySpan<uint> source)
 	{
 		int count = source.Length;
-		uint? indicator = default;
+		uint indicator = 0;
 		uint f;
 		for (int i = 0; i < count; i++)
 		{
 			uint item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -55592,15 +55592,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static long? MinEnumerable(ReadOnlySpan<long> source)
+	internal static long MinEnumerable(ReadOnlySpan<long> source)
 	{
 		int count = source.Length;
-		long? indicator = default;
+		long indicator = 0;
 		long f;
 		for (int i = 0; i < count; i++)
 		{
 			long item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -55608,15 +55608,15 @@ public partial class List<T>
 		return indicator;
 	}
 
-	internal static mpz_t? MinEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static mpz_t MinEnumerable(ReadOnlySpan<mpz_t> source)
 	{
 		int count = source.Length;
-		mpz_t? indicator = default;
+		mpz_t indicator = 0;
 		mpz_t f;
 		for (int i = 0; i < count; i++)
 		{
 			mpz_t item = source[i];
-			if (indicator == null)
+			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
 				indicator = f;
@@ -57495,7 +57495,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57509,7 +57509,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57523,7 +57523,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57545,7 +57545,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57559,7 +57559,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57573,7 +57573,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57593,7 +57593,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
 			NList<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57607,7 +57607,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is TSource[] array && source2 is TSource2[] array2 && source3 is TSource3[] array3)
 		{
-			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			NList<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57621,7 +57621,7 @@ public unsafe partial class NList<T>
 		}
 		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan()) ?? 0;
+			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57675,7 +57675,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
 		NList<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source[i], source2[i], source3[i]);
@@ -57687,7 +57687,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
 		NList<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source[i], source2[i], source3[i], i);
@@ -57697,7 +57697,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(TSource, TSource2, TSource3)> CombineEnumerable<TSource, TSource2, TSource3>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, ReadOnlySpan<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged
 	{
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
 		NList<(TSource, TSource2, TSource3)> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = (source[i], source2[i], source3[i]);
@@ -57743,7 +57743,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source._items[i], source2._items[i], source3._items[i]);
@@ -57755,7 +57755,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = function(source._items[i], source2._items[i], source3._items[i], i);
@@ -57765,7 +57765,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(TSource, TSource2, TSource3)> CombineEnumerable<TSource, TSource2, TSource3>(NList<TSource> source, NList<TSource2> source2, NList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged
 	{
-		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size }) ?? 0;
+		int count = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<(TSource, TSource2, TSource3)> result = new(count);
 		for (int i = 0; i < count; i++)
 			result._items[i] = (source._items[i], source2._items[i], source3._items[i]);
@@ -59073,112 +59073,112 @@ public static class OptimizedLinq
 	public static int LastIndexOfMin(this IEnumerable<uint> source) => List<int>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<long> source) => List<long>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable(source);
-	public static decimal? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable(source, function);
-	public static decimal? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable(source, function);
-	public static double? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable(source, function);
-	public static double? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable(source, function);
-	public static int? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable(source, function);
-	public static int? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable(source, function);
-	public static uint? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MaxEnumerable(source, function);
-	public static uint? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MaxEnumerable(source, function);
-	public static long? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable(source, function);
-	public static long? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable(source, function);
-	public static mpz_t? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
-	public static mpz_t? Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
-	public static decimal? Max(this IEnumerable<decimal> source) => List<decimal>.MaxEnumerable(source);
-	public static double? Max(this IEnumerable<double> source) => List<double>.MaxEnumerable(source);
-	public static int? Max(this IEnumerable<int> source) => List<int>.MaxEnumerable(source);
-	public static uint? Max(this IEnumerable<uint> source) => List<int>.MaxEnumerable(source);
-	public static long? Max(this IEnumerable<long> source) => List<long>.MaxEnumerable(source);
-	public static mpz_t? Max(this IEnumerable<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
+	public static decimal Max<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable(source, function);
+	public static decimal Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable(source, function);
+	public static double Max<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable(source, function);
+	public static double Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable(source, function);
+	public static int Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable(source, function);
+	public static int Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable(source, function);
+	public static uint Max<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MaxEnumerable(source, function);
+	public static uint Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MaxEnumerable(source, function);
+	public static long Max<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable(source, function);
+	public static long Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable(source, function);
+	public static mpz_t Max<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
+	public static mpz_t Max<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
+	public static decimal Max(this IEnumerable<decimal> source) => List<decimal>.MaxEnumerable(source);
+	public static double Max(this IEnumerable<double> source) => List<double>.MaxEnumerable(source);
+	public static int Max(this IEnumerable<int> source) => List<int>.MaxEnumerable(source);
+	public static uint Max(this IEnumerable<uint> source) => List<int>.MaxEnumerable(source);
+	public static long Max(this IEnumerable<long> source) => List<long>.MaxEnumerable(source);
+	public static mpz_t Max(this IEnumerable<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
 	public static TResult? Max<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) => Enumerable.Max(source, selector);
 	public static TResult? Max<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> selector) => List<TResult>.Max(source, selector);
 	public static TSource? Max<TSource>(this IEnumerable<TSource> source) => Enumerable.Max(source);
-	public static decimal Max(params decimal[] source) => List<decimal>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Max(params double[] source) => List<double>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static int Max(params int[] source) => List<int>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static uint Max(params uint[] source) => List<uint>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static long Max(params long[] source) => List<long>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static mpz_t Max(params mpz_t[] source) => List<mpz_t>.MaxEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static TSource Max<TSource>(params TSource?[] source) => Enumerable.Max(source) ?? throw new NullReferenceException();
-	public static decimal? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable(source, function);
-	public static decimal? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
-	public static decimal? Mean(this IEnumerable<decimal> source) => List<decimal>.MeanEnumerable(source);
-	public static double? Mean(this IEnumerable<double> source) => List<double>.MeanEnumerable(source);
-	public static double? Mean(this IEnumerable<int> source) => List<int>.MeanEnumerable(source);
-	public static double? Mean(this IEnumerable<uint> source) => List<int>.MeanEnumerable(source);
-	public static double? Mean(this IEnumerable<long> source) => List<long>.MeanEnumerable(source);
-	public static double? Mean(this IEnumerable<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
-	public static decimal Mean(params decimal[] source) => List<decimal>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Mean(params double[] source) => List<double>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Mean(params int[] source) => List<int>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Mean(params uint[] source) => List<uint>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Mean(params long[] source) => List<long>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Mean(params mpz_t[] source) => List<mpz_t>.MeanEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static decimal? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable(source, function);
-	public static decimal? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable(source, function);
-	public static double? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable(source, function);
-	public static double? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable(source, function);
-	public static int? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable(source, function);
-	public static int? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable(source, function);
-	public static uint? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MedianEnumerable(source, function);
-	public static uint? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MedianEnumerable(source, function);
-	public static long? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable(source, function);
-	public static long? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable(source, function);
-	public static mpz_t? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
-	public static mpz_t? Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
-	public static decimal? Median(this IEnumerable<decimal> source) => List<decimal>.MedianEnumerable(source);
-	public static double? Median(this IEnumerable<double> source) => List<double>.MedianEnumerable(source);
-	public static int? Median(this IEnumerable<int> source) => List<int>.MedianEnumerable(source);
-	public static uint? Median(this IEnumerable<uint> source) => List<int>.MedianEnumerable(source);
-	public static long? Median(this IEnumerable<long> source) => List<long>.MedianEnumerable(source);
-	public static mpz_t? Median(this IEnumerable<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
+	public static decimal Max(params decimal[] source) => List<decimal>.MaxEnumerable(source.AsSpan());
+	public static double Max(params double[] source) => List<double>.MaxEnumerable(source.AsSpan());
+	public static int Max(params int[] source) => List<int>.MaxEnumerable(source.AsSpan());
+	public static uint Max(params uint[] source) => List<uint>.MaxEnumerable(source.AsSpan());
+	public static long Max(params long[] source) => List<long>.MaxEnumerable(source.AsSpan());
+	public static mpz_t Max(params mpz_t[] source) => List<mpz_t>.MaxEnumerable(source.AsSpan());
+	public static TSource? Max<TSource>(params TSource?[] source) => Enumerable.Max(source);
+	public static decimal Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable(source, function);
+	public static decimal Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
+	public static decimal Mean(this IEnumerable<decimal> source) => List<decimal>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<double> source) => List<double>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<int> source) => List<int>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<uint> source) => List<int>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<long> source) => List<long>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
+	public static decimal Mean(params decimal[] source) => List<decimal>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params double[] source) => List<double>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params int[] source) => List<int>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params uint[] source) => List<uint>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params long[] source) => List<long>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params mpz_t[] source) => List<mpz_t>.MeanEnumerable(source.AsSpan());
+	public static decimal Median<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable(source, function);
+	public static decimal Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable(source, function);
+	public static double Median<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable(source, function);
+	public static double Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable(source, function);
+	public static int Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable(source, function);
+	public static int Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable(source, function);
+	public static uint Median<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MedianEnumerable(source, function);
+	public static uint Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MedianEnumerable(source, function);
+	public static long Median<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable(source, function);
+	public static long Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable(source, function);
+	public static mpz_t Median<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
+	public static mpz_t Median<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
+	public static decimal Median(this IEnumerable<decimal> source) => List<decimal>.MedianEnumerable(source);
+	public static double Median(this IEnumerable<double> source) => List<double>.MedianEnumerable(source);
+	public static int Median(this IEnumerable<int> source) => List<int>.MedianEnumerable(source);
+	public static uint Median(this IEnumerable<uint> source) => List<int>.MedianEnumerable(source);
+	public static long Median(this IEnumerable<long> source) => List<long>.MedianEnumerable(source);
+	public static mpz_t Median(this IEnumerable<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
 	public static TResult? Median<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) => List<TResult>.MedianEnumerable(source, selector);
 	public static TResult? Median<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> selector) => List<TResult>.MedianEnumerable(source, selector);
 	public static TSource? Median<TSource>(this IEnumerable<TSource> source) => List<TSource>.MedianEnumerable(source);
-	public static decimal Median(params decimal[] source) => List<decimal>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Median(params double[] source) => List<double>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static int Median(params int[] source) => List<int>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static uint Median(params uint[] source) => List<uint>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static long Median(params long[] source) => List<long>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static mpz_t Median(params mpz_t[] source) => List<mpz_t>.MedianEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static TSource Median<TSource>(params TSource?[] source) => List<TSource>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan()) ?? throw new NullReferenceException();
-	public static decimal? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable(source, function);
-	public static decimal? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable(source, function);
-	public static double? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable(source, function);
-	public static double? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable(source, function);
-	public static int? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable(source, function);
-	public static int? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable(source, function);
-	public static uint? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MinEnumerable(source, function);
-	public static uint? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MinEnumerable(source, function);
-	public static long? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable(source, function);
-	public static long? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable(source, function);
-	public static mpz_t? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
-	public static mpz_t? Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
-	public static decimal? Min(this IEnumerable<decimal> source) => List<decimal>.MinEnumerable(source);
-	public static double? Min(this IEnumerable<double> source) => List<double>.MinEnumerable(source);
-	public static int? Min(this IEnumerable<int> source) => List<int>.MinEnumerable(source);
-	public static uint? Min(this IEnumerable<uint> source) => List<int>.MinEnumerable(source);
-	public static long? Min(this IEnumerable<long> source) => List<long>.MinEnumerable(source);
-	public static mpz_t? Min(this IEnumerable<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
+	public static decimal Median(params decimal[] source) => List<decimal>.MedianEnumerable(source.AsSpan());
+	public static double Median(params double[] source) => List<double>.MedianEnumerable(source.AsSpan());
+	public static int Median(params int[] source) => List<int>.MedianEnumerable(source.AsSpan());
+	public static uint Median(params uint[] source) => List<uint>.MedianEnumerable(source.AsSpan());
+	public static long Median(params long[] source) => List<long>.MedianEnumerable(source.AsSpan());
+	public static mpz_t Median(params mpz_t[] source) => List<mpz_t>.MedianEnumerable(source.AsSpan());
+	public static TSource? Median<TSource>(params TSource?[] source) => List<TSource>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan());
+	public static decimal Min<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable(source, function);
+	public static decimal Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable(source, function);
+	public static double Min<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable(source, function);
+	public static double Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable(source, function);
+	public static int Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable(source, function);
+	public static int Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable(source, function);
+	public static uint Min<TSource>(this IEnumerable<TSource> source, Func<TSource, uint> function) => List<int>.MinEnumerable(source, function);
+	public static uint Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, uint> function) => List<int>.MinEnumerable(source, function);
+	public static long Min<TSource>(this IEnumerable<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable(source, function);
+	public static long Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable(source, function);
+	public static mpz_t Min<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
+	public static mpz_t Min<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
+	public static decimal Min(this IEnumerable<decimal> source) => List<decimal>.MinEnumerable(source);
+	public static double Min(this IEnumerable<double> source) => List<double>.MinEnumerable(source);
+	public static int Min(this IEnumerable<int> source) => List<int>.MinEnumerable(source);
+	public static uint Min(this IEnumerable<uint> source) => List<int>.MinEnumerable(source);
+	public static long Min(this IEnumerable<long> source) => List<long>.MinEnumerable(source);
+	public static mpz_t Min(this IEnumerable<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
 	public static TResult? Min<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> selector) => Enumerable.Min(source, selector);
 	public static TResult? Min<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> selector) => List<TResult>.Min(source, selector);
 	public static TSource? Min<TSource>(this IEnumerable<TSource> source) => Enumerable.Min(source);
-	public static decimal Min(params decimal[] source) => List<decimal>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static double Min(params double[] source) => List<double>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static int Min(params int[] source) => List<int>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static uint Min(params uint[] source) => List<uint>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static long Min(params long[] source) => List<long>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static mpz_t Min(params mpz_t[] source) => List<mpz_t>.MinEnumerable(source.AsSpan()) ?? throw new NullReferenceException();
-	public static TSource Min<TSource>(params TSource?[] source) => Enumerable.Min(source) ?? throw new NullReferenceException();
+	public static decimal Min(params decimal[] source) => List<decimal>.MinEnumerable(source.AsSpan());
+	public static double Min(params double[] source) => List<double>.MinEnumerable(source.AsSpan());
+	public static int Min(params int[] source) => List<int>.MinEnumerable(source.AsSpan());
+	public static uint Min(params uint[] source) => List<uint>.MinEnumerable(source.AsSpan());
+	public static long Min(params long[] source) => List<long>.MinEnumerable(source.AsSpan());
+	public static mpz_t Min(params mpz_t[] source) => List<mpz_t>.MinEnumerable(source.AsSpan());
+	public static TSource? Min<TSource>(params TSource?[] source) => Enumerable.Min(source);
 	public static List<TResult> OfType<TResult>(this IEnumerable source) => List<TResult>.OfTypeEnumerable<TResult>(source);
 	public static IEnumerable<TSource> Prepend<TSource>(this IEnumerable<TSource> source, TSource element) => Enumerable.Prepend(source, element);
 	public static TSource? Progression<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, TSource> function) => List<TSource>.ProgressionEnumerable(source, function);
@@ -59316,6 +59316,7 @@ public static class OptimizedLinq
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, int, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));
 	public static string ToString(this IEnumerable<char> source) => new(List<char>.ToArrayEnumerable(source));
+	public static List<List<TSource>> Transpose<TSource>(this List<List<TSource>> source, bool widen = false) => List<TSource>.Transpose(source, widen);
 	public static bool TryGetCountEasily<TSource>(this IEnumerable<TSource> source, out int count) => List<TSource>.TryGetCountEasilyEnumerable(source, out count);
 	public static bool TryGetCountEasily<TSource>(this IEnumerable source, out int count) => List<TSource>.TryGetCountEasilyEnumerable(source, out count);
 	public static bool TryWrap<TSource>(this IEnumerable<TSource> source, Func<IEnumerable<TSource>, List<TSource>> function, out List<TSource>? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
@@ -61049,198 +61050,198 @@ public static class OptimizedLinq
 	public static int LastIndexOfMin(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this Span<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source);
 	public static int LastIndexOfMin(this mpz_t[] source) => List<mpz_t>.LastIndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
-	public static decimal? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable(source, function);
-	public static decimal? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable(source, function);
-	public static decimal? Max<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Max<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Max<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Max<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable(source, function);
-	public static double? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable(source, function);
-	public static double? Max<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Max<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Max<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Max<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable(source, function);
-	public static int? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable(source, function);
-	public static int? Max<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Max<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Max<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Max<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MaxEnumerable(source, function);
-	public static uint? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable(source, function);
-	public static uint? Max<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Max<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Max<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Max<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable(source, function);
-	public static long? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable(source, function);
-	public static long? Max<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Max<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Max<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Max<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
-	public static mpz_t? Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
-	public static mpz_t? Max<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Max<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Max<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Max<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Max(this ReadOnlySpan<decimal> source) => List<decimal>.MaxEnumerable(source);
-	public static decimal? Max(this Span<decimal> source) => List<decimal>.MaxEnumerable((ReadOnlySpan<decimal>)source);
-	public static double? Max(this ReadOnlySpan<double> source) => List<double>.MaxEnumerable(source);
-	public static double? Max(this Span<double> source) => List<double>.MaxEnumerable((ReadOnlySpan<double>)source);
-	public static int? Max(this ReadOnlySpan<int> source) => List<int>.MaxEnumerable(source);
-	public static int? Max(this Span<int> source) => List<int>.MaxEnumerable((ReadOnlySpan<int>)source);
-	public static uint? Max(this ReadOnlySpan<uint> source) => List<uint>.MaxEnumerable(source);
-	public static uint? Max(this Span<uint> source) => List<uint>.MaxEnumerable((ReadOnlySpan<uint>)source);
-	public static long? Max(this ReadOnlySpan<long> source) => List<long>.MaxEnumerable(source);
-	public static long? Max(this Span<long> source) => List<long>.MaxEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t? Max(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
-	public static mpz_t? Max(this Span<mpz_t> source) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static decimal? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable(source, function);
-	public static decimal? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable(source, function);
-	public static decimal? Mean<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Mean<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Mean<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Mean<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Mean<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Mean(this ReadOnlySpan<decimal> source) => List<decimal>.MeanEnumerable(source);
-	public static decimal? Mean(this Span<decimal> source) => List<decimal>.MeanEnumerable((ReadOnlySpan<decimal>)source);
-	public static double? Mean(this ReadOnlySpan<double> source) => List<double>.MeanEnumerable(source);
-	public static double? Mean(this Span<double> source) => List<double>.MeanEnumerable((ReadOnlySpan<double>)source);
-	public static double? Mean(this ReadOnlySpan<int> source) => List<int>.MeanEnumerable(source);
-	public static double? Mean(this Span<int> source) => List<int>.MeanEnumerable((ReadOnlySpan<int>)source);
-	public static double? Mean(this ReadOnlySpan<uint> source) => List<uint>.MeanEnumerable(source);
-	public static double? Mean(this Span<uint> source) => List<uint>.MeanEnumerable((ReadOnlySpan<uint>)source);
-	public static double? Mean(this ReadOnlySpan<long> source) => List<long>.MeanEnumerable(source);
-	public static double? Mean(this Span<long> source) => List<long>.MeanEnumerable((ReadOnlySpan<long>)source);
-	public static double? Mean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
-	public static double? Mean(this Span<mpz_t> source) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static decimal? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable(source, function);
-	public static decimal? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable(source, function);
-	public static decimal? Median<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Median<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Median<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Median<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable(source, function);
-	public static double? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable(source, function);
-	public static double? Median<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Median<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Median<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Median<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable(source, function);
-	public static int? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable(source, function);
-	public static int? Median<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Median<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Median<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Median<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MedianEnumerable(source, function);
-	public static uint? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable(source, function);
-	public static uint? Median<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Median<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Median<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Median<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable(source, function);
-	public static long? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable(source, function);
-	public static long? Median<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Median<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Median<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Median<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
-	public static mpz_t? Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
-	public static mpz_t? Median<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Median<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Median<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Median<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Median(this ReadOnlySpan<decimal> source) => List<decimal>.MedianEnumerable(source);
-	public static decimal? Median(this Span<decimal> source) => List<decimal>.MedianEnumerable((ReadOnlySpan<decimal>)source);
-	public static double? Median(this ReadOnlySpan<double> source) => List<double>.MedianEnumerable(source);
-	public static double? Median(this Span<double> source) => List<double>.MedianEnumerable((ReadOnlySpan<double>)source);
-	public static int? Median(this ReadOnlySpan<int> source) => List<int>.MedianEnumerable(source);
-	public static int? Median(this Span<int> source) => List<int>.MedianEnumerable((ReadOnlySpan<int>)source);
-	public static uint? Median(this ReadOnlySpan<uint> source) => List<uint>.MedianEnumerable(source);
-	public static uint? Median(this Span<uint> source) => List<uint>.MedianEnumerable((ReadOnlySpan<uint>)source);
-	public static long? Median(this ReadOnlySpan<long> source) => List<long>.MedianEnumerable(source);
-	public static long? Median(this Span<long> source) => List<long>.MedianEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t? Median(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
-	public static mpz_t? Median(this Span<mpz_t> source) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static decimal? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable(source, function);
-	public static decimal? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable(source, function);
-	public static decimal? Min<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Min<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static decimal? Min<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Min<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable(source, function);
-	public static double? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable(source, function);
-	public static double? Min<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Min<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static double? Min<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static double? Min<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable(source, function);
-	public static int? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable(source, function);
-	public static int? Min<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Min<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static int? Min<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static int? Min<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MinEnumerable(source, function);
-	public static uint? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable(source, function);
-	public static uint? Min<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Min<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static uint? Min<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static uint? Min<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable(source, function);
-	public static long? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable(source, function);
-	public static long? Min<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Min<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static long? Min<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static long? Min<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
-	public static mpz_t? Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
-	public static mpz_t? Min<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Min<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static mpz_t? Min<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static mpz_t? Min<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static decimal? Min(this ReadOnlySpan<decimal> source) => List<decimal>.MinEnumerable(source);
-	public static decimal? Min(this Span<decimal> source) => List<decimal>.MinEnumerable((ReadOnlySpan<decimal>)source);
-	public static double? Min(this ReadOnlySpan<double> source) => List<double>.MinEnumerable(source);
-	public static double? Min(this Span<double> source) => List<double>.MinEnumerable((ReadOnlySpan<double>)source);
-	public static int? Min(this ReadOnlySpan<int> source) => List<int>.MinEnumerable(source);
-	public static int? Min(this Span<int> source) => List<int>.MinEnumerable((ReadOnlySpan<int>)source);
-	public static uint? Min(this ReadOnlySpan<uint> source) => List<uint>.MinEnumerable(source);
-	public static uint? Min(this Span<uint> source) => List<uint>.MinEnumerable((ReadOnlySpan<uint>)source);
-	public static long? Min(this ReadOnlySpan<long> source) => List<long>.MinEnumerable(source);
-	public static long? Min(this Span<long> source) => List<long>.MinEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t? Min(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
-	public static mpz_t? Min(this Span<mpz_t> source) => List<mpz_t>.MinEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static decimal Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable(source, function);
+	public static decimal Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable(source, function);
+	public static decimal Max<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Max<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Max<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Max<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable(source, function);
+	public static double Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable(source, function);
+	public static double Max<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Max<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Max<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Max<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable(source, function);
+	public static int Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable(source, function);
+	public static int Max<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Max<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Max<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Max<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MaxEnumerable(source, function);
+	public static uint Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable(source, function);
+	public static uint Max<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Max<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Max<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Max<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable(source, function);
+	public static long Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable(source, function);
+	public static long Max<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Max<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Max<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Max<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
+	public static mpz_t Max<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable(source, function);
+	public static mpz_t Max<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Max<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Max<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Max<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Max(this ReadOnlySpan<decimal> source) => List<decimal>.MaxEnumerable(source);
+	public static decimal Max(this Span<decimal> source) => List<decimal>.MaxEnumerable((ReadOnlySpan<decimal>)source);
+	public static double Max(this ReadOnlySpan<double> source) => List<double>.MaxEnumerable(source);
+	public static double Max(this Span<double> source) => List<double>.MaxEnumerable((ReadOnlySpan<double>)source);
+	public static int Max(this ReadOnlySpan<int> source) => List<int>.MaxEnumerable(source);
+	public static int Max(this Span<int> source) => List<int>.MaxEnumerable((ReadOnlySpan<int>)source);
+	public static uint Max(this ReadOnlySpan<uint> source) => List<uint>.MaxEnumerable(source);
+	public static uint Max(this Span<uint> source) => List<uint>.MaxEnumerable((ReadOnlySpan<uint>)source);
+	public static long Max(this ReadOnlySpan<long> source) => List<long>.MaxEnumerable(source);
+	public static long Max(this Span<long> source) => List<long>.MaxEnumerable((ReadOnlySpan<long>)source);
+	public static mpz_t Max(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
+	public static mpz_t Max(this Span<mpz_t> source) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static decimal Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable(source, function);
+	public static decimal Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable(source, function);
+	public static decimal Mean<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Mean<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Mean<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Mean<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable(source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Mean<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Mean(this ReadOnlySpan<decimal> source) => List<decimal>.MeanEnumerable(source);
+	public static decimal Mean(this Span<decimal> source) => List<decimal>.MeanEnumerable((ReadOnlySpan<decimal>)source);
+	public static double Mean(this ReadOnlySpan<double> source) => List<double>.MeanEnumerable(source);
+	public static double Mean(this Span<double> source) => List<double>.MeanEnumerable((ReadOnlySpan<double>)source);
+	public static double Mean(this ReadOnlySpan<int> source) => List<int>.MeanEnumerable(source);
+	public static double Mean(this Span<int> source) => List<int>.MeanEnumerable((ReadOnlySpan<int>)source);
+	public static double Mean(this ReadOnlySpan<uint> source) => List<uint>.MeanEnumerable(source);
+	public static double Mean(this Span<uint> source) => List<uint>.MeanEnumerable((ReadOnlySpan<uint>)source);
+	public static double Mean(this ReadOnlySpan<long> source) => List<long>.MeanEnumerable(source);
+	public static double Mean(this Span<long> source) => List<long>.MeanEnumerable((ReadOnlySpan<long>)source);
+	public static double Mean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
+	public static double Mean(this Span<mpz_t> source) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static decimal Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable(source, function);
+	public static decimal Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable(source, function);
+	public static decimal Median<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Median<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Median<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Median<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable(source, function);
+	public static double Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable(source, function);
+	public static double Median<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Median<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Median<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Median<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable(source, function);
+	public static int Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable(source, function);
+	public static int Median<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Median<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Median<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Median<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MedianEnumerable(source, function);
+	public static uint Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable(source, function);
+	public static uint Median<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Median<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Median<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Median<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable(source, function);
+	public static long Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable(source, function);
+	public static long Median<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Median<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Median<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Median<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
+	public static mpz_t Median<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable(source, function);
+	public static mpz_t Median<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Median<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Median<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Median<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Median(this ReadOnlySpan<decimal> source) => List<decimal>.MedianEnumerable(source);
+	public static decimal Median(this Span<decimal> source) => List<decimal>.MedianEnumerable((ReadOnlySpan<decimal>)source);
+	public static double Median(this ReadOnlySpan<double> source) => List<double>.MedianEnumerable(source);
+	public static double Median(this Span<double> source) => List<double>.MedianEnumerable((ReadOnlySpan<double>)source);
+	public static int Median(this ReadOnlySpan<int> source) => List<int>.MedianEnumerable(source);
+	public static int Median(this Span<int> source) => List<int>.MedianEnumerable((ReadOnlySpan<int>)source);
+	public static uint Median(this ReadOnlySpan<uint> source) => List<uint>.MedianEnumerable(source);
+	public static uint Median(this Span<uint> source) => List<uint>.MedianEnumerable((ReadOnlySpan<uint>)source);
+	public static long Median(this ReadOnlySpan<long> source) => List<long>.MedianEnumerable(source);
+	public static long Median(this Span<long> source) => List<long>.MedianEnumerable((ReadOnlySpan<long>)source);
+	public static mpz_t Median(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
+	public static mpz_t Median(this Span<mpz_t> source) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static decimal Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable(source, function);
+	public static decimal Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable(source, function);
+	public static decimal Min<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Min<TSource>(this Span<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static decimal Min<TSource>(this TSource[] source, Func<TSource, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Min<TSource>(this TSource[] source, Func<TSource, int, decimal> function) => List<decimal>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable(source, function);
+	public static double Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable(source, function);
+	public static double Min<TSource>(this Span<TSource> source, Func<TSource, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Min<TSource>(this Span<TSource> source, Func<TSource, int, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static double Min<TSource>(this TSource[] source, Func<TSource, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static double Min<TSource>(this TSource[] source, Func<TSource, int, double> function) => List<double>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable(source, function);
+	public static int Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable(source, function);
+	public static int Min<TSource>(this Span<TSource> source, Func<TSource, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Min<TSource>(this Span<TSource> source, Func<TSource, int, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static int Min<TSource>(this TSource[] source, Func<TSource, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static int Min<TSource>(this TSource[] source, Func<TSource, int, int> function) => List<int>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, uint> function) => List<uint>.MinEnumerable(source, function);
+	public static uint Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable(source, function);
+	public static uint Min<TSource>(this Span<TSource> source, Func<TSource, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Min<TSource>(this Span<TSource> source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static uint Min<TSource>(this TSource[] source, Func<TSource, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static uint Min<TSource>(this TSource[] source, Func<TSource, int, uint> function) => List<uint>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable(source, function);
+	public static long Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable(source, function);
+	public static long Min<TSource>(this Span<TSource> source, Func<TSource, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Min<TSource>(this Span<TSource> source, Func<TSource, int, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static long Min<TSource>(this TSource[] source, Func<TSource, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static long Min<TSource>(this TSource[] source, Func<TSource, int, long> function) => List<long>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
+	public static mpz_t Min<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable(source, function);
+	public static mpz_t Min<TSource>(this Span<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Min<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static mpz_t Min<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static mpz_t Min<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.MinEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static decimal Min(this ReadOnlySpan<decimal> source) => List<decimal>.MinEnumerable(source);
+	public static decimal Min(this Span<decimal> source) => List<decimal>.MinEnumerable((ReadOnlySpan<decimal>)source);
+	public static double Min(this ReadOnlySpan<double> source) => List<double>.MinEnumerable(source);
+	public static double Min(this Span<double> source) => List<double>.MinEnumerable((ReadOnlySpan<double>)source);
+	public static int Min(this ReadOnlySpan<int> source) => List<int>.MinEnumerable(source);
+	public static int Min(this Span<int> source) => List<int>.MinEnumerable((ReadOnlySpan<int>)source);
+	public static uint Min(this ReadOnlySpan<uint> source) => List<uint>.MinEnumerable(source);
+	public static uint Min(this Span<uint> source) => List<uint>.MinEnumerable((ReadOnlySpan<uint>)source);
+	public static long Min(this ReadOnlySpan<long> source) => List<long>.MinEnumerable(source);
+	public static long Min(this Span<long> source) => List<long>.MinEnumerable((ReadOnlySpan<long>)source);
+	public static mpz_t Min(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
+	public static mpz_t Min(this Span<mpz_t> source) => List<mpz_t>.MinEnumerable((ReadOnlySpan<mpz_t>)source);
 	public static TSource? Progression<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, TSource> function) => List<TSource>.ProgressionEnumerable(source, function);
 	public static TSource? Progression<TSource>(this Span<TSource> source, Func<TSource, TSource, TSource> function) => List<TSource>.ProgressionEnumerable((ReadOnlySpan<TSource>)source, function);
 	public static TSource? Progression<TSource>(this TSource[] source, Func<TSource, TSource, TSource> function) => List<TSource>.ProgressionEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
@@ -61265,15 +61266,15 @@ public static class OptimizedLinq
 	public static List<TSource> RemoveDoubles<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) => List<TSource>.RemoveDoublesEnumerable(source, equalFunction);
 	public static List<TSource> RemoveDoubles<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, equalFunction);
 	public static List<TSource> RemoveDoubles<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), equalFunction);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable(source, function);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable(source, function);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, function);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static List<TSource> RemoveDoubles<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
-	public static List<TSource> RemoveDoubles<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable(source);
-	public static List<TSource> RemoveDoubles<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source);
-	public static List<TSource> RemoveDoubles<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan());
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<TResult>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable(source, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source, equalFunction, hashCodeFunction);
+	public static List<TSource> RemoveDoubles<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<TSource>.RemoveDoublesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), equalFunction, hashCodeFunction);
 	public static List<int> RepresentIntoNumbers<TSource>(this ReadOnlySpan<TSource> source) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable(source);
 	public static List<int> RepresentIntoNumbers<TSource>(this Span<TSource> source) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable((ReadOnlySpan<TSource>)source);
 	public static List<int> RepresentIntoNumbers<TSource>(this TSource[] source) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable((ReadOnlySpan<TSource>)source.AsSpan());

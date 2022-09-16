@@ -798,7 +798,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (list._size == 0)
 			throw new ArgumentException(null, nameof(list));
-		int yCount = (widen ? list.Max(x => x._size) : list.Min(x => x._size)) ?? 0;
+		int yCount = (widen ? list.Max(x => x._size) : list.Min(x => x._size));
 		List<TCertain> new_list = new();
 		for (int i = 0; i < yCount; i++)
 		{
@@ -1917,7 +1917,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 
 	protected override void Copy(ListBase<bool, BitList> source, int sourceIndex, ListBase<bool, BitList> destination, int destinationIndex, int count)
 	{
-		BitList destination2 = (destination as BitList ?? throw new ArgumentException(null, nameof(destination)));
+		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
 		CopyBits((source as BitList ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, destination2._items, destinationIndex, count);
 		destination2.ListChanged?.Invoke(this);
 	}
@@ -3945,7 +3945,7 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 {
 	private T* _items;
-	private int _capacity = 0;
+	private int _capacity;
 
 	private static readonly T* _emptyArray = null;
 
@@ -4466,14 +4466,8 @@ public class Compact2dList<T> : IList<List<T>>
 
 	List<T> IList<List<T>>.this[int index]
 	{
-		get
-		{
-			return this[index];
-		}
-		set
-		{
-			this[index] = value;
-		}
+		get => this[index];
+		set => this[index] = value;
 	}
 
 	public virtual T this[int index, int innerIndex]
