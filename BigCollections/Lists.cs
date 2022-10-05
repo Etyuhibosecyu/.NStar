@@ -17,9 +17,9 @@ namespace BigCollections;
 [Serializable]
 public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>, IEquatable<ListBase<T, TCertain>>*/ where TCertain : ListBase<T, TCertain>, new()
 {
-	protected int _size;
+	private protected int _size;
 	[NonSerialized]
-	protected object _syncRoot = new();
+	private protected object _syncRoot = new();
 
 	public abstract int Capacity { get; set; }
 
@@ -798,7 +798,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (list._size == 0)
 			throw new ArgumentException(null, nameof(list));
-		int yCount = (widen ? list.Max(x => x._size) : list.Min(x => x._size));
+		int yCount = widen ? list.Max(x => x._size) : list.Min(x => x._size);
 		List<TCertain> new_list = new();
 		for (int i = 0; i < yCount; i++)
 		{
@@ -893,15 +893,15 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 [Serializable]
 public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertain : BigListBase<T, TCertain, TLow>, new() where TLow : ListBase<T, TLow>, new()
 {
-	protected TLow? low;
-	protected List<TCertain>? high;
-	protected Queue<int> deletedIndexes = new();
+	private protected TLow? low;
+	private protected List<TCertain>? high;
+	private protected Queue<int> deletedIndexes = new();
 	private protected BitList2 indexDeleted = new();
-	protected mpz_t _size = 0;
-	protected mpz_t deletedCount = 0;
-	protected mpz_t _capacity = 0;
-	protected mpz_t fragment = 1;
-	protected bool isHigh;
+	private protected mpz_t _size = 0;
+	private protected mpz_t deletedCount = 0;
+	private protected mpz_t _capacity = 0;
+	private protected mpz_t fragment = 1;
+	private protected bool isHigh;
 
 	public virtual mpz_t Capacity
 	{

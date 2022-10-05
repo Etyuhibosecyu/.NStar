@@ -4,9 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PlatformTarget>x64</PlatformTarget>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,10 +17,6 @@
 
   <ItemGroup>
     <PackageReference Include="Mpir.NET" Version="0.4.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$(DefineConstants.Contains('RELEASE'))">
-    <ProjectReference Include="..\NativeFunctions\NativeFunctions.vcxproj" />
   </ItemGroup>
 
   <ItemGroup>

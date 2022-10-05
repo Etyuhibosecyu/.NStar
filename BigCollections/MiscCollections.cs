@@ -756,7 +756,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 public class Chain : IReadOnlyCollection<int>
 {
 	private readonly int start;
-	private readonly int count;
 
 	public Chain(int count) : this(0, count)
 	{
@@ -767,10 +766,10 @@ public class Chain : IReadOnlyCollection<int>
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
 		this.start = start;
-		this.count = count;
+		Count = count;
 	}
 
-	public int Count => count;
+	public int Count { get; }
 	public Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
@@ -780,7 +779,7 @@ public class Chain : IReadOnlyCollection<int>
 	public List<int> ToList()
 	{
 		List<int> list = new();
-		for (int i = 0; i < count; i++)
+		for (int i = 0; i < Count; i++)
 			list.Add(start + i);
 		return list;
 	}
@@ -801,18 +800,18 @@ public class Chain : IReadOnlyCollection<int>
 
 		object IEnumerator.Current => Current;
 
-		public void Dispose() => index = chain.count;
+		public void Dispose() => index = chain.Count;
 
 		public bool MoveNext()
 		{
-			if (index < chain.count)
+			if (index < chain.Count)
 			{
 				Current = chain.start + index++;
 				return true;
 			}
 			else
 			{
-				Current = chain.start + chain.count;
+				Current = chain.start + chain.Count;
 				return false;
 			}
 		}
