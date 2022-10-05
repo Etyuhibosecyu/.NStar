@@ -753,6 +753,24 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	}
 }
 
+public class LimitedQueue<T> : Queue<T>
+{
+	public LimitedQueue(int capacity) : base(capacity)
+	{
+	}
+
+	public LimitedQueue(IEnumerable<T> col) : base(col)
+	{
+	}
+
+	public override void Enqueue(T obj)
+	{
+		if (Count == Capacity)
+			Dequeue();
+		base.Enqueue(obj);
+	}
+}
+
 public class Chain : IReadOnlyCollection<int>
 {
 	private readonly int start;
