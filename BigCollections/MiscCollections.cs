@@ -766,7 +766,7 @@ public class LimitedQueue<T> : Queue<T>
 	public override void Enqueue(T obj)
 	{
 		if (Count == Capacity)
-			Dequeue();
+			base.Dequeue();
 		base.Enqueue(obj);
 	}
 }
