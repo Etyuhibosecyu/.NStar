@@ -4,10 +4,10 @@ using NativeFunctions;
 #endif
 using System.Collections;
 using System.Text;
-using static BigCollections.Extents;
+using static Corlib.NStar.Extents;
 
-namespace BigCollections;
-public partial class List<T>
+namespace Corlib.NStar;
+public partial class List<T, TCertain>
 {
 	internal static bool AllEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
 	{
@@ -28,7 +28,7 @@ public partial class List<T>
 					return false;
 			return true;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -76,7 +76,7 @@ public partial class List<T>
 			}
 			return true;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -116,7 +116,7 @@ public partial class List<T>
 				return true;
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			if (list2.Count != 0)
 				return true;
@@ -151,7 +151,7 @@ public partial class List<T>
 					return true;
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -199,7 +199,7 @@ public partial class List<T>
 			}
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -261,7 +261,7 @@ public partial class List<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -331,7 +331,7 @@ public partial class List<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -389,7 +389,7 @@ public partial class List<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<(TSource, TSource2)> list2)
+		else if (source is G.IList<(TSource, TSource2)> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -450,7 +450,7 @@ public partial class List<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -514,7 +514,7 @@ public partial class List<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -590,7 +590,7 @@ public partial class List<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -672,7 +672,7 @@ public partial class List<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -740,7 +740,7 @@ public partial class List<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<(TSource, TSource2, TSource3)> list2)
+		else if (source is G.IList<(TSource, TSource2, TSource3)> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -809,7 +809,7 @@ public partial class List<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -881,7 +881,7 @@ public partial class List<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -947,7 +947,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TResult> result = new(count);
@@ -994,7 +994,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TResult> result = new(count);
@@ -1039,7 +1039,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<(TSource, TSource2)> result = new(count);
@@ -1088,7 +1088,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<TResult> result = new(count);
@@ -1138,7 +1138,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<TResult> result = new(count);
@@ -1186,7 +1186,7 @@ public partial class List<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			List<(TSource, TSource2, TSource3)> result = new(count);
@@ -1235,7 +1235,7 @@ public partial class List<T>
 			}
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -1282,7 +1282,7 @@ public partial class List<T>
 			}
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -1330,7 +1330,7 @@ public partial class List<T>
 			}
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -1378,7 +1378,7 @@ public partial class List<T>
 			}
 			return false;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -1423,7 +1423,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -1475,7 +1475,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -1522,7 +1522,7 @@ public partial class List<T>
 				result.AddRange(function(array[i]));
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -1570,7 +1570,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -1630,7 +1630,7 @@ public partial class List<T>
 					n++;
 			return n;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int n = 0;
@@ -1672,7 +1672,7 @@ public partial class List<T>
 					n++;
 			return n;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int n = 0;
@@ -1719,7 +1719,7 @@ public partial class List<T>
 			}
 			return n;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int n = 0;
@@ -1776,7 +1776,7 @@ public partial class List<T>
 			}
 			return true;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;
@@ -1825,7 +1825,7 @@ public partial class List<T>
 			}
 			return true;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;
@@ -1872,7 +1872,7 @@ public partial class List<T>
 			}
 			return true;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			if (list2_.Count != list2_2.Count)
 				return false;
@@ -1961,7 +1961,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2028,7 +2028,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2087,7 +2087,7 @@ public partial class List<T>
 			}
 			return default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -2138,7 +2138,7 @@ public partial class List<T>
 			}
 			return default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -2197,7 +2197,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2264,7 +2264,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2355,7 +2355,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2470,7 +2470,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2585,7 +2585,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2700,7 +2700,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2815,7 +2815,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -2930,7 +2930,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3045,7 +3045,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3160,7 +3160,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3275,7 +3275,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3390,7 +3390,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3505,7 +3505,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3620,7 +3620,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -3696,7 +3696,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -3731,7 +3731,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -3766,7 +3766,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3801,7 +3801,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3836,7 +3836,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3871,7 +3871,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3906,7 +3906,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3941,7 +3941,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -3976,7 +3976,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -4011,7 +4011,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -4046,7 +4046,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -4081,7 +4081,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -4114,7 +4114,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -4145,7 +4145,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -4176,7 +4176,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -4207,7 +4207,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -4238,7 +4238,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -4269,7 +4269,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -4300,7 +4300,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -4331,7 +4331,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -4362,7 +4362,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -4393,7 +4393,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -4424,7 +4424,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -4455,7 +4455,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -4527,7 +4527,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -4642,7 +4642,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -4757,7 +4757,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -4872,7 +4872,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -4987,7 +4987,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5102,7 +5102,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5217,7 +5217,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5332,7 +5332,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5447,7 +5447,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5562,7 +5562,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5677,7 +5677,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5792,7 +5792,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -5877,7 +5877,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -5941,7 +5941,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -5994,7 +5994,7 @@ public partial class List<T>
 					return i;
 			return default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -6042,7 +6042,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -6094,7 +6094,7 @@ public partial class List<T>
 			}
 			return default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -6135,7 +6135,7 @@ public partial class List<T>
 			}
 			return default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -6170,7 +6170,7 @@ public partial class List<T>
 					return i;
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -6208,7 +6208,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -6271,7 +6271,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6345,7 +6345,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6419,7 +6419,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6493,7 +6493,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6567,7 +6567,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6641,7 +6641,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6715,7 +6715,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6789,7 +6789,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6863,7 +6863,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -6937,7 +6937,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -7011,7 +7011,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -7085,7 +7085,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -7129,7 +7129,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -7158,7 +7158,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -7187,7 +7187,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7216,7 +7216,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7245,7 +7245,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7274,7 +7274,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7303,7 +7303,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7332,7 +7332,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7361,7 +7361,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7390,7 +7390,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7419,7 +7419,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7448,7 +7448,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -7475,7 +7475,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -7501,7 +7501,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -7527,7 +7527,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -7553,7 +7553,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -7579,7 +7579,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -7605,7 +7605,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -7631,7 +7631,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -7657,7 +7657,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -7683,7 +7683,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -7709,7 +7709,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -7735,7 +7735,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -7761,7 +7761,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -7819,7 +7819,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -7893,7 +7893,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -7967,7 +7967,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8041,7 +8041,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8115,7 +8115,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8189,7 +8189,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8263,7 +8263,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8337,7 +8337,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8411,7 +8411,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8485,7 +8485,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8559,7 +8559,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8633,7 +8633,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -8707,7 +8707,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -8781,7 +8781,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -8855,7 +8855,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -8929,7 +8929,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9003,7 +9003,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9077,7 +9077,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9151,7 +9151,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9225,7 +9225,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9299,7 +9299,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9373,7 +9373,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9447,7 +9447,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9521,7 +9521,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -9565,7 +9565,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -9594,7 +9594,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -9623,7 +9623,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9652,7 +9652,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9681,7 +9681,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9710,7 +9710,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9739,7 +9739,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9768,7 +9768,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9797,7 +9797,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9826,7 +9826,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9855,7 +9855,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9884,7 +9884,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -9911,7 +9911,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -9937,7 +9937,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -9963,7 +9963,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -9989,7 +9989,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -10015,7 +10015,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -10041,7 +10041,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -10067,7 +10067,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -10093,7 +10093,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -10119,7 +10119,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -10145,7 +10145,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -10171,7 +10171,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -10197,7 +10197,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -10255,7 +10255,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10329,7 +10329,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10403,7 +10403,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10477,7 +10477,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10551,7 +10551,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10625,7 +10625,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10699,7 +10699,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10773,7 +10773,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10847,7 +10847,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10921,7 +10921,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -10995,7 +10995,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -11069,7 +11069,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -11142,7 +11142,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11237,7 +11237,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11332,7 +11332,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11427,7 +11427,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11522,7 +11522,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11617,7 +11617,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11712,7 +11712,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11807,7 +11807,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11902,7 +11902,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -11997,7 +11997,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -12092,7 +12092,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -12187,7 +12187,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -12253,7 +12253,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -12288,7 +12288,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -12323,7 +12323,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12358,7 +12358,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12393,7 +12393,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12428,7 +12428,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12463,7 +12463,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12498,7 +12498,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12533,7 +12533,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12568,7 +12568,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12603,7 +12603,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12638,7 +12638,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -12671,7 +12671,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -12702,7 +12702,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -12733,7 +12733,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -12764,7 +12764,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -12795,7 +12795,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -12826,7 +12826,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -12857,7 +12857,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -12888,7 +12888,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -12919,7 +12919,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -12950,7 +12950,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -12981,7 +12981,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -13012,7 +13012,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -13074,7 +13074,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13169,7 +13169,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13264,7 +13264,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13359,7 +13359,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13454,7 +13454,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13549,7 +13549,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13644,7 +13644,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13739,7 +13739,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13834,7 +13834,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -13929,7 +13929,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -14024,7 +14024,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -14119,7 +14119,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -14224,7 +14224,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14339,7 +14339,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14454,7 +14454,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14569,7 +14569,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14684,7 +14684,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14799,7 +14799,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -14914,7 +14914,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15029,7 +15029,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15144,7 +15144,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15259,7 +15259,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15374,7 +15374,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15489,7 +15489,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -15565,7 +15565,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -15600,7 +15600,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -15635,7 +15635,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15670,7 +15670,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15705,7 +15705,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15740,7 +15740,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15775,7 +15775,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15810,7 +15810,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15845,7 +15845,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15880,7 +15880,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15915,7 +15915,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x) => function(x) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15950,7 +15950,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -15983,7 +15983,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -16014,7 +16014,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -16045,7 +16045,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -16076,7 +16076,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -16107,7 +16107,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -16138,7 +16138,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -16169,7 +16169,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -16200,7 +16200,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -16231,7 +16231,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -16262,7 +16262,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -16293,7 +16293,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -16324,7 +16324,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -16396,7 +16396,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -16511,7 +16511,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -16626,7 +16626,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -16741,7 +16741,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -16856,7 +16856,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -16971,7 +16971,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17086,7 +17086,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17201,7 +17201,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17316,7 +17316,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17431,7 +17431,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17546,7 +17546,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17661,7 +17661,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -17766,7 +17766,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -17861,7 +17861,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -17956,7 +17956,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18051,7 +18051,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18146,7 +18146,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18241,7 +18241,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18336,7 +18336,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18431,7 +18431,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18526,7 +18526,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18621,7 +18621,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18716,7 +18716,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18811,7 +18811,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -18877,7 +18877,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -18912,7 +18912,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MeanEnumerable(list2, function);
@@ -18947,7 +18947,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -18982,7 +18982,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19017,7 +19017,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19052,7 +19052,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19087,7 +19087,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19122,7 +19122,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19157,7 +19157,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19192,7 +19192,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19227,7 +19227,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x) => function(x) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19262,7 +19262,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MeanEnumerable(list2, function);
@@ -19295,7 +19295,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -19326,7 +19326,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal? value = MedianEnumerable(list2, function);
@@ -19357,7 +19357,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -19388,7 +19388,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double? value = MedianEnumerable(list2, function);
@@ -19419,7 +19419,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -19450,7 +19450,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int? value = MedianEnumerable(list2, function);
@@ -19481,7 +19481,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -19512,7 +19512,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint? value = MedianEnumerable(list2, function);
@@ -19543,7 +19543,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -19574,7 +19574,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long? value = MedianEnumerable(list2, function);
@@ -19605,7 +19605,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -19636,7 +19636,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t? value = MedianEnumerable(list2, function);
@@ -19698,7 +19698,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -19793,7 +19793,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -19888,7 +19888,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -19983,7 +19983,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20078,7 +20078,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20173,7 +20173,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20268,7 +20268,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20363,7 +20363,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20458,7 +20458,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20553,7 +20553,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20648,7 +20648,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20743,7 +20743,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -20837,7 +20837,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -20929,7 +20929,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21019,7 +21019,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TSource Key, int Count)> result = new(count);
@@ -21111,7 +21111,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21203,7 +21203,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21293,7 +21293,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TSource Key, int Count)> result = new(count);
@@ -21385,7 +21385,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21477,7 +21477,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21567,7 +21567,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TSource Key, int Count)> result = new(count);
@@ -21659,7 +21659,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21751,7 +21751,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TResult Key, int Count)> result = new(count);
@@ -21841,7 +21841,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<(TSource Key, int Count)> result = new(count);
@@ -21933,7 +21933,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22025,7 +22025,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22115,7 +22115,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TSource>> result = new(count);
@@ -22207,7 +22207,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22299,7 +22299,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22389,7 +22389,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TSource>> result = new(count);
@@ -22481,7 +22481,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22573,7 +22573,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22663,7 +22663,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TSource>> result = new(count);
@@ -22755,7 +22755,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22847,7 +22847,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TResult>> result = new(count);
@@ -22937,7 +22937,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<Group<TSource, TSource>> result = new(count);
@@ -23014,7 +23014,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23105,7 +23105,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23220,7 +23220,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23335,7 +23335,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23450,7 +23450,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23565,7 +23565,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23680,7 +23680,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23795,7 +23795,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -23910,7 +23910,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24025,7 +24025,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24140,7 +24140,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24255,7 +24255,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24370,7 +24370,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24483,7 +24483,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24596,7 +24596,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24709,7 +24709,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24822,7 +24822,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -24935,7 +24935,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -25048,7 +25048,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -25126,7 +25126,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -25165,7 +25165,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -25204,7 +25204,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -25243,7 +25243,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -25282,7 +25282,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -25321,7 +25321,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -25360,7 +25360,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -25399,7 +25399,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -25438,7 +25438,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -25477,7 +25477,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -25516,7 +25516,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -25555,7 +25555,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -25590,7 +25590,7 @@ public partial class List<T>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
@@ -25622,7 +25622,7 @@ public partial class List<T>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -25654,7 +25654,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -25686,7 +25686,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -25718,7 +25718,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -25750,7 +25750,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -25784,7 +25784,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -25819,7 +25819,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -25854,7 +25854,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -25889,7 +25889,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -25924,7 +25924,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -25959,7 +25959,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -25994,7 +25994,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -26029,7 +26029,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -26064,7 +26064,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -26099,7 +26099,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -26134,7 +26134,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -26169,7 +26169,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -26200,7 +26200,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
@@ -26228,7 +26228,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
@@ -26256,7 +26256,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
@@ -26284,7 +26284,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
@@ -26312,7 +26312,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
@@ -26340,7 +26340,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			mpz_t? value = MedianEnumerable(list_);
@@ -26411,7 +26411,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -26526,7 +26526,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -26641,7 +26641,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -26756,7 +26756,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -26871,7 +26871,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -26986,7 +26986,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27101,7 +27101,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27216,7 +27216,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27331,7 +27331,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27446,7 +27446,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27561,7 +27561,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27676,7 +27676,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27789,7 +27789,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -27902,7 +27902,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -28015,7 +28015,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -28128,7 +28128,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -28241,7 +28241,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -28354,7 +28354,7 @@ public partial class List<T>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -28435,7 +28435,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -28482,7 +28482,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -28530,7 +28530,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -28578,7 +28578,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = 0; i < count; i++)
@@ -28649,7 +28649,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -28744,7 +28744,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -28839,7 +28839,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -28934,7 +28934,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29029,7 +29029,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29124,7 +29124,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29219,7 +29219,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29314,7 +29314,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29409,7 +29409,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29504,7 +29504,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29599,7 +29599,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29694,7 +29694,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29787,7 +29787,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29878,7 +29878,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -29969,7 +29969,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -30060,7 +30060,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -30151,7 +30151,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -30242,7 +30242,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -30306,7 +30306,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -30341,7 +30341,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -30376,7 +30376,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -30411,7 +30411,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -30448,7 +30448,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -30487,7 +30487,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -30526,7 +30526,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -30565,7 +30565,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -30604,7 +30604,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -30643,7 +30643,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -30682,7 +30682,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -30721,7 +30721,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -30754,7 +30754,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
@@ -30782,7 +30782,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -30812,7 +30812,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -30844,7 +30844,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -30876,7 +30876,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -30908,7 +30908,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -30942,7 +30942,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -30977,7 +30977,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -31012,7 +31012,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -31047,7 +31047,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -31082,7 +31082,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -31117,7 +31117,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -31152,7 +31152,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -31187,7 +31187,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -31222,7 +31222,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -31257,7 +31257,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -31292,7 +31292,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -31327,7 +31327,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -31358,7 +31358,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
@@ -31386,7 +31386,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
@@ -31414,7 +31414,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
@@ -31442,7 +31442,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
@@ -31470,7 +31470,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
@@ -31498,7 +31498,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			mpz_t? value = MedianEnumerable(list_);
@@ -31559,7 +31559,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -31654,7 +31654,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -31749,7 +31749,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -31844,7 +31844,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -31939,7 +31939,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32034,7 +32034,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32129,7 +32129,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32224,7 +32224,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32319,7 +32319,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32414,7 +32414,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32509,7 +32509,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32604,7 +32604,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32697,7 +32697,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32788,7 +32788,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32879,7 +32879,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -32970,7 +32970,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33061,7 +33061,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33152,7 +33152,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33221,7 +33221,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<List<TSource>> list2)
+		else if (source is G.IList<List<TSource>> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -33264,7 +33264,7 @@ public partial class List<T>
 				result.AddRange(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -33310,7 +33310,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource[]> list2)
+		else if (source is G.IList<TSource[]> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -33336,36 +33336,36 @@ public partial class List<T>
 			return JoinIntoSingleEnumerable(new List<TSource[]>(source));
 	}
 
-	internal static List<TSource> JoinIntoSingleEnumerable<TSource>(IEnumerable<IList<TSource>> source)
+	internal static List<TSource> JoinIntoSingleEnumerable<TSource>(IEnumerable<G.IList<TSource>> source)
 	{
-		if (source is List<IList<TSource>> list)
+		if (source is List<G.IList<TSource>> list)
 		{
 			int count = list._size;
 			List<TSource> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
-				IList<TSource> item = list._items[i];
+				G.IList<TSource> item = list._items[i];
 				result.AddRange(item);
 			}
 			return result;
 		}
-		else if (source is IList<TSource>[] array)
+		else if (source is G.IList<TSource>[] array)
 		{
 			List<TSource> result = new(array.Length);
 			for (int i = 0; i < array.Length; i++)
 			{
-				IList<TSource> item = array[i];
+				G.IList<TSource> item = array[i];
 				result.AddRange(item);
 			}
 			return result;
 		}
-		else if (source is IList<IList<TSource>> list2)
+		else if (source is G.IList<G.IList<TSource>> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
-				IList<TSource> item = list2[i];
+				G.IList<TSource> item = list2[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33374,7 +33374,7 @@ public partial class List<T>
 		{
 			List<TSource> result = new(count);
 			int i = 0;
-			foreach (IList<TSource> item in source)
+			foreach (G.IList<TSource> item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33382,7 +33382,7 @@ public partial class List<T>
 			return result;
 		}
 		else
-			return JoinIntoSingleEnumerable(new List<IList<TSource>>(source));
+			return JoinIntoSingleEnumerable(new List<G.IList<TSource>>(source));
 	}
 
 	internal static List<TSource> JoinIntoSingleEnumerable<TSource>(IEnumerable<IEnumerable<TSource>> source)
@@ -33408,7 +33408,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<IEnumerable<TSource>> list2)
+		else if (source is G.IList<IEnumerable<TSource>> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -33458,7 +33458,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -33496,7 +33496,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -33535,7 +33535,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -33574,7 +33574,7 @@ public partial class List<T>
 			}
 			return -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			for (int i = count - 1; i >= 0; i--)
@@ -33637,7 +33637,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33711,7 +33711,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33785,7 +33785,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33859,7 +33859,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -33933,7 +33933,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34007,7 +34007,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34081,7 +34081,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34155,7 +34155,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34229,7 +34229,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34303,7 +34303,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34377,7 +34377,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34451,7 +34451,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34523,7 +34523,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34595,7 +34595,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34667,7 +34667,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34739,7 +34739,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34811,7 +34811,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34883,7 +34883,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -34927,7 +34927,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -34956,7 +34956,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -34985,7 +34985,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -35014,7 +35014,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -35045,7 +35045,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -35077,7 +35077,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -35109,7 +35109,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -35141,7 +35141,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -35173,7 +35173,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -35205,7 +35205,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -35237,7 +35237,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -35269,7 +35269,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -35295,7 +35295,7 @@ public partial class List<T>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
@@ -35319,7 +35319,7 @@ public partial class List<T>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -35345,7 +35345,7 @@ public partial class List<T>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -35372,7 +35372,7 @@ public partial class List<T>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -35399,7 +35399,7 @@ public partial class List<T>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -35426,7 +35426,7 @@ public partial class List<T>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
@@ -35455,7 +35455,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -35484,7 +35484,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<decimal> list_ = ConvertEnumerable(list2, function);
@@ -35513,7 +35513,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -35542,7 +35542,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<double> list_ = ConvertEnumerable(list2, function);
@@ -35571,7 +35571,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -35600,7 +35600,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> list_ = ConvertEnumerable(list2, function);
@@ -35629,7 +35629,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -35658,7 +35658,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<uint> list_ = ConvertEnumerable(list2, function);
@@ -35687,7 +35687,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -35716,7 +35716,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<long> list_ = ConvertEnumerable(list2, function);
@@ -35745,7 +35745,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -35774,7 +35774,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<mpz_t> list_ = ConvertEnumerable(list2, function);
@@ -35799,7 +35799,7 @@ public partial class List<T>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			List<decimal> list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
@@ -35823,7 +35823,7 @@ public partial class List<T>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			List<double> list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
@@ -35847,7 +35847,7 @@ public partial class List<T>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			List<int> list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
@@ -35871,7 +35871,7 @@ public partial class List<T>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			List<uint> list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
@@ -35895,7 +35895,7 @@ public partial class List<T>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			List<long> list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
@@ -35919,7 +35919,7 @@ public partial class List<T>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			List<mpz_t> list_ = ReturnOrConstruct(list2);
 			mpz_t? value = MedianEnumerable(list_);
@@ -35977,7 +35977,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36051,7 +36051,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36125,7 +36125,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36199,7 +36199,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36273,7 +36273,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36347,7 +36347,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36421,7 +36421,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36495,7 +36495,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36569,7 +36569,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36643,7 +36643,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36717,7 +36717,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36791,7 +36791,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36863,7 +36863,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -36935,7 +36935,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -37007,7 +37007,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -37079,7 +37079,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -37151,7 +37151,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -37223,7 +37223,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			int result = -1;
@@ -37282,7 +37282,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -37349,7 +37349,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -37416,7 +37416,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -37483,7 +37483,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -37550,7 +37550,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -37617,7 +37617,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -37684,7 +37684,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -37751,7 +37751,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -37818,7 +37818,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -37885,7 +37885,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -37952,7 +37952,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -38019,7 +38019,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -38084,7 +38084,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -38147,7 +38147,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -38210,7 +38210,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -38273,7 +38273,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -38336,7 +38336,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -38399,7 +38399,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -38450,7 +38450,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -38498,7 +38498,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -38543,7 +38543,7 @@ public partial class List<T>
 				result += (double)function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38591,7 +38591,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38636,7 +38636,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38684,7 +38684,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38729,7 +38729,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38777,7 +38777,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38822,7 +38822,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38870,7 +38870,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38915,7 +38915,7 @@ public partial class List<T>
 				result += (double)function(array[i]);
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -38963,7 +38963,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39012,7 +39012,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -39061,7 +39061,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39110,7 +39110,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39159,7 +39159,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39208,7 +39208,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39257,7 +39257,7 @@ public partial class List<T>
 			}
 			return result / array.Length;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -39295,15 +39295,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39320,15 +39320,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39345,15 +39345,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39370,15 +39370,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39395,15 +39395,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39420,15 +39420,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39445,15 +39445,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39470,15 +39470,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39495,15 +39495,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39520,15 +39520,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39545,15 +39545,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39570,15 +39570,15 @@ public partial class List<T>
 		else if (source is TSource[] array)
 		{
 			int count = array.Length;
-			return array.Length == 0 ? 0 :ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			return list2.Count == 0 ? 0 :ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<TSource>(source), function);
 	}
@@ -39588,11 +39588,11 @@ public partial class List<T>
 		if (source is List<decimal> list)
 			return list._size == 0 ? 0 : new List<decimal>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is decimal[] array)
-			return array.Length == 0 ? 0 :new List<decimal>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<decimal> list2)
-			return list2.Count == 0 ? 0 :new List<decimal>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<decimal>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<decimal> list2)
+			return list2.Count == 0 ? 0 : new List<decimal>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<decimal>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<decimal>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<decimal>(source));
 	}
@@ -39602,11 +39602,11 @@ public partial class List<T>
 		if (source is List<double> list)
 			return list._size == 0 ? 0 : new List<double>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is double[] array)
-			return array.Length == 0 ? 0 :new List<double>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<double> list2)
-			return list2.Count == 0 ? 0 :new List<double>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<double>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<double> list2)
+			return list2.Count == 0 ? 0 : new List<double>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<double>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<double>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<double>(source));
 	}
@@ -39616,11 +39616,11 @@ public partial class List<T>
 		if (source is List<int> list)
 			return list._size == 0 ? 0 : new List<int>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is int[] array)
-			return array.Length == 0 ? 0 :new List<int>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<int> list2)
-			return list2.Count == 0 ? 0 :new List<int>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<int>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<int> list2)
+			return list2.Count == 0 ? 0 : new List<int>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<int>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<int>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<int>(source));
 	}
@@ -39630,11 +39630,11 @@ public partial class List<T>
 		if (source is List<uint> list)
 			return list._size == 0 ? 0 : new List<uint>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is uint[] array)
-			return array.Length == 0 ? 0 :new List<uint>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<uint> list2)
-			return list2.Count == 0 ? 0 :new List<uint>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<uint>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<uint> list2)
+			return list2.Count == 0 ? 0 : new List<uint>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<uint>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<uint>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<uint>(source));
 	}
@@ -39644,11 +39644,11 @@ public partial class List<T>
 		if (source is List<long> list)
 			return list._size == 0 ? 0 : new List<long>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is long[] array)
-			return array.Length == 0 ? 0 :new List<long>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<long> list2)
-			return list2.Count == 0 ? 0 :new List<long>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<long>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<long> list2)
+			return list2.Count == 0 ? 0 : new List<long>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<long>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<long>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<long>(source));
 	}
@@ -39658,11 +39658,11 @@ public partial class List<T>
 		if (source is List<mpz_t> list)
 			return list._size == 0 ? 0 : new List<mpz_t>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is mpz_t[] array)
-			return array.Length == 0 ? 0 :new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<mpz_t> list2)
-			return list2.Count == 0 ? 0 :new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2];
+			return array.Length == 0 ? 0 : new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2];
+		else if (source is G.IList<mpz_t> list2)
+			return list2.Count == 0 ? 0 : new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 :new List<mpz_t>(source).Sort()._items[(count - 1) / 2];
+			return count == 0 ? 0 : new List<mpz_t>(source).Sort()._items[(count - 1) / 2];
 		else
 			return MedianEnumerable(new List<mpz_t>(source));
 	}
@@ -39681,7 +39681,7 @@ public partial class List<T>
 			int count = array.Length;
 			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
@@ -39706,7 +39706,7 @@ public partial class List<T>
 			int count = array.Length;
 			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
@@ -39723,7 +39723,7 @@ public partial class List<T>
 			return list._size == 0 ? default : new List<TSource>(list).Sort()._items[(list._size - 1) / 2];
 		else if (source is TSource[] array)
 			return array.Length == 0 ? default : new List<TSource>(array).Sort()._items[(array.Length - 1) / 2];
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 			return list2.Count == 0 ? default : new List<TSource>(list2).Sort()._items[(list2.Count - 1) / 2];
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 			return count == 0 ? default : new List<TSource>(source).Sort()._items[(count - 1) / 2];
@@ -39764,7 +39764,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -39831,7 +39831,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -39898,7 +39898,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -39965,7 +39965,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -40032,7 +40032,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -40099,7 +40099,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -40166,7 +40166,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -40233,7 +40233,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -40300,7 +40300,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -40367,7 +40367,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -40434,7 +40434,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -40501,7 +40501,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -40566,7 +40566,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			decimal indicator = 0;
@@ -40629,7 +40629,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			double indicator = 0;
@@ -40692,7 +40692,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int indicator = 0;
@@ -40755,7 +40755,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			uint indicator = 0;
@@ -40818,7 +40818,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			long indicator = 0;
@@ -40881,7 +40881,7 @@ public partial class List<T>
 			}
 			return indicator;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			mpz_t indicator = 0;
@@ -40951,7 +40951,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource? result = default;
@@ -40998,7 +40998,7 @@ public partial class List<T>
 				result = function(result, array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TResult? result = seed;
@@ -41032,7 +41032,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41046,14 +41046,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41061,7 +41061,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41075,7 +41075,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41100,7 +41100,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41114,14 +41114,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41129,7 +41129,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41143,7 +41143,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41166,7 +41166,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41180,14 +41180,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41195,7 +41195,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41209,7 +41209,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41234,7 +41234,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41248,14 +41248,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41263,7 +41263,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41277,7 +41277,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41302,7 +41302,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41316,14 +41316,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41331,7 +41331,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41345,7 +41345,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41368,7 +41368,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41382,14 +41382,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41397,7 +41397,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41411,7 +41411,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41436,7 +41436,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41450,14 +41450,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41465,7 +41465,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41479,7 +41479,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41504,7 +41504,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41518,14 +41518,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41533,7 +41533,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41547,7 +41547,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41570,7 +41570,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41584,14 +41584,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41599,7 +41599,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41613,7 +41613,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41638,7 +41638,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41652,14 +41652,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41667,7 +41667,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41681,7 +41681,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41706,7 +41706,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41720,14 +41720,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41735,7 +41735,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41749,7 +41749,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41772,7 +41772,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41786,14 +41786,14 @@ public partial class List<T>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -41801,7 +41801,7 @@ public partial class List<T>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 			}
 			result._size = j;
@@ -41815,7 +41815,7 @@ public partial class List<T>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 					result._items[j++] = item;
 				i++;
 			}
@@ -41842,7 +41842,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41864,7 +41864,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41876,7 +41876,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -41886,7 +41886,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41917,7 +41917,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41939,7 +41939,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41951,7 +41951,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -41961,7 +41961,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -41990,7 +41990,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42012,7 +42012,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42024,7 +42024,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42034,7 +42034,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42065,7 +42065,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42087,7 +42087,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42099,7 +42099,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42109,7 +42109,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42140,7 +42140,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42162,7 +42162,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42174,7 +42174,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42184,7 +42184,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42213,7 +42213,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42235,7 +42235,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42247,7 +42247,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42257,7 +42257,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42288,7 +42288,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42310,7 +42310,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42322,7 +42322,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42332,7 +42332,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42363,7 +42363,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42385,7 +42385,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42397,7 +42397,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42407,7 +42407,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42436,7 +42436,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42458,7 +42458,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42470,7 +42470,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42480,7 +42480,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42511,7 +42511,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42533,7 +42533,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42545,7 +42545,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42555,7 +42555,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item)))
+				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42586,7 +42586,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42608,7 +42608,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42620,7 +42620,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42630,7 +42630,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(function(item, i)))
+				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42659,7 +42659,7 @@ public partial class List<T>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42681,7 +42681,7 @@ public partial class List<T>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42693,7 +42693,7 @@ public partial class List<T>
 			result2.TrimExcess();
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			List<TSource> result = new(count);
@@ -42703,7 +42703,7 @@ public partial class List<T>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (hs.Add(item))
+				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
 					result2._items[j++] = item2;
@@ -42753,7 +42753,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -42823,7 +42823,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -42893,7 +42893,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -42963,7 +42963,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<int> result = new(count);
@@ -43024,7 +43024,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count);
@@ -43081,7 +43081,7 @@ public partial class List<T>
 			result._size = bitArray.Length;
 			return result;
 		}
-		else if (source is IList list2)
+		else if (source is System.Collections.IList list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -43137,7 +43137,7 @@ public partial class List<T>
 			result._size = bitArray.Length;
 			return result;
 		}
-		else if (source is IList list2)
+		else if (source is System.Collections.IList list2)
 		{
 			int count = list2.Count;
 			List<TResult> result = new(count);
@@ -43254,7 +43254,7 @@ public partial class List<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = GetArrayLength(list2.Count, fragmentLength);
 			List<List<TSource>> result = new(count);
@@ -43324,7 +43324,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -43372,7 +43372,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -43417,7 +43417,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -43465,7 +43465,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -43510,7 +43510,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = 0;
@@ -43558,7 +43558,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			int result = 0;
@@ -43603,7 +43603,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint result = 0;
@@ -43651,7 +43651,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			uint result = 0;
@@ -43696,7 +43696,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long result = 0;
@@ -43744,7 +43744,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			long result = 0;
@@ -43789,7 +43789,7 @@ public partial class List<T>
 				result += function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t result = 0;
@@ -43837,7 +43837,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			mpz_t result = 0;
@@ -43886,7 +43886,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<decimal> list2)
+		else if (source is G.IList<decimal> list2)
 		{
 			int count = list2.Count;
 			decimal result = 0;
@@ -43933,7 +43933,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<double> list2)
+		else if (source is G.IList<double> list2)
 		{
 			int count = list2.Count;
 			double result = 0;
@@ -43980,7 +43980,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<int> list2)
+		else if (source is G.IList<int> list2)
 		{
 			int count = list2.Count;
 			int result = 0;
@@ -44027,7 +44027,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<uint> list2)
+		else if (source is G.IList<uint> list2)
 		{
 			int count = list2.Count;
 			uint result = 0;
@@ -44074,7 +44074,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<long> list2)
+		else if (source is G.IList<long> list2)
 		{
 			int count = list2.Count;
 			long result = 0;
@@ -44121,7 +44121,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<mpz_t> list2)
+		else if (source is G.IList<mpz_t> list2)
 		{
 			int count = list2.Count;
 			mpz_t result = 0;
@@ -44215,7 +44215,7 @@ public partial class List<T>
 				result[i] = function(array[i]);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TResult[] result = new TResult[count];
@@ -44263,7 +44263,7 @@ public partial class List<T>
 			}
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TResult[] result = new TResult[count];
@@ -44301,7 +44301,7 @@ public partial class List<T>
 			Array.Copy(array, result, array.Length);
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			TSource[] result = new TSource[count];
@@ -44454,7 +44454,7 @@ public partial class List<T>
 		}
 	}
 
-	internal static bool TryWrapEnumerable<TSource>(IList<TSource> source, Func<IList<TSource>, List<TSource>> function, out List<TSource>? result)
+	internal static bool TryWrapEnumerable<TSource>(G.IList<TSource> source, Func<G.IList<TSource>, List<TSource>> function, out List<TSource>? result)
 	{
 		try
 		{
@@ -44468,7 +44468,7 @@ public partial class List<T>
 		}
 	}
 
-	internal static bool TryWrapEnumerable<TSource, TResult>(IList<TSource> source, Func<IList<TSource>, TResult> function, out TResult? result)
+	internal static bool TryWrapEnumerable<TSource, TResult>(G.IList<TSource> source, Func<G.IList<TSource>, TResult> function, out TResult? result)
 	{
 		try
 		{
@@ -53459,13 +53459,13 @@ public partial class List<T>
 		return result;
 	}
 
-	internal static List<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<IList<TSource>> source)
+	internal static List<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<G.IList<TSource>> source)
 	{
 		int count = source.Length;
 		List<TSource> result = new(count);
 		for (int i = 0; i < count; i++)
 		{
-			IList<TSource> item = source[i];
+			G.IList<TSource> item = source[i];
 			result.AddRange(item);
 		}
 		return result;
@@ -55665,7 +55665,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55684,7 +55684,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55701,7 +55701,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55720,7 +55720,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55739,7 +55739,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55756,7 +55756,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55775,7 +55775,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55794,7 +55794,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -55811,7 +55811,7 @@ public partial class List<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -56294,7 +56294,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function2));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			for (int i = 0; i < count; i++)
@@ -56322,7 +56322,7 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56364,7 +56364,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function2));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			for (int i = 0; i < count; i++)
@@ -56392,7 +56392,7 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56430,7 +56430,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<(TSource, TSource2)> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TSource> result = new(count);
 			NList<TSource2> result2 = new(count);
 			for (int i = 0; i < count; i++)
@@ -56450,7 +56450,7 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<(TSource, TSource2)> list2)
+		else if (source is G.IList<(TSource, TSource2)> list2)
 		{
 			int count = list2.Count;
 			NList<TSource> result = new(count);
@@ -56485,7 +56485,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			for (int i = 0; i < count; i++)
@@ -56511,7 +56511,7 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56549,7 +56549,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			for (int i = 0; i < count; i++)
@@ -56575,7 +56575,7 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56617,7 +56617,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function3));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
@@ -56651,7 +56651,7 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56699,7 +56699,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function2));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
@@ -56733,7 +56733,7 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56777,7 +56777,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<(TSource, TSource2, TSource3)> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TSource> result = new(count);
 			NList<TSource2> result2 = new(count);
 			NList<TSource3> result3 = new(count);
@@ -56801,7 +56801,7 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<(TSource, TSource2, TSource3)> list2)
+		else if (source is G.IList<(TSource, TSource2, TSource3)> list2)
 		{
 			int count = list2.Count;
 			NList<TSource> result = new(count);
@@ -56840,7 +56840,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
@@ -56870,7 +56870,7 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -56912,7 +56912,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
@@ -56942,7 +56942,7 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -57356,7 +57356,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
-			int count = Math.Min(list.Count, list2.Count);
+			int count = Math.Min(list.Length, list2.Length);
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57380,7 +57380,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			NList<TResult> result = new(count);
@@ -57403,7 +57403,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
-			int count = Math.Min(list.Count, list2.Count);
+			int count = Math.Min(list.Length, list2.Length);
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57427,7 +57427,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			NList<TResult> result = new(count);
@@ -57448,7 +57448,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
-			int count = Math.Min(list.Count, list2.Count);
+			int count = Math.Min(list.Length, list2.Length);
 			NList<(TSource, TSource2)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57472,7 +57472,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
 			NList<(TSource, TSource2)> result = new(count);
@@ -57495,7 +57495,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
+			int count = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57521,7 +57521,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(count);
@@ -57545,7 +57545,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
+			int count = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57571,7 +57571,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(count);
@@ -57593,7 +57593,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<TSource> list && source2 is List<TSource2> list2 && source3 is List<TSource3> list3)
 		{
-			int count = List<int>.MinEnumerable(new[] { list.Count, list2.Count, list3.Count }.AsSpan());
+			int count = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
 			NList<(TSource, TSource2, TSource3)> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57619,7 +57619,7 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (source is IList<TSource> list2_ && source2 is IList<TSource2> list2_2 && source3 is IList<TSource3> list2_3)
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2 && source3 is G.IList<TSource3> list2_3)
 		{
 			int count = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<(TSource, TSource2, TSource3)> result = new(count);
@@ -57779,7 +57779,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 				result._items[i] = function(list[i]);
@@ -57794,7 +57794,7 @@ public unsafe partial class NList<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -57825,7 +57825,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list)
 		{
-			int count = list.Count;
+			int count = list.Length;
 			NList<TResult> result = new(count);
 			for (int i = 0; i < count; i++)
 			{
@@ -57846,7 +57846,7 @@ public unsafe partial class NList<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is IList<TSource> list2)
+		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
 			NList<TResult> result = new(count);
@@ -58010,9 +58010,9 @@ public unsafe partial class NList<T>
 
 	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<NList<TSource>> source) where TSource : unmanaged
 	//{
-	//	int count = source._size;
-	//	NList<TSource> result = new(count);
-	//	for (int i = 0; i < count; i++)
+	//	int _size = source._size;
+	//	NList<TSource> result = new(_size);
+	//	for (int i = 0; i < _size; i++)
 	//	{
 	//		NList<TSource> item = source._items[i];
 	//		result.AddRange(item);
@@ -58022,9 +58022,9 @@ public unsafe partial class NList<T>
 
 	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<TSource[]> source) where TSource : unmanaged
 	//{
-	//	int count = source._size;
-	//	NList<TSource> result = new(count);
-	//	for (int i = 0; i < count; i++)
+	//	int _size = source._size;
+	//	NList<TSource> result = new(_size);
+	//	for (int i = 0; i < _size; i++)
 	//	{
 	//		TSource[] item = source._items[i];
 	//		result.AddRange(item);
@@ -58032,13 +58032,13 @@ public unsafe partial class NList<T>
 	//	return result;
 	//}
 
-	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<IList<TSource>> source) where TSource : unmanaged
+	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<G.IList<TSource>> source) where TSource : unmanaged
 	//{
-	//	int count = source._size;
-	//	NList<TSource> result = new(count);
-	//	for (int i = 0; i < count; i++)
+	//	int _size = source._size;
+	//	NList<TSource> result = new(_size);
+	//	for (int i = 0; i < _size; i++)
 	//	{
-	//		IList<TSource> item = source._items[i];
+	//		G.IList<TSource> item = source._items[i];
 	//		result.AddRange(item);
 	//	}
 	//	return result;
@@ -58046,9 +58046,9 @@ public unsafe partial class NList<T>
 
 	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<IEnumerable<TSource>> source) where TSource : unmanaged
 	//{
-	//	int count = source._size;
-	//	NList<TSource> result = new(count);
-	//	for (int i = 0; i < count; i++)
+	//	int _size = source._size;
+	//	NList<TSource> result = new(_size);
+	//	for (int i = 0; i < _size; i++)
 	//	{
 	//		IEnumerable<TSource> item = source._items[i];
 	//		result.AddRange(item);
@@ -58067,7 +58067,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58086,7 +58086,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58103,7 +58103,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58122,7 +58122,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58141,7 +58141,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58158,7 +58158,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58177,7 +58177,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item)))
+			if (hs.TryAdd(function(item)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58196,7 +58196,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(function(item, i)))
+			if (hs.TryAdd(function(item, i)))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58213,7 +58213,7 @@ public unsafe partial class NList<T>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (hs.Add(item))
+			if (hs.TryAdd(item))
 				result._items[j++] = item;
 		}
 		result._size = j;
@@ -58257,7 +58257,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<int> RepresentIntoNumbersEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction)where TSource : unmanaged
+	internal static NList<int> RepresentIntoNumbersEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : unmanaged
 	{
 		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source._size;
@@ -58325,7 +58325,7 @@ public unsafe partial class NList<T>
 		int index = 0;
 		for (int i = 0; i < count2; i++)
 		{
-			result.Add(new(fragmentLength));
+			result.Add((NList<TSource>)(new(fragmentLength)));
 			for (int j = 0; j < fragmentLength; j++)
 				result[i]._items[j] = source[index++];
 			result[i]._size = fragmentLength;
@@ -58333,7 +58333,7 @@ public unsafe partial class NList<T>
 		int rest = source._size % fragmentLength;
 		if (rest != 0)
 		{
-			result.Add(new(rest));
+			result.Add((NList<TSource>)(new(rest)));
 			for (int j = 0; j < rest; j++)
 				result[count2]._items[j] = source[index++];
 			result[count2]._size = rest;
@@ -58994,7 +58994,7 @@ public static class OptimizedLinq
 	public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this (IEnumerable<TOuter>, IEnumerable<TInner>) source, Func<TOuter, int, TKey> outerKeySelector, Func<TInner, int, TKey> innerKeySelector, Func<TOuter, TInner, int, TResult> resultSelector, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) => List<TResult>.Join(source.Item1, source.Item2, outerKeySelector, innerKeySelector, resultSelector, equalFunction, hashCodeFunction);
 	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<List<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
 	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<TSource[]> source) => List<TSource>.JoinIntoSingleEnumerable(source);
-	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
+	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<G.IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
 	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<IEnumerable<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
 	public static List<TResult> JoinIntoSingle<TSource, TResult>(this IEnumerable<TSource> source) where TSource : IEnumerable<TResult> => List<TSource>.JoinIntoSingleEnumerable<TSource, TResult>(source);
 	public static int LastIndexOf<TSource>(this IEnumerable<TSource> source, TSource target) => List<int>.LastIndexOfEnumerable(source, target);
@@ -59325,8 +59325,8 @@ public static class OptimizedLinq
 	public static bool TryWrap<TSource, TResult>(this List<TSource> source, Func<List<TSource>, TResult> function, out TResult? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<TSource>(this TSource[] source, Func<TSource[], List<TSource>> function, out List<TSource>? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<TSource, TResult>(this TSource[] source, Func<TSource[], TResult> function, out TResult? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<TSource>(this IList<TSource> source, Func<IList<TSource>, List<TSource>> function, out List<TSource>? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<TSource, TResult>(this IList<TSource> source, Func<IList<TSource>, TResult> function, out TResult? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
+	public static bool TryWrap<TSource>(this G.IList<TSource> source, Func<G.IList<TSource>, List<TSource>> function, out List<TSource>? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
+	public static bool TryWrap<TSource, TResult>(this G.IList<TSource> source, Func<G.IList<TSource>, TResult> function, out TResult? result) => List<TSource>.TryWrapEnumerable(source, function, out result);
 	public static IEnumerable<TSource> Union<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> source2) => Enumerable.Union(source, source2);
 	public static IEnumerable<TSource> Union<TSource>(this IEnumerable<TSource> source, IEnumerable<TSource> source2, IEqualityComparer<TSource> comparer) => Enumerable.Union(source, source2, comparer);
 	public static List<TSource> Wrap<TSource>(this IEnumerable<TSource> source, Func<IEnumerable<TSource>, List<TSource>> function) => function(source);
@@ -59335,8 +59335,8 @@ public static class OptimizedLinq
 	public static TResult Wrap<TSource, TResult>(this List<TSource> source, Func<List<TSource>, TResult> function) => function(source);
 	public static List<TSource> Wrap<TSource>(this TSource[] source, Func<TSource[], List<TSource>> function) => function(source);
 	public static TResult Wrap<TSource, TResult>(this TSource[] source, Func<TSource[], TResult> function) => function(source);
-	public static List<TSource> Wrap<TSource>(this IList<TSource> source, Func<IList<TSource>, List<TSource>> function) => function(source);
-	public static TResult Wrap<TSource, TResult>(this IList<TSource> source, Func<IList<TSource>, TResult> function) => function(source);
+	public static List<TSource> Wrap<TSource>(this G.IList<TSource> source, Func<G.IList<TSource>, List<TSource>> function) => function(source);
+	public static TResult Wrap<TSource, TResult>(this G.IList<TSource> source, Func<G.IList<TSource>, TResult> function) => function(source);
 	public static bool All<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, bool> function) => List<bool>.AllEnumerable(source, function);
 	public static bool All<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, bool> function) => List<bool>.AllEnumerable(source, function);
 	public static bool All<TSource>(this Span<TSource> source, Func<TSource, bool> function) => List<bool>.AllEnumerable((ReadOnlySpan<TSource>)source, function);
@@ -60822,9 +60822,9 @@ public static class OptimizedLinq
 	public static List<TSource> JoinIntoSingle<TSource>(this ReadOnlySpan<TSource[]> source) => List<TSource>.JoinIntoSingleEnumerable(source);
 	public static List<TSource> JoinIntoSingle<TSource>(this Span<TSource[]> source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<TSource[]>)source);
 	public static List<TSource> JoinIntoSingle<TSource>(this TSource[][] source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<TSource[]>)source.AsSpan());
-	public static List<TSource> JoinIntoSingle<TSource>(this ReadOnlySpan<IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
-	public static List<TSource> JoinIntoSingle<TSource>(this Span<IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<IList<TSource>>)source);
-	public static List<TSource> JoinIntoSingle<TSource>(this IList<TSource>[] source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<IList<TSource>>)source.AsSpan());
+	public static List<TSource> JoinIntoSingle<TSource>(this ReadOnlySpan<G.IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
+	public static List<TSource> JoinIntoSingle<TSource>(this Span<G.IList<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<TSource>>)source);
+	public static List<TSource> JoinIntoSingle<TSource>(this G.IList<TSource>[] source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<TSource>>)source.AsSpan());
 	public static List<TSource> JoinIntoSingle<TSource>(this ReadOnlySpan<IEnumerable<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable(source);
 	public static List<TSource> JoinIntoSingle<TSource>(this Span<IEnumerable<TSource>> source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<TSource>>)source);
 	public static List<TSource> JoinIntoSingle<TSource>(this IEnumerable<TSource>[] source) => List<TSource>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<TSource>>)source.AsSpan());
@@ -61432,7 +61432,7 @@ public static class OptimizedLinq
 	public static NList<int> NIndexesOf<TSource>(this NList<TSource> source, TSource target) where TSource : unmanaged => NList<TSource>.IndexesOfEnumerable(source, target);
 	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<NList<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
 	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<TSource[]> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
-	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<IList<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
+	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<G.IList<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
 	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<IEnumerable<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
 	public static NList<TSource> NRemoveDoubles<TSource, TResult>(this NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TSource>.RemoveDoublesEnumerable(source, function);
 	public static NList<TSource> NRemoveDoubles<TSource, TResult>(this NList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TSource>.RemoveDoublesEnumerable(source, function);

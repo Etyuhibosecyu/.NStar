@@ -1,18 +1,10 @@
-﻿using Mpir.NET;
-#if !RELEASE
-using NativeFunctions;
-#endif
-using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using G = System.Collections.Generic;
-using static BigCollections.Extents;
-using static System.Math;
 
-namespace BigCollections;
+namespace Corlib.NStar;
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>, IEquatable<ListBase<T, TCertain>>*/ where TCertain : ListBase<T, TCertain>, new()
@@ -27,19 +19,19 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
 
-	public virtual int Count => _size;
-
 	protected virtual int DefaultCapacity => 4;
 
-	bool IList.IsFixedSize => false;
+	bool System.Collections.IList.IsFixedSize => false;
 
-	bool ICollection<T>.IsReadOnly => false;
+	bool G.ICollection<T>.IsReadOnly => false;
 
-	bool IList.IsReadOnly => false;
+	bool System.Collections.IList.IsReadOnly => false;
 
-	bool ICollection.IsSynchronized => false;
+	bool System.Collections.ICollection.IsSynchronized => false;
 
-	object ICollection.SyncRoot => _syncRoot;
+	public virtual int Length => _size;
+
+	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
 	public virtual T this[Index index, bool invoke = true]
 	{
@@ -47,25 +39,25 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		{
 			int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 			if ((uint)index2 >= (uint)_size)
-				throw new ArgumentOutOfRangeException(nameof(index));
+				throw new IndexOutOfRangeException();
 			return GetInternal(index2, invoke);
 		}
 		set
 		{
 			int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 			if ((uint)index2 >= (uint)_size)
-				throw new ArgumentOutOfRangeException(nameof(index));
+				throw new IndexOutOfRangeException();
 			SetInternal(index2, value);
 		}
 	}
 
 	public virtual TCertain this[Range range] => GetRange(range);
 
-	T IList<T>.this[int index] { get => this[index]; set => this[index] = value; }
+	T G.IList<T>.this[int index] { get => this[index]; set => this[index] = value; }
 
-	T IReadOnlyList<T>.this[int index] => this[index];
+	T G.IReadOnlyList<T>.this[int index] => this[index];
 
-	object? IList.this[int index]
+	object? System.Collections.IList.this[int index]
 	{
 		get => this[index];
 		set
@@ -92,9 +84,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	void ICollection<T>.Add(T item) => Add(item);
+	void G.ICollection<T>.Add(T item) => Add(item);
 
-	int IList.Add(object? item)
+	int System.Collections.IList.Add(object? item)
 	{
 		try
 		{
@@ -108,9 +100,19 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return _size - 1;
 	}
 
-	public virtual TCertain AddRange(IEnumerable<T> collection) => InsertRange(_size, collection);
+	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
 
-	public virtual TCertain Append(T item) => Create(this, CollectionCreator).Add(item);
+	public virtual TCertain Append(T item) => CollectionCreator(this).Add(item);
+
+	public virtual Span<T> AsSpan() => AsSpan(0, _size);
+
+	public virtual Span<T> AsSpan(Index index) => AsSpan()[index..];
+
+	public virtual Span<T> AsSpan(int index) => AsSpan(index, _size - index);
+
+	public abstract Span<T> AsSpan(int index, int count);
+
+	public virtual Span<T> AsSpan(Range range) => AsSpan()[range];
 
 	public virtual void Clear()
 	{
@@ -134,7 +136,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	protected abstract void ClearInternal(int index, int count);
 
-	public virtual TCertain Concat(TCertain collection) => Create(this, CollectionCreator).AddRange(collection);
+	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
 	//public virtual int CompareTo(ListBase<T, TCertain>? other)
 	//{
@@ -153,31 +155,112 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	//	return _size.CompareTo(other._size);
 	//}
 
-	public virtual bool Contains(T? item)
+	public virtual bool Contains(T? item) => Contains(item, 0, _size);
+
+	public virtual bool Contains(T? item, int index) => Contains(item, index, _size - index);
+
+	public virtual bool Contains(T? item, int index, int count)
 	{
 		if (item == null)
 		{
-			for (int i = 0; i < _size; i++)
-				if (this[i] == null)
+			for (int i = 0; i < count; i++)
+				if (this[index + i] == null)
 					return true;
 			return false;
 		}
 		else
 		{
 			EqualityComparer<T> c = EqualityComparer<T>.Default;
-			for (int i = 0; i < _size; i++)
-				if (c.Equals(this[i], item))
+			for (int i = 0; i < count; i++)
+				if (c.Equals(this[index + i], item))
 					return true;
 			return false;
 		}
 	}
 
-	bool IList.Contains(object? item)
+	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, _size);
+
+	public virtual bool Contains(IEnumerable<T> collection, int index) => Contains(collection, index, _size - index);
+
+	public virtual bool Contains(IEnumerable<T> collection, int index, int count)
 	{
-		if (IsCompatibleObject(item))
-			return Contains((T?)item);
+		if (count == 0 || !collection.Any())
+		{
+			return false;
+		}
+		if (collection is not G.IList<T> list)
+			return Contains(CollectionCreator(collection));
+		int j = 0;
+		for (int i = 0; i - j <= count - list.Count; i++)
+		{
+			if (this[index + i]?.Equals(list[j]) ?? list[j] is null)
+			{
+				j++;
+				if (j >= list.Count)
+				{
+					return true;
+				}
+			}
+			else if (j != 0)
+			{
+				i -= j;
+				j = 0;
+			}
+		}
 		return false;
 	}
+
+	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, _size);
+
+	public virtual bool Contains(TCertain list, int index) => Contains((IEnumerable<T>)list, index, _size - index);
+
+	public virtual bool Contains(TCertain list, int index, int count) => Contains((IEnumerable<T>)list, index, count);
+
+	bool System.Collections.IList.Contains(object? item)
+	{
+		if (IsCompatibleObject(item))
+			if (item != null)
+				return Contains((T)item);
+		return false;
+	}
+
+	public virtual bool ContainsAny(IEnumerable<T> collection) => ContainsAny(collection, 0, _size);
+
+	public virtual bool ContainsAny(IEnumerable<T> collection, int index) => ContainsAny(collection, index, _size - index);
+
+	public virtual bool ContainsAny(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = 0; i < count; i++)
+			if (hs.Contains(GetInternal(index + i)))
+				return true;
+		return false;
+	}
+
+	public virtual bool ContainsAny(TCertain list) => ContainsAny((IEnumerable<T>)list, 0, _size);
+
+	public virtual bool ContainsAny(TCertain list, int index) => ContainsAny((IEnumerable<T>)list, index, _size - index);
+
+	public virtual bool ContainsAny(TCertain list, int index, int count) => ContainsAny((IEnumerable<T>)list, index, count);
+
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, _size);
+
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index) => ContainsAnyExcluding(collection, index, _size - index);
+
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = 0; i < count; i++)
+			if (!hs.Contains(GetInternal(index + i)))
+				return true;
+		return false;
+	}
+
+	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((IEnumerable<T>)list, 0, _size);
+
+	public virtual bool ContainsAnyExcluding(TCertain list, int index) => ContainsAnyExcluding((IEnumerable<T>)list, index, _size - index);
+
+	public virtual bool ContainsAnyExcluding(TCertain list, int index, int count) => ContainsAnyExcluding((IEnumerable<T>)list, index, count);
 
 	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : ListBase<TOutput, TCertainOutput>, new()
 	{
@@ -200,6 +283,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		list._size = _size;
 		return list;
 	}
+
+	public static void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count) => source.Copy(source, sourceIndex, destination, destinationIndex, count);
 
 	protected abstract void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count);
 
@@ -271,7 +356,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
-		TCertain result = Create(_size, CapacityCreator);
+		TCertain result = CapacityCreator(_size);
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
@@ -285,7 +370,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, int, bool> match)
 	{
-		TCertain result = Create(_size, CapacityCreator);
+		TCertain result = CapacityCreator(_size);
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
@@ -395,21 +480,24 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	public virtual void ForEach(Action<T> action)
+	public virtual TCertain ForEach(Action<T> action)
 	{
 		if (action == null)
 			throw new ArgumentNullException(nameof(action));
 		for (int i = 0; i < _size; i++)
 			action(this[i]);
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	internal abstract T GetInternal(int index, bool invoke = true);
 
-	public virtual Enumerator GetEnumerator() => new(this);
+	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorInternal();
+
+	private Enumerator GetEnumeratorInternal() => new(this);
 
 	//public override int GetHashCode()
 	//{
@@ -428,7 +516,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return new();
 		else if (index == 0 && count == _size && this is TCertain thisList)
 			return thisList;
-		TCertain list = Create(count, CapacityCreator);
+		TCertain list = CapacityCreator(count);
 		Copy(this, index, list, 0, count);
 		list._size = count;
 		return list;
@@ -466,13 +554,89 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return IndexOfInternal(item, index, count);
 	}
 
-	int IList.IndexOf(object? item)
+	public virtual int IndexOf(IEnumerable<T> collection) => IndexOf(collection, 0, _size);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index) => IndexOf(collection, index, _size - index);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int count)
+	{
+		if (count == 0 || !collection.Any())
+		{
+			return -1;
+		}
+		if (collection is not G.IList<T> list)
+			return IndexOf(CollectionCreator(collection));
+		int j = 0;
+		for (int i = 0; i - j <= count - list.Count; i++)
+		{
+			if (this[index + i]?.Equals(list[j]) ?? list[j] is null)
+			{
+				j++;
+				if (j >= list.Count)
+				{
+					return i - j + 2;
+				}
+			}
+			else if (j != 0)
+			{
+				i -= j;
+				j = 0;
+			}
+		}
+		return -1;
+	}
+
+	public virtual int IndexOf(TCertain list) => IndexOf((IEnumerable<T>)list, 0, _size);
+
+	public virtual int IndexOf(TCertain list, int index) => IndexOf((IEnumerable<T>)list, index, _size - index);
+
+	public virtual int IndexOf(TCertain list, int index, int count) => IndexOf((IEnumerable<T>)list, index, count);
+
+	int System.Collections.IList.IndexOf(object? item)
 	{
 		if (IsCompatibleObject(item))
 			if (item != null)
 				return IndexOf((T)item);
 		return -1;
 	}
+
+	public virtual int IndexOfAny(IEnumerable<T> collection) => IndexOfAny(collection, 0, _size);
+
+	public virtual int IndexOfAny(IEnumerable<T> collection, int index) => IndexOfAny(collection, index, _size - index);
+
+	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = 0; i < count; i++)
+			if (hs.Contains(GetInternal(index + i)))
+				return index + i;
+		return -1;
+	}
+
+	public virtual int IndexOfAny(TCertain list) => IndexOfAny((IEnumerable<T>)list, 0, _size);
+
+	public virtual int IndexOfAny(TCertain list, int index) => IndexOfAny((IEnumerable<T>)list, index, _size - index);
+
+	public virtual int IndexOfAny(TCertain list, int index, int count) => IndexOfAny((IEnumerable<T>)list, index, count);
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection) => IndexOfAnyExcluding(collection, 0, _size);
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) => IndexOfAnyExcluding(collection, index, _size - index);
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = 0; i < count; i++)
+			if (!hs.Contains(GetInternal(index + i)))
+				return index + i;
+		return -1;
+	}
+
+	public virtual int IndexOfAnyExcluding(TCertain list) => IndexOfAnyExcluding((IEnumerable<T>)list, 0, _size);
+
+	public virtual int IndexOfAnyExcluding(TCertain list, int index) => IndexOfAnyExcluding((IEnumerable<T>)list, index, _size - index);
+
+	public virtual int IndexOfAnyExcluding(TCertain list, int index, int count) => IndexOfAnyExcluding((IEnumerable<T>)list, index, count);
 
 	protected abstract int IndexOfInternal(T item, int index, int count);
 
@@ -488,9 +652,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	void IList<T>.Insert(int index, T item) => Insert(index, item);
+	void G.IList<T>.Insert(int index, T item) => Insert(index, item);
 
-	void IList.Insert(int index, object? item)
+	void System.Collections.IList.Insert(int index, object? item)
 	{
 		try
 		{
@@ -503,56 +667,42 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	public virtual TCertain InsertRange(int index, IEnumerable<T> collection)
+	public virtual TCertain Insert(int index, IEnumerable<T> collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		return InsertRangeInternal(index, collection);
+		return InsertInternal(index, collection);
 	}
 
-	protected virtual TCertain InsertRangeInternal(int index, IEnumerable<T> collection)
+	protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		if (collection is TCertain list)
+		if (collection is not TCertain list)
+			return InsertInternal(index, CollectionCreator(collection));
+		int count = list._size;
+		if (count > 0)
 		{
-			int count = list._size;
-			if (count > 0)
+			EnsureCapacity(_size + count);
+			if (index < _size)
+				Copy(this, index, this, index + count, _size - index);
+			if (this == list)
 			{
-				EnsureCapacity(_size + count);
-				if (index < _size)
-					Copy(this, index, this, index + count, _size - index);
-				if (this == list)
-				{
-					Copy(this, 0, this, index, index);
-					Copy(this, index + count, this, index * 2, _size - index);
-				}
-				else
-					Copy(list, 0, this, index, count);
-				_size += count;
+				Copy(this, 0, this, index, index);
+				Copy(this, index + count, this, index * 2, _size - index);
 			}
-			return this as TCertain ?? throw new InvalidOperationException();
+			else
+				Copy(list, 0, this, index, count);
+			_size += count;
 		}
-		else
-			return InsertRangeInternal(index, Create(collection, CollectionCreator));
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	protected static bool IsCompatibleObject(object? value) => (value is T) || (value == null && default(T) == null);
 
-	public virtual int LastIndexOf(T item)
-	{
-		if (_size == 0)
-			return -1;
-		else
-			return LastIndexOf(item, _size - 1, _size);
-	}
+	public virtual int LastIndexOf(T item) => _size == 0 ? -1 : LastIndexOf(item, _size - 1, _size);
 
-	public virtual int LastIndexOf(T item, int index)
-	{
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		return LastIndexOf(item, index, index + 1);
-	}
+	public virtual int LastIndexOf(T item, int index) => LastIndexOf(item, index, index + 1);
 
 	public virtual int LastIndexOf(T item, int index, int count)
 	{
@@ -569,24 +719,109 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return LastIndexOfInternal(item, index, count);
 	}
 
-	protected abstract int LastIndexOfInternal(T item, int index, int count);
+	public virtual int LastIndexOf(IEnumerable<T> collection) => _size == 0 ? -1 : LastIndexOf(collection, _size - 1, _size);
 
-	public virtual bool Remove(T item)
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index) => LastIndexOf(collection, index, index + 1);
+
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int count)
 	{
-		int index = IndexOf(item);
-		if (index >= 0)
+		if (count == 0 || !collection.Any())
 		{
-			RemoveAt(index);
-			return true;
+			return -1;
 		}
-		return false;
+		if (collection is not G.IList<T> list)
+			return IndexOf(CollectionCreator(collection));
+		int startIndex = index + 1 - count, j = list.Count - 1;
+		for (int i = count - 1; i - j <= count - list.Count; i--)
+		{
+			if (this[startIndex + i]?.Equals(list[j]) ?? list[j] is null)
+			{
+				j--;
+				if (j < 0)
+				{
+					return i - j;
+				}
+			}
+			else if (j != 0)
+			{
+				i += list.Count - 1 - j;
+				j = list.Count - 1;
+			}
+		}
+		return -1;
 	}
 
-	void IList.Remove(object? item)
+	public virtual int LastIndexOf(TCertain list) => _size == 0 ? -1 : LastIndexOf((IEnumerable<T>)list, _size - 1, _size);
+
+	public virtual int LastIndexOf(TCertain list, int index) => LastIndexOf((IEnumerable<T>)list, index, index + 1);
+
+	public virtual int LastIndexOf(TCertain list, int index, int count) => LastIndexOf((IEnumerable<T>)list, index, count);
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection) => LastIndexOfAny(collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index) => LastIndexOfAny(collection, index, index + 1);
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = count - 1; i >= 0; i--)
+			if (hs.Contains(GetInternal(index + i)))
+				return index + i;
+		return -1;
+	}
+
+	public virtual int LastIndexOfAny(TCertain list) => LastIndexOfAny((IEnumerable<T>)list, _size - 1, _size);
+
+	public virtual int LastIndexOfAny(TCertain list, int index) => LastIndexOfAny((IEnumerable<T>)list, index, index + 1);
+
+	public virtual int LastIndexOfAny(TCertain list, int index, int count) => LastIndexOfAny((IEnumerable<T>)list, index, count);
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) => LastIndexOfAnyExcluding(collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) => LastIndexOfAnyExcluding(collection, index, index + 1);
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
+	{
+		HashSet<T> hs = collection.ToHashSet();
+		for (int i = count - 1; i >= 0; i--)
+			if (!hs.Contains(GetInternal(index + i)))
+				return index + i;
+		return -1;
+	}
+
+	public virtual int LastIndexOfAnyExcluding(TCertain list) => LastIndexOfAnyExcluding((IEnumerable<T>)list, _size - 1, _size);
+
+	public virtual int LastIndexOfAnyExcluding(TCertain list, int index) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, index + 1);
+
+	public virtual int LastIndexOfAnyExcluding(TCertain list, int index, int count) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, count);
+
+	protected abstract int LastIndexOfInternal(T item, int index, int count);
+
+	public virtual TCertain Remove(int index) => Remove(index, _size - index);
+
+	public virtual TCertain Remove(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (count > 0)
+		{
+			_size -= count;
+			if (index < _size)
+				Copy(this, index + count, this, index, _size - index);
+			ClearInternal(_size, count);
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	void System.Collections.IList.Remove(object? item)
 	{
 		if (IsCompatibleObject(item))
 			if (item != null)
-				Remove((T)item);
+				RemoveValue((T)item);
 	}
 
 	public virtual int RemoveAll(Predicate<T> match)
@@ -620,14 +855,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	void IList.RemoveAt(int index) => RemoveAt(index);
+	void System.Collections.IList.RemoveAt(int index) => RemoveAt(index);
 
-	void IList<T>.RemoveAt(int index) => RemoveAt(index);
+	void G.IList<T>.RemoveAt(int index) => RemoveAt(index);
 
 	internal static TCertain RemoveIndexes(TCertain originalList, Queue<int> toRemove)
 	{
 		List<int> toRemove2 = toRemove.ToList().Sort();
-		TCertain result = Create(originalList._size - toRemove2._size, originalList.CapacityCreator);
+		TCertain result = originalList.CapacityCreator(originalList._size - toRemove2._size);
 		int pos = 0;
 		for (int i = 0; i < toRemove2._size; i++)
 		{
@@ -638,22 +873,15 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	public virtual TCertain RemoveRange(int index, int count)
+	public virtual bool RemoveValue(T item)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
-			throw new ArgumentException(null);
-		if (count > 0)
+		int index = IndexOf(item);
+		if (index >= 0)
 		{
-			_size -= count;
-			if (index < _size)
-				Copy(this, index + count, this, index, _size - index);
-			ClearInternal(_size, count);
+			RemoveAt(index);
+			return true;
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return false;
 	}
 
 	public virtual TCertain Replace(IEnumerable<T> collection) => ReplaceRangeInternal(0, _size, collection);
@@ -688,7 +916,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
-			return ReplaceRange(index, count, Create(collection, CollectionCreator));
+			return ReplaceRange(index, count, CollectionCreator(collection));
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -723,7 +951,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return SetRangeInternal(index, count, list);
 		}
 		else
-			return SetRange(index, Create(collection, CollectionCreator));
+			return SetRange(index, CollectionCreator(collection));
 	}
 
 	internal virtual TCertain SetRangeAndSizeInternal(int index, int count, TCertain list)
@@ -789,8 +1017,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual T[] ToArray()
 	{
-		T[] array = new T[_size];
-		CopyToInternal(0, array, 0, _size);
+		T[] array = new T[Length];
+		CopyToInternal(0, array, 0, Length);
 		return array;
 	}
 
@@ -802,7 +1030,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		List<TCertain> new_list = new();
 		for (int i = 0; i < yCount; i++)
 		{
-			new_list.Add(Create(list._size, list[0].CapacityCreator));
+			new_list.Add(list[0].CapacityCreator(list._size));
 			for (int j = 0; j < list._size; j++)
 			{
 				TCertain temp = list[j];
@@ -888,7 +1116,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	}
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertain : BigListBase<T, TCertain, TLow>, new() where TLow : ListBase<T, TLow>, new()
@@ -896,7 +1124,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 	private protected TLow? low;
 	private protected List<TCertain>? high;
 	private protected Queue<int> deletedIndexes = new();
-	private protected BitList2 indexDeleted = new();
+	private protected BitList indexDeleted = new();
 	private protected mpz_t _size = 0;
 	private protected mpz_t deletedCount = 0;
 	private protected mpz_t _capacity = 0;
@@ -932,20 +1160,20 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 				fragment = (mpz_t)1 << ((((value - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 				high = new((int)((value + (fragment - 1)) / fragment));
 				for (mpz_t i = 0; i < value / fragment; i++)
-					high.Add(Create(fragment, CapacityCreator));
+					high.Add(CapacityCreator(fragment));
 				if (value % fragment != 0)
-					high.Add(Create(value % fragment, CapacityCreator));
+					high.Add(CapacityCreator(value % fragment));
 				high[0].AddRange(low);
 				low = null;
 			}
 			else if (high != null)
 			{
 				high.Capacity = (int)((value + fragment - 1) / fragment);
-				high[^1].Capacity = (high.Count < high.Capacity || value % fragment == 0) ? fragment : value % fragment;
-				for (int i = high.Count; i < high.Capacity - 1; i++)
-					high.Add(Create(fragment, CapacityCreator));
-				if (high.Count < high.Capacity)
-					high.Add(Create(value % fragment == 0 ? fragment : value % fragment, CapacityCreator));
+				high[^1].Capacity = (high.Length < high.Capacity || value % fragment == 0) ? fragment : value % fragment;
+				for (int i = high.Length; i < high.Capacity - 1; i++)
+					high.Add(CapacityCreator(fragment));
+				if (high.Length < high.Capacity)
+					high.Add(CapacityCreator(value % fragment == 0 ? fragment : value % fragment));
 			}
 			_capacity = value;
 		}
@@ -976,13 +1204,13 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		get
 		{
 			if (index >= _size)
-				throw new ArgumentOutOfRangeException(nameof(index));
+				throw new IndexOutOfRangeException();
 			return GetInternal(index);
 		}
 		set
 		{
 			if (index >= _size)
-				throw new ArgumentOutOfRangeException(nameof(index));
+				throw new IndexOutOfRangeException();
 			SetInternal(index, value);
 		}
 	}
@@ -1020,7 +1248,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			_size += count2;
 		}
 		else
-			AddRange(Create(collection, CollectionCreator));
+			AddRange(CollectionCreator(collection));
 	}
 
 	protected virtual void AddRangeToEnd(IEnumerable<T> collection)
@@ -1037,7 +1265,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			}
 		}
 		else
-			AddRangeToEnd(Create(collection, CollectionCreator));
+			AddRangeToEnd(CollectionCreator(collection));
 	}
 
 	protected virtual void AddToEnd(T item)
@@ -1061,8 +1289,8 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			low.Clear();
 			indexDeleted.Clear();
 		}
-		else if (high != null)
-			high.Clear();
+		else
+			high?.Clear();
 		deletedIndexes.Clear();
 		deletedCount = 0;
 	}
@@ -1151,7 +1379,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private protected virtual (TLow, BitList2) GetFirstLists()
+	private protected virtual (TLow, BitList) GetFirstLists()
 	{
 		if (!isHigh && low != null)
 			return (low, indexDeleted);
@@ -1174,10 +1402,10 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		else if (index == 0 && count == _size && this is TCertain thisList)
 			return thisList;
 		else if (!isHigh && low != null)
-			return Create(ListBase<T, TLow>.RemoveIndexes(low.GetRange((int)index, (int)count), deletedIndexes), CollectionCreator);
+			return CollectionCreator(ListBase<T, TLow>.RemoveIndexes(low.GetRange((int)index, (int)count), deletedIndexes));
 		else if (high != null)
 		{
-			TCertain list = Create(count, CapacityCreator);
+			TCertain list = CapacityCreator(count);
 			if (index / fragment == (index + count - 1) / fragment)
 				list.AddRangeToEnd(high[(int)(index / fragment)].GetRange(index % fragment, count));
 			else
@@ -1246,8 +1474,8 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 				low.RemoveAt((int)index);
 				indexDeleted.RemoveAt((int)index);
 			}
-			else if (high != null)
-				high.GetInternal((int)(index / fragment)).RemoveAt(index % fragment);
+			else
+				high?.GetInternal((int)(index / fragment)).RemoveAt(index % fragment);
 		}
 		else
 			RemoveNotFromEnd(index);
@@ -1310,7 +1538,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			SetRangeInternal(index, bigList);
 		}
 		else
-			SetRange(index, Create(collection, CollectionLowCreator));
+			SetRange(index, CollectionLowCreator(collection));
 	}
 
 	internal virtual void SetRangeAndSizeInternal(mpz_t index, TCertain list)
@@ -1326,12 +1554,12 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			return;
 		if (!isHigh && low != null)
 		{
-			TLow lowList = Create(bigList, CollectionLowCreator);
-			if (index == 0 && count == fragment && lowList.Count == fragment)
+			TLow lowList = CollectionLowCreator(bigList);
+			if (index == 0 && count == fragment && lowList.Length == fragment)
 				low = lowList;
 			else
-				low.SetRangeAndSizeInternal((int)index, lowList.Count, lowList);
-			indexDeleted.SetRangeAndSizeInternal((int)index, lowList.Count, new((int)count, false));
+				low.SetRangeAndSizeInternal((int)index, lowList.Length, lowList);
+			indexDeleted.SetRangeAndSizeInternal((int)index, lowList.Length, new((int)count, false));
 		}
 		else if (high != null)
 		{
@@ -1413,18 +1641,17 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 		public bool MoveNext()
 		{
-			if (index < list._size)
+			if (index >= list._size)
+				return MoveNextRare();
+			try
 			{
-				try
-				{
-					while (!list.TryGet(index, out current))
-						index++;
+				while (!list.TryGet(index, out current))
 					index++;
-					return true;
-				}
-				catch
-				{
-				}
+				index++;
+				return true;
+			}
+			catch
+			{
 			}
 			return MoveNextRare();
 		}
@@ -1457,7 +1684,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 }
 #if RELEASE
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public class BitList : ListBase<bool, BitList>, ICloneable
@@ -1540,9 +1767,9 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			while (byteArray.Length - j >= 4)
 			{
 				_items[i++] = (uint)((byteArray[j] & 0xff) |
-							  ((byteArray[j + 1] & 0xff) << 8) |
-							  ((byteArray[j + 2] & 0xff) << 16) |
-							  ((byteArray[j + 3] & 0xff) << 24));
+					((byteArray[j + 1] & 0xff) << 8) |
+					((byteArray[j + 2] & 0xff) << 16) |
+					((byteArray[j + 3] & 0xff) << 24));
 				j += 4;
 			}
 			switch (byteArray.Length - j)
@@ -1668,7 +1895,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		ListChanged?.Invoke(this);
 	}
 
-	public void SetAll(bool value)
+	public virtual void SetAll(bool value)
 	{
 		uint fillValue = value ? 0xffffffff : 0;
 		int ints = GetArrayLength(_size, BitsPerInt);
@@ -1676,7 +1903,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			_items[i] = fillValue;
 	}
 
-	public BitList And(BitList value)
+	public virtual BitList And(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -1688,7 +1915,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public BitList Or(BitList value)
+	public virtual BitList Or(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -1700,7 +1927,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public BitList Xor(BitList value)
+	public virtual BitList Xor(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -1712,13 +1939,15 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public BitList Not()
+	public virtual BitList Not()
 	{
 		int ints = GetArrayLength(_size, BitsPerInt);
 		for (int i = 0; i < ints; i++)
 			_items[i] = ~_items[i];
 		return this;
 	}
+
+	public override Span<bool> AsSpan(int index, int count) => throw new NotSupportedException();
 
 	protected override void ClearInternal(int index, int count)
 	{
@@ -1740,8 +1969,8 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 
 	//protected override int CompareToInternal(BitList other)
 	//{
-	//	int count = Min(_size, other._size), c;
-	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
+	//	int _size = Min(_size, other._size), c;
+	//	(int intCount, int bitsCount) = DivRem(_size, BitsPerInt);
 	//	for (int i = 0; i < intCount; i++)
 	//		if ((c = _items[i].CompareTo(other._items[i])) != 0)
 	//			return c;
@@ -1767,7 +1996,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return false;
 	}
 
-	public static void CopyBits(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
+	public static void CopyBits(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
 	{
 		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
@@ -1885,7 +2114,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		}
 	}
 
-	private static void CheckParams(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
+	private static void CheckParams(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
 	{
 		if (sourceBits == null)
 			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
@@ -1909,7 +2138,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	public object Clone()
+	public virtual object Clone()
 	{
 		BitList bitList = new(_items) { _size = _size };
 		return bitList;
@@ -1957,12 +2186,17 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
-	public override void Dispose() => GC.SuppressFinalize(this);
+	public override void Dispose()
+	{
+		_items = default!;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
 
 	//protected override bool EqualsInternal(BitList other)
 	//{
-	//	int count = Min(_size, other._size);
-	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
+	//	int _size = Min(_size, other._size);
+	//	(int intCount, int bitsCount) = DivRem(_size, BitsPerInt);
 	//	for (int i = 0; i < intCount; i++)
 	//		if (_items[i] != other._items[i])
 	//			return false;
@@ -2037,7 +2271,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return -1;
 	}
 
-	public void InsertRange(int index, IEnumerable collection)
+	public virtual void InsertRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -2109,7 +2343,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public void SetRange(int index, IEnumerable collection)
+	public virtual void SetRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -2127,9 +2361,9 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			SetRange(index, new BitList(collection));
 	}
 
-	public List<uint> ToUIntList() => _items.Take(GetArrayLength(_size, BitsPerInt));
+	public virtual List<uint> ToUIntList() => _items.Take(GetArrayLength(_size, BitsPerInt));
 
-	public object SyncRoot
+	public virtual object SyncRoot
 	{
 		get
 		{
@@ -2139,28 +2373,9 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		}
 	}
 
-	public bool IsReadOnly => false;
+	public virtual bool IsReadOnly => false;
 
-	public bool IsSynchronized => false;
-}
-
-internal class BitList2 : BitList
-{
-	public BitList2() : base()
-	{
-	}
-
-	public BitList2(int capacity) : base(capacity)
-	{
-	}
-
-	public BitList2(int length, bool defaultValue) : base(length, defaultValue)
-	{
-	}
-
-	public BitList2(IEnumerable bits) : base(bits)
-	{
-	}
+	public virtual bool IsSynchronized => false;
 }
 #else
 
@@ -2261,9 +2476,9 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			while (byteArray.Length - j >= 4)
 			{
 				_items[i++] = (uint)((byteArray[j] & 0xff) |
-							  ((byteArray[j + 1] & 0xff) << 8) |
-							  ((byteArray[j + 2] & 0xff) << 16) |
-							  ((byteArray[j + 3] & 0xff) << 24));
+					((byteArray[j + 1] & 0xff) << 8) |
+					((byteArray[j + 2] & 0xff) << 16) |
+					((byteArray[j + 3] & 0xff) << 24));
 				j += 4;
 			}
 			switch (byteArray.Length - j)
@@ -2395,7 +2610,7 @@ internal override void SetInternal(int index, bool value)
 		ListChanged?.Invoke(this);
 	}
 
-	public void SetAll(bool value)
+	public virtual void SetAll(bool value)
 	{
 		uint fillValue = value ? 0xffffffff : 0;
 		int ints = GetArrayLength(_size, BitsPerInt);
@@ -2403,7 +2618,7 @@ internal override void SetInternal(int index, bool value)
 			_items[i] = fillValue;
 	}
 
-	public BitList And(BitList value)
+	public virtual BitList And(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -2415,7 +2630,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	public BitList Or(BitList value)
+	public virtual BitList Or(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -2427,7 +2642,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	public BitList Xor(BitList value)
+	public virtual BitList Xor(BitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -2439,7 +2654,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	public BitList Not()
+	public virtual BitList Not()
 	{
 		int ints = GetArrayLength(_size, BitsPerInt);
 		for (int i = 0; i < ints; i++)
@@ -2666,7 +2881,7 @@ internal override void SetInternal(int index, bool value)
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	public object Clone()
+	public virtual object Clone()
 	{
 		BitList bitList = new(_size, _items);
 		return bitList;
@@ -2800,7 +3015,7 @@ internal override void SetInternal(int index, bool value)
 		return -1;
 	}
 
-	public void InsertRange(int index, IEnumerable collection)
+	public virtual void InsertRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -2873,7 +3088,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	public void SetRange(int index, IEnumerable collection)
+	public virtual void SetRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -2891,7 +3106,7 @@ internal override void SetInternal(int index, bool value)
 			SetRange(index, new BitList(collection));
 	}
 
-	public List<uint> ToUIntList()
+	public virtual List<uint> ToUIntList()
 	{
 		int length = GetArrayLength(_size, BitsPerInt);
 		List<uint> result = new(length);
@@ -2900,7 +3115,7 @@ internal override void SetInternal(int index, bool value)
 		return result;
 	}
 
-	public object SyncRoot
+	public virtual object SyncRoot
 	{
 		get
 		{
@@ -2910,32 +3125,13 @@ internal override void SetInternal(int index, bool value)
 		}
 	}
 
-	public bool IsReadOnly => false;
+	public virtual bool IsReadOnly => false;
 
-	public bool IsSynchronized => false;
-}
-
-internal class BitList2 : BitList
-{
-	public BitList2() : base()
-	{
-	}
-
-	public BitList2(int capacity) : base(capacity)
-	{
-	}
-
-	public BitList2(int length, bool defaultValue) : base(length, defaultValue)
-	{
-	}
-
-	public BitList2(IEnumerable bits) : base(bits)
-	{
-	}
+	public virtual bool IsSynchronized => false;
 }
 #endif
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public class BigBitList : BigListBase<bool, BigBitList, BitList>
@@ -2969,9 +3165,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 			high = new((int)((capacity + (fragment - 1)) / fragment));
 			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add(new(fragment));
+				high.Add((BigBitList)(new(fragment)));
 			if (capacity % fragment != 0)
-				high.Add(new(capacity % fragment));
+				high.Add((BigBitList)(new(capacity % fragment)));
 			isHigh = true;
 		}
 		_size = 0;
@@ -2995,9 +3191,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			fragment = (mpz_t)1 << ((((length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 			high = new((int)((length + (fragment - 1)) / fragment));
 			for (mpz_t i = 0; i < length / fragment; i++)
-				high.Add(new(fragment, defaultValue));
+				high.Add((BigBitList)(new(fragment, defaultValue)));
 			if (length % fragment != 0)
-				high.Add(new(length % fragment, defaultValue));
+				high.Add((BigBitList)(new(length % fragment, defaultValue)));
 			isHigh = true;
 		}
 		_size = length;
@@ -3022,7 +3218,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			else if (bigBitList.high != null)
 			{
 				BigBitList list = new(bigBitList.Count);
-				for (int i = 0; i < bigBitList.high.Count; i++)
+				for (int i = 0; i < bigBitList.high.Length; i++)
 					list.AddRange(bigBitList.high[i]);
 				low = list.low;
 				high = list.high;
@@ -3034,10 +3230,10 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		}
 		else if (bits is BitList bitList)
 		{
-			if (bitList.Count <= CapacityFirstStep)
+			if (bitList.Length <= CapacityFirstStep)
 			{
 				low = new(bitList);
-				indexDeleted = new(bitList.Count, false);
+				indexDeleted = new(bitList.Length, false);
 				high = null;
 				fragment = 1;
 				isHigh = false;
@@ -3045,17 +3241,17 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			else
 			{
 				low = null;
-				int fragment2 = 1 << (((((mpz_t)bitList.Count - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
+				int fragment2 = 1 << (((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 				fragment = fragment2;
-				high = new(GetArrayLength(bitList.Count, fragment2));
+				high = new(GetArrayLength(bitList.Length, fragment2));
 				int index = 0;
-				for (; index <= bitList.Count - fragment2; index += fragment2)
-					high.Add(new(bitList.GetRange(index, fragment2)));
-				if (bitList.Count % fragment2 != 0)
-					high.Add(new(bitList.GetRange(index, bitList.Count - index)));
+				for (; index <= bitList.Length - fragment2; index += fragment2)
+					high.Add((BigBitList)(new(bitList.GetRange(index, fragment2))));
+				if (bitList.Length % fragment2 != 0)
+					high.Add((BigBitList)(new(bitList.GetRange(index, bitList.Length - index))));
 				isHigh = true;
 			}
-			_size = bitList.Count;
+			_size = bitList.Length;
 			_capacity = _size;
 		}
 		else if (bits is BigList<uint> bigUIntList)
@@ -3078,9 +3274,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 				high = new((int)((count + uintsFragment - 1) / uintsFragment));
 				int index = 0;
 				for (; index <= count - uintsFragment; index += uintsFragment)
-					high.Add(new(bigUIntList.GetRange(index, uintsFragment)));
+					high.Add((BigBitList)(new(bigUIntList.GetRange(index, uintsFragment))));
 				if (index != count)
-					high.Add(new(bigUIntList.GetRange(index, count - index)));
+					high.Add((BigBitList)(new(bigUIntList.GetRange(index, count - index))));
 				isHigh = true;
 			}
 			_size = count * BitsPerInt;
@@ -3117,10 +3313,8 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 				uint value = 0;
 				for (; i < BytesPerInt; i++)
 				{
-					if (b = en.MoveNext())
-						value |= (uint)en.Current << (BitsPerByte * i);
-					else
-						break;
+					if (!(b = en.MoveNext())) break;
+					value |= (uint)en.Current << (BitsPerByte * i);
 				}
 				if (i != 0)
 					values.Add(value);
@@ -3163,7 +3357,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 
 	protected override int DefaultCapacity => 256;
 
-	public void SetAll(bool value)
+	public virtual void SetAll(bool value)
 	{
 		if (!isHigh && low != null)
 		{
@@ -3176,7 +3370,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public BigBitList And(BigBitList value)
+	public virtual BigBitList And(BigBitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -3191,7 +3385,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public BigBitList Or(BigBitList value)
+	public virtual BigBitList Or(BigBitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -3206,7 +3400,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public BigBitList Xor(BigBitList value)
+	public virtual BigBitList Xor(BigBitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -3221,7 +3415,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public BigBitList Not()
+	public virtual BigBitList Not()
 	{
 		if (!isHigh && low != null)
 			low.Not();
@@ -3232,7 +3426,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public void AddRange(IEnumerable bits)
+	public virtual void AddRange(IEnumerable bits)
 	{
 		if (bits is IEnumerable<bool> bools)
 			base.AddRange(bools);
@@ -3248,7 +3442,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			AddRangeToEnd(new BigBitList(bits));
 	}
 
-	public BigList<uint> ToUIntBigList()
+	public virtual BigList<uint> ToUIntBigList()
 	{
 		if (!isHigh && low != null)
 			return new(BitList.RemoveIndexes(low, deletedIndexes).ToUIntList());
@@ -3259,12 +3453,12 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 	}
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public partial class List<T> : ListBase<T, List<T>>
+public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TCertain : List<T, TCertain>, new()
 {
-	private T[] _items;
+	private protected T[] _items;
 
 	private static readonly T[] _emptyArray = Array.Empty<T>();
 
@@ -3327,7 +3521,7 @@ public partial class List<T> : ListBase<T, List<T>>
 		}
 	}
 
-	public List(T[] array)
+	public List(params T[] array)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
@@ -3335,13 +3529,13 @@ public partial class List<T> : ListBase<T, List<T>>
 		_items = array.ToArray();
 	}
 
-	public List(int capacity, T[] array)
+	public List(int capacity, params T[] array)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
 		_size = array.Length;
 		if (array.Length > capacity)
-			_items = array;
+			_items = array.ToArray();
 		else
 		{
 			_items = new T[capacity];
@@ -3378,39 +3572,26 @@ public partial class List<T> : ListBase<T, List<T>>
 		{
 			if (value < _size)
 				throw new ArgumentOutOfRangeException(nameof(value));
-			if (value != _items.Length)
+			if (value == _items.Length)
+				return;
+			if (value > 0)
 			{
-				if (value > 0)
-				{
-					T[] newItems = new T[value];
-					if (_size > 0)
-						Array.Copy(_items, 0, newItems, 0, _size);
-					_items = newItems;
-				}
-				else
-					_items = _emptyArray;
-				ListChanged?.Invoke(this);
+				T[] newItems = new T[value];
+				if (_size > 0)
+					Array.Copy(_items, 0, newItems, 0, _size);
+				_items = newItems;
 			}
+			else
+				_items = _emptyArray;
+			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 		}
 	}
 
-	protected override Func<int, List<T>> CapacityCreator => CapacityCreatorStatic;
-
-	private static Func<int, List<T>> CapacityCreatorStatic => capacity => new(capacity);
-
-	protected override Func<IEnumerable<T>, List<T>> CollectionCreator => CollectionCreatorStatic;
-
-	private static Func<IEnumerable<T>, List<T>> CollectionCreatorStatic => collection => new(collection);
-
 	public event ListChangedHandler? ListChanged;
 
-	public List<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
+	public virtual TCertain AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
 
-	public Span<T> AsSpan() => AsSpan(0, _size);
-
-	public Span<T> AsSpan(int index) => AsSpan(index, _size - index);
-
-	public Span<T> AsSpan(int index, int count)
+	public override Span<T> AsSpan(int index, int count)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -3423,7 +3604,7 @@ public partial class List<T> : ListBase<T, List<T>>
 		return MemoryExtensions.AsSpan(_items, index, count);
 	}
 
-	public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+	public virtual int BinarySearch(int index, int count, T item, IComparer<T> comparer)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -3434,43 +3615,48 @@ public partial class List<T> : ListBase<T, List<T>>
 		return Array.BinarySearch(_items, index, count, item, comparer);
 	}
 
-	public int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
+	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
 
-	public int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
+	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
 	protected override void ClearInternal(int index, int count)
 	{
 		Array.Clear(_items, index, count);
-		ListChanged?.Invoke(this);
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 	}
 
-	public List<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
+	public virtual List<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
-	public List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
+	public virtual List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
-	protected override void Copy(ListBase<T, List<T>> source, int sourceIndex, ListBase<T, List<T>> destination, int destinationIndex, int count)
+	protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
 	{
-		Array.Copy((source as List<T> ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as List<T> ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
-		ListChanged?.Invoke(this);
+		Array.Copy((source as TCertain ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as TCertain ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 	}
 
 	protected override void CopyToInternal(Array array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
 
 	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => Array.Copy(_items, index, array, arrayIndex, count);
 
-	public override void Dispose() => GC.SuppressFinalize(this);
+	public override void Dispose()
+	{
+		_items = default!;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
 		T item = _items[index];
 		if (invoke)
-			ListChanged?.Invoke(this);
+			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 		return item;
 	}
 
 	protected override int IndexOfInternal(T item, int index, int count) => Array.IndexOf(_items, item, index, count);
 
-	public override List<T> Insert(int index, T item)
+	public override TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -3491,19 +3677,19 @@ public partial class List<T> : ListBase<T, List<T>>
 		else
 		{
 			if (index < _size)
-				Copy(this, index, this, index + 1, _size - index);
+				Copy(this as TCertain ?? throw new InvalidOperationException(), index, this as TCertain ?? throw new InvalidOperationException(), index + 1, _size - index);
 			_items[index] = item;
 		}
 		_size++;
-		ListChanged?.Invoke(this);
-		return this;
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public List<T> InsertRange(int index, ReadOnlySpan<T> span)
+	public virtual TCertain InsertRange(int index, ReadOnlySpan<T> span)
 	{
 		int count = span.Length;
 		if (count == 0)
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		if (Capacity < _size + count)
 		{
 			int min = _size + count;
@@ -3525,17 +3711,17 @@ public partial class List<T> : ListBase<T, List<T>>
 			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
 		}
 		_size += count;
-		ListChanged?.Invoke(this);
-		return this;
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	protected override List<T> InsertRangeInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		if (collection is List<T> list)
+		if (collection is List<T, TCertain> list)
 		{
 			int count = list._size;
 			if (count == 0)
-				return this;
+				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
 				int min = _size + count;
@@ -3569,13 +3755,13 @@ public partial class List<T> : ListBase<T, List<T>>
 					Array.Copy(list._items, 0, _items, index, count);
 			}
 			_size += count;
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else if (collection is T[] array)
 		{
 			int count = array.Length;
 			if (count == 0)
-				return this;
+				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
 				int min = _size + count;
@@ -3597,13 +3783,13 @@ public partial class List<T> : ListBase<T, List<T>>
 				Array.Copy(array, 0, _items, index, count);
 			}
 			_size += count;
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else if (collection is ICollection<T> list2)
 		{
 			int count = list2.Count;
 			if (count == 0)
-				return this;
+				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
 				int min = _size + count;
@@ -3625,58 +3811,58 @@ public partial class List<T> : ListBase<T, List<T>>
 				list2.CopyTo(_items, index);
 			}
 			_size += count;
-			ListChanged?.Invoke(this);
-			return this;
+			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
-			return InsertRangeInternal(index, new List<T>(collection));
+			return InsertInternal(index, CollectionCreator(collection));
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, index, count);
 #if !RELEASE
 
-	public List<T> NSort() => NSort(0, _size);
+	public virtual TCertain NSort() => NSort(0, _size);
 
-	public List<T> NSort(int index, int count)
+	public virtual TCertain NSort(int index, int count)
 	{
-		if (this is List<uint> uintList)
+		if (this as TCertain ?? throw new InvalidOperationException() is List<uint> uintList)
 		{
 			Radix.Sort(uintList._items, index, count);
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
 			return Sort(index, count, G.Comparer<T>.Default);
 	}
 
-	public List<T> NSort(Func<T, uint> function) => NSort(function, 0, _size);
+	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
-	public List<T> NSort(Func<T, uint> function, int index, int count)
+	public virtual TCertain NSort(Func<T, uint> function, int index, int count)
 	{
 		Radix.Sort(_items, function, index, count);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 #endif
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
 
-	protected override List<T> ReverseInternal(int index, int count)
+	protected override TCertain ReverseInternal(int index, int count)
 	{
 		Array.Reverse(_items, index, count);
-		ListChanged?.Invoke(this);
-		return this;
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	internal override void SetInternal(int index, T value)
 	{
 		_items[index] = value;
-		ListChanged?.Invoke(this);
+		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 	}
 
-	public List<T> Sort() => Sort(0, _size, G.Comparer<T>.Default);
+	public virtual TCertain Sort() => Sort(0, _size, G.Comparer<T>.Default);
 
-	public List<T> Sort(IComparer<T> comparer) => Sort(0, _size, comparer);
+	public virtual TCertain Sort(IComparer<T> comparer) => Sort(0, _size, comparer);
 
-	public List<T> Sort(int index, int count, IComparer<T> comparer)
+	public virtual TCertain Sort(int index, int count, IComparer<T> comparer)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -3685,14 +3871,14 @@ public partial class List<T> : ListBase<T, List<T>>
 		if (index + count > _size)
 			throw new ArgumentException(null);
 		Array.Sort(_items, index, count, comparer);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public List<T> Sort<TValue>(List<TValue> values) => Sort(values, 0, _size, G.Comparer<T>.Default);
+	public virtual TCertain Sort<TValue>(List<TValue> values) => Sort(values, 0, _size, G.Comparer<T>.Default);
 
-	public List<T> Sort<TValue>(List<TValue> values, IComparer<T>? comparer) => Sort(values, 0, _size, comparer);
+	public virtual TCertain Sort<TValue>(List<TValue> values, IComparer<T>? comparer) => Sort(values, 0, _size, comparer);
 
-	public List<T> Sort<TValue>(List<TValue> values, int index, int count, IComparer<T>? comparer)
+	public virtual TCertain Sort<TValue>(List<TValue> values, int index, int count, IComparer<T>? comparer)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -3703,15 +3889,115 @@ public partial class List<T> : ListBase<T, List<T>>
 		if (index + count > values._size)
 			throw new ArgumentException(null);
 		Array.Sort(_items, values._items, index, count, comparer);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public class List<T> : List<T, List<T>>
+{
+	public List()
+	{
 	}
 
-	public static implicit operator List<T>(T x) => new List<T>().Add(x);
+	public List(int capacity) : base(capacity)
+	{
+	}
+
+	public List(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	public List(params T[] array) : base(array)
+	{
+	}
+
+	public List(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	public List(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	{
+	}
+
+	protected override Func<int, List<T>> CapacityCreator => CapacityCreatorStatic;
+
+	private static Func<int, List<T>> CapacityCreatorStatic => capacity => new(capacity);
+
+	protected override Func<IEnumerable<T>, List<T>> CollectionCreator => CollectionCreatorStatic;
+
+	private static Func<IEnumerable<T>, List<T>> CollectionCreatorStatic => collection => new(collection);
+
+	public static implicit operator List<T>(T x) => new(x);
 
 	public static implicit operator List<T>(T[] x) => new(x);
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("{ToString()}")]
+[ComVisible(true)]
+[Serializable]
+public class String : List<char, String>
+{
+	public String()
+	{
+	}
+
+	public String(int capacity) : base(capacity)
+	{
+	}
+
+	public String(IEnumerable<char> collection) : base(collection)
+	{
+	}
+
+	public String(params char[] array) : base(array)
+	{
+	}
+
+	public String(ReadOnlySpan<char> span) : base(span)
+	{
+	}
+
+	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection)
+	{
+	}
+
+	public String(int capacity, params char[] array) : base(capacity, array)
+	{
+	}
+
+	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span)
+	{
+	}
+
+	protected override Func<int, String> CapacityCreator => CapacityCreatorStatic;
+
+	private static Func<int, String> CapacityCreatorStatic => capacity => new(capacity);
+
+	protected override Func<IEnumerable<char>, String> CollectionCreator => CollectionCreatorStatic;
+
+	private static Func<IEnumerable<char>, String> CollectionCreatorStatic => collection => new(collection);
+
+	public override string ToString() => new(AsSpan());
+
+	public static implicit operator String(char x) => new(x);
+
+	public static implicit operator String(char[] x) => new(x);
+
+	public static implicit operator String(string x) => new((ReadOnlySpan<char>)x);
+}
+
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
@@ -3744,9 +4030,9 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 			high = new((int)((capacity + (fragment - 1)) / fragment));
 			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add(new(fragment));
+				high.Add((BigList<T>)(new(fragment)));
 			if (capacity % fragment != 0)
-				high.Add(new(capacity % fragment));
+				high.Add((BigList<T>)(new(capacity % fragment)));
 			isHigh = true;
 		}
 		_size = 0;
@@ -3861,9 +4147,9 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 			//	{
 			//		destinationBits[sourceCurrentIntIndex + intOffset] = (uint)buff;
 			//		buff >>= fragment;
-			//		if (sourceCurrentIntIndex + 1 < sourceBits.Count) buff |= ((ulong)sourceBits[sourceCurrentIntIndex + 1]) << bitsOffset;
+			//		if (sourceCurrentIntIndex + 1 < sourceBits.Length) buff |= ((ulong)sourceBits[sourceCurrentIntIndex + 1]) << bitsOffset;
 			//	}
-			//	if (sourceEndIntIndex + intOffset < destinationBits.Count)
+			//	if (sourceEndIntIndex + intOffset < destinationBits.Length)
 			//	{
 			//		ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
 			//		buff &= destinationMask;
@@ -3939,7 +4225,7 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 	}
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
 public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
@@ -4067,24 +4353,23 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		{
 			if (value < _size)
 				throw new ArgumentOutOfRangeException(nameof(value));
-			if (value != _capacity)
+			if (value == _capacity)
+				return;
+			if (value > 0)
 			{
-				if (value > 0)
-				{
-					T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
-					if (_size > 0)
-						CopyMemory(_items, newItems, _size);
-					Marshal.FreeHGlobal((IntPtr)_items);
-					_items = newItems;
-				}
-				else
-				{
-					Marshal.FreeHGlobal((IntPtr)_items);
-					_items = _emptyArray;
-				}
-				_capacity = value;
-				ListChanged?.Invoke(this);
+				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
+				if (_size > 0)
+					CopyMemory(_items, newItems, _size);
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = newItems;
 			}
+			else
+			{
+				Marshal.FreeHGlobal((IntPtr)_items);
+				_items = _emptyArray;
+			}
+			_capacity = value;
+			ListChanged?.Invoke(this);
 		}
 	}
 
@@ -4098,13 +4383,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	public event ListChangedHandler? ListChanged;
 
-	public NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
+	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
 
-	public Span<T> AsSpan() => AsSpan(0, _size);
-
-	public Span<T> AsSpan(int index) => AsSpan(index, _size - index);
-
-	public Span<T> AsSpan(int index, int count)
+	public override Span<T> AsSpan(int index, int count)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -4123,9 +4404,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		ListChanged?.Invoke(this);
 	}
 
-	public NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
+	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
-	public NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
+	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
 	protected override void Copy(ListBase<T, NList<T>> source, int sourceIndex, ListBase<T, NList<T>> destination, int destinationIndex, int count)
 	{
@@ -4196,7 +4477,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		return this;
 	}
 
-	public NList<T> InsertRange(int index, ReadOnlySpan<T> span)
+	public virtual NList<T> InsertRange(int index, ReadOnlySpan<T> span)
 	{
 		int count = span.Length;
 		if (count == 0)
@@ -4227,7 +4508,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		return this;
 	}
 
-	protected override NList<T> InsertRangeInternal(int index, IEnumerable<T> collection)
+	protected override NList<T> InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is NList<T> list)
 		{
@@ -4334,7 +4615,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			return this;
 		}
 		else
-			return InsertRangeInternal(index, new NList<T>(collection));
+			return InsertInternal(index, new NList<T>(collection));
 	}
 
 	protected override int LastIndexOfInternal(T item, int index, int count)
@@ -4362,9 +4643,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		ListChanged?.Invoke(this);
 	}
 
-	public NList<T> Sort() => Sort(0, _size);
+	public virtual NList<T> Sort() => Sort(0, _size);
 
-	public NList<T> Sort(int index, int count)
+	public virtual NList<T> Sort(int index, int count)
 	{
 		if (this is NList<uint> uintList)
 		{
@@ -4377,9 +4658,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			throw new NotSupportedException();
 	}
 
-	public NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
+	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
-	public NList<T> Sort(Func<T, uint> function, int index, int count) =>
+	public virtual NList<T> Sort(Func<T, uint> function, int index, int count) =>
 #if !RELEASE
 		//Radix.Sort(_items + index, function, count);
 #endif
@@ -4388,7 +4669,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 public class Compact2dList<T> : IList<List<T>>
 {
 	private readonly List<T> main;
@@ -4434,7 +4715,7 @@ public class Compact2dList<T> : IList<List<T>>
 		get => main.Capacity;
 		set
 		{
-			if (value < main.Count)
+			if (value < main.Length)
 				throw new ArgumentOutOfRangeException(nameof(value));
 			if (value != main.Capacity)
 				main.Capacity = value;
@@ -4442,14 +4723,14 @@ public class Compact2dList<T> : IList<List<T>>
 		}
 	}
 
-	public virtual int Count => lengths.Count;
-	public bool IsReadOnly => false;
+	public virtual int Length => lengths.Length;
+	public virtual bool IsReadOnly => false;
 
 	public virtual List<T> this[int index, bool invoke = true]
 	{
 		get
 		{
-			List<T> list = new((index == starts.Count - 1 ? main.Count : starts[index + 1]) - starts[index], main.GetRange(starts[index], lengths[index]));
+			List<T> list = new((index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index], main.GetRange(starts[index], lengths[index]));
 			if (invoke)
 				ListChanged?.Invoke(this);
 			list.ListChanged += l => this[index] = l;
@@ -4458,13 +4739,13 @@ public class Compact2dList<T> : IList<List<T>>
 		set
 		{
 			ShiftCapacities(index, value.Capacity);
-			main.ReplaceRange(starts[index], Min(value.Count, (index == starts.Count - 1 ? main.Count : starts[index + 1]) - starts[index]), value);
-			lengths[index] = value.Count;
+			main.ReplaceRange(starts[index], Min(value.Length, (index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index]), value);
+			lengths[index] = value.Length;
 			ListChanged?.Invoke(this);
 		}
 	}
 
-	List<T> IList<List<T>>.this[int index]
+	List<T> G.IList<List<T>>.this[int index]
 	{
 		get => this[index];
 		set => this[index] = value;
@@ -4472,10 +4753,10 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual T this[int index, int innerIndex]
 	{
-		get => innerIndex < 0 || innerIndex >= (index == starts.Count - 1 ? main.Count : starts[index + 1]) - starts[index] ? throw new ArgumentOutOfRangeException(nameof(innerIndex)) : main[starts[index] + innerIndex];
+		get => innerIndex < 0 || innerIndex >= (index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index] ? throw new ArgumentOutOfRangeException(nameof(innerIndex)) : main[starts[index] + innerIndex];
 		set
 		{
-			if (innerIndex < 0 || innerIndex >= (index == starts.Count - 1 ? main.Count : starts[index + 1]) - starts[index])
+			if (innerIndex < 0 || innerIndex >= (index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index])
 				throw new ArgumentOutOfRangeException(nameof(innerIndex));
 			main[starts[index] + innerIndex] = value;
 		}
@@ -4485,8 +4766,8 @@ public class Compact2dList<T> : IList<List<T>>
 	{
 		get
 		{
-			int index2 = index.IsFromEnd ? lengths.Count - index.Value : index.Value;
-			int capacity = (index2 == starts.Count - 1 ? main.Count : starts[index2 + 1]) - starts[index2];
+			int index2 = index.IsFromEnd ? lengths.Length - index.Value : index.Value;
+			int capacity = (index2 == starts.Length - 1 ? main.Length : starts[index2 + 1]) - starts[index2];
 			int innerIndex2 = innerIndex.IsFromEnd ? capacity - innerIndex.Value : innerIndex.Value;
 			if (innerIndex2 < 0 || innerIndex2 >= capacity)
 				throw new ArgumentOutOfRangeException(nameof(innerIndex));
@@ -4494,8 +4775,8 @@ public class Compact2dList<T> : IList<List<T>>
 		}
 		set
 		{
-			int index2 = index.IsFromEnd ? lengths.Count - index.Value : index.Value;
-			int capacity = (index2 == starts.Count - 1 ? main.Count : starts[index2 + 1]) - starts[index2];
+			int index2 = index.IsFromEnd ? lengths.Length - index.Value : index.Value;
+			int capacity = (index2 == starts.Length - 1 ? main.Length : starts[index2 + 1]) - starts[index2];
 			int innerIndex2 = innerIndex.IsFromEnd ? capacity - innerIndex.Value : innerIndex.Value;
 			if (innerIndex2 < 0 || innerIndex2 >= capacity)
 				throw new ArgumentOutOfRangeException(nameof(innerIndex));
@@ -4508,8 +4789,8 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual void Add(List<T> item)
 	{
-		starts.Add(main.Count);
-		lengths.Add(item.Count);
+		starts.Add(main.Length);
+		lengths.Add(item.Length);
 		T[] toAdd = new T[item.Capacity];
 		item.CopyTo(toAdd);
 		main.AddRange(toAdd);
@@ -4518,12 +4799,12 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual void Add(int index, T item)
 	{
-		if ((index == starts.Count - 1 ? main.Count : starts[index + 1]) - starts[index] == lengths[index])
+		if ((index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index] == lengths[index])
 			ShiftCapacities(index, Max(4, lengths[index] * 2));
 		main[starts[index] + lengths[index]++] = item;
 	}
 
-	public virtual void AddRange(IEnumerable<List<T>> collection) => InsertRange(lengths.Count, collection);
+	public virtual void AddRange(IEnumerable<List<T>> collection) => InsertRange(lengths.Length, collection);
 
 	public virtual void Clear()
 	{
@@ -4550,18 +4831,18 @@ public class Compact2dList<T> : IList<List<T>>
 			array[arrayIndex + i] = this[index + i, false];
 	}
 
-	public virtual void CopyTo(List<T>[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, lengths.Count);
+	public virtual void CopyTo(List<T>[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, lengths.Length);
 
 	public virtual Compact2dList<T> Filter(Func<List<T>, bool> match)
 	{
 		Compact2dList<T> result = new();
-		for (int i = 0; i < lengths.Count; i++)
+		for (int i = 0; i < lengths.Length; i++)
 		{
 			List<T> item = this[i];
 			if (match(item))
 				result.Add(item);
 		}
-		if (result.lengths.Count < lengths.Count * 0.8)
+		if (result.lengths.Length < lengths.Length * 0.8)
 			result.TrimExcess();
 		return result;
 	}
@@ -4569,13 +4850,13 @@ public class Compact2dList<T> : IList<List<T>>
 	public virtual Compact2dList<T> Filter(Func<List<T>, int, bool> match)
 	{
 		Compact2dList<T> result = new();
-		for (int i = 0; i < lengths.Count; i++)
+		for (int i = 0; i < lengths.Length; i++)
 		{
 			List<T> item = this[i];
 			if (match(item, i))
 				result.Add(item);
 		}
-		if (result.lengths.Count < lengths.Count * 0.8)
+		if (result.lengths.Length < lengths.Length * 0.8)
 			result.TrimExcess();
 		return result;
 	}
@@ -4583,28 +4864,28 @@ public class Compact2dList<T> : IList<List<T>>
 	public virtual Compact2dList<T> FilterInPlace(Func<List<T>, bool> match)
 	{
 		int targetIndex = 0;
-		for (int i = 0; i < lengths.Count; i++)
+		for (int i = 0; i < lengths.Length; i++)
 		{
 			List<T> item = this[i];
 			if (match(item))
 				this[targetIndex++] = item;
 		}
-		starts.RemoveRange(targetIndex, starts.Count - targetIndex);
-		lengths.RemoveRange(targetIndex, lengths.Count - targetIndex);
+		starts.Remove(targetIndex);
+		lengths.Remove(targetIndex);
 		return this;
 	}
 
 	public virtual Compact2dList<T> FilterInPlace(Func<List<T>, int, bool> match)
 	{
 		int targetIndex = 0;
-		for (int i = 0; i < lengths.Count; i++)
+		for (int i = 0; i < lengths.Length; i++)
 		{
 			List<T> item = this[i];
 			if (match(item, i))
 				this[targetIndex++] = item;
 		}
-		starts.RemoveRange(targetIndex, starts.Count - targetIndex);
-		lengths.RemoveRange(targetIndex, lengths.Count - targetIndex);
+		starts.Remove(targetIndex);
+		lengths.Remove(targetIndex);
 		return this;
 	}
 
@@ -4620,7 +4901,7 @@ public class Compact2dList<T> : IList<List<T>>
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > lengths.Count)
+		if (index + count > lengths.Length)
 			throw new ArgumentException(null);
 		Compact2dList<T> list = new();
 		for (int i = index; i < index + count; i++)
@@ -4634,14 +4915,14 @@ public class Compact2dList<T> : IList<List<T>>
 		if (start.IsFromEnd)
 		{
 			if (end.IsFromEnd)
-				return GetRange(lengths.Count - start.Value, start.Value - end.Value);
+				return GetRange(lengths.Length - start.Value, start.Value - end.Value);
 			else
-				return GetRange(lengths.Count - start.Value, end.Value - lengths.Count + start.Value);
+				return GetRange(lengths.Length - start.Value, end.Value - lengths.Length + start.Value);
 		}
 		else
 		{
 			if (end.IsFromEnd)
-				return GetRange(start.Value, lengths.Count - end.Value - start.Value);
+				return GetRange(start.Value, lengths.Length - end.Value - start.Value);
 			else
 				return GetRange(start.Value, end.Value - start.Value);
 		}
@@ -4664,9 +4945,9 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual int IndexOf(List<T> item, int index)
 	{
-		if (index > lengths.Count)
+		if (index > lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		for (int i = Max(index, 0); i < lengths.Count; i++)
+		for (int i = Max(index, 0); i < lengths.Length; i++)
 			if (OptimizedLinq.Equals(this[i], item))
 				return i;
 		return -1;
@@ -4674,9 +4955,9 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual int IndexOf(List<T> item, int index, int count)
 	{
-		if (index > lengths.Count)
+		if (index > lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > lengths.Count - count)
+		if (count < 0 || index > lengths.Length - count)
 			throw new ArgumentOutOfRangeException(nameof(count));
 		for (int i = index; i < index + count; i++)
 			if (OptimizedLinq.Equals(this[i], item))
@@ -4686,12 +4967,12 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual void Insert(int index, List<T> item)
 	{
-		if ((uint)index > (uint)lengths.Count)
+		if ((uint)index > (uint)lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		starts.Add((starts.Count == 0 ? 0 : starts[^1]) + item.Capacity);
-		for (int i = starts.Count - 2; i >= index + 1; i--)
+		starts.Add((starts.Length == 0 ? 0 : starts[^1]) + item.Capacity);
+		for (int i = starts.Length - 2; i >= index + 1; i--)
 			starts[i] = starts[i - 1] + item.Capacity;
-		lengths.Insert(index, item.Count);
+		lengths.Insert(index, item.Length);
 		T[] toAdd = new T[item.Capacity];
 		item.CopyTo(toAdd);
 		main.InsertRange(starts[index], toAdd);
@@ -4700,19 +4981,19 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual void InsertRange(int index, IEnumerable<List<T>> collection)
 	{
-		if (collection is null)
+		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if ((uint)index > (uint)lengths.Count)
+		if ((uint)index > (uint)lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is Compact2dList<T> dfl)
 		{
-			int indexStart = index == starts.Count ? main.Count : starts[index];
-			main.InsertRange(indexStart, dfl.main);
+			int indexStart = index == starts.Length ? main.Length : starts[index];
+			main.Insert(indexStart, dfl.main);
 			int sum = dfl.starts.Sum();
-			for (int i = index; i < starts.Count; i++)
+			for (int i = index; i < starts.Length; i++)
 				starts[i] += sum;
-			starts.InsertRange(index, dfl.starts.Convert(x => x + indexStart));
-			lengths.InsertRange(index, dfl.lengths);
+			starts.Insert(index, dfl.starts.Convert(x => x + indexStart));
+			lengths.Insert(index, dfl.lengths);
 			ListChanged?.Invoke(this);
 		}
 		else
@@ -4721,17 +5002,53 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public virtual int LastIndexOf(List<T> item)
 	{
-		if (lengths.Count == 0)
+		if (lengths.Length == 0)
 			return -1;
 		else
-			return LastIndexOf(item, lengths.Count - 1, lengths.Count);
+			return LastIndexOf(item, lengths.Length - 1, lengths.Length);
 	}
 
 	public virtual int LastIndexOf(List<T> item, int index) => LastIndexOf(item, index, index + 1);
 
 	public virtual int LastIndexOf(List<T> item, int index, int count) => throw new NotImplementedException();
 
-	public virtual bool Remove(List<T> item)
+	public virtual void Remove(int index) => Remove(index, Length - index);
+
+	public virtual void Remove(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > lengths.Length)
+			throw new ArgumentException(null);
+		if (index + count < starts.Length)
+		{
+			int diff = starts[index + count] - starts[index];
+			for (int i = index; i < starts.Length - count; i++)
+				starts[i] -= diff;
+		}
+		starts.Remove(starts.Length - count, count);
+		lengths.Remove(index, count);
+		int newPos = starts[index], oldPos = starts[index + count];
+		Shift(newPos, newPos - oldPos);
+		ListChanged?.Invoke(this);
+	}
+
+	public virtual void RemoveAt(int index)
+	{
+		if ((uint)index > (uint)lengths.Length)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		int capacity = this[index].Capacity;
+		for (int i = index; i < starts.Length; i++)
+			starts[i] -= capacity;
+		starts.RemoveAt(starts.Length - 1);
+		lengths.RemoveAt(index);
+		Shift(starts[index] + capacity, -capacity);
+		ListChanged?.Invoke(this);
+	}
+
+	public virtual bool RemoveValue(List<T> item)
 	{
 		int index = IndexOf(item);
 		if (index >= 0)
@@ -4742,53 +5059,19 @@ public class Compact2dList<T> : IList<List<T>>
 		return false;
 	}
 
-	public virtual void RemoveAt(int index)
-	{
-		if ((uint)index > (uint)lengths.Count)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		int capacity = this[index].Capacity;
-		for (int i = index; i < starts.Count; i++)
-			starts[i] -= capacity;
-		starts.RemoveAt(starts.Count - 1);
-		lengths.RemoveAt(index);
-		Shift(starts[index] + capacity, -capacity);
-		ListChanged?.Invoke(this);
-	}
-
-	public virtual void RemoveRange(int index, int count)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > lengths.Count)
-			throw new ArgumentException(null);
-		if (index + count < starts.Count)
-		{
-			int diff = starts[index + count] - starts[index];
-			for (int i = index; i < starts.Count - count; i++)
-				starts[i] -= diff;
-		}
-		starts.RemoveRange(starts.Count - count, count);
-		lengths.RemoveRange(index, count);
-		int newPos = starts[index], oldPos = starts[index + count];
-		Shift(newPos, newPos - oldPos);
-		ListChanged?.Invoke(this);
-	}
-
-	public virtual Compact2dList<T> Replace(IEnumerable<List<T>> collection) => ReplaceRangeInternal(0, lengths.Count, collection);
+	public virtual Compact2dList<T> Replace(IEnumerable<List<T>> collection) => ReplaceRangeInternal(0, lengths.Length, collection);
 
 	public virtual Compact2dList<T> ReplaceRange(int index, int count, IEnumerable<List<T>> collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if ((uint)index > (uint)lengths.Count)
+		if ((uint)index > (uint)lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > lengths.Count)
+		if (index + count > lengths.Length)
 			throw new ArgumentException(null);
 		return ReplaceRangeInternal(index, count, collection);
 	}
@@ -4797,10 +5080,10 @@ public class Compact2dList<T> : IList<List<T>>
 	{
 		if (collection is Compact2dList<T> list)
 		{
-			if (list.lengths.Count > 0)
+			if (list.lengths.Length > 0)
 			{
-				int leftMainIndex = index >= starts.Count ? main.Count : starts[index];
-				main.ReplaceRangeInternal(leftMainIndex, (index + count >= starts.Count ? main.Count : starts[index + count]) - leftMainIndex, list.main);
+				int leftMainIndex = index >= starts.Length ? main.Length : starts[index];
+				main.ReplaceRangeInternal(leftMainIndex, (index + count >= starts.Length ? main.Length : starts[index + count]) - leftMainIndex, list.main);
 				starts.ReplaceRangeInternal(index, count, list.starts);
 				lengths.ReplaceRangeInternal(index, count, list.lengths);
 			}
@@ -4812,7 +5095,7 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public static Compact2dList<T> ReturnOrConstruct(IEnumerable<List<T>> collection) => collection is Compact2dList<T> list ? list : new(collection);
 
-	public virtual void Reverse() => Reverse(0, lengths.Count);
+	public virtual void Reverse() => Reverse(0, lengths.Length);
 
 	public virtual void Reverse(int index, int count) => throw new NotImplementedException();
 
@@ -4820,11 +5103,11 @@ public class Compact2dList<T> : IList<List<T>>
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if ((uint)index > (uint)lengths.Count)
+		if ((uint)index > (uint)lengths.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is Compact2dList<T> list)
 		{
-			if (index + list.lengths.Count > lengths.Count)
+			if (index + list.lengths.Length > lengths.Length)
 				throw new ArgumentException(null);
 			return SetRangeInternal(index, list);
 		}
@@ -4840,12 +5123,12 @@ public class Compact2dList<T> : IList<List<T>>
 
 	internal virtual Compact2dList<T> SetRangeInternal(int index, Compact2dList<T> list)
 	{
-		int count = list.lengths.Count;
+		int count = list.lengths.Length;
 		int leftPos = starts[index];
-		if (index + count < lengths.Count)
+		if (index + count < lengths.Length)
 		{
-			int rightPos = index + count == starts.Count ? main.Count : starts[index + count];
-			Shift(rightPos, leftPos + list.main.Count - rightPos);
+			int rightPos = index + count == starts.Length ? main.Length : starts[index + count];
+			Shift(rightPos, leftPos + list.main.Length - rightPos);
 		}
 		if (count > 0)
 		{
@@ -4858,33 +5141,33 @@ public class Compact2dList<T> : IList<List<T>>
 
 	private void Shift(int startPos, int amount)
 	{
-		if (startPos < 0 || startPos > main.Count)
+		if (startPos < 0 || startPos > main.Length)
 			throw new ArgumentOutOfRangeException(nameof(startPos));
-		if ((uint)(main.Count + amount) > int.MaxValue)
+		if ((uint)(main.Length + amount) > int.MaxValue)
 			throw new ArgumentException(null);
 		if (startPos + amount < 0)
 			throw new ArgumentException(null);
-		if (startPos == main.Count)
+		if (startPos == main.Length)
 			return;
-		main.SetRange(startPos + amount, main.GetRange(startPos, main.Count - startPos));
+		main.SetRange(startPos + amount, main.GetRange(startPos, main.Length - startPos));
 	}
 
 	private void ShiftCapacities(int index, int targetCapacity)
 	{
-		if (index >= starts.Count - 1)
+		if (index >= starts.Length - 1)
 			return;
 		int count = 0, count2 = 0, targetCount = targetCapacity - (starts[index + 1] - starts[index]);
 		if (targetCount <= 0)
 			return;
 		int i;
-		for (i = index + 1; i < starts.Count && count < targetCount; i++)
+		for (i = index + 1; i < starts.Length && count < targetCount; i++)
 		{
 			count2 = count;
-			count += (i == starts.Count - 1 ? main.Count : starts[i + 1]) - starts[i] - lengths[i];
+			count += (i == starts.Length - 1 ? main.Length : starts[i + 1]) - starts[i] - lengths[i];
 		}
 		if (count < targetCount)
 		{
-			SetRange(index, GetRange(index..).Convert((x, index2) => new List<T>(Max(x.Capacity, index2 == 0 ? targetCapacity : Max(4, x.Count * 2)), x)));
+			SetRange(index, GetRange(index..).Convert((x, index2) => new List<T>(Max(x.Capacity, index2 == 0 ? targetCapacity : Max(4, x.Length * 2)), x)));
 			return;
 		}
 		i--;
@@ -4900,7 +5183,7 @@ public class Compact2dList<T> : IList<List<T>>
 	public virtual Compact2dList<T> Shuffle()
 	{
 		Random random = new();
-		for (int i = lengths.Count; i > 0; i--)
+		for (int i = lengths.Length; i > 0; i--)
 		{
 			int swapIndex = random.Next(i);
 			(this[swapIndex], this[i - 1]) = (this[i - 1], this[swapIndex]);
@@ -4908,46 +5191,46 @@ public class Compact2dList<T> : IList<List<T>>
 		return this as Compact2dList<T> ?? throw new InvalidOperationException();
 	}
 
-	public virtual Compact2dList<T> Skip(int count) => GetRange(Min(count, lengths.Count), Max(0, lengths.Count - count));
+	public virtual Compact2dList<T> Skip(int count) => GetRange(Min(count, lengths.Length), Max(0, lengths.Length - count));
 
-	public virtual Compact2dList<T> SkipLast(int count) => GetRange(0, Max(0, lengths.Count - count));
+	public virtual Compact2dList<T> SkipLast(int count) => GetRange(0, Max(0, lengths.Length - count));
 
 	public virtual Compact2dList<T> SkipWhile(Func<List<T>, bool> function)
 	{
 		int i = 0;
-		for (; i < lengths.Count && function(this[i]); i++) ;
-		return GetRange(i, lengths.Count - i);
+		for (; i < lengths.Length && function(this[i]); i++) ;
+		return GetRange(i, lengths.Length - i);
 	}
 
 	public virtual Compact2dList<T> SkipWhile(Func<List<T>, int, bool> function)
 	{
 		int i = 0;
-		for (; i < lengths.Count && function(this[i], i); i++) ;
-		return GetRange(i, lengths.Count - i);
+		for (; i < lengths.Length && function(this[i], i); i++) ;
+		return GetRange(i, lengths.Length - i);
 	}
 
-	public virtual Compact2dList<T> Take(int count) => GetRange(0, Min(count, lengths.Count));
+	public virtual Compact2dList<T> Take(int count) => GetRange(0, Min(count, lengths.Length));
 
-	public virtual Compact2dList<T> TakeLast(int count) => GetRange(Max(0, lengths.Count - count), Min(count, lengths.Count));
+	public virtual Compact2dList<T> TakeLast(int count) => GetRange(Max(0, lengths.Length - count), Min(count, lengths.Length));
 
 	public virtual Compact2dList<T> TakeWhile(Func<List<T>, bool> function)
 	{
 		int i = 0;
-		for (; i < lengths.Count && function(this[i]); i++) ;
+		for (; i < lengths.Length && function(this[i]); i++) ;
 		return GetRange(0, i);
 	}
 
 	public virtual Compact2dList<T> TakeWhile(Func<List<T>, int, bool> function)
 	{
 		int i = 0;
-		for (; i < lengths.Count && function(this[i], i); i++) ;
+		for (; i < lengths.Length && function(this[i], i); i++) ;
 		return GetRange(0, i);
 	}
 
 	public virtual List<T>[] ToArray()
 	{
-		List<T>[] array = new List<T>[lengths.Count];
-		for (int i = 0; i < lengths.Count; i++)
+		List<T>[] array = new List<T>[lengths.Length];
+		for (int i = 0; i < lengths.Length; i++)
 			array[i] = this[i];
 		return array;
 	}
@@ -4955,8 +5238,8 @@ public class Compact2dList<T> : IList<List<T>>
 	public virtual void TrimExcess()
 	{
 		int threshold = (int)(main.Capacity * 0.9);
-		if (main.Count < threshold)
-			Capacity = main.Count;
+		if (main.Length < threshold)
+			Capacity = main.Length;
 		starts.TrimExcess();
 		lengths.TrimExcess();
 	}
@@ -4989,11 +5272,11 @@ public class Compact2dList<T> : IList<List<T>>
 		{
 			if (!startsEnumerator.MoveNext() || !lengthsEnumerator.MoveNext())
 				return MoveNextRare();
-			if ((uint)index < (uint)list.lengths.Count)
+			if ((uint)index < (uint)list.lengths.Length)
 			{
 				start = startsEnumerator.Current;
 				length = lengthsEnumerator.Current;
-				Current = new((index == list.starts.Count - 1 ? list.main.Count : list.starts[index + 1]) - startsEnumerator.Current, list.main.GetRange(start, length));
+				Current = new((index == list.starts.Length - 1 ? list.main.Length : list.starts[index + 1]) - startsEnumerator.Current, list.main.GetRange(start, length));
 				var list_ = list;
 				var index_ = index;
 				Current.ListChanged += l => list_[index_] = l;
@@ -5005,7 +5288,7 @@ public class Compact2dList<T> : IList<List<T>>
 
 		private bool MoveNextRare()
 		{
-			index = list.lengths.Count + 1;
+			index = list.lengths.Length + 1;
 			length = 0;
 			Current = default!;
 			return false;

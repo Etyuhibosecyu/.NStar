@@ -1,13 +1,10 @@
-﻿using System.Collections;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
-using G = System.Collections.Generic;
-using static BigCollections.Extents;
-using static System.Math;
 
-namespace BigCollections;
+namespace Corlib.NStar;
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [Serializable()]
 [ComVisible(false)]
 // Внимание! Несмотря на название "SortedDictionary", этот словарь не всегда является отсортированным!
@@ -71,7 +68,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IDictionary<TKey, TValue> dictionary, IComparer<TKey>? comparer) : this(dictionary != null ? dictionary.Count : throw new ArgumentNullException(nameof(dictionary)), comparer)
 	{
 		(keys, values) = dictionary.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
-		if (keys.Count > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -86,7 +83,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? List<TKey>.TryGetCountEasilyEnumerable(keyCollection, out int count) && List<TValue>.TryGetCountEasilyEnumerable(valueCollection, out int count2) ? Min(count, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
 	{
 		(keys, values) = (keyCollection, valueCollection).RemoveDoubles();
-		if (keys.Count > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -101,7 +98,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetCountEasilyEnumerable(collection, out int count) ? count : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break();
-		if (keys.Count > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -116,7 +113,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetCountEasilyEnumerable(collection, out int count) ? count : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
-		if (keys.Count > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -147,7 +144,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	object? IDictionary.this[object key]
+	object? System.Collections.IDictionary.this[object key]
 	{
 		get
 		{
@@ -186,33 +183,33 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public IComparer<TKey> Comparer => comparer;
 
-	public int Count => keys.Count;
+	public virtual int Length => keys.Length;
 
 	public IList<TKey> Keys => GetKeyListHelper();
 
-	ICollection<TKey> IDictionary<TKey, TValue>.Keys => GetKeyListHelper();
+	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => GetKeyListHelper();
 
-	ICollection IDictionary.Keys => GetKeyListHelper();
+	System.Collections.ICollection System.Collections.IDictionary.Keys => GetKeyListHelper();
 
-	IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => GetKeyListHelper();
+	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => GetKeyListHelper();
 
 	public IList<TValue> Values => GetValueListHelper();
 
-	ICollection<TValue> IDictionary<TKey, TValue>.Values => GetValueListHelper();
+	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => GetValueListHelper();
 
-	ICollection IDictionary.Values => GetValueListHelper();
+	System.Collections.ICollection System.Collections.IDictionary.Values => GetValueListHelper();
 
-	IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => GetValueListHelper();
+	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => GetValueListHelper();
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-	bool IDictionary.IsReadOnly => false;
+	bool System.Collections.IDictionary.IsReadOnly => false;
 
-	bool IDictionary.IsFixedSize => false;
+	bool System.Collections.IDictionary.IsFixedSize => false;
 
-	bool ICollection.IsSynchronized => false;
+	bool System.Collections.ICollection.IsSynchronized => false;
 
-	object ICollection.SyncRoot
+	object System.Collections.ICollection.SyncRoot
 	{
 		get
 		{
@@ -234,7 +231,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
-	void IDictionary.Add(object key, object? value)
+	void System.Collections.IDictionary.Add(object key, object? value)
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
@@ -256,7 +253,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
 
 	public virtual void Clear()
 	{
@@ -264,7 +261,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values.Clear();
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		int index = IndexOfKey(keyValuePair.Key);
 		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
@@ -272,7 +269,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return false;
 	}
 
-	bool IDictionary.Contains(object key)
+	bool System.Collections.IDictionary.Contains(object key)
 	{
 		if (IsCompatibleKey(key))
 			return ContainsKey((TKey)key);
@@ -283,22 +280,22 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public bool ContainsValue(TValue value) => IndexOfValue(value) >= 0;
 
-	void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-		if (array.Length - arrayIndex < Count)
+		if (array.Length - arrayIndex < Length)
 			throw new ArgumentException(null);
-		for (int i = 0; i < Count; i++)
+		for (int i = 0; i < Length; i++)
 		{
 			KeyValuePair<TKey, TValue> entry = new(keys[i], values[i]);
 			array[arrayIndex + i] = entry;
 		}
 	}
 
-	void ICollection.CopyTo(Array array, int arrayIndex)
+	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
@@ -308,11 +305,11 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			throw new ArgumentException(null);
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-		if (array.Length - arrayIndex < Count)
+		if (array.Length - arrayIndex < Length)
 			throw new ArgumentException(null);
 		if (array is KeyValuePair<TKey, TValue>[] keyValuePairArray)
 		{
-			for (int i = 0; i < Count; i++)
+			for (int i = 0; i < Length; i++)
 				keyValuePairArray[i + arrayIndex] = new(keys[i], values[i]);
 		}
 		else
@@ -321,7 +318,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 				throw new ArgumentException(null);
 			try
 			{
-				for (int i = 0; i < Count; i++)
+				for (int i = 0; i < Length; i++)
 					objects[i + arrayIndex] = new KeyValuePair<TKey, TValue>(keys[i], values[i]);
 			}
 			catch (ArrayTypeMismatchException)
@@ -333,7 +330,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual TValue GetByIndex(int index)
 	{
-		if (index < 0 || index >= keys.Count)
+		if (index < 0 || index >= keys.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		return values[index];
 	}
@@ -342,13 +339,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
-	IDictionaryEnumerator IDictionary.GetEnumerator() => GetEnumerator();
+	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public virtual TKey GetKey(int index)
 	{
-		if (index < 0 || index >= keys.Count) throw new ArgumentOutOfRangeException(nameof(index));
+		if (index < 0 || index >= keys.Length) throw new ArgumentOutOfRangeException(nameof(index));
 		return keys[index];
 	}
 
@@ -368,19 +365,19 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
-		if (keys.Count <= SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length <= SortedDictionary<TKey, TValue>._sortingThreshold)
 			return keys.FindIndex(x => comparer.Compare(x, key) == 0);
 		int ret = Search(key);
 		return ret >= 0 ? ret : -1;
 	}
 
-	public virtual int IndexOfValue(TValue value) => values.IndexOf(value, 0, keys.Count);
+	public virtual int IndexOfValue(TValue value) => values.IndexOf(value, 0, keys.Length);
 
 	private void Insert(int index, TKey key, TValue value)
 	{
 		keys.Insert(index, key);
 		values.Insert(index, value);
-		if (keys.Count == 65)
+		if (keys.Length == 65)
 			keys.Sort(values, comparer);
 	}
 
@@ -399,13 +396,19 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return i >= 0;
 	}
 
-	void IDictionary.Remove(object key)
+	void System.Collections.IDictionary.Remove(object key)
 	{
 		if (IsCompatibleKey(key))
 			Remove((TKey)key);
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> keyValuePair)
+	public virtual void RemoveAt(int index)
+	{
+		keys.RemoveAt(index);
+		values.RemoveAt(index);
+	}
+
+	bool ICollection<KeyValuePair<TKey, TValue>>.RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		int index = IndexOfKey(keyValuePair.Key);
 		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
@@ -416,21 +419,15 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return false;
 	}
 
-	public virtual void RemoveAt(int index)
-	{
-		keys.RemoveAt(index);
-		values.RemoveAt(index);
-	}
-
 	public virtual int Search(TKey key)
 	{
-		if (keys.Count <= SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length <= SortedDictionary<TKey, TValue>._sortingThreshold)
 		{
 			int index = keys.IndexOf(key);
 			if (index >= 0)
 				return index;
 			else
-				return ~keys.Count;
+				return ~keys.Length;
 		}
 		else
 			return keys.BinarySearch(key, comparer);
@@ -438,7 +435,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual void SetByIndex(int index, TValue value)
 	{
-		if (index < 0 || index >= keys.Count)
+		if (index < 0 || index >= keys.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		values[index] = value;
 	}
@@ -486,7 +483,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || (index == _sortedDictionary.Count + 1))
+				if (index == 0 || (index == _sortedDictionary.Length + 1))
 					throw new InvalidOperationException();
 				return key!;
 			}
@@ -496,7 +493,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || (index == _sortedDictionary.Count + 1))
+				if (index == 0 || (index == _sortedDictionary.Length + 1))
 					throw new InvalidOperationException();
 				if (getEnumeratorRetType == DictEntry)
 					return new DictionaryEntry(key!, value);
@@ -509,7 +506,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || (index == _sortedDictionary.Count + 1))
+				if (index == 0 || (index == _sortedDictionary.Length + 1))
 					throw new InvalidOperationException();
 				return value!;
 			}
@@ -524,14 +521,14 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public bool MoveNext()
 		{
-			if ((uint)index < (uint)_sortedDictionary.Count)
+			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
 				key = _sortedDictionary.keys[index];
 				value = _sortedDictionary.values[index];
 				index++;
 				return true;
 			}
-			index = _sortedDictionary.Count + 1;
+			index = _sortedDictionary.Length + 1;
 			key = default!;
 			value = default!;
 			return false;
@@ -541,7 +538,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || index == _sortedDictionary.Count + 1)
+				if (index == 0 || index == _sortedDictionary.Length + 1)
 					throw new InvalidOperationException();
 				return new(key!, value);
 			}
@@ -578,13 +575,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public bool MoveNext()
 		{
-			if ((uint)index < (uint)_sortedDictionary.Count)
+			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
 				currentKey = _sortedDictionary.keys[index];
 				index++;
 				return true;
 			}
-			index = _sortedDictionary.Count + 1;
+			index = _sortedDictionary.Length + 1;
 			currentKey = default!;
 			return false;
 		}
@@ -595,7 +592,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || (index == _sortedDictionary.Count + 1))
+				if (index == 0 || (index == _sortedDictionary.Length + 1))
 					throw new InvalidOperationException();
 				return currentKey!;
 			}
@@ -627,7 +624,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			get
 			{
-				if (index == 0 || (index == _sortedDictionary.Count + 1))
+				if (index == 0 || (index == _sortedDictionary.Length + 1))
 					throw new InvalidOperationException();
 				return currentValue;
 			}
@@ -641,13 +638,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public bool MoveNext()
 		{
-			if ((uint)index < (uint)_sortedDictionary.Count)
+			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
 				currentValue = _sortedDictionary.values[index];
 				index++;
 				return true;
 			}
-			index = _sortedDictionary.Count + 1;
+			index = _sortedDictionary.Length + 1;
 			currentValue = default!;
 			return false;
 		}
@@ -659,7 +656,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	[DebuggerDisplay("Count = {Count}")]
+	[DebuggerDisplay("Length = {Length}")]
 	[Serializable()]
 	internal sealed class KeyList : IList<TKey>, ICollection
 	{
@@ -669,13 +666,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public TKey this[int index] { get => _dict.GetKey(index); set => throw new NotSupportedException(); }
 
-		public int Count => _dict.Count;
+		public int Length => _dict.Length;
 
 		public bool IsReadOnly => true;
 
-		bool ICollection.IsSynchronized => false;
+		bool System.Collections.ICollection.IsSynchronized => false;
 
-		object ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
+		object System.Collections.ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
 
 		public void Add(TKey key) => throw new NotSupportedException();
 
@@ -683,9 +680,9 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public bool Contains(TKey key) => _dict.ContainsKey(key);
 
-		public void CopyTo(TKey[] array, int arrayIndex) => _dict.keys.CopyTo(0, array, arrayIndex, _dict.Count);
+		public void CopyTo(TKey[] array, int arrayIndex) => _dict.keys.CopyTo(0, array, arrayIndex, _dict.Length);
 
-		void ICollection.CopyTo(Array array, int arrayIndex)
+		void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 		{
 			if (array == null)
 				throw new ArgumentNullException(nameof(array));
@@ -718,12 +715,12 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public void Insert(int index, TKey value) => throw new NotSupportedException();
 
-		public bool Remove(TKey key) => throw new NotSupportedException();
-
 		public void RemoveAt(int index) => throw new NotSupportedException();
+
+		public bool RemoveValue(TKey key) => throw new NotSupportedException();
 	}
 
-	[DebuggerDisplay("Count = {Count}")]
+	[DebuggerDisplay("Length = {Length}")]
 	[Serializable()]
 	internal sealed class ValueList : IList<TValue>, ICollection
 	{
@@ -733,13 +730,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public TValue this[int index] { get => _dict.GetByIndex(index); set => _dict.SetByIndex(index, value); }
 
-		public int Count => _dict.Count;
+		public int Length => _dict.Length;
 
 		public bool IsReadOnly => true;
 
-		bool ICollection.IsSynchronized => false;
+		bool System.Collections.ICollection.IsSynchronized => false;
 
-		object ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
+		object System.Collections.ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
 
 		public void Add(TValue key) => throw new NotSupportedException();
 
@@ -747,9 +744,9 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public bool Contains(TValue value) => _dict.ContainsValue(value);
 
-		public void CopyTo(TValue[] array, int arrayIndex) => _dict.values.CopyTo(0, array, arrayIndex, _dict.Count);
+		public void CopyTo(TValue[] array, int arrayIndex) => _dict.values.CopyTo(0, array, arrayIndex, _dict.Length);
 
-		void ICollection.CopyTo(Array array, int arrayIndex)
+		void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 		{
 			if (array == null)
 				throw new ArgumentNullException(nameof(array));
@@ -771,17 +768,17 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		public int IndexOf(TValue value) => _dict.values.IndexOf(value, 0, _dict.Count);
+		public int IndexOf(TValue value) => _dict.values.IndexOf(value, 0, _dict.Length);
 
 		public void Insert(int index, TValue value) => throw new NotSupportedException();
 
-		public bool Remove(TValue value) => throw new NotSupportedException();
-
 		public void RemoveAt(int index) => throw new NotSupportedException();
+
+		public bool RemoveValue(TValue value) => throw new NotSupportedException();
 	}
 }
 
-[DebuggerDisplay("Count = {Count}")]
+[DebuggerDisplay("Length = {Length}")]
 [Serializable()]
 [ComVisible(false)]
 // Оптимизированный словарь, который для маленького числа элементов использует поэлементное сравнение
@@ -931,7 +928,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 				high[key] = value;
 			else
 				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-			if (!isHigh && low != null && Count >= _hashThreshold)
+			if (!isHigh && low != null && Length >= _hashThreshold)
 			{
 				high = new(low, comparer);
 				low = null;
@@ -940,7 +937,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	object? IDictionary.this[object key]
+	object? System.Collections.IDictionary.this[object key]
 	{
 		get
 		{
@@ -973,12 +970,12 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public IEqualityComparer<TKey> Comparer => comparer;
 
-	public int Count
+	public virtual int Length
 	{
 		get
 		{
 			if (!isHigh && low != null)
-				return low.Count;
+				return low.Length;
 			else if (high != null)
 				return high.Count;
 			else
@@ -986,7 +983,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	public ICollection<TKey> Keys
+	public G.ICollection<TKey> Keys
 	{
 		get
 		{
@@ -999,9 +996,9 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	ICollection<TKey> IDictionary<TKey, TValue>.Keys => Keys;
+	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => Keys;
 
-	ICollection IDictionary.Keys
+	System.Collections.ICollection System.Collections.IDictionary.Keys
 	{
 		get
 		{
@@ -1014,9 +1011,9 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
-	public ICollection<TValue> Values
+	public G.ICollection<TValue> Values
 	{
 		get
 		{
@@ -1029,9 +1026,9 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	ICollection<TValue> IDictionary<TKey, TValue>.Values => Values;
+	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => Values;
 
-	ICollection IDictionary.Values
+	System.Collections.ICollection System.Collections.IDictionary.Values
 	{
 		get
 		{
@@ -1044,17 +1041,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
-	bool IDictionary.IsReadOnly => false;
+	bool System.Collections.IDictionary.IsReadOnly => false;
 
-	bool IDictionary.IsFixedSize => false;
+	bool System.Collections.IDictionary.IsFixedSize => false;
 
-	bool ICollection.IsSynchronized => false;
+	bool System.Collections.ICollection.IsSynchronized => false;
 
-	object ICollection.SyncRoot
+	object System.Collections.ICollection.SyncRoot
 	{
 		get
 		{
@@ -1066,7 +1063,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public virtual void Add(TKey key, TValue value)
 	{
-		if (!isHigh && low != null && Count >= _hashThreshold)
+		if (!isHigh && low != null && Length >= _hashThreshold)
 		{
 			high = new(low, comparer);
 			low = null;
@@ -1082,7 +1079,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
-	void IDictionary.Add(object key, object? value)
+	void System.Collections.IDictionary.Add(object key, object? value)
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
@@ -1104,7 +1101,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	void ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
 
 	public virtual void Clear()
 	{
@@ -1116,14 +1113,14 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
 	{
-		if (ContainsKey(keyValuePair.Key) && EqualityComparer<TValue>.Default.Equals(this[keyValuePair.Key], keyValuePair.Value))
+		if (TryGetValue(keyValuePair.Key, out TValue value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
 			return true;
 		return false;
 	}
 
-	bool IDictionary.Contains(object key)
+	bool System.Collections.IDictionary.Contains(object key)
 	{
 		if (IsCompatibleKey(key))
 			return ContainsKey((TKey)key);
@@ -1140,17 +1137,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	void ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
-			((ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
+			((G.ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
 		else if (high != null)
-			((ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
+			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	void ICollection.CopyTo(Array array, int arrayIndex)
+	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
 			((ICollection)low).CopyTo(array, arrayIndex);
@@ -1172,7 +1169,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
-	IDictionaryEnumerator IDictionary.GetEnumerator()
+	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator()
 	{
 		if (!isHigh && low != null)
 			return low.GetEnumerator();
@@ -1201,18 +1198,28 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	void IDictionary.Remove(object key)
+	public bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
+	{
+		if (!isHigh && low != null)
+			return low.Remove(key, out value);
+		else if (high != null)
+			return high.Remove(key, out value);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	void System.Collections.IDictionary.Remove(object key)
 	{
 		if (IsCompatibleKey(key))
 			Remove((TKey)key);
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.Remove(KeyValuePair<TKey, TValue> keyValuePair)
+	bool ICollection<KeyValuePair<TKey, TValue>>.RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		if (!isHigh && low != null)
-			return ((ICollection<KeyValuePair<TKey, TValue>>)low).Remove(keyValuePair);
+			return ((G.ICollection<KeyValuePair<TKey, TValue>>)low).Remove(keyValuePair);
 		else if (high != null)
-			return ((ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
+			return ((G.ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
@@ -1225,6 +1232,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			high.TrimExcess();
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual bool TryAdd(TKey key, TValue value)
+	{
+		if (!ContainsKey(key))
+		{
+			Add(key, value);
+			return true;
+		}
+		else
+			return false;
 	}
 
 	public virtual bool TryGetValue(TKey key, out TValue value)
@@ -1250,17 +1268,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		public TValue this[TKey key] => throw new NotSupportedException();
 
-		TValue IDictionary<TKey, TValue>.this[TKey key] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+		TValue G.IDictionary<TKey, TValue>.this[TKey key] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
-		public int Count => keys.Count;
+		public virtual int Length => keys.Length;
 
 		public IEnumerable<TKey> Keys => throw new NotSupportedException();
 
 		public IEnumerable<TValue> Values => throw new NotSupportedException();
 
-		ICollection<TKey> IDictionary<TKey, TValue>.Keys => throw new NotSupportedException();
+		G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => throw new NotSupportedException();
 
-		ICollection<TValue> IDictionary<TKey, TValue>.Values => throw new NotSupportedException();
+		G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => throw new NotSupportedException();
 
 		public bool IsReadOnly => false;
 
@@ -1301,7 +1319,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		public bool Remove(TKey key) => throw new NotSupportedException();
 
-		public bool Remove(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
+		public bool RemoveValue(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
 
 		public bool TryGetValue(TKey key, out TValue value)
 		{
@@ -1342,14 +1360,14 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 			public bool MoveNext()
 			{
-				if (index < _dict.Count)
+				if (index < _dict.Length)
 				{
 					Current = new(_dict.keys[index], _dict.values[index++]);
 					return true;
 				}
 				else
 				{
-					index = _dict.Count + 1;
+					index = _dict.Length + 1;
 					Current = default!;
 					return false;
 				}

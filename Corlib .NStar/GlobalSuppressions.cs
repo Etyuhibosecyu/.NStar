@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Design", "CA1070:Не объявляйте поля событий как виртуальные", Justification = "<Ожидание>", Scope = "member", Target = "~E:BigCollections.ListBase`2.ListChanged")]
+[assembly: SuppressMessage("Design", "CA1070:Не объявляйте поля событий как виртуальные", Justification = "<Ожидание>", Scope = "member", Target = "~E:Corlib.NStar.ListBase`2.ListChanged")]
