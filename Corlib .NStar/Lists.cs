@@ -7,7 +7,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>, IEquatable<ListBase<T, TCertain>>*/ where TCertain : ListBase<T, TCertain>, new()
+public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>*/, IEquatable<ListBase<T, TCertain>> where TCertain : ListBase<T, TCertain>, new()
 {
 	private protected int _size;
 	[NonSerialized]
@@ -332,25 +332,50 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	//public override bool Equals(object? obj)
-	//{
-	//	if (obj == null || obj is not TCertain m)
-	//		return false;
-	//	else if (_size != m._size)
-	//		return false;
-	//	else
-	//		return EqualsInternal(m);
-	//}
+	public override bool Equals(object? obj)
+	{
+		if (obj == null || obj is not G.ICollection<T> m)
+			return false;
+		else if (_size != m.Count)
+			return false;
+		else
+			return EqualsInternal(m, 0);
+	}
 
-	//bool IEquatable<ListBase<T, TCertain>>.Equals(ListBase<T, TCertain>? other) => Equals(other);
+	public virtual bool Equals(IEnumerable<T>? collection) => Equals(collection, 0);
 
-	//protected virtual bool EqualsInternal(TCertain other)
-	//{
-	//	for (int i = 0; i < _size; i++)
-	//		if (!(GetInternal(i)?.Equals(other.GetInternal(i)) ?? false))
-	//			return false;
-	//	return true;
-	//}
+	public virtual bool Equals(IEnumerable<T>? collection, int index) => EqualsInternal(collection, index);
+
+	public virtual bool Equals(ListBase<T, TCertain>? list) => Equals(list, 0);
+
+	public virtual bool Equals(ListBase<T, TCertain>? list, int index) => EqualsInternal(list, index);
+
+	protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is G.IList<T> list)
+		{
+			for (int i = 0; i < list.Count; i++)
+				if (!(GetInternal(index + i)?.Equals(list[i]) ?? list[i] is null))
+					return false;
+			return true;
+		}
+		else
+		{
+			foreach (T item in collection)
+				if (!(GetInternal(index++)?.Equals(item) ?? item is null))
+					return false;
+			return true;
+		}
+	}
 
 	public virtual bool Exists(Predicate<T> match) => FindIndex(match) != -1;
 
@@ -499,10 +524,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private Enumerator GetEnumeratorInternal() => new(this);
 
-	//public override int GetHashCode()
-	//{
-	//	return _size < 3 ? 1234567890 : (GetInternal(0)?.GetHashCode() ?? 0) ^ (GetInternal(1)?.GetHashCode() ?? 0) ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
-	//}
+	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 9 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 9 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
 
 	public virtual TCertain GetRange(int index, int count)
 	{
@@ -560,29 +582,18 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int count)
 	{
+		if (index > _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0 || index > _size - count)
+			throw new ArgumentOutOfRangeException(nameof(count));
 		if (count == 0 || !collection.Any())
 		{
 			return -1;
 		}
-		if (collection is not G.IList<T> list)
-			return IndexOf(CollectionCreator(collection));
-		int j = 0;
-		for (int i = 0; i - j <= count - list.Count; i++)
-		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] is null)
-			{
-				j++;
-				if (j >= list.Count)
-				{
-					return i - j + 2;
-				}
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
+		int otherCount = collection.Count();
+		for (int i = 0; i <= count - otherCount; i++)
+			if (EqualsInternal(collection, index + i))
+				return index + i;
 		return -1;
 	}
 
@@ -725,29 +736,24 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int count)
 	{
+		if ((_size != 0) && (index < 0))
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if ((_size != 0) && (count < 0))
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (_size == 0)
+			return -1;
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(count));
 		if (count == 0 || !collection.Any())
 		{
 			return -1;
 		}
-		if (collection is not G.IList<T> list)
-			return IndexOf(CollectionCreator(collection));
-		int startIndex = index + 1 - count, j = list.Count - 1;
-		for (int i = count - 1; i - j <= count - list.Count; i--)
-		{
-			if (this[startIndex + i]?.Equals(list[j]) ?? list[j] is null)
-			{
-				j--;
-				if (j < 0)
-				{
-					return i - j;
-				}
-			}
-			else if (j != 0)
-			{
-				i += list.Count - 1 - j;
-				j = list.Count - 1;
-			}
-		}
+		int startIndex = index + 1 - count, otherCount = collection.Count();
+		for (int i = count - otherCount; i >= 0; i--)
+			if (EqualsInternal(collection, startIndex + i))
+				return startIndex + i;
 		return -1;
 	}
 
@@ -2193,26 +2199,19 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		GC.SuppressFinalize(this);
 	}
 
-	//protected override bool EqualsInternal(BitList other)
-	//{
-	//	int _size = Min(_size, other._size);
-	//	(int intCount, int bitsCount) = DivRem(_size, BitsPerInt);
-	//	for (int i = 0; i < intCount; i++)
-	//		if (_items[i] != other._items[i])
-	//			return false;
-	//	if (bitsCount != 0)
-	//	{
-	//		uint mask = ((uint)1 << bitsCount) - 1;
-	//		if ((_items[intCount] & mask) != (other._items[intCount] & mask))
-	//			return false;
-	//	}
-	//	return true;
-	//}
+	protected override bool EqualsInternal(IEnumerable<bool>? collection, int index)
+	{
+		try
+		{
+			throw new SlowOperationException();
+		}
+		catch
+		{
+		}
+		base.EqualsInternal(collection, index);
+	}
 
-	//public override int GetHashCode()
-	//{
-	//	return _items.Length < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
-	//}
+	public override int GetHashCode() => _items.Length < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
 
 	public virtual uint GetSmallRange(int index, int count)
 	{

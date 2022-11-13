@@ -67,18 +67,40 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
+public class ExperimentalException : Exception
+{
+	public ExperimentalException()
+	{
+	}
+
+	public ExperimentalException(string? message) : base(message)
+	{
+	}
+
+	public ExperimentalException(string? message, Exception? innerException) : base(message, innerException)
+	{
+	}
+
+	protected ExperimentalException(SerializationInfo info, StreamingContext context) : base(info, context)
+	{
+	}
+}
+
 [Serializable]
 public class SlowOperationException : Exception
 {
 	public SlowOperationException()
 	{
 	}
-	public SlowOperationException(string message) : base(message)
+
+	public SlowOperationException(string? message) : base(message)
 	{
 	}
-	public SlowOperationException(string message, Exception inner) : base(message, inner)
+
+	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException)
 	{
 	}
+
 	protected SlowOperationException(SerializationInfo info, StreamingContext context) : base(info, context)
 	{
 	}

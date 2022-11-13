@@ -999,6 +999,41 @@ public class HashSet<T> : ListBase<T, HashSet<T>>, ISet<T>, ICollection
 		GC.SuppressFinalize(this);
 	}
 
+	protected override bool EqualsInternal(IEnumerable<T>? collection, int index)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is G.IList<T> list)
+		{
+			for (int i = 0; i < list.Count; i++)
+			{
+				while (entries[index].hashCode < 0)
+					index++;
+				if (!(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			foreach (T item in collection)
+			{
+				while (entries[index].hashCode < 0)
+					index++;
+				if (!(GetInternal(index++)?.Equals(item) ?? item is null))
+					return false;
+			}
+			return true;
+		}
+	}
+
 	public void ExceptWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -1147,14 +1182,10 @@ public class HashSet<T> : ListBase<T, HashSet<T>>, ISet<T>, ICollection
 			if (index < entries.Length - count)
 				Copy(this, index, this, index + count, entries.Length - index - count);
 			if (this == set)
-			{
-				Copy(this, 0, this, index, index);
-				Copy(this, index + count, this, index * 2, entries.Length - index - count);
-			}
+				return this as HashSet<T> ?? throw new InvalidOperationException();
 			else
 				Copy(set, 0, this, index, count);
 		}
-		ToArray();
 		return this as HashSet<T> ?? throw new InvalidOperationException();
 	}
 
