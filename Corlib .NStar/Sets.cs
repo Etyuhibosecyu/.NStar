@@ -361,21 +361,21 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return GetPrime(newSize);
 	}
 
-	public override TCertain FilterInPlace(Func<T, bool> match)
+	public override HashSet<T> FilterInPlace(Func<T, bool> match)
 	{
 		foreach (T item in this)
 			if (!match(item))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this;
 	}
 
-	public override TCertain FilterInPlace(Func<T, int, bool> match)
+	public override HashSet<T> FilterInPlace(Func<T, int, bool> match)
 	{
 		int i = 0;
 		foreach (T item in this)
 			if (!match(item, i++))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this;
 	}
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
