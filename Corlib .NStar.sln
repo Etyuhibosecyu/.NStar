@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NativeFunctions", "NativeFunctions\NativeFunctions.vcxproj", "{2363EAD2-1DC7-4B56-A741-4655A77BA25C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Corlib .NStar", "Corlib .NStar\Corlib .NStar.csproj", "{8BA75BAE-2295-44D7-9483-1BAFC086F62E}"
@@ -23,18 +21,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|Any CPU.Build.0 = Debug|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|x64.ActiveCfg = Debug|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|x64.Build.0 = Debug|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|x86.ActiveCfg = Debug|Win32
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Debug|x86.Build.0 = Debug|Win32
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|Any CPU.ActiveCfg = Release|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|Any CPU.Build.0 = Release|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|x64.ActiveCfg = Release|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|x64.Build.0 = Release|x64
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|x86.ActiveCfg = Release|Win32
-		{2363EAD2-1DC7-4B56-A741-4655A77BA25C}.Release|x86.Build.0 = Release|Win32
 		{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA5F9853-28ED-4418-B687-2F2F1F1CF1B4}.Debug|x64.ActiveCfg = Debug|Any CPU

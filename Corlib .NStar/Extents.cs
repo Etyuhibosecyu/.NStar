@@ -69,7 +69,7 @@ public class EComparer<T> : IEqualityComparer<T>
 
 public class ExperimentalException : Exception
 {
-	public ExperimentalException()
+	public ExperimentalException() : this("Внимание! Эта операция является экспериментальной. Используйте на свой страх и риск. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.")
 	{
 	}
 
@@ -89,7 +89,7 @@ public class ExperimentalException : Exception
 [Serializable]
 public class SlowOperationException : Exception
 {
-	public SlowOperationException()
+	public SlowOperationException() : this("Внимание! Эта операция будет выполняться очень долго. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.")
 	{
 	}
 
@@ -108,8 +108,8 @@ public class SlowOperationException : Exception
 
 public interface IBigCollection<T> : IEnumerable<T>
 {
-	mpz_t Count { get; }
 	bool IsReadOnly { get; }
+	mpz_t Length { get; }
 
 	void Add(T item);
 	void Clear();
