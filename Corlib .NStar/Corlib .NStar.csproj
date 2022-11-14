@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<PublishSingleFile>true</PublishSingleFile>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -17,6 +16,7 @@
 
   <ItemGroup>
     <PackageReference Include="Mpir.NET" Version="0.4.0" />
+    <PackageReference Include="UnmanagedExports.Repack.Upgrade" Version="1.2.1" />
   </ItemGroup>
 
   <ItemGroup>

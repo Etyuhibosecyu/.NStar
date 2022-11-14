@@ -10,16 +10,20 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
+	[DllExport("AsSpan", CallingConvention.Cdecl)]
 	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
+	[DllExport("Contains", CallingConvention.Cdecl)]
 	public override bool Contains(T? item) => item != null && IndexOf(item) >= 0;
 
+	[DllExport("ExceptWith", CallingConvention.Cdecl)]
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
 			RemoveValue(item);
 	}
 
+	[DllExport("Insert", CallingConvention.Cdecl)]
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
@@ -30,6 +34,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	[DllExport("IntersectWith", CallingConvention.Cdecl)]
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
@@ -39,12 +44,16 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				RemoveValue(item);
 	}
 
+	[DllExport("IsProperSubsetOf", CallingConvention.Cdecl)]
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
+	[DllExport("IsProperSupersetOf", CallingConvention.Cdecl)]
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
+	[DllExport("IsSubsetOf", CallingConvention.Cdecl)]
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => other is ISet<T> set ? set.IsSupersetOf(this) : IsSubsetOf(CollectionCreator(other));
 
+	[DllExport("IsSupersetOf", CallingConvention.Cdecl)]
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -55,6 +64,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override int LastIndexOfInternal(T item, int index, int count) => throw new NotSupportedException();
 
+	[DllExport("Overlaps", CallingConvention.Cdecl)]
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -65,6 +75,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override TCertain ReverseInternal(int index, int count) => throw new NotSupportedException();
 
+	[DllExport("SetEquals", CallingConvention.Cdecl)]
 	public virtual bool SetEquals(IEnumerable<T> other)
 	{
 		if (other.TryGetCountEasily(out int count))
@@ -88,6 +99,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		}
 	}
 
+	[DllExport("SymmetricExceptWith", CallingConvention.Cdecl)]
 	public virtual void SymmetricExceptWith(IEnumerable<T> other)
 	{
 		TCertain added = new(), removed = new();
@@ -105,8 +117,10 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				}
 	}
 
+	[DllExport("TryAdd", CallingConvention.Cdecl)]
 	public abstract bool TryAdd(T item);
 
+	[DllExport("UnionWith", CallingConvention.Cdecl)]
 	public virtual void UnionWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -241,6 +255,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 
 	public event ListChangedHandler? ListChanged;
 
+	[DllExport("Add", CallingConvention.Cdecl)]
 	public override HashSet<T> Add(T item)
 	{
 		if (!Contains(item))
@@ -304,6 +319,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		ListChanged?.Invoke(this);
 	}
 
+	[DllExport("Dispose", CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		buckets = default!;
@@ -361,6 +377,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return GetPrime(newSize);
 	}
 
+	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
 	public override HashSet<T> FilterInPlace(Func<T, bool> match)
 	{
 		foreach (T item in this)
@@ -369,6 +386,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return this;
 	}
 
+	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
 	public override HashSet<T> FilterInPlace(Func<T, int, bool> match)
 	{
 		int i = 0;
@@ -378,6 +396,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return this;
 	}
 
+	[DllExport("GetEnumerator", CallingConvention.Cdecl)]
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
@@ -505,6 +524,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return candidate == 2;
 	}
 
+	[DllExport("RemoveAt", CallingConvention.Cdecl)]
 	public override HashSet<T> RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
@@ -529,6 +549,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return this;
 	}
 
+	[DllExport("RemoveValue", CallingConvention.Cdecl)]
 	public override bool RemoveValue(T? item)
 	{
 		if (item == null)
@@ -626,6 +647,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		ListChanged?.Invoke(this);
 	}
 
+	[DllExport("TryAdd", CallingConvention.Cdecl)]
 	public override bool TryAdd(T item)
 	{
 		if (Contains(item))

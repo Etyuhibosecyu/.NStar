@@ -2,12 +2,13 @@
 #if !RELEASE
 global using NativeFunctions;
 #endif
+global using RGiesecke.DllExport;
 global using System;
 global using System.Collections;
 global using G = System.Collections.Generic;
+global using System.Runtime.InteropServices;
 global using static Corlib.NStar.Extents;
 global using static System.Math;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
 namespace Corlib.NStar;
@@ -173,7 +174,7 @@ public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 
 public static partial class Extents
 {
-	public static readonly int[] primesList = { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
+	internal static readonly int[] primesList = { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
 		71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
 		191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
 		313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443,
@@ -474,9 +475,9 @@ public static partial class Extents
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
 
-	public static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
+	internal static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
 
-	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
+	internal static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
 	public static (mpz_t Quotient, int Remainder) DivRem(mpz_t left, int right)
 	{
@@ -490,7 +491,7 @@ public static partial class Extents
 		return (quotient, remainder);
 	}
 
-	public static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
+	internal static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
@@ -507,6 +508,7 @@ public static partial class Extents
 	/// <param name="div">use a conversion constant, e.g. BytesPerInt32 to get
 	/// how many ints are required to store n bytes</param>
 	/// <returns></returns>
+	[DllExport("GetArrayLength", CallingConvention.Cdecl)]
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
 }
