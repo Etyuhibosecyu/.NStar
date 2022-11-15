@@ -507,7 +507,6 @@ public static partial class Extents
 	/// <param name="div">use a conversion constant, e.g. BytesPerInt32 to get
 	/// how many ints are required to store n bytes</param>
 	/// <returns></returns>
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
 	public static void Lock(object lockObj, Action function)

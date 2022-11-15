@@ -11,7 +11,6 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain Add(T item)
 	{
 		TryAdd(item);
@@ -20,20 +19,16 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
 			RemoveValue(item);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
@@ -44,7 +39,6 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
@@ -54,16 +48,12 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				RemoveValue(item);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => other is ISet<T> set ? set.IsSupersetOf(this) : IsSubsetOf(CollectionCreator(other));
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -74,7 +64,6 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override int LastIndexOfInternal(T item, int index, int count) => throw new NotSupportedException();
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -85,7 +74,6 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override TCertain ReverseInternal(int index, int count) => throw new NotSupportedException();
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool SetEquals(IEnumerable<T> other)
 	{
 		if (other.TryGetCountEasily(out int count))
@@ -109,7 +97,6 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		}
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SymmetricExceptWith(IEnumerable<T> other)
 	{
 		TCertain added = new(), removed = new();
@@ -127,10 +114,8 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				}
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public abstract bool TryAdd(T item);
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void UnionWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -314,7 +299,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		Changed();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		buckets = default!;
@@ -372,7 +356,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return GetPrime(newSize);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
 		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
@@ -381,7 +364,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		int i = 0;
@@ -391,7 +373,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
@@ -519,7 +500,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return candidate == 2;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
@@ -544,7 +524,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool RemoveValue(T? item)
 	{
 		if (item == null)
@@ -642,7 +621,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		Changed();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool TryAdd(T item)
 	{
 		if (Contains(item))
@@ -848,7 +826,6 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void ExceptWith(IEnumerable<T> other) => Parallel.ForEach(other, item => RemoveValue(item));
 
 	public override int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
@@ -920,7 +897,6 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
@@ -932,7 +908,6 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 		});
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool IsSupersetOf(IEnumerable<T> other)
 	{
 		bool result = true;
@@ -953,7 +928,6 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 			return base.LastIndexOf(collection, index, count, out otherCount);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool Overlaps(IEnumerable<T> other)
 	{
 		bool result = false;

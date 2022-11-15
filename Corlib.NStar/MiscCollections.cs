@@ -294,7 +294,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 			Enqueue(en.Current);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual object Clone()
 	{
 		Queue<T> q = new(_size) { _size = _size };
@@ -307,7 +306,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		return q;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		if (_head < _tail)
@@ -322,7 +320,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		_size = 0;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(Array array, int index)
 	{
 		if (array == null)
@@ -344,7 +341,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 			Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Enqueue(T obj)
 	{
 		if (_size == _array.Length)
@@ -359,14 +355,12 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		_size++;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T Dequeue()
 	{
 		if (_size == 0)
@@ -378,7 +372,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		return removed;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T Peek()
 	{
 		if (_size == 0)
@@ -386,7 +379,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		return _array[_head];
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T? obj)
 	{
 		int index = _head;
@@ -404,7 +396,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	internal T GetElement(int i) => _array[(_head + i) % _array.Length];
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T[] ToArray()
 	{
 		T[] arr = new T[_size];
@@ -438,7 +429,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		_tail = (_size == capacity) ? 0 : _size;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess() => SetCapacity(_size);
 
 	[Serializable]
@@ -554,7 +544,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public virtual mpz_t Length => _size;
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual object Clone()
 	{
 		BigQueue<T> q = new(_size) { _size = _size };
@@ -572,7 +561,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		return q;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		if (!isHigh && low != null)
@@ -580,7 +568,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else high?.Clear();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(Array array, int index)
 	{
 		if (!isHigh && low != null)
@@ -589,7 +576,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			throw new InvalidOperationException("Слишком большая очередь для копирования в массив!");
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Enqueue(T obj)
 	{
 		if (_size == CapacityFirstStep && !isHigh && low != null)
@@ -627,14 +613,12 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		_size++;
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T Dequeue()
 	{
 		if (_size == 0)
@@ -653,7 +637,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T Peek()
 	{
 		if (_size == 0)
@@ -676,7 +659,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			return new();
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T? obj)
 	{
 		if (!isHigh && low != null)
@@ -702,7 +684,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T[] ToArray()
 	{
 		if (!isHigh && low != null)
@@ -711,7 +692,6 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			throw new InvalidOperationException("Слишком большая очередь для преобразования в массив!");
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess()
 	{
 		if (_size <= CapacityFirstStep)
@@ -800,7 +780,6 @@ public class LimitedQueue<T> : Queue<T>
 	{
 	}
 
-	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Enqueue(T obj)
 	{
 		if (Length == Capacity)
