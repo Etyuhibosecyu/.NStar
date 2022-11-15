@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -7,7 +7,7 @@
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <DllExportIdent>DE213E92-400C-4B67-8B09-EB9D0206326D</DllExportIdent>
+    <DllExportIdent>B9460859-ADC7-443A-AC34-2CF1AC9D5D93</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
     <DllExportNamespace>Corlib.NStar</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
