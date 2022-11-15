@@ -1,4 +1,7 @@
-﻿namespace Corlib.NStar;
+﻿using Corlib.NStar;
+using System.Linq;
+
+namespace Corlib.NStar;
 
 public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICollection where TCertain : SetBase<T, TCertain>, new()
 {
@@ -8,22 +11,29 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override TCertain Add(T item)
+	{
+		TryAdd(item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
-	public override bool Contains(T? item) => item != null && IndexOf(item) >= 0;
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
-	[DllExport("ExceptWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
 			RemoveValue(item);
 	}
 
-	[DllExport("Insert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
@@ -34,7 +44,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("IntersectWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
@@ -44,16 +54,16 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				RemoveValue(item);
 	}
 
-	[DllExport("IsProperSubsetOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
 
-	[DllExport("IsProperSupersetOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
-	[DllExport("IsSubsetOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsSubsetOf(IEnumerable<T> other) => other is ISet<T> set ? set.IsSupersetOf(this) : IsSubsetOf(CollectionCreator(other));
 
-	[DllExport("IsSupersetOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -64,7 +74,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override int LastIndexOfInternal(T item, int index, int count) => throw new NotSupportedException();
 
-	[DllExport("Overlaps", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -75,7 +85,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	private protected override TCertain ReverseInternal(int index, int count) => throw new NotSupportedException();
 
-	[DllExport("SetEquals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool SetEquals(IEnumerable<T> other)
 	{
 		if (other.TryGetCountEasily(out int count))
@@ -99,7 +109,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		}
 	}
 
-	[DllExport("SymmetricExceptWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SymmetricExceptWith(IEnumerable<T> other)
 	{
 		TCertain added = new(), removed = new();
@@ -117,10 +127,10 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 				}
 	}
 
-	[DllExport("TryAdd", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public abstract bool TryAdd(T item);
 
-	[DllExport("UnionWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void UnionWith(IEnumerable<T> other)
 	{
 		foreach (T item in other)
@@ -128,7 +138,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 	}
 }
 
-public class HashSet<T> : SetBase<T, HashSet<T>>
+public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain : HashSet<T, TCertain>, new()
 {
 	private protected struct Entry
 	{
@@ -141,13 +151,12 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		}
 	}
 
-	private protected List<int> buckets;
-	private protected List<Entry> entries;
-	private protected int freeList;
+	private protected List<int> buckets = default!;
+	private protected List<Entry> entries = default!;
 	private protected int freeCount;
-
-	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
+	private protected int freeList;
 	internal const int HashPrime = 101;
+	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
 	internal static readonly int[] primes = {
 			3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
 			1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
@@ -175,24 +184,24 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
-	public HashSet(IEnumerable<T> set) : this(set, null) { }
+	public HashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public HashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : this(set != null && set.TryGetCountEasily(out int count) ? count : 0, comparer)
+	public HashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection != null && collection.TryGetCountEasily(out int count) ? count : 0, comparer)
 	{
-		if (set == null)
-			throw new ArgumentNullException(nameof(set));
-		foreach (T pair in set)
-			TryAdd(pair);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
 	}
 
-	public HashSet(int capacity, IEnumerable<T> set) : this(capacity, set, null) { }
+	public HashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public HashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public HashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
-		if (set == null)
-			throw new ArgumentNullException(nameof(set));
-		foreach (T pair in set)
-			TryAdd(pair);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
 	}
 
 	public HashSet(params T[] array) : this((IEnumerable<T>)array)
@@ -241,27 +250,13 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 			if (value < _size)
 				throw new ArgumentOutOfRangeException(nameof(value));
 			Resize(value, false);
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
-	private protected override Func<int, HashSet<T>> CapacityCreator => x => new(x);
-
-	private protected override Func<IEnumerable<T>, HashSet<T>> CollectionCreator => x => new(x);
-
-	public virtual int FullLength => _size;
-
 	public override int Length => _size - freeCount;
 
-	public event ListChangedHandler? ListChanged;
-
-	[DllExport("Add", CallingConvention.Cdecl)]
-	public override HashSet<T> Add(T item)
-	{
-		if (!Contains(item))
-			return Insert(item, true);
-		return this;
-	}
+	public virtual int Size => _size;
 
 	private protected override void ClearInternal()
 	{
@@ -282,12 +277,12 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 	{
 		for (int i = 0; i < count; i++)
 			RemoveValue(GetInternal(index + i));
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	private protected override void Copy(ListBase<T, HashSet<T>> source, int sourceIndex, ListBase<T, HashSet<T>> destination, int destinationIndex, int count)
+	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
 	{
-		if (destination is not HashSet<T> destination2)
+		if (destination is not TCertain destination2)
 			throw new InvalidOperationException();
 		if (source != destination || sourceIndex >= destinationIndex)
 			for (int i = 0; i < count; i++)
@@ -295,7 +290,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		else
 			for (int i = count - 1; i >= 0; i--)
 				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		destination2.ListChanged?.Invoke(this);
+		destination2.Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
@@ -316,10 +311,10 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 				array[arrayIndex++] = entries[index + i + skipped].item;
 			else
 				count++;
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		buckets = default!;
@@ -377,26 +372,26 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return GetPrime(newSize);
 	}
 
-	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
-	public override HashSet<T> FilterInPlace(Func<T, bool> match)
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (T item in this)
+		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item))
 				RemoveValue(item);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
-	public override HashSet<T> FilterInPlace(Func<T, int, bool> match)
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		int i = 0;
-		foreach (T item in this)
+		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item, i++))
 				RemoveValue(item);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("GetEnumerator", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
@@ -405,7 +400,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 	{
 		T item = entries[index].item;
 		if (invoke)
-			ListChanged?.Invoke(this);
+			Changed();
 		return item;
 	}
 
@@ -450,7 +445,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		freeList = -1;
 	}
 
-	private protected virtual HashSet<T> Insert(T? item, bool add)
+	private protected virtual TCertain Insert(T? item, bool add)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -465,7 +460,7 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 			{
 				if (add)
 					throw new ArgumentException(null);
-				return this;
+				return this as TCertain ?? throw new InvalidOperationException();
 			}
 		int index;
 		if (freeCount > 0)
@@ -490,12 +485,12 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		t.item = item;
 		entries[index] = t;
 		buckets[targetBucket] = index;
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	private protected override HashSet<T> InsertInternal(int index, IEnumerable<T> collection)
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		HashSet<T> set = new(collection);
+		TCertain set = CollectionCreator(collection);
 		set.ExceptWith(this);
 		int count = set._size;
 		if (count > 0)
@@ -504,11 +499,11 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 			if (index < entries.Length - count)
 				Copy(this, index, this, index + count, entries.Length - index - count);
 			if (this == set)
-				return this as HashSet<T> ?? throw new InvalidOperationException();
+				return this as TCertain ?? throw new InvalidOperationException();
 			else
 				Copy(set, 0, this, index, count);
 		}
-		return this as HashSet<T> ?? throw new InvalidOperationException();
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	protected static bool IsPrime(int candidate)
@@ -524,13 +519,13 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		return candidate == 2;
 	}
 
-	[DllExport("RemoveAt", CallingConvention.Cdecl)]
-	public override HashSet<T> RemoveAt(int index)
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override TCertain RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		if (entries[index].item == null)
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		int hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		if (bucket != index)
@@ -546,10 +541,10 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		entries[index] = t2;
 		freeList = index;
 		freeCount++;
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("RemoveValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool RemoveValue(T? item)
 	{
 		if (item == null)
@@ -644,10 +639,10 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 		t2.item = item;
 		entries[index] = t2;
 		buckets[targetBucket] = index;
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("TryAdd", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool TryAdd(T item)
 	{
 		if (Contains(item))
@@ -658,10 +653,10 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly HashSet<T> dictionary;
+		private readonly HashSet<T, TCertain> dictionary;
 		private int index;
 
-		internal Enumerator(HashSet<T> dictionary)
+		internal Enumerator(HashSet<T, TCertain> dictionary)
 		{
 			this.dictionary = dictionary;
 			index = 0;
@@ -699,4 +694,298 @@ public class HashSet<T> : SetBase<T, HashSet<T>>
 			Current = default!;
 		}
 	}
+}
+
+public class HashSet<T> : HashSet<T, HashSet<T>>
+{
+	public HashSet()
+	{
+	}
+
+	public HashSet(int capacity) : base(capacity)
+	{
+	}
+
+	public HashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	{
+	}
+
+	public HashSet(IEnumerable<T> set) : base(set)
+	{
+	}
+
+	public HashSet(params T[] array) : base(array)
+	{
+	}
+
+	public HashSet(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	public HashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	public HashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
+	{
+	}
+
+	public HashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
+	{
+	}
+
+	public HashSet(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	public HashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	{
+	}
+
+	public HashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
+	{
+	}
+
+	private protected override Func<int, HashSet<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, HashSet<T>> CollectionCreator => x => new(x);
+}
+
+public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
+{
+	private protected readonly object lockObj = new();
+
+	public ParallelHashSet()
+	{
+	}
+
+	public ParallelHashSet(int capacity) : base(capacity)
+	{
+	}
+
+	public ParallelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	{
+	}
+
+	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
+
+	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection != null && collection.TryGetCountEasily(out int count) ? count : 0, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		Parallel.ForEach(collection, item => TryAdd(item));
+	}
+
+	public ParallelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+
+	public ParallelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		Parallel.ForEach(collection, item => TryAdd(item));
+	}
+
+	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array)
+	{
+	}
+
+	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	{
+	}
+
+	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			lock (lockObj)
+				base[index, invoke] = value;
+		}
+	}
+
+	private protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
+
+	private protected override void ClearInternal()
+	{
+		if (_size > 0)
+		{
+			Parallel.For(0, buckets.Length, i =>
+			{
+				buckets[i] = -1;
+				entries[i] = new();
+			});
+			freeList = -1;
+			_size = 0;
+			freeCount = 0;
+		}
+	}
+
+	private protected override void ClearInternal(int index, int count)
+	{
+		Parallel.For(0, count, i => RemoveValue(GetInternal(index + i)));
+		Changed();
+	}
+
+	public override bool Contains(T? item, int index, int count) => base.Contains(item, index, count) || Lock(lockObj, base.Contains, item, index, count);
+
+	public override bool Contains(IEnumerable<T> collection, int index, int count) => Lock(lockObj, base.Contains, collection, index, count);
+
+	private protected override void Copy(ListBase<T, ParallelHashSet<T>> source, int sourceIndex, ListBase<T, ParallelHashSet<T>> destination, int destinationIndex, int count) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, count);
+
+	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override void ExceptWith(IEnumerable<T> other) => Parallel.ForEach(other, item => RemoveValue(item));
+
+	public override int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
+	{
+		lock (lockObj)
+			return base.IndexOf(collection, index, count, out otherCount);
+	}
+
+	private protected override int IndexOfInternal(T item, int index, int count)
+	{
+		int foundIndex = base.IndexOfInternal(item, index, count);
+		return foundIndex < 0 ? foundIndex : Lock(lockObj, base.IndexOfInternal, item, index, count);
+	}
+
+	public override ParallelHashSet<T> Insert(int index, T item) => Lock(lockObj, base.Insert, index, item);
+
+	public override ParallelHashSet<T> Insert(int index, IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
+
+	private protected override ParallelHashSet<T> Insert(T? item, bool add)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			Initialize(0, out buckets, out entries);
+		if (buckets == null)
+			throw new InvalidOperationException();
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int targetBucket = hashCode % buckets.Length;
+		for (int i = buckets[targetBucket]; i >= 0; i = entries[i].next)
+			if (entries[i].hashCode == hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (add)
+					throw new ArgumentException(null);
+				return this;
+			}
+		lock (lockObj)
+		{
+			for (int i = buckets[targetBucket]; i >= 0; i = entries[i].next)
+				if (entries[i].hashCode == hashCode && Comparer.Equals(entries[i].item, item))
+				{
+					if (add)
+						throw new ArgumentException(null);
+					return this;
+				}
+			int index;
+			if (freeCount > 0)
+			{
+				index = freeList;
+				freeList = entries[index].next;
+				freeCount--;
+			}
+			else
+			{
+				if (_size == entries.Length)
+				{
+					Resize();
+					targetBucket = hashCode % buckets.Length;
+				}
+				index = _size;
+				_size++;
+			}
+			Entry t = entries[index];
+			t.hashCode = hashCode;
+			t.next = buckets[targetBucket];
+			t.item = item;
+			entries[index] = t;
+			buckets[targetBucket] = index;
+			return this;
+		}
+	}
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override void IntersectWith(IEnumerable<T> other)
+	{
+		if (other is not ISet<T> set)
+			set = CollectionCreator(other);
+		Parallel.ForEach(this, item =>
+		{
+			if (!set.Contains(item))
+				RemoveValue(item);
+		});
+	}
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override bool IsSupersetOf(IEnumerable<T> other)
+	{
+		bool result = true;
+		Parallel.ForEach(other, (item, pls) =>
+		{
+			if (!Contains(item))
+			{
+				result = false;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	public override int LastIndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
+	{
+		lock (lockObj)
+			return base.LastIndexOf(collection, index, count, out otherCount);
+	}
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
+	public override bool Overlaps(IEnumerable<T> other)
+	{
+		bool result = false;
+		Parallel.ForEach(other, (item, pls) =>
+		{
+			if (Contains(item))
+			{
+				result = true;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	public override ParallelHashSet<T> RemoveAt(int index) => Lock(lockObj, base.RemoveAt, index);
+
+	public override bool RemoveValue(T? item)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			return false;
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		int last = -1;
+		for (int i = buckets[bucket]; i >= 0; last = i, i = entries[i].next)
+			if (entries[i].hashCode == hashCode && Comparer.Equals(entries[i].item, item))
+				return Lock(lockObj, base.RemoveValue, item);
+		return false;
+	}
+
+	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
+
+	public override bool TryAdd(T item) => !base.Contains(item) && Lock(lockObj, base.TryAdd, item);
 }

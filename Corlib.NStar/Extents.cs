@@ -2,7 +2,6 @@
 #if !RELEASE
 global using NativeFunctions;
 #endif
-global using RGiesecke.DllExport;
 global using System;
 global using System.Collections;
 global using G = System.Collections.Generic;
@@ -475,9 +474,9 @@ public static partial class Extents
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
 
-	internal static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
+	public static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
 
-	internal static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
+	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
 	public static (mpz_t Quotient, int Remainder) DivRem(mpz_t left, int right)
 	{
@@ -491,7 +490,7 @@ public static partial class Extents
 		return (quotient, remainder);
 	}
 
-	internal static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
+	public static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
@@ -508,7 +507,210 @@ public static partial class Extents
 	/// <param name="div">use a conversion constant, e.g. BytesPerInt32 to get
 	/// how many ints are required to store n bytes</param>
 	/// <returns></returns>
-	[DllExport("GetArrayLength", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
+	public static void Lock(object lockObj, Action function)
+	{
+		lock (lockObj)
+			function();
+	}
+
+	public static void Lock<T>(object lockObj, Action<T> function, T arg)
+	{
+		lock (lockObj)
+			function(arg);
+	}
+
+	public static void Lock<T1, T2>(object lockObj, Action<T1, T2> function, T1 arg1, T2 arg2)
+	{
+		lock (lockObj)
+			function(arg1, arg2);
+	}
+
+	public static void Lock<T1, T2, T3>(object lockObj, Action<T1, T2, T3> function, T1 arg1, T2 arg2, T3 arg3)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3);
+	}
+
+	public static void Lock<T1, T2, T3, T4>(object lockObj, Action<T1, T2, T3, T4> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5>(object lockObj, Action<T1, T2, T3, T4, T5> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6>(object lockObj, Action<T1, T2, T3, T4, T5, T6> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
+	}
+
+	public static void Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(object lockObj, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
+	{
+		lock (lockObj)
+			function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+	}
+
+	public static TResult Lock<TResult>(object lockObj, Func<TResult> function)
+	{
+		lock (lockObj)
+			return function();
+	}
+
+	public static TResult Lock<T, TResult>(object lockObj, Func<T, TResult> function, T arg)
+	{
+		lock (lockObj)
+			return function(arg);
+	}
+
+	public static TResult Lock<T1, T2, TResult>(object lockObj, Func<T1, T2, TResult> function, T1 arg1, T2 arg2)
+	{
+		lock (lockObj)
+			return function(arg1, arg2);
+	}
+
+	public static TResult Lock<T1, T2, T3, TResult>(object lockObj, Func<T1, T2, T3, TResult> function, T1 arg1, T2 arg2, T3 arg3)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, TResult>(object lockObj, Func<T1, T2, T3, T4, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15);
+	}
+
+	public static TResult Lock<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult>(object lockObj, Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult> function, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
+	{
+		lock (lockObj)
+			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+	}
 }

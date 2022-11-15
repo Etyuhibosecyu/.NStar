@@ -218,7 +218,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add(TKey key, TValue value)
 	{
 		if (key == null)
@@ -229,7 +229,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		Insert(~i, key, value);
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
 	void System.Collections.IDictionary.Add(object key, object? value)
@@ -256,7 +256,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		keys.Clear();
@@ -363,7 +363,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return valueList;
 	}
 
-	[DllExport("IndexOfKey", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfKey(TKey key)
 	{
 		if (key == null)
@@ -374,7 +374,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return ret >= 0 ? ret : -1;
 	}
 
-	[DllExport("IndexOfValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfValue(TValue value) => values.IndexOf(value, 0, keys.Length);
 
 	private void Insert(int index, TKey key, TValue value)
@@ -392,7 +392,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return key is TKey;
 	}
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Remove(TKey key)
 	{
 		int i = IndexOfKey(key);
@@ -407,7 +407,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			Remove((TKey)key);
 	}
 
-	[DllExport("RemoveAt", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void RemoveAt(int index)
 	{
 		keys.RemoveAt(index);
@@ -425,7 +425,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return false;
 	}
 
-	[DllExport("Search", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int Search(TKey key)
 	{
 		if (keys.Length <= SortedDictionary<TKey, TValue>._sortingThreshold)
@@ -440,7 +440,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			return keys.BinarySearch(key, comparer);
 	}
 
-	[DllExport("SetByIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetByIndex(int index, TValue value)
 	{
 		if (index < 0 || index >= keys.Length)
@@ -448,14 +448,14 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values[index] = value;
 	}
 
-	[DllExport("TrimExcess", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess()
 	{
 		keys.TrimExcess();
 		values.TrimExcess();
 	}
 
-	[DllExport("TryGetValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{
 		int i = IndexOfKey(key);
@@ -1071,7 +1071,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add(TKey key, TValue value)
 	{
 		if (!isHigh && low != null && Length >= _hashThreshold)
@@ -1088,7 +1088,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
 	void System.Collections.IDictionary.Add(object key, object? value)
@@ -1115,7 +1115,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		if (!isHigh && low != null)
@@ -1201,7 +1201,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		return key is TKey;
 	}
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Remove(TKey key)
 	{
 		if (!isHigh && low != null)
@@ -1238,7 +1238,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("TrimExcess", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess()
 	{
 		if (!isHigh && low != null)
@@ -1249,7 +1249,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("TryAdd", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool TryAdd(TKey key, TValue value)
 	{
 		if (!ContainsKey(key))
@@ -1261,7 +1261,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			return false;
 	}
 
-	[DllExport("TryGetValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{
 		if (!isHigh && low != null)

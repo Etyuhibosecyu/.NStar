@@ -76,7 +76,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public delegate void ListChangedHandler(TCertain newList);
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	public event ListChangedHandler? ListChanged;
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Add(T item)
 	{
 		if (_size == Capacity) EnsureCapacity(_size + 1);
@@ -100,28 +102,30 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return _size - 1;
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
 
-	[DllExport("Append", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Append(T item) => CollectionCreator(this).Add(item);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Span<T> AsSpan() => AsSpan(0, _size);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Span<T> AsSpan(Index index) => AsSpan()[index..];
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Span<T> AsSpan(int index) => AsSpan(index, _size - index);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public abstract Span<T> AsSpan(int index, int count);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Span<T> AsSpan(Range range) => AsSpan()[range];
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		if (_size > 0)
@@ -131,7 +135,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear(int index, int count)
 	{
 		if (index > _size)
@@ -145,7 +149,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract void ClearInternal(int index, int count);
 
-	[DllExport("Concat", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
 	//public virtual int CompareTo(ListBase<T, TCertain>? other)
@@ -165,13 +169,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	//	return _size.CompareTo(other._size);
 	//}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T? item, int index) => Contains(item, index, _size - index);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T? item, int index, int count)
 	{
 		if (item == null)
@@ -191,13 +195,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, _size);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(IEnumerable<T> collection, int index) => Contains(collection, index, _size - index);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(IEnumerable<T> collection, int index, int count)
 	{
 		if (count == 0 || !collection.Any())
@@ -226,13 +230,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(TCertain list, int index) => Contains((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(TCertain list, int index, int count) => Contains((IEnumerable<T>)list, index, count);
 
 	bool System.Collections.IList.Contains(object? item)
@@ -243,13 +247,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(IEnumerable<T> collection) => ContainsAny(collection, 0, _size);
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index) => ContainsAny(collection, index, _size - index);
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -259,22 +263,22 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(TCertain list) => ContainsAny((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(TCertain list, int index) => ContainsAny((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("ContainsAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAny(TCertain list, int index, int count) => ContainsAny((IEnumerable<T>)list, index, count);
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, _size);
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index) => ContainsAnyExcluding(collection, index, _size - index);
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -284,13 +288,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(TCertain list, int index) => ContainsAnyExcluding((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("ContainsAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool ContainsAnyExcluding(TCertain list, int index, int count) => ContainsAnyExcluding((IEnumerable<T>)list, index, count);
 
 	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : ListBase<TOutput, TCertainOutput>, new()
@@ -315,18 +319,18 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	[DllExport("Copy", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count) => source.Copy(source, sourceIndex, destination, destinationIndex, count);
 
 	private protected abstract void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count);
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, _size);
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(int index, T[] array, int arrayIndex, int count)
 	{
 		if (index + count > _size)
@@ -334,7 +338,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		CopyToInternal(index, array, arrayIndex, count);
 	}
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
 		if ((array != null) && (array.Rank != 1))
@@ -355,13 +359,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int count);
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public abstract void Dispose();
 
-	[DllExport("EndsWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool EndsWith(IEnumerable<T> collection) => EqualsInternal(collection, _size - collection.Count());
 
-	[DllExport("EndsWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool EndsWith(TCertain list) => EndsWith((IEnumerable<T>)list);
 
 	private protected virtual void EnsureCapacity(int min)
@@ -375,7 +379,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("Equals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool Equals(object? obj)
 	{
 		if (obj == null || obj is not G.ICollection<T> m)
@@ -386,16 +390,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return Equals(m);
 	}
 
-	[DllExport("Equals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 
-	[DllExport("Equals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Equals(IEnumerable<T>? collection, int index) => EqualsInternal(collection, index);
 
-	[DllExport("Equals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Equals(ListBase<T, TCertain>? list) => EqualsInternal(list, 0, true);
 
-	[DllExport("Equals", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Equals(ListBase<T, TCertain>? list, int index) => EqualsInternal(list, index);
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
@@ -429,10 +433,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("Exists", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Exists(Predicate<T> match) => FindIndex(match) != -1;
 
-	[DllExport("Filter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
 		TCertain result = CapacityCreator(_size);
@@ -447,7 +451,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	[DllExport("Filter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Filter(Func<T, int, bool> match)
 	{
 		TCertain result = CapacityCreator(_size);
@@ -462,7 +466,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain FilterInPlace(Func<T, bool> match)
 	{
 		int targetIndex = 0;
@@ -476,7 +480,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("FilterInPlace", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		int targetIndex = 0;
@@ -500,7 +504,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return default;
 	}
 
-	[DllExport("FindAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain FindAll(Predicate<T> match)
 	{
 		if (match == null)
@@ -512,13 +516,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	[DllExport("FindIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindIndex(Predicate<T> match) => FindIndex(0, _size, match);
 
-	[DllExport("FindIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindIndex(int startIndex, Predicate<T> match) => FindIndex(startIndex, _size - startIndex, match);
 
-	[DllExport("FindIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindIndex(int startIndex, int count, Predicate<T> match)
 	{
 		if ((uint)startIndex > (uint)_size)
@@ -544,13 +548,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return default;
 	}
 
-	[DllExport("FindLastIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindLastIndex(Predicate<T> match) => FindLastIndex(_size - 1, _size, match);
 
-	[DllExport("FindLastIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindLastIndex(int startIndex, Predicate<T> match) => FindLastIndex(startIndex, startIndex + 1, match);
 
-	[DllExport("FindLastIndex", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int FindLastIndex(int startIndex, int count, Predicate<T> match)
 	{
 		if ((uint)startIndex >= (uint)_size)
@@ -569,7 +573,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("ForEach", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain ForEach(Action<T> action)
 	{
 		if (action == null)
@@ -579,101 +583,101 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(IEnumerable<T> collection) => GetAfter(collection, 0, _size);
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(IEnumerable<T> collection, int index) => GetAfter(collection, index, _size - index);
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count, out int otherCount);
 		return index == -1 ? new() : GetRange(foundIndex + otherCount);
 	}
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(TCertain list) => GetAfter((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(TCertain list, int index) => GetAfter((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("GetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfter(TCertain list, int index, int count) => GetAfter((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(IEnumerable<T> collection) => GetAfterLast(collection, _size - 1, _size);
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index) => GetAfterLast(collection, index, index + 1);
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count, out int otherCount);
 		return index == -1 ? new() : GetRange(foundIndex + otherCount);
 	}
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(TCertain list) => GetAfterLast((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(TCertain list, int index) => GetAfterLast((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("GetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetAfterLast(TCertain list, int index, int count) => GetAfterLast((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(IEnumerable<T> collection) => GetBefore(collection, 0, _size);
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(IEnumerable<T> collection, int index) => GetBefore(collection, index, _size - index);
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count);
 		return index == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
 	}
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(TCertain list) => GetBefore((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(TCertain list, int index) => GetBefore((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("GetBefore", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBefore(TCertain list, int index, int count) => GetBefore((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(IEnumerable<T> collection) => GetBeforeLast(collection, _size - 1, _size);
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index) => GetBeforeLast(collection, index, index + 1);
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count);
 		return index == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
 	}
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(TCertain list) => GetBeforeLast((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(TCertain list, int index) => GetBeforeLast((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("GetBeforeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeLast(TCertain list, int index, int count) => GetBeforeLast((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection) => GetBeforeSetAfter(collection, 0, _size);
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index) => GetBeforeSetAfter(collection, index, _size - index);
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count, out int otherCount);
@@ -691,22 +695,22 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(TCertain list) => GetBeforeSetAfter((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(TCertain list, int index) => GetBeforeSetAfter((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("GetBeforeSetAfter", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfter(TCertain list, int index, int count) => GetBeforeSetAfter((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(IEnumerable<T> collection) => GetBeforeSetAfterLast(collection, _size - 1, _size);
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(IEnumerable<T> collection, int index) => GetBeforeSetAfterLast(collection, index, index + 1);
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count, out int otherCount);
@@ -724,16 +728,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list) => GetBeforeSetAfterLast((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("GetBeforeSetAfterLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index, int count) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, count);
 
-	[DllExport("GetEnumerator", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -742,15 +746,15 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private Enumerator GetEnumeratorInternal() => new(this);
 
-	[DllExport("GetHashCode", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 9 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 9 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
 
 	internal abstract T GetInternal(int index, bool invoke = true);
 
-	[DllExport("GetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetRange(int index) => GetRange(index, _size - index);
 
-	[DllExport("GetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetRange(int index, int count)
 	{
 		if (index < 0)
@@ -769,7 +773,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	[DllExport("GetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetRange(Range range)
 	{
 		Index start = range.Start, end = range.End;
@@ -789,13 +793,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(T item, int index) => IndexOf(item, index, _size - index);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(T item, int index, int count)
 	{
 		if (index > _size)
@@ -805,16 +809,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return IndexOfInternal(item, index, count);
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(IEnumerable<T> collection) => IndexOf(collection, 0, _size);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(IEnumerable<T> collection, int index) => IndexOf(collection, index, _size - index);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int count) => IndexOf(collection, index, count, out _);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
 	{
 		if (index > _size)
@@ -835,16 +839,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(TCertain list) => IndexOf((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(TCertain list, int index) => IndexOf((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(TCertain list, int index, int count) => IndexOf((IEnumerable<T>)list, index, count);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(TCertain list, int index, int count, out int otherCount) => IndexOf((IEnumerable<T>)list, index, count, out otherCount);
 
 	int System.Collections.IList.IndexOf(object? item)
@@ -855,13 +859,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(IEnumerable<T> collection) => IndexOfAny(collection, 0, _size);
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(IEnumerable<T> collection, int index) => IndexOfAny(collection, index, _size - index);
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -871,22 +875,22 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(TCertain list) => IndexOfAny((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(TCertain list, int index) => IndexOfAny((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("IndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAny(TCertain list, int index, int count) => IndexOfAny((IEnumerable<T>)list, index, count);
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection) => IndexOfAnyExcluding(collection, 0, _size);
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) => IndexOfAnyExcluding(collection, index, _size - index);
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -896,18 +900,18 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(TCertain list) => IndexOfAnyExcluding((IEnumerable<T>)list, 0, _size);
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(TCertain list, int index) => IndexOfAnyExcluding((IEnumerable<T>)list, index, _size - index);
 
-	[DllExport("IndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOfAnyExcluding(TCertain list, int index, int count) => IndexOfAnyExcluding((IEnumerable<T>)list, index, count);
 
 	private protected abstract int IndexOfInternal(T item, int index, int count);
 
-	[DllExport("Insert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
@@ -935,7 +939,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	[DllExport("Insert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Insert(int index, IEnumerable<T> collection)
 	{
 		if (collection == null)
@@ -969,13 +973,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	protected static bool IsCompatibleObject(object? value) => (value is T) || (value == null && default(T) == null);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(T item) => LastIndexOf(item, _size - 1, _size);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(T item, int index) => LastIndexOf(item, index, index + 1);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(T item, int index, int count)
 	{
 		if ((_size != 0) && (index < 0))
@@ -991,16 +995,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return LastIndexOfInternal(item, index, count);
 	}
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(IEnumerable<T> collection) => LastIndexOf(collection, _size - 1, _size);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(IEnumerable<T> collection, int index) => LastIndexOf(collection, index, index + 1);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int count) => LastIndexOf(collection, index, count, out _);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
 	{
 		if ((_size != 0) && (index < 0))
@@ -1026,25 +1030,25 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(TCertain list) => LastIndexOf((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(TCertain list, int index) => LastIndexOf((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(TCertain list, int index, int count) => LastIndexOf((IEnumerable<T>)list, index, count);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(TCertain list, int index, int count, out int otherCount) => LastIndexOf((IEnumerable<T>)list, index, count, out otherCount);
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(IEnumerable<T> collection) => LastIndexOfAny(collection, _size - 1, _size);
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index) => LastIndexOfAny(collection, index, index + 1);
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -1054,22 +1058,22 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(TCertain list) => LastIndexOfAny((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(TCertain list, int index) => LastIndexOfAny((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("LastIndexOfAny", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAny(TCertain list, int index, int count) => LastIndexOfAny((IEnumerable<T>)list, index, count);
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) => LastIndexOfAnyExcluding(collection, _size - 1, _size);
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) => LastIndexOfAnyExcluding(collection, index, index + 1);
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
 		HashSet<T> hs = collection.ToHashSet();
@@ -1079,21 +1083,21 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return -1;
 	}
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(TCertain list) => LastIndexOfAnyExcluding((IEnumerable<T>)list, _size - 1, _size);
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(TCertain list, int index) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, index + 1);
 
-	[DllExport("LastIndexOfAnyExcluding", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOfAnyExcluding(TCertain list, int index, int count) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, count);
 
 	private protected abstract int LastIndexOfInternal(T item, int index, int count);
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Remove(int index) => Remove(index, _size - index);
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Remove(int index, int count)
 	{
 		if (index < 0)
@@ -1119,7 +1123,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				RemoveValue((T)item);
 	}
 
-	[DllExport("RemoveAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int RemoveAll(Predicate<T> match)
 	{
 		if (match == null)
@@ -1140,7 +1144,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	[DllExport("RemoveAt", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain RemoveAt(int index)
 	{
 		if ((uint)index >= (uint)_size)
@@ -1170,7 +1174,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	[DllExport("RemoveValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool RemoveValue(T item)
 	{
 		int index = IndexOf(item);
@@ -1182,10 +1186,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	[DllExport("Replace", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Replace(IEnumerable<T> collection) => ReplaceRangeInternal(0, _size, collection);
 
-	[DllExport("ReplaceRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain ReplaceRange(int index, int count, IEnumerable<T> collection)
 	{
 		if (collection == null)
@@ -1219,10 +1223,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return ReplaceRange(index, count, CollectionCreator(collection));
 	}
 
-	[DllExport("Reverse", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Reverse() => Reverse(0, _size);
 
-	[DllExport("Reverse", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Reverse(int index, int count)
 	{
 		if (index < 0)
@@ -1238,7 +1242,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	internal abstract void SetInternal(int index, T value);
 
-	[DllExport("SetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain SetRange(int index, IEnumerable<T> collection)
 	{
 		if (collection == null)
@@ -1271,7 +1275,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("Shuffle", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Shuffle()
 	{
 		Random random = new();
@@ -1283,13 +1287,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("Skip", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Skip(int count) => GetRange(Min(count, _size), Max(0, _size - count));
 
-	[DllExport("SkipLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain SkipLast(int count) => GetRange(0, Max(0, _size - count));
 
-	[DllExport("SkipWhile", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain SkipWhile(Func<T, bool> function)
 	{
 		int i = 0;
@@ -1297,7 +1301,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return GetRange(i, _size - i);
 	}
 
-	[DllExport("SkipWhile", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain SkipWhile(Func<T, int, bool> function)
 	{
 		int i = 0;
@@ -1305,19 +1309,19 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return GetRange(i, _size - i);
 	}
 
-	[DllExport("StartsWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0);
 
-	[DllExport("StartsWith", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool StartsWith(TCertain list) => StartsWith((IEnumerable<T>)list);
 
-	[DllExport("Take", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Take(int count) => GetRange(0, Min(count, _size));
 
-	[DllExport("TakeLast", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain TakeLast(int count) => GetRange(Max(0, _size - count), Min(count, _size));
 
-	[DllExport("TakeWhile", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain TakeWhile(Func<T, bool> function)
 	{
 		int i = 0;
@@ -1325,7 +1329,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return GetRange(0, i);
 	}
 
-	[DllExport("TakeWhile", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain TakeWhile(Func<T, int, bool> function)
 	{
 		int i = 0;
@@ -1333,7 +1337,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return GetRange(0, i);
 	}
 
-	[DllExport("ToArray", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T[] ToArray()
 	{
 		T[] array = new T[Length];
@@ -1341,7 +1345,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return array;
 	}
 
-	[DllExport("Transpose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static List<TCertain> Transpose(List<TCertain> list, bool widen = false)
 	{
 		if (list._size == 0)
@@ -1360,7 +1364,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return new_list;
 	}
 
-	[DllExport("TrimExcess", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain TrimExcess()
 	{
 		int threshold = (int)(Capacity * 0.9);
@@ -1369,7 +1373,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("TrueForAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool TrueForAll(Predicate<T> match)
 	{
 		if (match == null)
@@ -1544,7 +1548,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add(T item)
 	{
 		if (_size == Capacity && deletedCount == 0) EnsureCapacity(_size + 1);
@@ -1557,7 +1561,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			AddToEnd(item);
 	}
 
-	[DllExport("AddRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void AddRange(IEnumerable<T> collection)
 	{
 		if (collection == null)
@@ -1613,7 +1617,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		_size++;
 	}
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		if (!isHigh && low != null)
@@ -1627,7 +1631,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		deletedCount = 0;
 	}
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear(mpz_t index, mpz_t count)
 	{
 		if (!isHigh && low != null)
@@ -1648,7 +1652,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(T item)
 	{
 		try
@@ -1666,7 +1670,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(T[] array, int index)
 	{
 		if (!isHigh && low != null)
@@ -1717,7 +1721,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("GetEnumerator", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
@@ -1734,7 +1738,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			return new();
 	}
 
-	[DllExport("GetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain GetRange(mpz_t index, mpz_t count)
 	{
 		if (index < 0)
@@ -1772,13 +1776,13 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual mpz_t IndexOf(T item) => IndexOf(item, 0, _size);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual mpz_t IndexOf(T item, mpz_t index) => IndexOf(item, index, _size - index);
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual mpz_t IndexOf(T item, mpz_t index, mpz_t count)
 	{
 		if (index > _size)
@@ -1800,7 +1804,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	void IBigList<T>.Insert(mpz_t index, T item) => Add(item);
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Remove(T item)
 	{
 		mpz_t index = IndexOf(item);
@@ -1812,7 +1816,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		return false;
 	}
 
-	[DllExport("RemoveAt", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void RemoveAt(mpz_t index)
 	{
 		if (index >= _size)
@@ -1850,7 +1854,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		deletedCount++;
 	}
 
-	[DllExport("RemoveRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void RemoveRange(mpz_t index, mpz_t count)
 	{
 		if (index < 0)
@@ -1883,7 +1887,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("SetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetRange(mpz_t index, IEnumerable<T> collection)
 	{
 		if (collection == null)
@@ -1940,7 +1944,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	[DllExport("ToArray", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual T[] ToArray()
 	{
 		if (!isHigh && low != null)
@@ -1949,7 +1953,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
 	}
 
-	[DllExport("TrimExcess", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess()
 	{
 		if (_size <= CapacityFirstStep)
@@ -1964,7 +1968,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	[DllExport("TryGet", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool TryGet(mpz_t index, out T value)
 	{
 		if (index >= _capacity)
@@ -2225,7 +2229,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 					_items[last] &= ((uint)1 << bits) - 1;
 				Array.Clear(_items, last + 1, newints - last - 1);
 			}
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
@@ -2239,13 +2243,11 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 
 	private protected override int DefaultCapacity => 64;
 
-	public event ListChangedHandler? ListChanged;
-
 	internal override bool GetInternal(int index, bool invoke = true)
 	{
 		bool item = (_items[index / BitsPerInt] & (1 << (index % BitsPerInt))) != 0;
 		if (invoke)
-			ListChanged?.Invoke(this);
+			Changed();
 		return item;
 	}
 
@@ -2255,10 +2257,10 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			_items[index / BitsPerInt] |= (uint)1 << (index % BitsPerInt);
 		else
 			_items[index / BitsPerInt] &= ~((uint)1 << (index % BitsPerInt));
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("SetAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetAll(bool value)
 	{
 		uint fillValue = value ? 0xffffffff : 0;
@@ -2267,7 +2269,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			_items[i] = fillValue;
 	}
 
-	[DllExport("And", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList And(BitList value)
 	{
 		if (value == null)
@@ -2280,7 +2282,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	[DllExport("Or", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Or(BitList value)
 	{
 		if (value == null)
@@ -2293,7 +2295,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	[DllExport("Xor", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Xor(BitList value)
 	{
 		if (value == null)
@@ -2306,7 +2308,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return this;
 	}
 
-	[DllExport("Not", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Not()
 	{
 		int ints = GetArrayLength(_size, BitsPerInt);
@@ -2332,7 +2334,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 				_items[i] = 0;
 			_items[endIndex] &= endMask;
 		}
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
 	//private protected override int CompareToInternal(BitList other)
@@ -2351,7 +2353,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 	//	return _size.CompareTo(other._size);
 	//}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool Contains(bool item)
 	{
 		int emptyValue = item ? 0 : unchecked((int)0xffffffff);
@@ -2365,7 +2367,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return false;
 	}
 
-	[DllExport("CopyBits", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static void CopyBits(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
 	{
 		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
@@ -2508,7 +2510,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	[DllExport("Clone", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual object Clone()
 	{
 		BitList bitList = new(_items) { _size = _size };
@@ -2519,7 +2521,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 	{
 		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
 		CopyBits((source as BitList ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, destination2._items, destinationIndex, count);
-		destination2.ListChanged?.Invoke(this);
+		destination2.Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int index)
@@ -2557,7 +2559,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		_items = default!;
@@ -2632,10 +2634,10 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		}
 	}
 
-	[DllExport("GetHashCode", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override int GetHashCode() => _items.Length < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
 
-	[DllExport("GetSmallRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual uint GetSmallRange(int index, int count)
 	{
 		if (index < 0)
@@ -2693,7 +2695,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		return -1;
 	}
 
-	[DllExport("InsertRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void InsertRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
@@ -2762,11 +2764,11 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		{
 			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
 		}
-		ListChanged?.Invoke(this);
+		Changed();
 		return this;
 	}
 
-	[DllExport("SetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
@@ -2785,7 +2787,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 			SetRange(index, new BitList(collection));
 	}
 
-	[DllExport("ToUIntList", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual List<uint> ToUIntList() => _items.Take(GetArrayLength(_size, BitsPerInt));
 
 	public virtual object SyncRoot
@@ -3002,7 +3004,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 					_items[last] &= ((uint)1 << bits) - 1;
 				FillMemory(_items + (last + 1), newints - last - 1, 0);
 			}
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
@@ -3022,7 +3024,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 	{
 		bool item = (_items[index / BitsPerInt] & (1 << (index % BitsPerInt))) != 0;
 		if (invoke)
-			ListChanged?.Invoke(this);
+			Changed();
 		return item;
 	}
 
@@ -3032,10 +3034,10 @@ internal override void SetInternal(int index, bool value)
 			_items[index / BitsPerInt] |= (uint)1 << (index % BitsPerInt);
 		else
 			_items[index / BitsPerInt] &= ~((uint)1 << (index % BitsPerInt));
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("SetAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetAll(bool value)
 	{
 		uint fillValue = value ? 0xffffffff : 0;
@@ -3044,7 +3046,7 @@ internal override void SetInternal(int index, bool value)
 			_items[i] = fillValue;
 	}
 
-	[DllExport("And", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList And(BitList value)
 	{
 		if (value == null)
@@ -3057,7 +3059,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	[DllExport("Or", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Or(BitList value)
 	{
 		if (value == null)
@@ -3070,7 +3072,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	[DllExport("Xor", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Xor(BitList value)
 	{
 		if (value == null)
@@ -3083,7 +3085,7 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
-	[DllExport("Not", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BitList Not()
 	{
 		int ints = GetArrayLength(_size, BitsPerInt);
@@ -3107,7 +3109,7 @@ internal override void SetInternal(int index, bool value)
 				_items[i] = 0;
 			_items[endIndex] &= endMask;
 		}
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
 	//private protected override int CompareToInternal(BitList other)
@@ -3126,7 +3128,7 @@ internal override void SetInternal(int index, bool value)
 	//	return _size.CompareTo(other._size);
 	//}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override bool Contains(bool item)
 	{
 		int emptyValue = item ? 0 : unchecked((int)0xffffffff);
@@ -3140,14 +3142,14 @@ internal override void SetInternal(int index, bool value)
 		return false;
 	}
 
-	[DllExport("CopyBits", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static void CopyBits(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
 	{
 		fixed (uint* sourcePtr = sourceBits.AsSpan(), destinationPtr = destinationBits.AsSpan())
 			CopyBits(sourcePtr, sourceBits.Count, sourceIndex, destinationPtr, destinationBits.Count, destinationIndex, length);
 	}
 
-	[DllExport("CopyBits", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static void CopyBits(uint* sourceBits, int sourceBound, int sourceIndex, uint* destinationBits, int destinationBound, int destinationIndex, int length)
 	{
 		CheckParams(sourceBits, sourceBound, sourceIndex, destinationBits, destinationBound, destinationIndex, length);
@@ -3314,7 +3316,7 @@ internal override void SetInternal(int index, bool value)
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	[DllExport("Clone", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual object Clone()
 	{
 		BitList bitList = new(_size, _items);
@@ -3326,7 +3328,7 @@ internal override void SetInternal(int index, bool value)
 		BitList source2 = source as BitList ?? throw new ArgumentException(null, nameof(source));
 		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
 		CopyBits(source2._items, source2._capacity, sourceIndex, destination2._items, destination2._capacity, destinationIndex, count);
-		destination2.ListChanged?.Invoke(this);
+		destination2.Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int index)
@@ -3365,7 +3367,7 @@ internal override void SetInternal(int index, bool value)
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		Marshal.FreeHGlobal((IntPtr)_items);
@@ -3393,7 +3395,7 @@ internal override void SetInternal(int index, bool value)
 	//	return _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
 	//}
 
-	[DllExport("GetSmallRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual uint GetSmallRange(int index, int count)
 	{
 		if (index < 0)
@@ -3451,7 +3453,7 @@ internal override void SetInternal(int index, bool value)
 		return -1;
 	}
 
-	[DllExport("InsertRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void InsertRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
@@ -3521,11 +3523,11 @@ internal override void SetInternal(int index, bool value)
 		{
 			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
 		}
-		ListChanged?.Invoke(this);
+		Changed();
 		return this;
 	}
 
-	[DllExport("SetRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
@@ -3544,7 +3546,7 @@ internal override void SetInternal(int index, bool value)
 			SetRange(index, new BitList(collection));
 	}
 
-	[DllExport("ToUIntList", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual List<uint> ToUIntList()
 	{
 		int length = GetArrayLength(_size, BitsPerInt);
@@ -3796,7 +3798,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 
 	private protected override int DefaultCapacity => 256;
 
-	[DllExport("SetAll", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void SetAll(bool value)
 	{
 		if (!isHigh && low != null)
@@ -3810,7 +3812,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	[DllExport("And", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BigBitList And(BigBitList value)
 	{
 		if (value == null)
@@ -3826,7 +3828,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	[DllExport("Or", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BigBitList Or(BigBitList value)
 	{
 		if (value == null)
@@ -3842,7 +3844,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	[DllExport("Xor", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BigBitList Xor(BigBitList value)
 	{
 		if (value == null)
@@ -3858,7 +3860,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	[DllExport("Not", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BigBitList Not()
 	{
 		if (!isHigh && low != null)
@@ -3870,7 +3872,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	[DllExport("AddRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void AddRange(IEnumerable bits)
 	{
 		if (bits is IEnumerable<bool> bools)
@@ -3887,7 +3889,7 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			AddRangeToEnd(new BigBitList(bits));
 	}
 
-	[DllExport("ToUIntBigList", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual BigList<uint> ToUIntBigList()
 	{
 		if (!isHigh && low != null)
@@ -4029,16 +4031,14 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			}
 			else
 				_items = _emptyArray;
-			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+			Changed();
 		}
 	}
 
-	public event ListChangedHandler? ListChanged;
-
-	[DllExport("AddRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override Span<T> AsSpan(int index, int count)
 	{
 		if (index < 0)
@@ -4052,7 +4052,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return MemoryExtensions.AsSpan(_items, index, count);
 	}
 
-	[DllExport("BinarySearch", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int BinarySearch(int index, int count, T item, IComparer<T> comparer)
 	{
 		if (index < 0)
@@ -4064,35 +4064,35 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return Array.BinarySearch(_items, index, count, item, comparer);
 	}
 
-	[DllExport("BinarySearch", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
 
-	[DllExport("BinarySearch", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
 	private protected override void ClearInternal(int index, int count)
 	{
 		Array.Clear(_items, index, count);
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 	}
 
-	[DllExport("Convert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual List<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
-	[DllExport("Convert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
 	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
 	{
 		Array.Copy((source as TCertain ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as TCertain ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => Array.Copy(_items, index, array, arrayIndex, count);
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose()
 	{
 		_items = default!;
@@ -4104,13 +4104,13 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 	{
 		T item = _items[index];
 		if (invoke)
-			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+			Changed();
 		return item;
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int count) => Array.IndexOf(_items, item, index, count);
 
-	[DllExport("Insert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
@@ -4136,11 +4136,11 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			_items[index] = item;
 		}
 		_size++;
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("InsertRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain InsertRange(int index, ReadOnlySpan<T> span)
 	{
 		int count = span.Length;
@@ -4167,7 +4167,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
 		}
 		_size += count;
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
@@ -4267,7 +4267,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 				list2.CopyTo(_items, index);
 			}
 			_size += count;
-			ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+			Changed();
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
@@ -4277,10 +4277,10 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 	private protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, index, count);
 #if !RELEASE
 
-	[DllExport("NSort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain NSort() => NSort(0, _size);
 
-	[DllExport("NSort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain NSort(int index, int count)
 	{
 		if (this as TCertain ?? throw new InvalidOperationException() is List<uint> uintList)
@@ -4292,10 +4292,10 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			return Sort(index, count, G.Comparer<T>.Default);
 	}
 
-	[DllExport("NSort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
-	[DllExport("NSort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain NSort(Func<T, uint> function, int index, int count)
 	{
 		Radix.Sort(_items, function, index, count);
@@ -4303,29 +4303,29 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 	}
 #endif
 
-	[DllExport("ReturnOrConstruct", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
 
 	private protected override TCertain ReverseInternal(int index, int count)
 	{
 		Array.Reverse(_items, index, count);
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	internal override void SetInternal(int index, T value)
 	{
 		_items[index] = value;
-		ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+		Changed();
 	}
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort() => Sort(0, _size, G.Comparer<T>.Default);
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort(IComparer<T> comparer) => Sort(0, _size, comparer);
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort(int index, int count, IComparer<T> comparer)
 	{
 		if (index < 0)
@@ -4338,13 +4338,13 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort<TValue>(List<TValue> values) => Sort(values, 0, _size, G.Comparer<T>.Default);
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort<TValue>(List<TValue> values, IComparer<T>? comparer) => Sort(values, 0, _size, comparer);
 
-	[DllExport("Sort", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual TCertain Sort<TValue>(List<TValue> values, int index, int count, IComparer<T>? comparer)
 	{
 		if (index < 0)
@@ -4455,7 +4455,7 @@ public class String : List<char, String>
 
 	private static Func<IEnumerable<char>, String> CollectionCreatorStatic => collection => new(collection);
 
-	[DllExport("ToString", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override string ToString() => new(AsSpan());
 
 	public static implicit operator String(char x) => new(x);
@@ -4526,7 +4526,7 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 
 	private static Func<IEnumerable<T>, List<T>> CollectionLowCreatorStatic => collection => new(collection);
 
-	[DllExport("CopyBits", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public static void CopyBits(BigList<uint> sourceBits, mpz_t sourceIndex, BigList<uint> destinationBits, mpz_t destinationIndex, mpz_t length)
 	{
 		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
@@ -4838,7 +4838,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 				_items = _emptyArray;
 			}
 			_capacity = value;
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
@@ -4850,11 +4850,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	private static Func<IEnumerable<T>, NList<T>> CollectionCreatorStatic => collection => new(collection);
 
-	public event ListChangedHandler? ListChanged;
-
 	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
 
-	[DllExport("AsSpan", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override Span<T> AsSpan(int index, int count)
 	{
 		if (index < 0)
@@ -4871,7 +4869,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	private protected override void ClearInternal(int index, int count)
 	{
 		FillMemory(_items + index, count, 0);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
@@ -4881,7 +4879,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	private protected override void Copy(ListBase<T, NList<T>> source, int sourceIndex, ListBase<T, NList<T>> destination, int destinationIndex, int count)
 	{
 		CopyMemory((source as NList<T> ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as NList<T> ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
@@ -4898,14 +4896,14 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			CopyMemory(_items, index, ptr, arrayIndex, count);
 	}
 
-	[DllExport("Dispose", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public override void Dispose() => GC.SuppressFinalize(this);
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
 		T item = _items[index];
 		if (invoke)
-			ListChanged?.Invoke(this);
+			Changed();
 		return item;
 	}
 
@@ -4944,7 +4942,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			_items[index] = item;
 		}
 		_size++;
-		ListChanged?.Invoke(this);
+		Changed();
 		return this;
 	}
 
@@ -4975,7 +4973,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			span.CopyTo(new(_items + index, Capacity - index));
 		}
 		_size += count;
-		ListChanged?.Invoke(this);
+		Changed();
 		return this;
 	}
 
@@ -5082,7 +5080,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 					CopyMemory(ptr, 0, _items, index, list2.Count);
 			}
 			_size += count;
-			ListChanged?.Invoke(this);
+			Changed();
 			return this;
 		}
 		else
@@ -5104,14 +5102,14 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	{
 		for (int i = 0; i < _size / 2; i++)
 			(_items[i], _items[_size - 1 - i]) = (_items[_size - 1 - i], _items[i]);
-		ListChanged?.Invoke(this);
+		Changed();
 		return this;
 	}
 
 	internal override void SetInternal(int index, T value)
 	{
 		_items[index] = value;
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
 	public virtual NList<T> Sort() => Sort(0, _size);
@@ -5190,7 +5188,7 @@ public class Compact2dList<T> : IList<List<T>>
 				throw new ArgumentOutOfRangeException(nameof(value));
 			if (value != main.Capacity)
 				main.Capacity = value;
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
@@ -5203,7 +5201,7 @@ public class Compact2dList<T> : IList<List<T>>
 		{
 			List<T> list = new((index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index], main.GetRange(starts[index], lengths[index]));
 			if (invoke)
-				ListChanged?.Invoke(this);
+				Changed();
 			list.ListChanged += l => this[index] = l;
 			return list;
 		}
@@ -5212,7 +5210,7 @@ public class Compact2dList<T> : IList<List<T>>
 			ShiftCapacities(index, value.Capacity);
 			main.ReplaceRange(starts[index], Min(value.Length, (index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index]), value);
 			lengths[index] = value.Length;
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 	}
 
@@ -5258,7 +5256,7 @@ public class Compact2dList<T> : IList<List<T>>
 	public delegate void ListChangedHandler(Compact2dList<T> newList);
 	public event ListChangedHandler? ListChanged;
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add(List<T> item)
 	{
 		starts.Add(main.Length);
@@ -5266,10 +5264,10 @@ public class Compact2dList<T> : IList<List<T>>
 		T[] toAdd = new T[item.Capacity];
 		item.CopyTo(toAdd);
 		main.AddRange(toAdd);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("Add", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Add(int index, T item)
 	{
 		if ((index == starts.Length - 1 ? main.Length : starts[index + 1]) - starts[index] == lengths[index])
@@ -5277,19 +5275,21 @@ public class Compact2dList<T> : IList<List<T>>
 		main[starts[index] + lengths[index]++] = item;
 	}
 
-	[DllExport("AddRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void AddRange(IEnumerable<List<T>> collection) => InsertRange(lengths.Length, collection);
 
-	[DllExport("Clear", CallingConvention.Cdecl)]
+	private protected void Changed() => ListChanged?.Invoke(this);
+
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Clear()
 	{
 		main.Clear();
 		starts.Clear();
 		lengths.Clear();
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("Contains", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool Contains(List<T> item)
 	{
 		using (IEnumerator<List<T>> en = GetEnumerator())
@@ -5299,17 +5299,17 @@ public class Compact2dList<T> : IList<List<T>>
 		return false;
 	}
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(List<T>[] array) => CopyTo(array, 0);
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(int index, List<T>[] array, int arrayIndex, int count)
 	{
 		for (int i = 0; i < count; i++)
 			array[arrayIndex + i] = this[index + i, false];
 	}
 
-	[DllExport("CopyTo", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void CopyTo(List<T>[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, lengths.Length);
 
 	public virtual Compact2dList<T> Filter(Func<List<T>, bool> match)
@@ -5368,7 +5368,7 @@ public class Compact2dList<T> : IList<List<T>>
 		return this;
 	}
 
-	[DllExport("GetEnumerator", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<List<T>> IEnumerable<List<T>>.GetEnumerator() => GetEnumerator();
@@ -5408,7 +5408,7 @@ public class Compact2dList<T> : IList<List<T>>
 		}
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(List<T> item)
 	{
 		using (IEnumerator<List<T>> en = GetEnumerator())
@@ -5424,7 +5424,7 @@ public class Compact2dList<T> : IList<List<T>>
 		return -1;
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(List<T> item, int index)
 	{
 		if (index > lengths.Length)
@@ -5435,7 +5435,7 @@ public class Compact2dList<T> : IList<List<T>>
 		return -1;
 	}
 
-	[DllExport("IndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int IndexOf(List<T> item, int index, int count)
 	{
 		if (index > lengths.Length)
@@ -5448,7 +5448,7 @@ public class Compact2dList<T> : IList<List<T>>
 		return -1;
 	}
 
-	[DllExport("Insert", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Insert(int index, List<T> item)
 	{
 		if ((uint)index > (uint)lengths.Length)
@@ -5460,10 +5460,10 @@ public class Compact2dList<T> : IList<List<T>>
 		T[] toAdd = new T[item.Capacity];
 		item.CopyTo(toAdd);
 		main.InsertRange(starts[index], toAdd);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("InsertRange", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void InsertRange(int index, IEnumerable<List<T>> collection)
 	{
 		if (collection == null)
@@ -5479,13 +5479,13 @@ public class Compact2dList<T> : IList<List<T>>
 				starts[i] += sum;
 			starts.Insert(index, dfl.starts.Convert(x => x + indexStart));
 			lengths.Insert(index, dfl.lengths);
-			ListChanged?.Invoke(this);
+			Changed();
 		}
 		else
 			InsertRange(index, new Compact2dList<T>(collection));
 	}
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(List<T> item)
 	{
 		if (lengths.Length == 0)
@@ -5494,16 +5494,16 @@ public class Compact2dList<T> : IList<List<T>>
 			return LastIndexOf(item, lengths.Length - 1, lengths.Length);
 	}
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(List<T> item, int index) => LastIndexOf(item, index, index + 1);
 
-	[DllExport("LastIndexOf", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual int LastIndexOf(List<T> item, int index, int count) => throw new NotImplementedException();
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Remove(int index) => Remove(index, Length - index);
 
-	[DllExport("Remove", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Remove(int index, int count)
 	{
 		if (index < 0)
@@ -5522,10 +5522,10 @@ public class Compact2dList<T> : IList<List<T>>
 		lengths.Remove(index, count);
 		int newPos = starts[index], oldPos = starts[index + count];
 		Shift(newPos, newPos - oldPos);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("RemoveAt", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void RemoveAt(int index)
 	{
 		if ((uint)index > (uint)lengths.Length)
@@ -5536,10 +5536,10 @@ public class Compact2dList<T> : IList<List<T>>
 		starts.RemoveAt(starts.Length - 1);
 		lengths.RemoveAt(index);
 		Shift(starts[index] + capacity, -capacity);
-		ListChanged?.Invoke(this);
+		Changed();
 	}
 
-	[DllExport("RemoveValue", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual bool RemoveValue(List<T> item)
 	{
 		int index = IndexOf(item);
@@ -5587,10 +5587,10 @@ public class Compact2dList<T> : IList<List<T>>
 
 	public static Compact2dList<T> ReturnOrConstruct(IEnumerable<List<T>> collection) => collection is Compact2dList<T> list ? list : new(collection);
 
-	[DllExport("Reverse", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Reverse() => Reverse(0, lengths.Length);
 
-	[DllExport("Reverse", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void Reverse(int index, int count) => throw new NotImplementedException();
 
 	public virtual Compact2dList<T> SetRange(int index, IEnumerable<List<T>> collection)
@@ -5729,7 +5729,7 @@ public class Compact2dList<T> : IList<List<T>>
 		return array;
 	}
 
-	[DllExport("TrimExcess", CallingConvention.Cdecl)]
+	[DllExport(CallingConvention = CallingConvention.Cdecl)]
 	public virtual void TrimExcess()
 	{
 		int threshold = (int)(main.Capacity * 0.9);
