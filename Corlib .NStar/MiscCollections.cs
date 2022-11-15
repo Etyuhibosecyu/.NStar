@@ -89,13 +89,13 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		}
 	}
 
-	public void Clear()
+	public virtual void Clear()
 	{
 		Array.Clear(_array, 0, _size); // Don't2 need to doc this but we clear the elements so that the gc can reclaim the references.
 		_size = 0;
 	}
 
-	public bool Contains(T? item)
+	public virtual bool Contains(T? item)
 	{
 		int count = _size;
 		EqualityComparer<T> c = EqualityComparer<T>.Default;
@@ -110,7 +110,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		return false;
 	}
 
-	public void CopyTo(T[] array, int arrayIndex)
+	public virtual void CopyTo(T[] array, int arrayIndex)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
@@ -145,20 +145,20 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		}
 	}
 
-	public Enumerator GetEnumerator() => new(this);
+	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public T Peek()
+	public virtual T Peek()
 	{
 		if (_size == 0)
 			throw new InvalidOperationException();
 		return _array[_size - 1];
 	}
 
-	public T Pop()
+	public virtual T Pop()
 	{
 		if (_size == 0)
 			throw new InvalidOperationException();
@@ -167,7 +167,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		return item;
 	}
 
-	public void Push(T item)
+	public virtual void Push(T item)
 	{
 		if (_size == _array.Length)
 		{
@@ -178,7 +178,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		_array[_size++] = item;
 	}
 
-	public T[] ToArray()
+	public virtual T[] ToArray()
 	{
 		T[] array = new T[_size];
 		for (int i = 0; i < _size; i++)
@@ -186,7 +186,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		return array;
 	}
 
-	public List<T> ToList()
+	public virtual List<T> ToList()
 	{
 		List<T> list = new(_size);
 		for (int i = 0; i < _size; i++)
@@ -194,7 +194,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		return list;
 	}
 
-	public void TrimExcess()
+	public virtual void TrimExcess()
 	{
 		int threshold = (int)(_array.Length * 0.9);
 		if (_size < threshold)
@@ -827,13 +827,13 @@ public class Chain : IReadOnlyCollection<int>
 
 	public virtual int Length { get; }
 
-	public Enumerator GetEnumerator() => new(this);
+	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public List<int> ToList()
+	public virtual List<int> ToList()
 	{
 		List<int> list = new();
 		for (int i = 0; i < Length; i++)
@@ -879,7 +879,7 @@ public class Chain : IReadOnlyCollection<int>
 
 public class Group<T, TKey> : List<T>
 {
-	public TKey Key { get; private set; }
+	public virtual TKey Key { get; private set; }
 
 	public Group(int capacity, TKey key) : base(capacity) => Key = key;
 

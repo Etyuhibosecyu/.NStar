@@ -180,11 +180,11 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual int Capacity { get => keys.Capacity; set => values.Capacity = keys.Capacity = value; }
 
-	public IComparer<TKey> Comparer => comparer;
+	public virtual IComparer<TKey> Comparer => comparer;
 
 	public virtual int Length => keys.Length;
 
-	public IList<TKey> Keys => GetKeyListHelper();
+	public virtual IList<TKey> Keys => GetKeyListHelper();
 
 	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => GetKeyListHelper();
 
@@ -192,7 +192,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => GetKeyListHelper();
 
-	public IList<TValue> Values => GetValueListHelper();
+	public virtual IList<TValue> Values => GetValueListHelper();
 
 	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => GetValueListHelper();
 
@@ -278,9 +278,9 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return false;
 	}
 
-	public bool ContainsKey(TKey key) => IndexOfKey(key) >= 0;
+	public virtual bool ContainsKey(TKey key) => IndexOfKey(key) >= 0;
 
-	public bool ContainsValue(TValue value) => IndexOfValue(value) >= 0;
+	public virtual bool ContainsValue(TValue value) => IndexOfValue(value) >= 0;
 
 	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
@@ -337,7 +337,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return values[index];
 	}
 
-	public Enumerator GetEnumerator() => new(this, Enumerator.KeyValuePair);
+	public virtual Enumerator GetEnumerator() => new(this, Enumerator.KeyValuePair);
 
 	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
@@ -978,7 +978,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	public IEqualityComparer<TKey> Comparer => comparer;
+	public virtual IEqualityComparer<TKey> Comparer => comparer;
 
 	public virtual int Length
 	{
@@ -993,7 +993,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	public G.ICollection<TKey> Keys
+	public virtual G.ICollection<TKey> Keys
 	{
 		get
 		{
@@ -1023,7 +1023,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
-	public G.ICollection<TValue> Values
+	public virtual G.ICollection<TValue> Values
 	{
 		get
 		{
@@ -1140,7 +1140,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		return false;
 	}
 
-	public bool ContainsKey(TKey key)
+	public virtual bool ContainsKey(TKey key)
 	{
 		if (!isHigh && low != null)
 			return low.ContainsKey(key);
@@ -1170,7 +1170,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+	public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
 		if (!isHigh && low != null)
 			return low.GetEnumerator();
@@ -1212,7 +1212,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
+	public virtual bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
 		if (!isHigh && low != null)
 			return low.Remove(key, out value);
@@ -1283,23 +1283,23 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) => (keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
 
-		public TValue this[TKey key] => throw new NotSupportedException();
+		public virtual TValue this[TKey key] => throw new NotSupportedException();
 
 		TValue G.IDictionary<TKey, TValue>.this[TKey key] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
 		public virtual int Length => keys.Length;
 
-		public IEnumerable<TKey> Keys => throw new NotSupportedException();
+		public virtual IEnumerable<TKey> Keys => throw new NotSupportedException();
 
-		public IEnumerable<TValue> Values => throw new NotSupportedException();
+		public virtual IEnumerable<TValue> Values => throw new NotSupportedException();
 
 		G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => throw new NotSupportedException();
 
 		G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => throw new NotSupportedException();
 
-		public bool IsReadOnly => false;
+		public virtual bool IsReadOnly => false;
 
-		public void Add(TKey key, TValue value)
+		public virtual void Add(TKey key, TValue value)
 		{
 			if (!ContainsKey(key))
 			{
@@ -1308,25 +1308,25 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			}
 		}
 
-		public void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+		public virtual void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
-		public void Clear()
+		public virtual void Clear()
 		{
 			keys.Clear();
 			values.Clear();
 		}
 
-		public bool Contains(KeyValuePair<TKey, TValue> item)
+		public virtual bool Contains(KeyValuePair<TKey, TValue> item)
 		{
 			int index = IndexOfKey(item.Key);
 			return index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], item.Value);
 		}
 
-		public bool ContainsKey(TKey key) => keys.Contains(key);
+		public virtual bool ContainsKey(TKey key) => keys.Contains(key);
 
-		public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
+		public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
 
-		public Enumerator GetEnumerator() => new(this);
+		public virtual Enumerator GetEnumerator() => new(this);
 
 		IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
@@ -1334,11 +1334,11 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 		private int IndexOfKey(TKey key) => keys.IndexOf(key);
 
-		public bool Remove(TKey key) => throw new NotSupportedException();
+		public virtual bool Remove(TKey key) => throw new NotSupportedException();
 
-		public bool RemoveValue(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
+		public virtual bool RemoveValue(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
 
-		public bool TryGetValue(TKey key, out TValue value)
+		public virtual bool TryGetValue(TKey key, out TValue value)
 		{
 			int index = IndexOfKey(key);
 			if (index >= 0)
