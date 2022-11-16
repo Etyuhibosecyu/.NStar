@@ -5,9 +5,13 @@
     <Nullable>enable</Nullable>
     <DefineConstants>$(DefineConstants);RELEASE</DefineConstants>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-  </PropertyGroup>
+		<PlatformTarget>x64</PlatformTarget>
+	</PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Mpir.NET" Version="0.4.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Native.NStar\Native.NStar.vcxproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="xmpir64.dll">

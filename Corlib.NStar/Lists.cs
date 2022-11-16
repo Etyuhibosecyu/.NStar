@@ -1859,7 +1859,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 }
-#if RELEASE
+#if NETCOREAPP//RELEASE
 
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
@@ -4046,7 +4046,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual TCertain NSort(int index, int count)
 	{
-		if (this as TCertain ?? throw new InvalidOperationException() is List<uint> uintList)
+		if (this is List<uint> uintList)
 		{
 			Radix.Sort(uintList._items, index, count);
 			return this as TCertain ?? throw new InvalidOperationException();

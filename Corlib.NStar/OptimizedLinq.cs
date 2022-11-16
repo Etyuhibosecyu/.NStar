@@ -1,7 +1,4 @@
 ﻿using Mpir.NET;
-#if !RELEASE
-using NativeFunctions;
-#endif
 using System.Collections;
 using System.Text;
 using static Corlib.NStar.Extents;
@@ -36,7 +33,7 @@ public partial class List<T, TCertain>
 					return false;
 			return true;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -47,8 +44,6 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
-		else
-			return AllEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static bool AllEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -87,7 +82,7 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -98,8 +93,6 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
-		else
-			return AllEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static bool AnyEnumerable<TSource>(IEnumerable<TSource> source)
@@ -119,12 +112,6 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			if (list2.Count != 0)
-				return true;
-			return false;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			if (count != 0)
 				return true;
 			return false;
 		}
@@ -159,7 +146,7 @@ public partial class List<T, TCertain>
 					return true;
 			return false;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -170,8 +157,6 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
-		else
-			return AnyEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static bool AnyEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -210,7 +195,7 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -221,8 +206,6 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
-		else
-			return AnyEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TSource, TResult, TResult2>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2)
@@ -1639,7 +1622,7 @@ public partial class List<T, TCertain>
 					n++;
 			return n;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int n = 0;
 			foreach (TSource item in source)
@@ -1647,8 +1630,6 @@ public partial class List<T, TCertain>
 					n++;
 			return n;
 		}
-		else
-			return CountEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int CountEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -1681,7 +1662,7 @@ public partial class List<T, TCertain>
 					n++;
 			return n;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int n = 0;
 			int i = 0;
@@ -1690,8 +1671,6 @@ public partial class List<T, TCertain>
 					n++;
 			return n;
 		}
-		else
-			return CountEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int CountEnumerable<TSource>(IEnumerable<TSource> source, TSource target)
@@ -2098,7 +2077,7 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -2109,8 +2088,6 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
-		else
-			return FindEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -2149,7 +2126,7 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -2160,8 +2137,6 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
-		else
-			return FindEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
@@ -3703,14 +3678,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -3738,14 +3711,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -3773,14 +3744,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -3808,14 +3777,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -3843,14 +3810,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -3878,14 +3843,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -3913,14 +3876,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -3948,14 +3909,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -3983,14 +3942,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -4018,14 +3975,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -4053,14 +4008,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -4088,14 +4041,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindAllMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -4120,13 +4071,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -4151,13 +4100,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -4182,13 +4129,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -4213,13 +4158,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -4244,13 +4187,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -4275,13 +4216,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -4306,13 +4245,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -4337,13 +4274,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -4368,13 +4303,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -4399,13 +4332,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -4430,13 +4361,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -4461,13 +4390,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindAllMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FindAllMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -6002,7 +5929,7 @@ public partial class List<T, TCertain>
 					return i;
 			return default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -6013,8 +5940,6 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
-		else
-			return FindIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -6053,7 +5978,7 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int i = 0;
 			foreach (TSource item in source)
@@ -6064,8 +5989,6 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
-		else
-			return FindIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindLastEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
@@ -11164,7 +11087,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			decimal indicator = 0;
@@ -11186,8 +11109,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -11259,7 +11180,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			decimal indicator = 0;
@@ -11281,8 +11202,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -11354,7 +11273,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			double indicator = 0;
@@ -11376,8 +11295,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -11449,7 +11366,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			double indicator = 0;
@@ -11471,8 +11388,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -11544,7 +11459,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			int indicator = 0;
@@ -11566,8 +11481,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -11639,7 +11552,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			int indicator = 0;
@@ -11661,8 +11574,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -11734,7 +11645,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			uint indicator = 0;
@@ -11756,8 +11667,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -11829,7 +11738,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			uint indicator = 0;
@@ -11851,8 +11760,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -11924,7 +11831,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			long indicator = 0;
@@ -11946,8 +11853,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -12019,7 +11924,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			long indicator = 0;
@@ -12041,8 +11946,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -12114,7 +12017,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			mpz_t indicator = 0;
@@ -12136,8 +12039,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -12209,7 +12110,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			mpz_t indicator = 0;
@@ -12231,8 +12132,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -12260,14 +12159,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -12295,14 +12192,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -12330,14 +12225,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -12365,14 +12258,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -12400,14 +12291,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -12435,14 +12324,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -12470,14 +12357,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -12505,14 +12390,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -12540,14 +12423,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -12575,14 +12456,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -12610,14 +12489,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -12645,14 +12522,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -12677,13 +12552,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -12708,13 +12581,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -12739,13 +12610,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -12770,13 +12639,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -12801,13 +12668,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -12832,13 +12697,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -12863,13 +12726,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -12894,13 +12755,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -12925,13 +12784,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -12956,13 +12813,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -12987,13 +12842,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -13018,13 +12871,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -13096,7 +12947,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			decimal indicator = 0;
@@ -13118,8 +12969,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -13191,7 +13040,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			decimal indicator = 0;
@@ -13213,8 +13062,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -13286,7 +13133,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			double indicator = 0;
@@ -13308,8 +13155,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -13381,7 +13226,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			double indicator = 0;
@@ -13403,8 +13248,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -13476,7 +13319,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			int indicator = 0;
@@ -13498,8 +13341,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -13571,7 +13412,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			int indicator = 0;
@@ -13593,8 +13434,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -13666,7 +13505,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			uint indicator = 0;
@@ -13688,8 +13527,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -13761,7 +13598,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			uint indicator = 0;
@@ -13783,8 +13620,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -13856,7 +13691,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			long indicator = 0;
@@ -13878,8 +13713,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -13951,7 +13784,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			long indicator = 0;
@@ -13973,8 +13806,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -14046,7 +13877,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			mpz_t indicator = 0;
@@ -14068,8 +13899,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -14141,7 +13970,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			TSource? result = default;
 			mpz_t indicator = 0;
@@ -14163,8 +13992,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMaxIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -15572,14 +15399,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -15607,14 +15432,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -15642,14 +15465,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -15677,14 +15498,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -15712,14 +15531,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -15747,14 +15564,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -15782,14 +15597,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -15817,14 +15630,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -15852,14 +15663,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -15887,14 +15696,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -15922,14 +15729,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -15957,14 +15762,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
-		else
-			return FindMeanIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -15989,13 +15792,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -16020,13 +15821,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -16051,13 +15850,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -16082,13 +15879,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -16113,13 +15908,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -16144,13 +15937,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -16175,13 +15966,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -16206,13 +15995,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -16237,13 +16024,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -16268,13 +16053,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -16299,13 +16082,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -16330,13 +16111,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexesEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> FindMinIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -17788,7 +17567,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -17810,8 +17589,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -17883,7 +17660,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -17905,8 +17682,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -17978,7 +17753,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -18000,8 +17775,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -18073,7 +17846,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -18095,8 +17868,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -18168,7 +17939,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -18190,8 +17961,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -18263,7 +18032,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -18285,8 +18054,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -18358,7 +18125,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -18380,8 +18147,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -18453,7 +18218,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -18475,8 +18240,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -18548,7 +18311,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -18570,8 +18333,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -18643,7 +18404,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -18665,8 +18426,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -18738,7 +18497,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -18760,8 +18519,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMaxIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -18833,7 +18590,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -18855,8 +18612,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMaxIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -18884,14 +18639,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -18919,14 +18672,12 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MeanEnumerable(source, function);
 			decimal? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -18954,14 +18705,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -18989,14 +18738,12 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			double? value2 = value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -19024,14 +18771,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -19059,14 +18804,12 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			int? value2 = (int?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -19094,14 +18837,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -19129,14 +18870,12 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			uint? value2 = (uint?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -19164,14 +18903,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -19199,14 +18936,12 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			long? value2 = (long?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -19234,14 +18969,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMeanIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -19269,14 +19002,12 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MeanEnumerable(source, function);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
-		else
-			return FindMeanIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -19301,13 +19032,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -19332,13 +19061,11 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -19363,13 +19090,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -19394,13 +19119,11 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -19425,13 +19148,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -19456,13 +19177,11 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -19487,13 +19206,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -19518,13 +19235,11 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -19549,13 +19264,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -19580,13 +19293,11 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -19611,13 +19322,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMedianIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -19642,13 +19351,11 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t? value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
-		else
-			return FindMedianIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -19720,7 +19427,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -19742,8 +19449,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -19815,7 +19520,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -19837,8 +19542,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -19910,7 +19613,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -19932,8 +19635,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -20005,7 +19706,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -20027,8 +19728,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -20100,7 +19799,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -20122,8 +19821,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -20195,7 +19892,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -20217,8 +19914,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -20290,7 +19985,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -20312,8 +20007,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -20385,7 +20078,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -20407,8 +20100,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -20480,7 +20171,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -20502,8 +20193,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -20575,7 +20264,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -20597,8 +20286,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -20670,7 +20357,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -20692,8 +20379,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int FindMinIndexEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -20765,7 +20450,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -20787,8 +20472,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return FindMinIndexEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull
@@ -28671,7 +28354,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -28693,8 +28376,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -28766,7 +28447,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -28788,8 +28469,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -28861,7 +28540,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -28883,8 +28562,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -28956,7 +28633,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -28978,8 +28655,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -29051,7 +28726,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -29073,8 +28748,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -29146,7 +28819,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -29168,8 +28841,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -29241,7 +28912,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -29263,8 +28934,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -29336,7 +29005,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -29358,8 +29027,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -29431,7 +29098,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -29453,8 +29120,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -29526,7 +29191,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -29548,8 +29213,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -29621,7 +29284,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -29643,8 +29306,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -29716,7 +29377,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -29738,8 +29399,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<decimal> source)
@@ -30313,14 +29972,12 @@ public partial class List<T, TCertain>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -30348,14 +30005,12 @@ public partial class List<T, TCertain>
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -30383,14 +30038,12 @@ public partial class List<T, TCertain>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -30418,14 +30071,12 @@ public partial class List<T, TCertain>
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -30456,15 +30107,13 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -30495,15 +30144,13 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			int? value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -30534,15 +30181,13 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -30573,15 +30218,13 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			uint? value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -30612,15 +30255,13 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -30651,15 +30292,13 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			long? value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -30690,15 +30329,13 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -30729,15 +30366,13 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
-		else
-			return IndexOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<decimal> source)
@@ -30949,14 +30584,12 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -30984,14 +30617,12 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -31019,14 +30650,12 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -31054,14 +30683,12 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -31089,14 +30716,12 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -31124,14 +30749,12 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -31159,14 +30782,12 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -31194,14 +30815,12 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -31229,14 +30848,12 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -31264,14 +30881,12 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -31299,14 +30914,12 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -31334,14 +30947,12 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
-		else
-			return IndexOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<decimal> source)
@@ -31581,7 +31192,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -31603,8 +31214,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -31676,7 +31285,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			decimal indicator = 0;
@@ -31698,8 +31307,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -31771,7 +31378,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -31793,8 +31400,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -31866,7 +31471,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			double indicator = 0;
@@ -31888,8 +31493,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -31961,7 +31564,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -31983,8 +31586,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -32056,7 +31657,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			int indicator = 0;
@@ -32078,8 +31679,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -32151,7 +31750,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -32173,8 +31772,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -32246,7 +31843,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			uint indicator = 0;
@@ -32268,8 +31865,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -32341,7 +31936,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -32363,8 +31958,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -32436,7 +32029,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			long indicator = 0;
@@ -32458,8 +32051,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -32531,7 +32122,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -32553,8 +32144,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -32626,7 +32215,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = -1;
 			mpz_t indicator = 0;
@@ -32648,8 +32237,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return IndexOfMinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int IndexOfMinEnumerable(IEnumerable<decimal> source)
@@ -37297,7 +36884,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal indicator = 0;
 			decimal f;
@@ -37312,8 +36899,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -37364,7 +36949,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal indicator = 0;
 			decimal f;
@@ -37379,8 +36964,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -37431,7 +37014,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double indicator = 0;
 			double f;
@@ -37446,8 +37029,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -37498,7 +37079,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double indicator = 0;
 			double f;
@@ -37513,8 +37094,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -37565,7 +37144,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int indicator = 0;
 			int f;
@@ -37580,8 +37159,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -37632,7 +37209,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int indicator = 0;
 			int f;
@@ -37647,8 +37224,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -37699,7 +37274,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint indicator = 0;
 			uint f;
@@ -37714,8 +37289,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -37766,7 +37339,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint indicator = 0;
 			uint f;
@@ -37781,8 +37354,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -37833,7 +37404,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long indicator = 0;
 			long f;
@@ -37848,8 +37419,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -37900,7 +37469,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long indicator = 0;
 			long f;
@@ -37915,8 +37484,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -37967,7 +37534,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t indicator = 0;
 			mpz_t f;
@@ -37982,8 +37549,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t MaxEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -38034,7 +37599,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t indicator = 0;
 			mpz_t f;
@@ -38049,8 +37614,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MaxEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal MaxEnumerable(IEnumerable<decimal> source)
@@ -39779,7 +39342,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal indicator = 0;
 			decimal f;
@@ -39794,8 +39357,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -39846,7 +39407,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal indicator = 0;
 			decimal f;
@@ -39861,8 +39422,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -39913,7 +39472,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double indicator = 0;
 			double f;
@@ -39928,8 +39487,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -39980,7 +39537,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double indicator = 0;
 			double f;
@@ -39995,8 +39552,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -40047,7 +39602,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int indicator = 0;
 			int f;
@@ -40062,8 +39617,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -40114,7 +39667,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int indicator = 0;
 			int f;
@@ -40129,8 +39682,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -40181,7 +39732,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint indicator = 0;
 			uint f;
@@ -40196,8 +39747,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -40248,7 +39797,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint indicator = 0;
 			uint f;
@@ -40263,8 +39812,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -40315,7 +39862,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long indicator = 0;
 			long f;
@@ -40330,8 +39877,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -40382,7 +39927,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long indicator = 0;
 			long f;
@@ -40397,8 +39942,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -40449,7 +39992,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t indicator = 0;
 			mpz_t f;
@@ -40464,8 +40007,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t MinEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -40516,7 +40057,7 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t indicator = 0;
 			mpz_t f;
@@ -40531,8 +40072,6 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else
-			return MinEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal MinEnumerable(IEnumerable<decimal> source)
@@ -43332,7 +42871,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal result = 0;
 			int i = 0;
@@ -43343,8 +42882,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -43383,7 +42920,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			decimal result = 0;
 			int i = 0;
@@ -43394,8 +42931,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -43425,7 +42960,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double result = 0;
 			int i = 0;
@@ -43436,8 +42971,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static double SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -43476,7 +43009,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			double result = 0;
 			int i = 0;
@@ -43487,8 +43020,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -43518,7 +43049,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = 0;
 			int i = 0;
@@ -43529,8 +43060,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static int SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -43569,7 +43098,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			int result = 0;
 			int i = 0;
@@ -43580,8 +43109,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -43611,7 +43138,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint result = 0;
 			int i = 0;
@@ -43622,8 +43149,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static uint SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -43662,7 +43187,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			uint result = 0;
 			int i = 0;
@@ -43673,8 +43198,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -43704,7 +43227,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long result = 0;
 			int i = 0;
@@ -43715,8 +43238,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static long SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -43755,7 +43276,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			long result = 0;
 			int i = 0;
@@ -43766,8 +43287,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -43797,7 +43316,7 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t result = 0;
 			int i = 0;
@@ -43808,8 +43327,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static mpz_t SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -43848,7 +43365,7 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			mpz_t result = 0;
 			int i = 0;
@@ -43859,8 +43376,6 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else
-			return SumEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static decimal SumEnumerable(IEnumerable<decimal> source)
