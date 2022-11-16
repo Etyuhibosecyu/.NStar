@@ -43844,12 +43844,12 @@ public partial class List<T, TCertain>
 
 	internal static bool TryGetCountEasilyEnumerable<TSource>(IEnumerable<TSource> source, out int count)
 	{
-		if (source is ICollection<TSource> col)
+		if (source is G.ICollection<TSource> col)
 		{
 			count = col.Count;
 			return true;
 		}
-		else if (source is IReadOnlyCollection<TSource> col2)
+		else if (source is G.IReadOnlyCollection<TSource> col2)
 		{
 			count = col2.Count;
 			return true;
