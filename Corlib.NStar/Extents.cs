@@ -478,6 +478,8 @@ public static partial class Extents
 
 	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
+	public static T CreateVar<T>(T value, out T @out) => @out = value;
+
 	public static (mpz_t Quotient, int Remainder) DivRem(mpz_t left, int right)
 	{
 		mpz_t quotient = left.Divide(right, out int remainder);

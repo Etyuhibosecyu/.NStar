@@ -814,7 +814,7 @@ public class Chain : IReadOnlyCollection<int>
 
 	public virtual List<int> ToList()
 	{
-		List<int> list = new();
+		List<int> list = new(Length);
 		for (int i = 0; i < Length; i++)
 			list.Add(start + i);
 		return list;

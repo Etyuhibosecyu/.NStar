@@ -43844,45 +43844,51 @@ public partial class List<T, TCertain>
 
 	internal static bool TryGetCountEasilyEnumerable<TSource>(IEnumerable<TSource> source, out int count)
 	{
-		if (source is G.ICollection<TSource> col)
+		try
 		{
-			count = col.Count;
-			return true;
+			if (source is G.ICollection<TSource> col)
+			{
+				count = col.Count;
+				return count >= 0;
+			}
+			else if (source is G.IReadOnlyCollection<TSource> col2)
+			{
+				count = col2.Count;
+				return count >= 0;
+			}
+			else if (source is string s)
+			{
+				count = s.Length;
+				return count >= 0;
+			}
 		}
-		else if (source is G.IReadOnlyCollection<TSource> col2)
+		catch
 		{
-			count = col2.Count;
-			return true;
 		}
-		else if (source is string s)
-		{
-			count = s.Length;
-			return true;
-		}
-		else
-		{
-			count = -1;
-			return false;
-		}
+		count = -1;
+		return false;
 	}
 
 	internal static bool TryGetCountEasilyEnumerable(IEnumerable source, out int count)
 	{
-		if (source is ICollection col)
+		try
 		{
-			count = col.Count;
-			return true;
+			if (source is System.Collections.ICollection col)
+			{
+				count = col.Count;
+				return count >= 0;
+			}
+			else if (source is string s)
+			{
+				count = s.Length;
+				return count >= 0;
+			}
 		}
-		else if (source is string s)
+		catch
 		{
-			count = s.Length;
-			return true;
 		}
-		else
-		{
-			count = -1;
-			return false;
-		}
+		count = -1;
+		return false;
 	}
 
 	internal static bool TryWrapEnumerable<TSource>(IEnumerable<TSource> source, Func<IEnumerable<TSource>, List<TSource>> function, out List<TSource>? result)
