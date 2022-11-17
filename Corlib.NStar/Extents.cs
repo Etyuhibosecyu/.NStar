@@ -468,7 +468,7 @@ public static partial class Extents
 	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
 
 	[DllImport("Native.NStar.dll", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-	internal static extern void RadixSort(UIntPtr array, int index, int count);
+	internal static unsafe extern void RadixSort(uint* array, int index, int count);
 
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);

@@ -1,31 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <DefineConstants>$(DefineConstants)</DefineConstants>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<DefineConstants>$(DefineConstants)</DefineConstants>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>x64</PlatformTarget>
 	</PropertyGroup>
-  <ItemGroup>
-    <None Remove="Native.NStar.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <ApplicationDefinition Include="Native.NStar.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </ApplicationDefinition>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Mpir.NET" Version="0.4.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Update="OptimizedLinq.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="xmpir64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+	  <None Remove="Native.NStar.dll" />
+	</ItemGroup>
+	<ItemGroup>
+		<ApplicationDefinition Include="Native.NStar.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</ApplicationDefinition>
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Native.NStar.dll">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Mpir.NET" Version="0.4.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="xmpir64.dll">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 </Project>

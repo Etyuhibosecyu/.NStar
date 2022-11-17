@@ -5,7 +5,7 @@
 #include "Windows.h"
 #include <string>
 #include <vector>
-#define EXPORT __declspec(dllexport)
+#define EXPORT extern "C" __declspec(dllexport)
 using std::wstring;
 #define nameof(name) #name
 

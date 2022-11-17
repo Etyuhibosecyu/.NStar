@@ -4048,7 +4048,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		if (this is List<uint> uintList)
 		{
 			fixed (uint* items = uintList._items)
-			RadixSort((UIntPtr)items, index, count);
+				RadixSort(items, index, count);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
