@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
-var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 100000000);
+var list = E.Select(OptimizedLinq.Fill(x => random.Next(0, 65536), 50000), x => x);
 
 //Stopwatch sw = Stopwatch.StartNew();
 //var a = E.ToDictionary(E.Where(E.GroupBy(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => ((ulong)(uint)x << 32) + (uint)y), x => x), x => E.Count(x) >= 2), x => x.Key, col => E.ToList(E.OrderBy(col, x => (uint)x)));
@@ -32,15 +32,15 @@ var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 100000000);
 //Console.WriteLine(sw.ElapsedMilliseconds);
 //Console.WriteLine(b.SetEquals(a));
 
-Stopwatch sw = Stopwatch.StartNew();
-var a = E.Average(E.Where(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => (Item1: x, Item2: y)), x => Math.Abs(x.Item1 - x.Item2) < 4096), x => Math.Abs(x.Item1 - x.Item2));
-sw.Stop();
-Console.WriteLine(sw.ElapsedMilliseconds);
-sw.Restart();
-var b = list.AsSpan(1).Combine(list.AsSpan(2), (x, y) => (Item1: x, Item2: y)).FilterInPlace(x => Math.Abs(x.Item1 - x.Item2) < 4096).Mean(x => Math.Abs(x.Item1 - x.Item2));
-sw.Stop();
-Console.WriteLine(sw.ElapsedMilliseconds);
-Console.WriteLine(a == b);
+//Stopwatch sw = Stopwatch.StartNew();
+//var a = E.Average(E.Where(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => (Item1: x, Item2: y)), x => Math.Abs(x.Item1 - x.Item2) < 4096), x => Math.Abs(x.Item1 - x.Item2));
+//sw.Stop();
+//Console.WriteLine(sw.ElapsedMilliseconds);
+//sw.Restart();
+//var b = list.AsSpan(1).Combine(list.AsSpan(2), (x, y) => (Item1: x, Item2: y)).FilterInPlace(x => Math.Abs(x.Item1 - x.Item2) < 4096).Mean(x => Math.Abs(x.Item1 - x.Item2));
+//sw.Stop();
+//Console.WriteLine(sw.ElapsedMilliseconds);
+//Console.WriteLine(a == b);
 
 //var s = new string('a', 1000000000);
 //Stopwatch sw = Stopwatch.StartNew();
@@ -52,12 +52,13 @@ Console.WriteLine(a == b);
 //sw.Stop();
 //Console.WriteLine(sw.ElapsedMilliseconds);
 
-//Stopwatch sw = Stopwatch.StartNew();
-//var a = list.Sort(x => (double)1 / x);
-//sw.Stop();
-//Console.WriteLine(sw.ElapsedMilliseconds);
-//sw.Restart();
-//var b = list.Sort(x => (double)1 / x, false);
-//sw.Stop();
-//Console.WriteLine(sw.ElapsedMilliseconds);
-//Console.WriteLine(a.Equals(b));
+Stopwatch sw = Stopwatch.StartNew();
+var t = E.Select(list, (elem, index) => (elem, index));
+//var a = E.ToList(E.Select(E.Where(t, x => x.elem == E.Max(t, x => x.elem)), x => x.index));
+sw.Stop();
+Console.WriteLine(sw.ElapsedMilliseconds);
+sw.Restart();
+var b = list.IndexesOfMax();
+sw.Stop();
+Console.WriteLine(sw.ElapsedMilliseconds);
+//Console.WriteLine(b.Equals(a));
