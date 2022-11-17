@@ -1887,28 +1887,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(count / 2);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length / 2);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -1916,29 +1912,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count / 2);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -1952,28 +1944,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(count / 2);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length / 2);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -1981,29 +1969,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(count / 2);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2115,28 +2099,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2144,29 +2124,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(1024);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (function(item))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2180,28 +2156,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2209,29 +2181,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(1024);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (function(item, i))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2246,7 +2214,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2254,17 +2221,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2272,7 +2238,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2280,17 +2245,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2299,7 +2263,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2307,17 +2270,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2325,7 +2287,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2333,18 +2294,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2359,7 +2319,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2367,17 +2326,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2385,7 +2343,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2393,17 +2350,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2412,7 +2368,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2420,17 +2375,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2438,7 +2392,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2446,18 +2399,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2472,7 +2424,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2480,17 +2431,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2498,7 +2448,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2506,17 +2455,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2525,7 +2473,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2533,17 +2480,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2551,7 +2497,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2559,18 +2504,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2585,7 +2529,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2593,17 +2536,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2611,7 +2553,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2619,17 +2560,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2638,7 +2578,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2646,17 +2585,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2664,7 +2602,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2672,18 +2609,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2698,7 +2634,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2706,17 +2641,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2724,7 +2658,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2732,17 +2665,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2751,7 +2683,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2759,17 +2690,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2777,7 +2707,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2785,18 +2714,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2811,7 +2739,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2819,17 +2746,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2837,7 +2763,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2845,17 +2770,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2864,7 +2788,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2872,17 +2795,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2890,7 +2812,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2898,18 +2819,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2924,7 +2844,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2932,17 +2851,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2950,7 +2868,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -2958,17 +2875,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -2977,7 +2893,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -2985,17 +2900,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3003,7 +2917,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3011,18 +2924,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3037,7 +2949,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3045,17 +2956,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3063,7 +2973,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -3071,17 +2980,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3090,7 +2998,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3098,17 +3005,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3116,7 +3022,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3124,18 +3029,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3150,7 +3054,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3158,17 +3061,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3176,7 +3078,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -3184,17 +3085,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3203,7 +3103,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3211,17 +3110,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3229,7 +3127,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3237,18 +3134,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3263,7 +3159,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3271,17 +3166,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3289,7 +3183,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -3297,17 +3190,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3316,7 +3208,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3324,17 +3215,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3342,7 +3232,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3350,18 +3239,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3376,7 +3264,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3384,17 +3271,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3402,7 +3288,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -3410,17 +3295,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3429,7 +3313,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3437,17 +3320,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3455,7 +3337,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3463,18 +3344,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3489,7 +3369,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3497,17 +3376,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3515,7 +3393,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -3523,17 +3400,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3542,7 +3418,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -3550,17 +3425,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -3568,7 +3442,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -3576,18 +3449,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4346,7 +4218,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4354,17 +4225,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4372,7 +4242,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4380,17 +4249,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4399,7 +4267,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4407,17 +4274,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4425,7 +4291,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4433,18 +4298,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4459,7 +4323,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4467,17 +4330,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4485,7 +4347,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4493,17 +4354,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4512,7 +4372,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4520,17 +4379,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4538,7 +4396,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			decimal indicator = 0;
-			int j = 0;
 			decimal f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4546,18 +4403,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4572,7 +4428,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4580,17 +4435,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4598,7 +4452,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4606,17 +4459,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4625,7 +4477,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4633,17 +4484,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4651,7 +4501,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4659,18 +4508,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4685,7 +4533,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4693,17 +4540,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4711,7 +4557,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4719,17 +4564,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4738,7 +4582,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4746,17 +4589,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4764,7 +4606,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			double indicator = 0;
-			int j = 0;
 			double f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4772,18 +4613,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4798,7 +4638,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4806,17 +4645,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4824,7 +4662,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4832,17 +4669,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4851,7 +4687,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4859,17 +4694,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4877,7 +4711,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4885,18 +4718,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4911,7 +4743,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4919,17 +4750,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4937,7 +4767,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -4945,17 +4774,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4964,7 +4792,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			for (int i = 0; i < count; i++)
 			{
@@ -4972,17 +4799,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -4990,7 +4816,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			int indicator = 0;
-			int j = 0;
 			int f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -4998,18 +4823,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5024,7 +4848,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5032,17 +4855,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5050,7 +4872,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5058,17 +4879,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5077,7 +4897,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5085,17 +4904,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5103,7 +4921,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5111,18 +4928,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5137,7 +4953,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5145,17 +4960,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5163,7 +4977,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5171,17 +4984,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5190,7 +5002,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5198,17 +5009,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5216,7 +5026,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			uint indicator = 0;
-			int j = 0;
 			uint f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5224,18 +5033,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5250,7 +5058,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5258,17 +5065,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5276,7 +5082,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5284,17 +5089,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5303,7 +5107,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5311,17 +5114,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5329,7 +5131,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5337,18 +5138,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5363,7 +5163,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5371,17 +5170,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5389,7 +5187,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5397,17 +5194,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5416,7 +5212,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5424,17 +5219,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5442,7 +5236,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			long indicator = 0;
-			int j = 0;
 			long f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5450,18 +5243,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5476,7 +5268,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5484,17 +5275,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5502,7 +5292,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5510,17 +5299,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5529,7 +5317,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5537,17 +5324,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5555,7 +5341,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5563,18 +5348,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5589,7 +5373,6 @@ public partial class List<T, TCertain>
 			int count = list._size;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5597,17 +5380,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5615,7 +5397,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(array.Length);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < array.Length; i++)
 			{
@@ -5623,17 +5404,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5642,7 +5422,6 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			for (int i = 0; i < count; i++)
 			{
@@ -5650,17 +5429,16 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -5668,7 +5446,6 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			mpz_t indicator = 0;
-			int j = 0;
 			mpz_t f;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5676,18 +5453,17 @@ public partial class List<T, TCertain>
 				if (i == 0)
 				{
 					indicator = function(item, i);
-					result._items[j++] = item;
+					result.Add(item);
 				}
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result._items[j = 0] = item;
+					result.Clear();
 				}
 				else if (f == indicator!)
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -24595,15 +24371,13 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -24634,15 +24408,13 @@ public partial class List<T, TCertain>
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			decimal? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -24673,15 +24445,13 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -24712,15 +24482,13 @@ public partial class List<T, TCertain>
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			double? value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -24751,15 +24519,13 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -24790,15 +24556,13 @@ public partial class List<T, TCertain>
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			int? value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -24829,15 +24593,13 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -24868,15 +24630,13 @@ public partial class List<T, TCertain>
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			uint? value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -24907,15 +24667,13 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -24946,15 +24704,13 @@ public partial class List<T, TCertain>
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			long? value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -24985,15 +24741,13 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -25024,15 +24778,13 @@ public partial class List<T, TCertain>
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			mpz_t? value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
-		else
-			return IndexesOfMeanEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<decimal> source)
@@ -25252,14 +25004,12 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -25287,14 +25037,12 @@ public partial class List<T, TCertain>
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<decimal> list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -25322,14 +25070,12 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -25357,14 +25103,12 @@ public partial class List<T, TCertain>
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<double> list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -25392,14 +25136,12 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -25427,14 +25169,12 @@ public partial class List<T, TCertain>
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<int> list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -25462,14 +25202,12 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -25497,14 +25235,12 @@ public partial class List<T, TCertain>
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<uint> list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -25532,14 +25268,12 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -25567,14 +25301,12 @@ public partial class List<T, TCertain>
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<long> list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -25602,14 +25334,12 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -25637,14 +25367,12 @@ public partial class List<T, TCertain>
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
 			List<mpz_t> list_ = ConvertEnumerable(source, function);
 			mpz_t? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
-		else
-			return IndexesOfMedianEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<decimal> source)
@@ -38561,10 +38289,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static decimal MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, decimal> function)
@@ -38586,10 +38312,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static double MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, double> function)
@@ -38611,10 +38335,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static double MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, double> function)
@@ -38636,10 +38358,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static int MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int> function)
@@ -38661,10 +38381,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static int MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, int> function)
@@ -38686,10 +38404,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static uint MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, uint> function)
@@ -38711,10 +38427,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static uint MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, uint> function)
@@ -38736,10 +38450,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static long MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, long> function)
@@ -38761,10 +38473,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static long MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, long> function)
@@ -38786,10 +38496,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static mpz_t MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, mpz_t> function)
@@ -38811,10 +38519,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static mpz_t MedianEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, mpz_t> function)
@@ -38836,10 +38542,8 @@ public partial class List<T, TCertain>
 			int count = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : ConvertEnumerable(source, function).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<TSource>(source), function);
+			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static decimal MedianEnumerable(IEnumerable<decimal> source)
@@ -38850,10 +38554,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<decimal>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<decimal> list2)
 			return list2.Count == 0 ? 0 : new List<decimal>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<decimal>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<decimal>(source));
+			return CreateVar(new List<decimal>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static double MedianEnumerable(IEnumerable<double> source)
@@ -38864,10 +38566,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<double>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<double> list2)
 			return list2.Count == 0 ? 0 : new List<double>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<double>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<double>(source));
+			return CreateVar(new List<double>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static int MedianEnumerable(IEnumerable<int> source)
@@ -38878,10 +38578,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<int>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<int> list2)
 			return list2.Count == 0 ? 0 : new List<int>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<int>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<int>(source));
+			return CreateVar(new List<int>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static uint MedianEnumerable(IEnumerable<uint> source)
@@ -38892,10 +38590,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<uint>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<uint> list2)
 			return list2.Count == 0 ? 0 : new List<uint>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<uint>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<uint>(source));
+			return CreateVar(new List<uint>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static long MedianEnumerable(IEnumerable<long> source)
@@ -38906,10 +38602,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<long>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<long> list2)
 			return list2.Count == 0 ? 0 : new List<long>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<long>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<long>(source));
+			return CreateVar(new List<long>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static mpz_t MedianEnumerable(IEnumerable<mpz_t> source)
@@ -38920,10 +38614,8 @@ public partial class List<T, TCertain>
 			return array.Length == 0 ? 0 : new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2];
 		else if (source is G.IList<mpz_t> list2)
 			return list2.Count == 0 ? 0 : new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2];
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-			return count == 0 ? 0 : new List<mpz_t>(source).Sort()._items[(count - 1) / 2];
 		else
-			return MedianEnumerable(new List<mpz_t>(source));
+			return CreateVar(new List<mpz_t>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static TResult? MedianEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function)
@@ -40263,28 +39955,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40292,34 +39980,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function)
@@ -40331,28 +40013,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40360,34 +40038,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source)
@@ -40397,28 +40069,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40426,29 +40094,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(1024);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40463,28 +40127,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40492,34 +40152,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, comparer);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer)
@@ -40531,28 +40185,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40560,34 +40210,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, comparer);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
@@ -40597,28 +40241,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40626,29 +40266,25 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
 		{
 			List<TSource> result = new(1024);
-			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
 			{
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40663,28 +40299,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40692,34 +40324,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, equalFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
@@ -40731,28 +40357,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40760,34 +40382,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, equalFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction)
@@ -40797,28 +40413,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40826,34 +40438,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(item))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), equalFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(item))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
@@ -40865,28 +40471,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40894,34 +40496,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
@@ -40933,28 +40529,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -40962,34 +40554,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(function(item, i)))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction)
@@ -40999,28 +40585,24 @@ public partial class List<T, TCertain>
 		{
 			int count = list._size;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
 			List<TSource> result = new(array.Length);
-			int j = 0;
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -41028,34 +40610,28 @@ public partial class List<T, TCertain>
 		{
 			int count = list2.Count;
 			List<TSource> result = new(1024);
-			int j = 0;
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
 				if (hs.TryAdd(item))
-					result._items[j++] = item;
+					result.Add(item);
 			}
-			result._size = j;
-			result.TrimExcess();
-			return result;
-		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
-		{
-			List<TSource> result = new(1024);
-			int j = 0;
-			int i = 0;
-			foreach (TSource item in source)
-			{
-				if (hs.TryAdd(item))
-					result._items[j++] = item;
-				i++;
-			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
 		else
-			return RemoveDoublesEnumerable(new List<TSource>(source), equalFunction, hashCodeFunction);
+		{
+			List<TSource> result = new(1024);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (hs.TryAdd(item))
+					result.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
 	}
 
 	internal static (List<TSource>, List<TSource2>) RemoveDoublesEnumerable<TSource, TSource2, TResult>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TResult> function)
@@ -41066,7 +40642,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41088,7 +40664,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41110,7 +40686,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41141,7 +40717,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41163,7 +40739,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41185,7 +40761,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41214,7 +40790,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41236,7 +40812,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41258,7 +40834,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41289,7 +40865,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41311,7 +40887,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41333,7 +40909,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41364,7 +40940,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41386,7 +40962,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41408,7 +40984,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41437,7 +41013,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41459,7 +41035,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41481,7 +41057,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41512,7 +41088,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41534,7 +41110,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41556,7 +41132,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41587,7 +41163,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41609,7 +41185,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41631,7 +41207,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41660,7 +41236,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41682,7 +41258,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41704,7 +41280,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41735,7 +41311,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41757,7 +41333,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41779,7 +41355,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41810,7 +41386,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41832,7 +41408,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41854,7 +41430,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41883,7 +41459,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41905,7 +41481,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array && source2 is TSource2[] array2)
 		{
 			int count = Math.Min(array.Length, array2.Length);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -41927,7 +41503,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
 		{
 			int count = Math.Min(list2_.Count, list2_2.Count);
-			List<TSource> result = new(1024);
+			List<TSource> result = new(count);
 			List<TSource2> result2 = new(count);
 			int j = 0;
 			for (int i = 0; i < count; i++)
@@ -42499,31 +42075,28 @@ public partial class List<T, TCertain>
 			result._size = count;
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			int count2 = GetArrayLength(count, fragmentLength);
-			List<List<TSource>> result = new(count2);
+			if (!source.Any())
+				return new();
+			List<List<TSource>> result = new(64);
 			int i = 0, j = 0, k = 0;
-			if (count2 != 0)
-				result._items[0] = new(fragmentLength);
+			result.Add(new(fragmentLength));
 			foreach (TSource item in source)
 			{
 				result._items[j]._items[k++] = item;
 				if (k >= fragmentLength)
 				{
 					result._items[j++]._size = fragmentLength;
-					result._items[j] = new(fragmentLength);
+					result.Add(new(fragmentLength));
 					k = 0;
 				}
 				i++;
 			}
 			if (k != 0)
 				result._items[j]._size = k;
-			result._size = count2;
 			return result;
 		}
-		else
-			return SplitIntoEqualEnumerable(new List<TSource>(source), fragmentLength);
 	}
 
 	internal static decimal SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -44114,7 +43687,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (function(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44132,7 +43705,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (function(item, i))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44178,7 +43751,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (function(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44196,7 +43769,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (function(item, i))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44218,15 +43791,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44248,15 +43821,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44278,15 +43851,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44308,15 +43881,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44338,15 +43911,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44368,15 +43941,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44398,15 +43971,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44428,15 +44001,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44458,15 +44031,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44488,15 +44061,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44518,15 +44091,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44548,15 +44121,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) > indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44806,15 +44379,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44836,15 +44409,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44866,15 +44439,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44896,15 +44469,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44926,15 +44499,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44956,15 +44529,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -44986,15 +44559,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -45016,15 +44589,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -45046,15 +44619,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -45076,15 +44649,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -45106,15 +44679,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -45136,15 +44709,15 @@ public partial class List<T, TCertain>
 			if (i == 0)
 			{
 				indicator = function(item, i);
-				result._items[j++] = item;
+				result.Add(item);
 			}
 			else if ((f = function(item, i)) < indicator!)
 			{
 				indicator = f;
-				result._items[j = 0] = item;
+				result.Clear();
 			}
 			else if (f == indicator!)
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54869,7 +54442,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54888,7 +54461,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54905,7 +54478,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54924,7 +54497,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54943,7 +54516,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54960,7 +54533,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54979,7 +54552,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -54998,7 +54571,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -55015,7 +54588,7 @@ public partial class List<T, TCertain>
 		{
 			TSource item = source[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -55540,9 +55113,9 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55555,8 +55128,6 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function, function2);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TSource, TResult, TResult2>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
@@ -55610,9 +55181,9 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55625,8 +55196,6 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function, function2);
 	}
 
 	internal static (NList<TSource>, NList<TSource2>) BreakEnumerable<TSource, TSource2>(IEnumerable<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged
@@ -55664,9 +55233,9 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TSource> result = new(count);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TSource2> result2 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2) item in source)
@@ -55678,8 +55247,6 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else
-			return BreakEnumerable(new List<(TSource, TSource2)>(source));
 	}
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TSource, TResult, TResult2>(IEnumerable<TSource> source, Func<TSource, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
@@ -55728,9 +55295,9 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55742,8 +55309,6 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TSource, TResult, TResult2>(IEnumerable<TSource> source, Func<TSource, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
@@ -55792,9 +55357,9 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55806,8 +55371,6 @@ public unsafe partial class NList<T>
 			result2._size = count;
 			return (result, result2);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TSource, TResult, TResult2, TResult3>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2, Func<TSource, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
@@ -55872,9 +55435,9 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -55890,8 +55453,6 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function, function2, function3);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TSource, TResult, TResult2, TResult3>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2, Func<TSource, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
@@ -55954,9 +55515,9 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -55972,8 +55533,6 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function, function2, function3);
 	}
 
 	internal static (NList<TSource>, NList<TSource2>, NList<TSource3>) BreakEnumerable<TSource, TSource2, TSource3>(IEnumerable<(TSource, TSource2, TSource3)> source) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged
@@ -56017,9 +55576,9 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TSource> result = new(count);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TSource2> result2 = new(count);
 			NList<TSource3> result3 = new(count);
 			int i = 0;
@@ -56033,8 +55592,6 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else
-			return BreakEnumerable(new List<(TSource, TSource2, TSource3)>(source));
 	}
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TSource, TResult, TResult2, TResult3>(IEnumerable<TSource> source, Func<TSource, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
@@ -56089,9 +55646,9 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56105,8 +55662,6 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TSource, TResult, TResult2, TResult3>(IEnumerable<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
@@ -56161,9 +55716,9 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56177,8 +55732,6 @@ public unsafe partial class NList<T>
 			result3._size = count;
 			return (result, result2, result3);
 		}
-		else
-			return BreakEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TSource, TResult, TResult2>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
@@ -57006,9 +56559,9 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -57018,8 +56571,6 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else
-			return ConvertEnumerable(new NList<TSource>(source), function);
 	}
 
 	internal static NList<TResult> ConvertEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged
@@ -57061,9 +56612,9 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else if (List<TSource>.TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			NList<TResult> result = new(count);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -57073,8 +56624,6 @@ public unsafe partial class NList<T>
 			result._size = count;
 			return result;
 		}
-		else
-			return ConvertEnumerable(new NList<TSource>(source), function);
 	}
 
 	internal static NList<TResult> ConvertEnumerable<TSource, TResult>(NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged
@@ -57137,7 +56686,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (function(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57155,7 +56704,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (function(item, i))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57173,7 +56722,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (function(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57191,7 +56740,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (function(item, i))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57271,7 +56820,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57290,7 +56839,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57307,7 +56856,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57326,7 +56875,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57345,7 +56894,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57362,7 +56911,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57381,7 +56930,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57400,7 +56949,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -57417,7 +56966,7 @@ public unsafe partial class NList<T>
 		{
 			TSource item = source._items[i];
 			if (hs.TryAdd(item))
-				result._items[j++] = item;
+				result.Add(item);
 		}
 		result._size = j;
 		result.TrimExcess();
