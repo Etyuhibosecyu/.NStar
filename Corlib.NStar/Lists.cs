@@ -4095,11 +4095,26 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual TCertain Sort<TValue>(List<TValue> values) => Sort(values, 0, _size, G.Comparer<T>.Default);
+	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(0, _size, function, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(List<TValue> values, IComparer<T>? comparer) => Sort(values, 0, _size, comparer);
+	public virtual TCertain Sort<TValue>(int index, int count, Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(index, count, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(List<TValue> values, int index, int count, IComparer<T>? comparer)
+	public virtual TCertain Sort<TValue>(int index, int count, Func<T, TValue> function, IComparer<TValue> comparer, bool fasterButMoreMemory = true)
+	{
+		if (fasterButMoreMemory)
+		{
+			Convert(function).Sort(this, index, count, comparer);
+			return this as TCertain ?? throw new InvalidOperationException();
+		}
+		else
+			return Sort(index, count, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
+	}
+
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, G.Comparer<T>.Default);
+
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, comparer);
+
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int count, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new()
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));

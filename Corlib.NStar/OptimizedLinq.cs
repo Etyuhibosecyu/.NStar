@@ -1493,7 +1493,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 				result.AddRange(function(list._items[i]));
 			return result;
@@ -1508,14 +1508,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 				result.AddRange(function(list2[i]));
 			return result;
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -1535,7 +1535,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
@@ -1556,7 +1556,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
@@ -1566,7 +1566,7 @@ public partial class List<T, TCertain>
 		}
 		else if (TryGetCountEasilyEnumerable(source, out int count))
 		{
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -32839,7 +32839,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 				result.AddRange(list._items[i]);
 			return result;
@@ -32854,14 +32854,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			int count = list2.Count;
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			for (int i = 0; i < count; i++)
 				result.AddRange(list2[i]);
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else if (TryGetCountEasilyEnumerable(source, out _))
 		{
-			List<TResult> result = new(count);
+			List<TResult> result = new(1024);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -44336,7 +44336,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		List<TResult> result = new(count);
+		List<TResult> result = new(1024);
 		for (int i = 0; i < count; i++)
 			result.AddRange(function(source[i]));
 		return result;
@@ -44347,7 +44347,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Length;
-		List<TResult> result = new(count);
+		List<TResult> result = new(1024);
 		for (int i = 0; i < count; i++)
 			result.AddRange(function(source[i], i));
 		return result;
@@ -52962,7 +52962,7 @@ public partial class List<T, TCertain>
 	internal static List<TResult> JoinIntoSingleEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source) where TSource : IEnumerable<TResult>
 	{
 		int count = source.Length;
-		List<TResult> result = new(count);
+		List<TResult> result = new(1024);
 		for (int i = 0; i < count; i++)
 			result.AddRange(source[i]);
 		return result;
