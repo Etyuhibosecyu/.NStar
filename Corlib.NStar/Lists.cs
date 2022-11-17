@@ -4047,8 +4047,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 	{
 		if (this is List<uint> uintList)
 		{
-			fixed (uint* items = uintList._items)
-				RadixSort(items, index, count);
+			RadixSort(uintList._items, index, count);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
@@ -4882,7 +4881,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	{
 		if (this is NList<uint> uintList)
 		{
-			RadixSort(uintList._items, index, count);
+			//RadixSort(uintList._items, index, count);
 			return this;
 		}
 		else

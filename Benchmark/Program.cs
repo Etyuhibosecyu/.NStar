@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
-var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 10000000);
+var list = OptimizedLinq.Fill(x => (uint)random.Next(0, 65536), 10000000);
 
 //Stopwatch sw = Stopwatch.StartNew();
 //var a = E.ToDictionary(E.Where(E.GroupBy(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => ((ulong)(uint)x << 32) + (uint)y), x => x), x => E.Count(x) >= 2), x => x.Key, col => E.ToList(E.OrderBy(col, x => (uint)x)));
@@ -53,9 +53,8 @@ var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 10000000);
 //Console.WriteLine(sw.ElapsedMilliseconds);
 
 //Stopwatch sw = Stopwatch.StartNew();
-//var t = E.Select(list, (elem, index) => (elem, index));
-//var max = E.Max(t, x => x.elem);
-//var a = E.ToList(E.Select(E.Where(t, x => x.elem == max), x => x.index));
+//var max = E.Max(list, x => x);
+//var a = E.ToList(E.Select(E.Where(E.Select(list, (elem, index) => (elem, index)), x => x.elem == max), x => x.index));
 //sw.Stop();
 //Console.WriteLine(sw.ElapsedMilliseconds);
 //sw.Restart();
@@ -65,11 +64,11 @@ var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 10000000);
 //Console.WriteLine(b.Equals(a));
 
 Stopwatch sw = Stopwatch.StartNew();
-var a = E.ToList(E.OrderBy(list, x => x));
+//var a = E.ToList(E.OrderBy(list, x => x));
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
 sw.Restart();
 var b = list.NSort();
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
-Console.WriteLine(b.Equals(a));
+//Console.WriteLine(b.Equals(a));
