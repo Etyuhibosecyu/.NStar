@@ -54,11 +54,11 @@ var list = E.Select(OptimizedLinq.Fill(x => random.Next(0, 65536), 50000), x => 
 
 Stopwatch sw = Stopwatch.StartNew();
 var t = E.Select(list, (elem, index) => (elem, index));
-//var a = E.ToList(E.Select(E.Where(t, x => x.elem == E.Max(t, x => x.elem)), x => x.index));
+var a = E.ToList(E.Select(E.Where(t, x => x.elem == E.Max(t, x => x.elem)), x => x.index));
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
 sw.Restart();
 var b = list.IndexesOfMax();
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
-//Console.WriteLine(b.Equals(a));
+Console.WriteLine(b.Equals(a));
