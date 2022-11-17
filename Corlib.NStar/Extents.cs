@@ -1,7 +1,4 @@
 ﻿global using Mpir.NET;
-#if !RELEASE
-global using NativeFunctions;
-#endif
 global using System;
 global using System.Collections;
 global using G = System.Collections.Generic;
@@ -469,6 +466,9 @@ public static partial class Extents
 
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
 	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
+
+	[LibraryImport("Native.NStar.dll", EntryPoint = "Sort", SetLastError = false)]
+	internal static unsafe partial void RadixSort(uint* array, int index, int count);
 
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);

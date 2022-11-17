@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "pch.h"
 
 #define WIN32_LEAN_AND_MEAN             // Исключите редко используемые компоненты из заголовков Windows
 #include "Windows.h"
@@ -56,10 +57,14 @@ namespace NativeFunctions
 		//	return source;
 		//}
 
-		__declspec(dllexport)
-		static void Sort(unsigned* in, int n)
+		__declspec(dllexport) static void Sort(unsigned* in, int index, int count)
 		{
-			return radixSortUnsigned(in, n);
+			return Sort(in + index, count);
+		}
+
+		static void Sort(unsigned* in, int count)
+		{
+			return radixSortUnsigned(in, count);
 		}
 
 		//generic<class T> where T : value class static void Sort(T* in, unsigned* in2, int n)
@@ -197,81 +202,76 @@ namespace NativeFunctions
 			for (i = 0; i < n; ++i)
 				out[count[offset < sizes[i] ? (int)*(cstr[i] + offset) : 0]++] = in[i];
 		}
+
+		template<class T> static void createCountersUnsigned(T* data, int* counters, int n)
+		{
+			memset(counters, 0, 256 * sizeof(T) * sizeof(int));
+			UCHAR* bp = (UCHAR*)data;
+			UCHAR* dataEnd = (UCHAR*)(data + n);
+			USHORT i;
+			while (bp != dataEnd)
+				for (i = 0; i < sizeof(T); i++)
+					counters[256 * i + *bp++]++;
+		}
+
+		template<class T> static void radixPassUnsigned(short offset, int n, T* in, T* out, int* count)
+		{
+			T* sp;
+			int s, c, i, * cp;
+			UCHAR* bp;
+			s = 0;
+			cp = count;
+			for (i = 256; i > 0; --i, ++cp)
+			{
+				c = *cp;
+				*cp = s;
+				s += c;
+			}
+			bp = (UCHAR*)in + offset;
+			sp = in;
+			for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
+			{
+				cp = count + *bp;
+				out[*cp] = *sp;
+				++(*cp);
+			}
+		}
+
+		template<class T, class T2> static void createCountersUnsigned(T* data, int* counters, int n)
+		{
+			memset(counters, 0, 256 * sizeof(T) * sizeof(int));
+			UCHAR* bp = (UCHAR*)data;
+			UCHAR* dataEnd = (UCHAR*)(data + n);
+			USHORT i;
+			while (bp != dataEnd)
+				for (i = 0; i < sizeof(T); i++)
+					counters[256 * i + *bp++]++;
+		}
+
+		template<class T, class T2> static void radixPassUnsigned(short offset, int n, T* in, T2* in2, T* out, T2* out2, int* count)
+		{
+			T* sp;
+			T2* sp2;
+			int s, c, i, * cp;
+			UCHAR* bp;
+			s = 0;
+			cp = count;
+			for (i = 256; i > 0; --i, ++cp)
+			{
+				c = *cp;
+				*cp = s;
+				s += c;
+			}
+			bp = (UCHAR*)in + offset;
+			sp = in;
+			sp2 = in2;
+			for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
+			{
+				cp = count + *bp;
+				out[*cp] = *sp;
+				out2[*cp] = *sp2;
+				++(*cp);
+			}
+		}
 	};
-}
-
-template<class T> void createCountersUnsigned(T* data, int* counters, int n)
-{
-	memset(counters, 0, 256 * sizeof(T) * sizeof(int));
-	UCHAR* bp = (UCHAR*)data;
-	UCHAR* dataEnd = (UCHAR*)(data + n);
-	USHORT i;
-	while (bp != dataEnd)
-		for (i = 0; i < sizeof(T); i++)
-			counters[256 * i + *bp++]++;
-}
-
-template<class T> void radixPassUnsigned(short offset, int n, T* in, T* out, int* count)
-{
-	T* sp;
-	int s, c, i, * cp;
-	UCHAR* bp;
-	s = 0;
-	cp = count;
-	for (i = 256; i > 0; --i, ++cp)
-	{
-		c = *cp;
-		*cp = s;
-		s += c;
-	}
-	bp = (UCHAR*)in + offset;
-	sp = in;
-	for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
-	{
-		cp = count + *bp;
-		out[*cp] = *sp;
-		++(*cp);
-	}
-}
-
-template<class T, class T2> void createCountersUnsigned(T* data, int* counters, int n)
-{
-	memset(counters, 0, 256 * sizeof(T) * sizeof(int));
-	UCHAR* bp = (UCHAR*)data;
-	UCHAR* dataEnd = (UCHAR*)(data + n);
-	USHORT i;
-	while (bp != dataEnd)
-		for (i = 0; i < sizeof(T); i++)
-			counters[256 * i + *bp++]++;
-}
-
-template<class T, class T2> void radixPassUnsigned(short offset, int n, T* in, T2* in2, T* out, T2* out2, int* count)
-{
-	T* sp;
-	T2* sp2;
-	int s, c, i, * cp;
-	UCHAR* bp;
-	s = 0;
-	cp = count;
-	for (i = 256; i > 0; --i, ++cp)
-	{
-		c = *cp;
-		*cp = s;
-		s += c;
-	}
-	bp = (UCHAR*)in + offset;
-	sp = in;
-	sp2 = in2;
-	for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
-	{
-		cp = count + *bp;
-		out[*cp] = *sp;
-		out2[*cp] = *sp2;
-		++(*cp);
-	}
-}
-
-template<class T, class T2> T as(T2 obj)
-{
-	return dynamic_cast<T>(obj);
 }

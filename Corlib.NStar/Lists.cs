@@ -4040,15 +4040,15 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 	}
 
 	private protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, index, count);
-#if !RELEASE
 
 	public virtual TCertain NSort() => NSort(0, _size);
 
-	public virtual TCertain NSort(int index, int count)
+	public unsafe virtual TCertain NSort(int index, int count)
 	{
 		if (this is List<uint> uintList)
 		{
-			Radix.Sort(uintList._items, index, count);
+			fixed (uint* items = uintList._items)
+				RadixSort(items, index, count);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
@@ -4059,10 +4059,9 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual TCertain NSort(Func<T, uint> function, int index, int count)
 	{
-		Radix.Sort(_items, function, index, count);
+		//Radix.Sort(_items, function, index, count);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
-#endif
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
 
@@ -4883,9 +4882,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	{
 		if (this is NList<uint> uintList)
 		{
-#if !RELEASE
-			Radix.Sort(uintList._items + index, count);
-#endif
+			RadixSort(uintList._items, index, count);
 			return this;
 		}
 		else
@@ -4895,9 +4892,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
 	public virtual NList<T> Sort(Func<T, uint> function, int index, int count) =>
-#if !RELEASE
 		//Radix.Sort(_items + index, function, count);
-#endif
 		this;
 
 	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
