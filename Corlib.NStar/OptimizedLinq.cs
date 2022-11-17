@@ -57153,9 +57153,9 @@ public static class OptimizedLinq
 	public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<bool>.AnyEnumerable(source, function);
 	public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<bool>.AnyEnumerable(source, function);
 	public static IEnumerable<TSource> AsEnumerable<TSource>(this IEnumerable<TSource> source) => source;
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source) => List<TSource>.ReturnOrConstruct(source).AsSpan();
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index) => List<TSource>.ReturnOrConstruct(source).AsSpan(index);
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index, int count) => List<TSource>.ReturnOrConstruct(source).AsSpan(index, count);
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source) => source is TSource[] array ? MemoryExtensions.AsSpan(array) : List<TSource>.ReturnOrConstruct(source).AsSpan();
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index) => source is TSource[] array ? MemoryExtensions.AsSpan(array, index) : List<TSource>.ReturnOrConstruct(source).AsSpan(index);
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index, int count) => source is TSource[] array ? MemoryExtensions.AsSpan(array, index, count) : List<TSource>.ReturnOrConstruct(source).AsSpan(index, count);
 	public static (List<TResult>, List<TResult2>) Break<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) => List<TSource>.BreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) => List<TSource>.BreakEnumerable(source, function, function2);
 	public static (List<TSource>, List<TSource2>) Break<TSource, TSource2>(this IEnumerable<(TSource, TSource2)> source) => List<TSource>.BreakEnumerable(source);
