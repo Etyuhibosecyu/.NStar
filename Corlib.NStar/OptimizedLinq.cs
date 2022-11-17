@@ -1397,7 +1397,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -1450,7 +1450,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -1927,9 +1927,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<TSource> result = new(count / 2);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -1942,8 +1942,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FilterEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<TSource> FilterEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
@@ -1994,9 +1992,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<TSource> result = new(count / 2);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -2009,8 +2007,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FilterEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static TSource? FindEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
@@ -5738,7 +5734,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -5803,7 +5799,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -13996,7 +13992,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -14109,7 +14105,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -14222,7 +14218,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -14335,7 +14331,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -14448,7 +14444,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -14561,7 +14557,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -14674,7 +14670,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -14787,7 +14783,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -14900,7 +14896,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -15013,7 +15009,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -15126,7 +15122,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -15239,7 +15235,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -16096,7 +16092,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -16209,7 +16205,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -16322,7 +16318,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -16435,7 +16431,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -16548,7 +16544,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -16661,7 +16657,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -16774,7 +16770,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -16887,7 +16883,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -17000,7 +16996,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -17113,7 +17109,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -17226,7 +17222,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -17339,7 +17335,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -20409,9 +20405,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -20430,8 +20426,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull
@@ -20501,9 +20495,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -20522,8 +20516,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
@@ -20591,9 +20583,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TSource Key, int Count)> result = new(count);
+			List<(TSource Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -20612,8 +20604,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source));
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
@@ -20683,9 +20673,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -20704,8 +20694,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, comparer);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
@@ -20775,9 +20763,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -20796,8 +20784,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, comparer);
 	}
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
@@ -20865,9 +20851,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TSource Key, int Count)> result = new(count);
+			List<(TSource Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -20886,8 +20872,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), comparer);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
@@ -20957,9 +20941,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -20978,8 +20962,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, equalFunction);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
@@ -21049,9 +21031,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21070,8 +21052,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, equalFunction);
 	}
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
@@ -21139,9 +21119,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TSource Key, int Count)> result = new(count);
+			List<(TSource Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -21160,8 +21140,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), equalFunction);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
@@ -21231,9 +21209,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21252,8 +21230,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
 	}
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
@@ -21323,9 +21299,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TResult Key, int Count)> result = new(count);
+			List<(TResult Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21344,8 +21320,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
 	}
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
@@ -21413,9 +21387,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<(TSource Key, int Count)> result = new(count);
+			List<(TSource Key, int Count)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -21434,8 +21408,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return FrequencyTableEnumerable(new List<TSource>(source), equalFunction, hashCodeFunction);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull
@@ -21505,9 +21477,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21526,8 +21498,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull
@@ -21597,9 +21567,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21618,8 +21588,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function);
 	}
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
@@ -21687,9 +21655,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TSource>> result = new(count);
+			List<Group<TSource, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -21708,8 +21676,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source));
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
@@ -21779,9 +21745,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21800,8 +21766,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, comparer);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
@@ -21871,9 +21835,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -21892,8 +21856,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, comparer);
 	}
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
@@ -21961,9 +21923,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TSource>> result = new(count);
+			List<Group<TSource, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -21982,8 +21944,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), comparer);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
@@ -22053,9 +22013,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -22074,8 +22034,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, equalFunction);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
@@ -22145,9 +22103,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -22166,8 +22124,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, equalFunction);
 	}
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
@@ -22235,9 +22191,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TSource>> result = new(count);
+			List<Group<TSource, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -22256,8 +22212,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), equalFunction);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
@@ -22327,9 +22281,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -22348,8 +22302,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
 	}
 
 	internal static List<Group<TSource, TResult>> GroupEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
@@ -22419,9 +22371,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TResult>> result = new(count);
+			List<Group<TSource, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TResult f;
 			int i = 0;
@@ -22440,8 +22392,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), function, equalFunction, hashCodeFunction);
 	}
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
@@ -22509,9 +22459,9 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (TryGetCountEasilyEnumerable(source, out int count))
+		else
 		{
-			List<Group<TSource, TSource>> result = new(count);
+			List<Group<TSource, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			TSource f;
 			int i = 0;
@@ -22530,8 +22480,6 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else
-			return GroupEnumerable(new List<TSource>(source), equalFunction, hashCodeFunction);
 	}
 
 	internal static List<int> IndexesOfEnumerable<TSource>(IEnumerable<TSource> source, TSource target)
@@ -22582,7 +22530,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -22683,7 +22631,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -22796,7 +22744,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -22909,7 +22857,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -23022,7 +22970,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -23135,7 +23083,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -23248,7 +23196,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -23361,7 +23309,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -23474,7 +23422,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -23587,7 +23535,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -23700,7 +23648,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -23813,7 +23761,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -23926,7 +23874,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -24037,7 +23985,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -24148,7 +24096,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -24259,7 +24207,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -24370,7 +24318,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -24481,7 +24429,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -24592,7 +24540,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -25953,7 +25901,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -26066,7 +26014,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -26179,7 +26127,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -26292,7 +26240,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -26405,7 +26353,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -26518,7 +26466,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -26631,7 +26579,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -26744,7 +26692,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -26857,7 +26805,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -26970,7 +26918,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -27083,7 +27031,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -27196,7 +27144,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -27307,7 +27255,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			decimal indicator = 0;
 			int j = 0;
 			decimal f;
@@ -27418,7 +27366,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			double indicator = 0;
 			int j = 0;
 			double f;
@@ -27529,7 +27477,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int indicator = 0;
 			int j = 0;
 			int f;
@@ -27640,7 +27588,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			uint indicator = 0;
 			int j = 0;
 			uint f;
@@ -27751,7 +27699,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			long indicator = 0;
 			int j = 0;
 			long f;
@@ -27862,7 +27810,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			mpz_t indicator = 0;
 			int j = 0;
 			mpz_t f;
@@ -42054,7 +42002,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -42122,7 +42070,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -42190,7 +42138,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -42258,7 +42206,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<int> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int j = 0;
 			int i = 0;
 			foreach (TSource item in source)
@@ -42313,7 +42261,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
 			int i = 0;
 			foreach (TSource item in source)
 			{
