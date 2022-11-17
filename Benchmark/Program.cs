@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
-var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 10000000);
+var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 100000000);
 
 //Stopwatch sw = Stopwatch.StartNew();
 //var a = E.ToDictionary(E.Where(E.GroupBy(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => ((ulong)(uint)x << 32) + (uint)y), x => x), x => E.Count(x) >= 2), x => x.Key, col => E.ToList(E.OrderBy(col, x => (uint)x)));
