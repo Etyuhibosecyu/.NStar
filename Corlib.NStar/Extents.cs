@@ -470,11 +470,19 @@ public static partial class Extents
 	//[LibraryImport("kernel32", SetLastError = true)]
 	//public static partial IntPtr LocalFree(IntPtr mem);
 
+#if RELEASE
 	[LibraryImport("Native.NStar.dll", SetLastError = true)]
+#else
+	[LibraryImport("Native.NStar.Debug.dll", SetLastError = true)]
+#endif
 	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
 	internal static unsafe partial void RadixSort(uint* array, int index, int count);
 
+#if RELEASE
 	[LibraryImport("Native.NStar.dll", SetLastError = true)]
+#else
+	[LibraryImport("Native.NStar.Debug.dll", SetLastError = true)]
+#endif
 	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
 	internal static unsafe partial void RadixSort2(uint* array, int* array2, int index, int count);
 
@@ -755,7 +763,9 @@ public static partial class Extents
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
+		//fixed (int* indexes2 = indexes)
 		RadixSort2(converted, indexes, 0, count);
+		Marshal.FreeHGlobal((IntPtr)converted);
 		T[] oldItems = array[index..(index + count)];
 		for (int i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];

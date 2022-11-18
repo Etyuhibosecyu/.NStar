@@ -125,7 +125,6 @@ private:
 			std::swap(in, out);
 			std::swap(in2, out2);
 		}
-		delete[] in;
 		delete[] out;
 		delete[] out2;
 		delete[] counters;

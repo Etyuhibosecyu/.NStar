@@ -127,13 +127,13 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 {
 	private protected struct Entry
 	{
-		public int hashCode;
-		public int next;
-		public T item;
+		internal int hashCode;
+		internal int next;
+		internal T item;
 	}
 
 	private protected List<int> buckets = default!;
-	private protected List<Entry> entries = default!;
+	private protected Entry[] entries = default!;
 	private protected int freeCount;
 	private protected int freeList;
 	internal const int HashPrime = 101;
@@ -167,7 +167,7 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 
 	public HashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public HashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : 0, comparer)
+	public HashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -410,7 +410,7 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return -1;
 	}
 
-	private protected virtual void Initialize(int capacity, out List<int> buckets, out List<Entry> entries)
+	private protected virtual void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
 	{
 		int size = GetPrime(capacity);
 		buckets = new int[size];
@@ -452,11 +452,11 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 			index = _size;
 			_size++;
 		}
-		Entry t = entries[index];
+		ref Entry t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
-		entries[index] = t;
+		//entries[index] = t;
 		buckets[targetBucket] = ~index;
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -502,9 +502,9 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		int bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
-			Entry t = entries[bucket];
+			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
-			entries[bucket] = t;
+			//entries[bucket] = t;
 		}
 		Entry t2 = entries[index];
 		t2.hashCode = 0;
@@ -532,9 +532,9 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					Entry t = entries[last];
+					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
-					entries[last] = t;
+					//entries[last] = t;
 				}
 				Entry t2 = entries[i];
 				t2.hashCode = 0;
@@ -553,25 +553,25 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		int[] newBuckets = new int[newSize];
-		List<Entry> newEntries = new Entry[newSize];
-		List<Entry>.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		Entry[] newEntries = new Entry[newSize];
+		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
 			for (int i = 0; i < _size; i++)
 			{
-				Entry t = newEntries[i];
+				ref Entry t = ref newEntries[i];
 				if (t.hashCode != 0)
 				{
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-					newEntries[i] = t;
+					//newEntries[i] = t;
 				}
 			}
 		for (int i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
 			{
 				int bucket = ~newEntries[i].hashCode % newSize;
-				Entry t = newEntries[i];
+				ref Entry t = ref newEntries[i];
 				t.next = newBuckets[bucket];
-				newEntries[i] = t;
+				//newEntries[i] = t;
 				newBuckets[bucket] = ~i;
 			}
 		buckets = newBuckets;
@@ -739,7 +739,7 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 
 	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : 0, comparer)
+	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -837,11 +837,11 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 			index = _size;
 			_size++;
 		}
-		Entry t = entries[index];
+		ref Entry t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
-		entries[index] = t;
+		//entries[index] = t;
 		buckets[targetBucket] = ~index;
 		return this;
 	}
@@ -856,9 +856,9 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 		int bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
-			Entry t = entries[bucket];
+			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
-			entries[bucket] = t;
+			//entries[bucket] = t;
 		}
 		Entry t2 = entries[index];
 		t2.hashCode = 0;
@@ -886,9 +886,9 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					Entry t = entries[last];
+					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
-					entries[last] = t;
+					//entries[last] = t;
 				}
 				Entry t2 = entries[i];
 				t2.hashCode = 0;
@@ -907,25 +907,25 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	private protected virtual void BaseResize(int newSize, bool forceNewHashCodes)
 	{
 		int[] newBuckets = new int[newSize];
-		List<Entry> newEntries = new Entry[newSize];
-		List<Entry>.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		Entry[] newEntries = new Entry[newSize];
+		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
 			for (int i = 0; i < _size; i++)
 			{
-				Entry t = newEntries[i];
+				ref Entry t = ref newEntries[i];
 				if (t.hashCode != 0)
 				{
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-					newEntries[i] = t;
+					//newEntries[i] = t;
 				}
 			}
 		for (int i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
 			{
 				int bucket = ~newEntries[i].hashCode % newSize;
-				Entry t = newEntries[i];
+				ref Entry t = ref newEntries[i];
 				t.next = newBuckets[bucket];
-				newEntries[i] = t;
+				//newEntries[i] = t;
 				newBuckets[bucket] = ~i;
 			}
 		buckets = newBuckets;
@@ -983,7 +983,7 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 		return foundIndex < 0 ? foundIndex : Lock(lockObj, BaseIndexOf, item, index, count);
 	}
 
-	private protected override void Initialize(int capacity, out List<int> buckets, out List<Entry> entries)
+	private protected override void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
 	{
 		int size = GetPrime(capacity);
 		buckets = new int[size];
@@ -1038,11 +1038,11 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 				index = _size;
 				_size++;
 			}
-			Entry t = entries[index];
+			ref Entry t = ref entries[index];
 			t.hashCode = ~hashCode;
 			t.next = buckets[targetBucket];
 			t.item = item;
-			entries[index] = t;
+			//entries[index] = t;
 			buckets[targetBucket] = ~index;
 			return this;
 		}
