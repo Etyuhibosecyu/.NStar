@@ -43225,6 +43225,11 @@ public partial class List<T, TCertain>
 				count = col2.Count;
 				return count >= 0;
 			}
+			else if (source is System.Collections.ICollection col3)
+			{
+				count = col3.Count;
+				return count >= 0;
+			}
 			else if (source is string s)
 			{
 				count = s.Length;
