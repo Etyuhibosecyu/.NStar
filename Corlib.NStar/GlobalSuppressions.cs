@@ -4,5 +4,3 @@
 // a specific target and scoped to a namespace, type, member, etc.
 
 using System.Diagnostics.CodeAnalysis;
-
-[assembly: SuppressMessage("Design", "CA1070:Не объявляйте поля событий как виртуальные", Justification = "<Ожидание>", Scope = "member", Target = "~E:Corlib.NStar.ListBase`2.ListChanged")]

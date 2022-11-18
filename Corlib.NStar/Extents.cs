@@ -467,8 +467,16 @@ public static partial class Extents
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
 	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
 
-	[DllImport("Native.NStar.dll", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
-	internal static unsafe extern void RadixSort(uint* array, int index, int count);
+	//[LibraryImport("kernel32", SetLastError = true)]
+	//public static partial IntPtr LocalFree(IntPtr mem);
+
+	[LibraryImport("Native.NStar.dll", SetLastError = true)]
+	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+	internal static unsafe partial void RadixSort(uint* array, int index, int count);
+
+	[LibraryImport("Native.NStar.dll", SetLastError = true)]
+	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+	internal static unsafe partial void RadixSort2(uint* array, int* array2, int index, int count);
 
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
@@ -713,5 +721,45 @@ public static partial class Extents
 	{
 		lock (lockObj)
 			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
+	}
+
+	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
+
+	public static unsafe uint[] NSort(this uint[] array, int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > array.Length)
+			throw new ArgumentException(null);
+		fixed (uint* items = array)
+			RadixSort(items, index, count);
+		return array;
+	}
+
+	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
+
+	public static unsafe T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > array.Length)
+			throw new ArgumentException(null);
+		uint* converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
+		int* indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
+		for (int i = 0; i < count; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort2(converted, indexes, 0, count);
+		T[] oldItems = array[index..(index + count)];
+		for (int i = 0; i < count; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((IntPtr)indexes);
+		return array;
 	}
 }

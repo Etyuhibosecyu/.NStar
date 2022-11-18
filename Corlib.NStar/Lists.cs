@@ -4045,10 +4045,15 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public unsafe virtual TCertain NSort(int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
 		if (this is List<uint> uintList)
 		{
-			fixed (uint* items = uintList._items)
-				RadixSort(items, index, count);
+			uintList._items.NSort(index, count);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
@@ -4057,9 +4062,15 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
-	public virtual TCertain NSort(Func<T, uint> function, int index, int count)
+	public unsafe virtual TCertain NSort(Func<T, uint> function, int index, int count)
 	{
-		//Radix.Sort(_items, function, index, count);
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		_items.NSort(function, index, count);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
@@ -4882,7 +4893,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	{
 		if (this is NList<uint> uintList)
 		{
-			//RadixSort(uintList._items, index, count);
+			RadixSort(uintList._items, index, count);
 			return this;
 		}
 		else

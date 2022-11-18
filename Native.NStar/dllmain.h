@@ -61,6 +61,11 @@ public:
 		return radixSortUnsigned(in, count);
 	}
 
+	static void Sort(unsigned* in, int* in2, int count)
+	{
+		return radixSortUnsigned(in, in2, count);
+	}
+
 	//generic<class T> where T : value class static void Sort(T* in, unsigned* in2, int n)
 	//{
 	//	return radixSortUnsigned(in, in2, n);
@@ -109,17 +114,18 @@ private:
 	template<class T, class T2> static void radixSortUnsigned(T*& in, T2*& in2, int n)
 	{
 		T* out = new T[n];
-		T* out2 = new T2[n];
+		T2* out2 = new T2[n];
 		int* counters = new int[sizeof(T) * 256], * count;
 		createCountersUnsigned(in, counters, n);
 		for (USHORT i = 0; i < sizeof(T); i++)
 		{
-			count = counters + 256 * i;
+			count = counters + (intptr_t)256 * i;
 			if (count[0] == n) continue;
 			radixPassUnsigned(i, n, in, in2, out, out2, count);
 			std::swap(in, out);
 			std::swap(in2, out2);
 		}
+		delete[] in;
 		delete[] out;
 		delete[] out2;
 		delete[] counters;
@@ -272,4 +278,9 @@ private:
 EXPORT void RadixSort(unsigned* in, int index, int count)
 {
 	return Radix::Sort(in + index, count);
+}
+
+EXPORT void RadixSort2(unsigned* in, int* in2, int index, int count)
+{
+	return Radix::Sort(in + index, in2 + index, count);
 }
