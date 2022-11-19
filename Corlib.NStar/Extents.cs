@@ -1,8 +1,8 @@
 ﻿global using Mpir.NET;
 global using System;
 global using System.Collections;
-global using G = System.Collections.Generic;
 global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static System.Math;
 using System.Runtime.Serialization;
