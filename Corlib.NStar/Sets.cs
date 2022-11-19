@@ -1,9 +1,9 @@
-﻿namespace Corlib.NStar;
+﻿using System.Diagnostics;
+
+namespace Corlib.NStar;
 
 public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICollection where TCertain : SetBase<T, TCertain>, new()
 {
-	public virtual IEqualityComparer<T> Comparer { get; protected set; } = EqualityComparer<T>.Default;
-
 	bool System.Collections.ICollection.IsSynchronized => false;
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
@@ -120,6 +120,173 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 	}
 }
 
+[ComVisible(false)]
+[DebuggerDisplay("Length = {Length}")]
+[Serializable]
+public abstract class SortedSetBase<T, TCertain> : SetBase<T, TCertain> where TCertain : SortedSetBase<T, TCertain>, new()
+{
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set => throw new NotSupportedException();
+	}
+
+	public override TCertain Add(T item)
+	{
+		TryAdd(item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override TCertain Append(T item) => throw new NotSupportedException();
+
+	private protected override int IndexOfInternal(T item, int index, int count)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		int ret = Search(item);
+		return ret >= index && ret < index + count ? ret : -1;
+	}
+
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection) => throw new NotSupportedException();
+
+	public override TCertain Insert(int index, T item) => throw new NotSupportedException();
+
+	internal override TCertain ReplaceRangeInternal(int index, int count, IEnumerable<T> collection) => throw new NotSupportedException();
+
+	public abstract int Search(T item);
+
+	internal override TCertain SetRangeInternal(int index, int count, TCertain list) => throw new NotSupportedException();
+
+	public override TCertain Shuffle() => throw new NotSupportedException();
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[Serializable()]
+[ComVisible(false)]
+public abstract class SortedSet<T, TCertain> : SortedSetBase<T, TCertain> where TCertain : SortedSet<T, TCertain>, new()
+{
+	private protected readonly List<T> items;
+
+	public SortedSet()
+	{
+		items = new();
+		Comparer = G.Comparer<T>.Default;
+	}
+
+	public SortedSet(int capacity)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		items = new(capacity);
+		Comparer = G.Comparer<T>.Default;
+	}
+
+	public SortedSet(IComparer<T>? comparer) : this()
+	{
+		if (comparer != null)
+			Comparer = comparer;
+	}
+
+	public SortedSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction))
+	{
+	}
+
+	public SortedSet(int capacity, IComparer<T>? comparer) : this(comparer) => Capacity = capacity;
+
+	public SortedSet(int capacity, Func<T, T, int> compareFunction) : this(capacity, new Comparer<T>(compareFunction))
+	{
+	}
+
+	public SortedSet(IEnumerable<T> collection) : this(collection, null) { }
+
+	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		items.AddRange(collection).Sort(Comparer);
+	}
+
+	public SortedSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+
+	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : this(capacity, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		items.AddRange(collection).Sort(Comparer);
+	}
+
+	public SortedSet(params T[] array) : this((IEnumerable<T>)array)
+	{
+	}
+
+	public SortedSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	{
+	}
+
+	public SortedSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public override int Capacity { get => items.Capacity; set => items.Capacity = value; }
+
+	public virtual IComparer<T> Comparer { get; }
+
+	public override int Length => items.Length;
+
+	private protected override void ClearInternal(int index, int count) => items.Clear(index, count);
+
+	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int length)
+	{
+		if (destination is not TCertain destinationSet)
+			throw new InvalidOperationException();
+		for (int i = 0; i < length; i++)
+			destinationSet.items.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+	}
+
+	private protected override void CopyToInternal(Array array, int arrayIndex) => items.CopyTo(array, arrayIndex);
+
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => items.CopyTo(index, array, arrayIndex, count);
+
+	public override void Dispose()
+	{
+		items.Dispose();
+		GC.SuppressFinalize(this);
+	}
+
+	internal override T GetInternal(int index, bool invoke = true)
+	{
+		T item = items.GetInternal(index, invoke);
+		if (invoke)
+			Changed();
+		return item;
+	}
+
+	private protected virtual void InsertInternal(int index, T item) => items.Insert(index, item);
+
+	public override int Search(T item) => items.BinarySearch(item, Comparer);
+
+	internal override void SetInternal(int index, T value)
+	{
+		items.SetInternal(index, value);
+		Changed();
+	}
+
+	public override bool TryAdd(T item)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		int i = Search(item);
+		if (i >= 0)
+			return false;
+		InsertInternal(~i, item);
+		return true;
+	}
+}
+
 public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain : HashSet<T, TCertain>, new()
 {
 	private protected struct Entry
@@ -231,6 +398,8 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 			Changed();
 		}
 	}
+	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
+
 
 	public override int Length => _size - freeCount;
 

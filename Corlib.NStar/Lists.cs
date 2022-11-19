@@ -1066,7 +1066,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
-			return ReplaceRange(index, count, CollectionCreator(collection));
+			return ReplaceRangeInternal(index, count, CollectionCreator(collection));
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -3825,6 +3825,10 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return MemoryExtensions.AsSpan(_items, index, count);
 	}
 
+	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
+
+	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
+
 	public virtual int BinarySearch(int index, int count, T item, IComparer<T> comparer)
 	{
 		if (index < 0)
@@ -3835,10 +3839,6 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			throw new ArgumentException(null);
 		return Array.BinarySearch(_items, index, count, item, comparer);
 	}
-
-	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
-
-	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
 	private protected override void ClearInternal(int index, int count)
 	{
