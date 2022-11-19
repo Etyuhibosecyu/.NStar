@@ -1,7 +1,4 @@
-﻿using Corlib.NStar;
-using System.Linq;
-
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICollection where TCertain : SetBase<T, TCertain>, new()
 {
@@ -743,7 +740,10 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		Parallel.ForEach(collection, item => TryAdd(item));
+		if (collection is G.IList<T> list)
+			Parallel.For(0, list.Count, i => TryAdd(list[i]));
+		else
+			Parallel.ForEach(collection, item => TryAdd(item));
 	}
 
 	public ParallelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
@@ -752,7 +752,10 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		Parallel.ForEach(collection, item => TryAdd(item));
+		if (collection is G.IList<T> list)
+			Parallel.For(0, list.Count, i => TryAdd(list[i]));
+		else
+			Parallel.ForEach(collection, item => TryAdd(item));
 	}
 
 	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array)
@@ -969,7 +972,13 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
-	public override void ExceptWith(IEnumerable<T> other) => Parallel.ForEach(other, item => RemoveValue(item));
+	public override void ExceptWith(IEnumerable<T> other)
+	{
+		if (other is G.IList<T> list)
+			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
+		else
+			Parallel.ForEach(other, item => RemoveValue(item));
+	}
 
 	public override int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
 	{
@@ -1051,9 +1060,10 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	public override void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = CollectionCreator(other);
-		Parallel.ForEach(this, item =>
+			set = new ParallelHashSet<T>(other);
+		Parallel.For(0, Length, i =>
 		{
+			T item = this[i];
 			if (!set.Contains(item))
 				RemoveValue(item);
 		});
@@ -1062,14 +1072,24 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	public override bool IsSupersetOf(IEnumerable<T> other)
 	{
 		bool result = true;
-		Parallel.ForEach(other, (item, pls) =>
-		{
-			if (!Contains(item))
+		if (other is G.IList<T> list)
+			Parallel.For(0, list.Count, (i, pls) =>
 			{
-				result = false;
-				pls.Stop();
-			}
-		});
+				if (!Contains(list[i]))
+				{
+					result = false;
+					pls.Stop();
+				}
+			});
+		else
+			Parallel.ForEach(other, (item, pls) =>
+			{
+				if (!Contains(item))
+				{
+					result = false;
+					pls.Stop();
+				}
+			});
 		return result;
 	}
 
@@ -1082,14 +1102,24 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	public override bool Overlaps(IEnumerable<T> other)
 	{
 		bool result = false;
-		Parallel.ForEach(other, (item, pls) =>
-		{
-			if (Contains(item))
+		if (other is G.IList<T> list)
+			Parallel.For(0, list.Count, (i, pls) =>
 			{
-				result = true;
-				pls.Stop();
-			}
-		});
+				if (Contains(list[i]))
+				{
+					result = true;
+					pls.Stop();
+				}
+			});
+		else
+			Parallel.ForEach(other, (item, pls) =>
+			{
+				if (Contains(item))
+				{
+					result = true;
+					pls.Stop();
+				}
+			});
 		return result;
 	}
 
@@ -1115,7 +1145,21 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 	public override bool SetEquals(IEnumerable<T> other)
 	{
 		bool result = true;
-		if (other.TryGetCountEasily(out int count))
+		if (other is G.IList<T> list)
+		{
+			if (Length != list.Count)
+				return false;
+			Parallel.For(0, list.Count, (i, pls) =>
+			{
+				if (!Contains(list[i]))
+				{
+					result = false;
+					pls.Stop();
+				}
+			});
+			return result;
+		}
+		else if (other.TryGetCountEasily(out int count))
 		{
 			if (Length != count)
 				return false;
@@ -1134,9 +1178,9 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 			ParallelHashSet<T> set = new(other);
 			if (Length != set.Length)
 				return false;
-			Parallel.ForEach(set, (item, pls) =>
+			Parallel.For(0, set.Length, (i, pls) =>
 			{
-				if (!Contains(item))
+				if (!Contains(set[i]))
 				{
 					result = false;
 					pls.Stop();
@@ -1148,5 +1192,11 @@ public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
 
 	public override bool TryAdd(T item) => !BaseContains(item) && Lock(lockObj, BaseTryAdd, item);
 
-	public override void UnionWith(IEnumerable<T> other) => Parallel.ForEach(other, item => TryAdd(item));
+	public override void UnionWith(IEnumerable<T> other)
+	{
+		if (other is G.IList<T> list)
+			Parallel.For(0, list.Count, i => TryAdd(list[i]));
+		else
+			Parallel.ForEach(other, item => TryAdd(item));
+	}
 }
