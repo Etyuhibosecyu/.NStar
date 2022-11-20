@@ -190,7 +190,8 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 /// в большинстве случаев")), либо же действительный "номер" элемента может существенно отличаться от
 /// указанного вами индекса. КРАЙНЕ не рекомендуется применять данный тип в качестве списка где попало,
 /// особенно в качестве релизации стандартного интерфейса IList<T> из .NET, так как такая реализация
-/// может повести себя непредсказуемым способом.
+/// может повести себя непредсказуемым способом. В случае, если вы уже завершили серию удалений и хотите
+/// снова перейти к обращениям по индексу, используйте метод FixUpFakeIndexes() для "починки" индексации.
 /// </summary>
 public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : FakeIndAftDelHashSet<T, TCertain>, new()
 {
@@ -257,6 +258,13 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 	{
 		get
 		{
+			try
+			{
+				throw new FakeIndexesException();
+			}
+			catch
+			{
+			}
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
@@ -264,6 +272,13 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		}
 		set
 		{
+			try
+			{
+				throw new FakeIndexesException();
+			}
+			catch
+			{
+			}
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
