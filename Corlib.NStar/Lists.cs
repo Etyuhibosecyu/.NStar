@@ -502,13 +502,9 @@ public class List<T> : List<T, List<T>>
 	{
 	}
 
-	private protected override Func<int, List<T>> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<int, List<T>> CapacityCreator => x => new(x);
 
-	private static Func<int, List<T>> CapacityCreatorStatic => capacity => new(capacity);
-
-	private protected override Func<IEnumerable<T>, List<T>> CollectionCreator => CollectionCreatorStatic;
-
-	private static Func<IEnumerable<T>, List<T>> CollectionCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<T>, List<T>> CollectionCreator => x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
 
@@ -552,13 +548,9 @@ public class String : List<char, String>
 	{
 	}
 
-	private protected override Func<int, String> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<int, String> CapacityCreator => x => new(x);
 
-	private static Func<int, String> CapacityCreatorStatic => capacity => new(capacity);
-
-	private protected override Func<IEnumerable<char>, String> CollectionCreator => CollectionCreatorStatic;
-
-	private static Func<IEnumerable<char>, String> CollectionCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
 
 	public override string ToString() => new(AsSpan());
 
@@ -945,13 +937,9 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		}
 	}
 
-	private protected override Func<int, NList<T>> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<int, NList<T>> CapacityCreator => x => new(x);
 
-	private static Func<int, NList<T>> CapacityCreatorStatic => capacity => new(capacity);
-
-	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => CollectionCreatorStatic;
-
-	private static Func<IEnumerable<T>, NList<T>> CollectionCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
 
 	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
 

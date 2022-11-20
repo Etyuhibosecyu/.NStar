@@ -185,13 +185,9 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		}
 	}
 
-	private protected override Func<int, BitList> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<int, BitList> CapacityCreator => x => new(x);
 
-	private static Func<int, BitList> CapacityCreatorStatic => capacity => new(capacity);
-
-	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => CollectionCreatorStatic;
-
-	private static Func<IEnumerable<bool>, BitList> CollectionCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => x => new(x);
 
 	private protected override int DefaultCapacity => 64;
 

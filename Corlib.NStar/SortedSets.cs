@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Corlib.NStar;
 
@@ -279,7 +280,7 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 	{
 	}
 
-	private protected override Func<int, SortedSet<T>> CapacityCreator => capacity => new(capacity);
+	private protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => collection => new(collection);
+	private protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
 }
