@@ -944,6 +944,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			Parallel.ForEach(other, item => RemoveValue(item));
 	}
 
+	public override ParallelHashSet<T> FixUpFakeIndexes() => Lock(lockObj, base.FixUpFakeIndexes);
+
 	public override int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
 	{
 		lock (lockObj)
