@@ -152,10 +152,6 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		return candidate == 2;
 	}
 
-	public abstract override TCertain RemoveAt(int index);
-
-	public abstract override bool RemoveValue(T? item);
-
 	private protected virtual void Resize() => Resize(ExpandPrime(_size), false);
 
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
@@ -168,10 +164,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 			{
 				ref Entry t = ref newEntries[i];
 				if (t.hashCode != 0)
-				{
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-					//newEntries[i] = t;
-				}
 			}
 		for (int i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
@@ -179,7 +172,6 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 				int bucket = ~newEntries[i].hashCode % newSize;
 				ref Entry t = ref newEntries[i];
 				t.next = newBuckets[bucket];
-				//newEntries[i] = t;
 				newBuckets[bucket] = ~i;
 			}
 		buckets = newBuckets;
@@ -392,6 +384,33 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	public virtual TCertain FixUpFakeIndexes()
+	{
+		int newSize = GetPrime(_size - freeCount);
+		int[] newBuckets = new int[newSize];
+		Entry[] newEntries = new Entry[newSize];
+		int skipped = 0;
+		for (int i = 0; i < entries.Length; i++)
+			if (entries[i].hashCode < 0)
+				newEntries[i - skipped] = entries[i];
+			else
+				skipped++;
+		for (int i = 0; i < newSize; i++)
+			if (newEntries[i].hashCode < 0)
+			{
+				int bucket = ~newEntries[i].hashCode % newSize;
+				ref Entry t = ref newEntries[i];
+				t.next = newBuckets[bucket];
+				newBuckets[bucket] = ~i;
+			}
+		_size = newSize;
+		buckets = newBuckets;
+		entries = newEntries;
+		freeCount = 0;
+		freeList = 0;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
@@ -434,7 +453,6 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
-		//entries[index] = t;
 		buckets[targetBucket] = ~index;
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -451,7 +469,6 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		{
 			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
-			//entries[bucket] = t;
 		}
 		Entry t2 = entries[index];
 		t2.hashCode = 0;
@@ -481,7 +498,6 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 				{
 					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
-					//entries[last] = t;
 				}
 				Entry t2 = entries[i];
 				t2.hashCode = 0;
@@ -780,7 +796,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
-		//entries[index] = t;
 		buckets[targetBucket] = ~index;
 		return this;
 	}
@@ -797,7 +812,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		{
 			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
-			//entries[bucket] = t;
 		}
 		Entry t2 = entries[index];
 		t2.hashCode = 0;
@@ -827,7 +841,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				{
 					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
-					//entries[last] = t;
 				}
 				Entry t2 = entries[i];
 				t2.hashCode = 0;
@@ -855,7 +868,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				if (t.hashCode != 0)
 				{
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-					//newEntries[i] = t;
 				}
 			}
 		for (int i = 0; i < _size; i++)
@@ -864,7 +876,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				int bucket = ~newEntries[i].hashCode % newSize;
 				ref Entry t = ref newEntries[i];
 				t.next = newBuckets[bucket];
-				//newEntries[i] = t;
 				newBuckets[bucket] = ~i;
 			}
 		buckets = newBuckets;
@@ -987,7 +998,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			t.hashCode = ~hashCode;
 			t.next = buckets[targetBucket];
 			t.item = item;
-			//entries[index] = t;
 			buckets[targetBucket] = ~index;
 			return this;
 		}
