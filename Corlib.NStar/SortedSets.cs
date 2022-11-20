@@ -2,8 +2,8 @@
 
 namespace Corlib.NStar;
 
-[ComVisible(false)]
 [DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
 [Serializable]
 public abstract class SortedSetBase<T, TCertain> : SetBase<T, TCertain> where TCertain : SortedSetBase<T, TCertain>, new()
 {
@@ -218,6 +218,9 @@ public abstract class SortedSet<T, TCertain> : SortedSetBase<T, TCertain> where 
 	}
 }
 
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
 public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 {
 	public SortedSet()

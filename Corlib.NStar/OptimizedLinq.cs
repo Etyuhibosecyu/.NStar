@@ -40064,7 +40064,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new();
+		FakeIndAftDelHashSet<TResult> hs = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40122,7 +40122,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new();
+		FakeIndAftDelHashSet<TResult> hs = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40178,7 +40178,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source)
 	{
-		HashSet<TSource> hs = new();
+		FakeIndAftDelHashSet<TSource> hs = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40236,7 +40236,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(comparer);
+		FakeIndAftDelHashSet<TResult> hs = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40294,7 +40294,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(comparer);
+		FakeIndAftDelHashSet<TResult> hs = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40350,7 +40350,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
 	{
-		HashSet<TSource> hs = new(comparer);
+		FakeIndAftDelHashSet<TSource> hs = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40408,7 +40408,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40466,7 +40466,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40522,7 +40522,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40580,7 +40580,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40638,7 +40638,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40694,7 +40694,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -40752,7 +40752,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new();
+		FakeIndAftDelHashSet<TResult> hs = new();
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -40827,7 +40827,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new();
+		FakeIndAftDelHashSet<TResult> hs = new();
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -40900,7 +40900,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TSource>, List<TSource2>) RemoveDoublesEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2)
 	{
-		HashSet<TSource> hs = new();
+		FakeIndAftDelHashSet<TSource> hs = new();
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -40975,7 +40975,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(comparer);
+		FakeIndAftDelHashSet<TResult> hs = new(comparer);
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41050,7 +41050,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(comparer);
+		FakeIndAftDelHashSet<TResult> hs = new(comparer);
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41123,7 +41123,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TSource>, List<TSource2>) RemoveDoublesEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, IEqualityComparer<TSource> comparer)
 	{
-		HashSet<TSource> hs = new(comparer);
+		FakeIndAftDelHashSet<TSource> hs = new(comparer);
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41198,7 +41198,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41273,7 +41273,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41346,7 +41346,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TSource>, List<TSource2>) RemoveDoublesEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource, bool> equalFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41421,7 +41421,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41496,7 +41496,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -41569,7 +41569,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TSource>, List<TSource2>) RemoveDoublesEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
 			int count = Math.Min(list._size, list2._size);
@@ -54557,7 +54557,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
+		FakeIndAftDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54574,7 +54574,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
+		FakeIndAftDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54589,7 +54589,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(ReadOnlySpan<TSource> source)
 	{
-		HashSet<TSource> hs = new(EqualityComparer<TSource>.Default);
+		FakeIndAftDelHashSet<TSource> hs = new(EqualityComparer<TSource>.Default);
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54606,7 +54606,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54623,7 +54623,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54638,7 +54638,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54655,7 +54655,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54672,7 +54672,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -54687,7 +54687,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> RemoveDoublesEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction)
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<TSource> result = new(1024);
 		for (int i = 0; i < count; i++)
@@ -56917,7 +56917,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
+		FakeIndAftDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -56936,7 +56936,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
+		FakeIndAftDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -56953,7 +56953,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TSource> RemoveDoublesEnumerable<TSource>(NList<TSource> source) where TSource : unmanaged
 	{
-		HashSet<TSource> hs = new(EqualityComparer<TSource>.Default);
+		FakeIndAftDelHashSet<TSource> hs = new(EqualityComparer<TSource>.Default);
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -56972,7 +56972,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -56991,7 +56991,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -57008,7 +57008,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TSource> RemoveDoublesEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : unmanaged
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -57027,7 +57027,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -57046,7 +57046,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		HashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -57063,7 +57063,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TSource> RemoveDoublesEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : unmanaged
 	{
-		HashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		FakeIndAftDelHashSet<TSource> hs = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source._size;
 		NList<TSource> result = new(count);
 		int j = 0;
@@ -58167,7 +58167,7 @@ public static class OptimizedLinq
 	public static Dictionary<TSource, TSource2> ToDictionary<TSource, TSource2>(this IEnumerable<KeyValuePair<TSource, TSource2>> source, IEqualityComparer<TSource> comparer) where TSource : notnull => new(source, comparer);
 	public static Dictionary<TSource, TSource2> ToDictionary<TSource, TSource2>(this IEnumerable<KeyValuePair<TSource, TSource2>> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => new(source, equalFunction);
 	public static Dictionary<TSource, TSource2> ToDictionary<TSource, TSource2>(this IEnumerable<KeyValuePair<TSource, TSource2>> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => new(source, equalFunction, hashCodeFunction);
-	public static HashSet<TSource> ToHashSet<TSource>(this IEnumerable<TSource> source) => new(source);
+	public static FakeIndAftDelHashSet<TSource> ToHashSet<TSource>(this IEnumerable<TSource> source) => new(source);
 	public static List<TSource> ToList<TSource>(this IEnumerable<TSource> source) => List<TSource>.ReturnOrConstruct(source);
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, int, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));

@@ -1,126 +1,12 @@
-﻿using System.Diagnostics;
+﻿using Corlib.NStar;
+using System.Diagnostics;
 
 namespace Corlib.NStar;
 
-public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICollection where TCertain : SetBase<T, TCertain>, new()
-{
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	object System.Collections.ICollection.SyncRoot => _syncRoot;
-
-	public override TCertain Add(T item)
-	{
-		TryAdd(item);
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	bool ISet<T>.Add(T item) => TryAdd(item);
-
-	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
-
-	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
-
-	public virtual void ExceptWith(IEnumerable<T> other)
-	{
-		foreach (T item in other)
-			RemoveValue(item);
-	}
-
-	public override TCertain Insert(int index, T item)
-	{
-		if (!Contains(item))
-		{
-			base.Insert(index, item);
-			_size--;
-		}
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public virtual void IntersectWith(IEnumerable<T> other)
-	{
-		if (other is not ISet<T> set)
-			set = CollectionCreator(other);
-		foreach (T item in this)
-			if (!set.Contains(item))
-				RemoveValue(item);
-	}
-
-	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
-
-	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
-
-	public virtual bool IsSubsetOf(IEnumerable<T> other) => other is ISet<T> set ? set.IsSupersetOf(this) : IsSubsetOf(CollectionCreator(other));
-
-	public virtual bool IsSupersetOf(IEnumerable<T> other)
-	{
-		foreach (T item in other)
-			if (!Contains(item))
-				return false;
-		return true;
-	}
-
-	private protected override int LastIndexOfInternal(T item, int index, int count) => throw new NotSupportedException();
-
-	public virtual bool Overlaps(IEnumerable<T> other)
-	{
-		foreach (T item in other)
-			if (Contains(item))
-				return true;
-		return false;
-	}
-
-	private protected override TCertain ReverseInternal(int index, int count) => throw new NotSupportedException();
-
-	public virtual bool SetEquals(IEnumerable<T> other)
-	{
-		if (other.TryGetCountEasily(out int count))
-		{
-			if (Length != count)
-				return false;
-			foreach (T item in other)
-				if (!Contains(item))
-					return false;
-			return true;
-		}
-		else
-		{
-			TCertain set = CollectionCreator(other);
-			if (Length != set.Length)
-				return false;
-			foreach (T item in set)
-				if (!Contains(item))
-					return false;
-			return true;
-		}
-	}
-
-	public virtual void SymmetricExceptWith(IEnumerable<T> other)
-	{
-		TCertain added = new(), removed = new();
-		foreach (T item in other)
-			if (!added.Contains(item) && !removed.Contains(item))
-				if (Contains(item))
-				{
-					RemoveValue(item);
-					removed.TryAdd(item);
-				}
-				else
-				{
-					TryAdd(item);
-					added.TryAdd(item);
-				}
-	}
-
-	public abstract bool TryAdd(T item);
-
-	public virtual void UnionWith(IEnumerable<T> other)
-	{
-		foreach (T item in other)
-			TryAdd(item);
-	}
-}
-
-public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain : HashSet<T, TCertain>, new()
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCertain : HashSetBase<T, TCertain>, new()
 {
 	private protected struct Entry
 	{
@@ -131,8 +17,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 
 	private protected List<int> buckets = default!;
 	private protected Entry[] entries = default!;
-	private protected int freeCount;
-	private protected int freeList;
 	internal const int HashPrime = 101;
 	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
 	internal static readonly int[] primes = {
@@ -142,13 +26,192 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 			187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
 			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
 
-	public HashSet() : this(0, (IEqualityComparer<T>?)null) { }
 
-	public HashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+	public override int Capacity
+	{
+		get => buckets.Length;
+		set
+		{
+			if (value < _size)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			Resize(value, false);
+			Changed();
+		}
+	}
+	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
 
-	public HashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	private protected override void ClearInternal()
+	{
+		if (_size > 0)
+		{
+			for (int i = 0; i < buckets.Length; i++)
+			{
+				buckets[i] = 0;
+				entries[i] = new();
+			}
+			_size = 0;
+		}
+	}
 
-	public HashSet(int capacity, IEqualityComparer<T>? comparer)
+	private protected override void ClearInternal(int index, int count)
+	{
+		for (int i = 0; i < count; i++)
+			RemoveValue(GetInternal(index + i));
+		Changed();
+	}
+	internal static int ExpandPrime(int oldSize)
+	{
+		int newSize = 2 * oldSize;
+		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
+			return MaxPrimeArrayLength;
+		return GetPrime(newSize);
+	}
+
+	internal static int GetPrime(int min)
+	{
+		if (min < 0)
+			throw new ArgumentException(null);
+		for (int i = 0; i < primes.Length; i++)
+		{
+			int prime = primes[i];
+			if (prime >= min) return prime;
+		}
+		for (int i = min | 1; i < int.MaxValue; i += 2)
+			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+				return i;
+		return min;
+	}
+
+	public override void Dispose()
+	{
+		buckets = default!;
+		entries = default!;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
+
+	internal override T GetInternal(int index, bool invoke = true)
+	{
+		T item = entries[index].item;
+		if (invoke)
+			Changed();
+		return item;
+	}
+
+	private protected override int IndexOfInternal(T item, int index, int count)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets != null)
+		{
+			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
+					return i;
+		}
+		return -1;
+	}
+
+	private protected virtual void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
+	{
+		int size = GetPrime(capacity);
+		buckets = new int[size];
+		entries = new Entry[size];
+	}
+
+	private protected abstract TCertain Insert(T? item, bool add);
+
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	{
+		TCertain set = CollectionCreator(collection);
+		set.ExceptWith(this);
+		int count = set._size;
+		if (count > 0)
+		{
+			EnsureCapacity(_size + count);
+			if (index < entries.Length - count)
+				Copy(this, index, this, index + count, entries.Length - index - count);
+			if (this == set)
+				return this as TCertain ?? throw new InvalidOperationException();
+			else
+				Copy(set, 0, this, index, count);
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	protected static bool IsPrime(int candidate)
+	{
+		if ((candidate & 1) != 0)
+		{
+			int limit = (int)Sqrt(candidate);
+			for (int i = 0, divisor; i < primesList.Length && (divisor = primesList[i]) <= limit; i++)
+				if ((candidate % divisor) == 0)
+					return false;
+			return true;
+		}
+		return candidate == 2;
+	}
+
+	public abstract override TCertain RemoveAt(int index);
+
+	public abstract override bool RemoveValue(T? item);
+
+	private protected virtual void Resize() => Resize(ExpandPrime(_size), false);
+
+	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
+	{
+		int[] newBuckets = new int[newSize];
+		Entry[] newEntries = new Entry[newSize];
+		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		if (forceNewHashCodes)
+			for (int i = 0; i < _size; i++)
+			{
+				ref Entry t = ref newEntries[i];
+				if (t.hashCode != 0)
+				{
+					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
+					//newEntries[i] = t;
+				}
+			}
+		for (int i = 0; i < _size; i++)
+			if (newEntries[i].hashCode < 0)
+			{
+				int bucket = ~newEntries[i].hashCode % newSize;
+				ref Entry t = ref newEntries[i];
+				t.next = newBuckets[bucket];
+				//newEntries[i] = t;
+				newBuckets[bucket] = ~i;
+			}
+		buckets = newBuckets;
+		entries = newEntries;
+	}
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+/// <summary>
+/// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
+/// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
+/// (к тому самому удаленному, так как удаление не смещает следующие элементы влево - иначе бы оно было
+/// намного медленнее, а главное преимущество именно этого хэш-множества - удаление за Õ(1) ("O(1)
+/// в большинстве случаев")), либо же действительный "номер" элемента может существенно отличаться от
+/// указанного вами индекса. КРАЙНЕ не рекомендуется применять данный тип в качестве списка где попало,
+/// особенно в качестве релизации стандартного интерфейса IList<T> из .NET, так как такая реализация
+/// может повести себя непредсказуемым способом.
+/// </summary>
+public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : FakeIndAftDelHashSet<T, TCertain>, new()
+{
+	private protected int freeCount;
+	private protected int freeList;
+
+	public FakeIndAftDelHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+
+	public FakeIndAftDelHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+
+	public FakeIndAftDelHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+
+	public FakeIndAftDelHashSet(int capacity, IEqualityComparer<T>? comparer)
 	{
 		if (capacity < 0)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
@@ -162,9 +225,9 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
-	public HashSet(IEnumerable<T> collection) : this(collection, null) { }
+	public FakeIndAftDelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public HashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public FakeIndAftDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -172,9 +235,9 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 			TryAdd(item);
 	}
 
-	public HashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public HashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -182,19 +245,19 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 			TryAdd(item);
 	}
 
-	public HashSet(params T[] array) : this((IEnumerable<T>)array)
+	public FakeIndAftDelHashSet(params T[] array) : this((IEnumerable<T>)array)
 	{
 	}
 
-	public HashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	public FakeIndAftDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
 	{
 	}
 
-	public HashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	public FakeIndAftDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
 	{
 	}
 
-	public HashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	public FakeIndAftDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
 	{
 	}
 
@@ -220,44 +283,15 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		}
 	}
 
-	public override int Capacity
-	{
-		get => buckets.Length;
-		set
-		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
-			Resize(value, false);
-			Changed();
-		}
-	}
-	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
-
-
 	public override int Length => _size - freeCount;
 
 	public virtual int Size => _size;
 
 	private protected override void ClearInternal()
 	{
-		if (_size > 0)
-		{
-			for (int i = 0; i < buckets.Length; i++)
-			{
-				buckets[i] = 0;
-				entries[i] = new();
-			}
-			freeList = 0;
-			_size = 0;
-			freeCount = 0;
-		}
-	}
-
-	private protected override void ClearInternal(int index, int count)
-	{
-		for (int i = 0; i < count; i++)
-			RemoveValue(GetInternal(index + i));
-		Changed();
+		base.ClearInternal();
+		freeCount = 0;
+		freeList = 0;
 	}
 
 	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
@@ -296,11 +330,9 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 
 	public override void Dispose()
 	{
-		buckets = default!;
-		entries = default!;
 		freeCount = 0;
 		freeList = 0;
-		_size = 0;
+		base.Dispose();
 		GC.SuppressFinalize(this);
 	}
 
@@ -343,14 +375,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		}
 	}
 
-	internal static int ExpandPrime(int oldSize)
-	{
-		int newSize = 2 * oldSize;
-		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
-			return MaxPrimeArrayLength;
-		return GetPrime(newSize);
-	}
-
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
 		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
@@ -372,52 +396,7 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	internal override T GetInternal(int index, bool invoke = true)
-	{
-		T item = entries[index].item;
-		if (invoke)
-			Changed();
-		return item;
-	}
-
-	internal static int GetPrime(int min)
-	{
-		if (min < 0)
-			throw new ArgumentException(null);
-		for (int i = 0; i < primes.Length; i++)
-		{
-			int prime = primes[i];
-			if (prime >= min) return prime;
-		}
-		for (int i = min | 1; i < int.MaxValue; i += 2)
-			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-				return i;
-		return min;
-	}
-
-	private protected override int IndexOfInternal(T item, int index, int count)
-	{
-		if (item == null)
-			throw new ArgumentNullException(nameof(item));
-		if (buckets != null)
-		{
-			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
-					return i;
-		}
-		return -1;
-	}
-
-	private protected virtual void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
-	{
-		int size = GetPrime(capacity);
-		buckets = new int[size];
-		entries = new Entry[size];
-		freeList = 0;
-	}
-
-	private protected virtual TCertain Insert(T? item, bool add)
+	private protected override TCertain Insert(T? item, bool add)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -458,37 +437,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		//entries[index] = t;
 		buckets[targetBucket] = ~index;
 		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
-	{
-		TCertain set = CollectionCreator(collection);
-		set.ExceptWith(this);
-		int count = set._size;
-		if (count > 0)
-		{
-			EnsureCapacity(_size + count);
-			if (index < entries.Length - count)
-				Copy(this, index, this, index + count, entries.Length - index - count);
-			if (this == set)
-				return this as TCertain ?? throw new InvalidOperationException();
-			else
-				Copy(set, 0, this, index, count);
-		}
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	protected static bool IsPrime(int candidate)
-	{
-		if ((candidate & 1) != 0)
-		{
-			int limit = (int)Sqrt(candidate);
-			for (int i = 0, divisor; i < primesList.Length && (divisor = primesList[i]) <= limit; i++)
-				if ((candidate % divisor) == 0)
-					return false;
-			return true;
-		}
-		return candidate == 2;
 	}
 
 	public override TCertain RemoveAt(int index)
@@ -547,36 +495,6 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 		return false;
 	}
 
-	private protected virtual void Resize() => Resize(ExpandPrime(_size), false);
-
-	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
-	{
-		int[] newBuckets = new int[newSize];
-		Entry[] newEntries = new Entry[newSize];
-		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
-		if (forceNewHashCodes)
-			for (int i = 0; i < _size; i++)
-			{
-				ref Entry t = ref newEntries[i];
-				if (t.hashCode != 0)
-				{
-					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-					//newEntries[i] = t;
-				}
-			}
-		for (int i = 0; i < _size; i++)
-			if (newEntries[i].hashCode < 0)
-			{
-				int bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
-				t.next = newBuckets[bucket];
-				//newEntries[i] = t;
-				newBuckets[bucket] = ~i;
-			}
-		buckets = newBuckets;
-		entries = newEntries;
-	}
-
 	internal override void SetInternal(int index, T item)
 	{
 		if (entries[index].item != null)
@@ -618,10 +536,10 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly HashSet<T, TCertain> dictionary;
+		private readonly FakeIndAftDelHashSet<T, TCertain> dictionary;
 		private int index;
 
-		internal Enumerator(HashSet<T, TCertain> dictionary)
+		internal Enumerator(FakeIndAftDelHashSet<T, TCertain> dictionary)
 		{
 			this.dictionary = dictionary;
 			index = 0;
@@ -661,62 +579,78 @@ public abstract class HashSet<T, TCertain> : SetBase<T, TCertain> where TCertain
 	}
 }
 
-public class HashSet<T> : HashSet<T, HashSet<T>>
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+/// <summary>
+/// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
+/// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
+/// (к тому самому удаленному, так как удаление не смещает следующие элементы влево - иначе бы оно было
+/// намного медленнее, а главное преимущество именно этого хэш-множества - удаление за Õ(1) ("O(1)
+/// в большинстве случаев")), либо же действительный "номер" элемента может существенно отличаться от
+/// указанного вами индекса. КРАЙНЕ не рекомендуется применять данный тип в качестве списка где попало,
+/// особенно в качестве релизации стандартного интерфейса IList<T> из .NET, так как такая реализация
+/// может повести себя непредсказуемым способом.
+/// </summary>
+public class FakeIndAftDelHashSet<T> : FakeIndAftDelHashSet<T, FakeIndAftDelHashSet<T>>
 {
-	public HashSet()
+	public FakeIndAftDelHashSet()
 	{
 	}
 
-	public HashSet(int capacity) : base(capacity)
+	public FakeIndAftDelHashSet(int capacity) : base(capacity)
 	{
 	}
 
-	public HashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	public FakeIndAftDelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public HashSet(IEnumerable<T> set) : base(set)
+	public FakeIndAftDelHashSet(IEnumerable<T> set) : base(set)
 	{
 	}
 
-	public HashSet(params T[] array) : base(array)
+	public FakeIndAftDelHashSet(params T[] array) : base(array)
 	{
 	}
 
-	public HashSet(ReadOnlySpan<T> span) : base(span)
+	public FakeIndAftDelHashSet(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	public HashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	public FakeIndAftDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	public HashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
+	public FakeIndAftDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
 	{
 	}
 
-	public HashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
+	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
 	{
 	}
 
-	public HashSet(int capacity, params T[] array) : base(capacity, array)
+	public FakeIndAftDelHashSet(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	public HashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	public FakeIndAftDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
-	public HashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
+	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
 	{
 	}
 
-	private protected override Func<int, HashSet<T>> CapacityCreator => x => new(x);
+	private protected override Func<int, FakeIndAftDelHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, HashSet<T>> CollectionCreator => x => new(x);
+	private protected override Func<IEnumerable<T>, FakeIndAftDelHashSet<T>> CollectionCreator => x => new(x);
 }
 
-public class ParallelHashSet<T> : HashSet<T, ParallelHashSet<T>>
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 {
 	private protected readonly object lockObj = new();
 
