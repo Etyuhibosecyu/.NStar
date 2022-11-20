@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Corlib.NStar;
+using System.Diagnostics;
 
 namespace Corlib.NStar;
 
@@ -1878,12 +1879,19 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
+	private protected override void ClearInternal(int index, int count)
+	{
+		for (int i = 0; i < count; i++)
+			SetInternal(index + i, default!);
+	}
+
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
-		foreach (T item in other)
-			RemoveValue(item);
+		if (other is not ISet<T> set)
+			set = new SlowDeletionHashSet<T>(other);
+		FilterInPlace(x => !set.Contains(x));
 	}
 
 	public override TCertain Insert(int index, T item)
@@ -1899,10 +1907,8 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = CollectionCreator(other);
-		foreach (T item in this)
-			if (!set.Contains(item))
-				RemoveValue(item);
+			set = new SlowDeletionHashSet<T>(other);
+		FilterInPlace(set.Contains);
 	}
 
 	public virtual bool IsProperSubsetOf(IEnumerable<T> other) => !SetEquals(other is ISet<T> set ? set : set = CollectionCreator(other)) && IsSubsetOf(set);
@@ -1956,19 +1962,10 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	public virtual void SymmetricExceptWith(IEnumerable<T> other)
 	{
-		TCertain added = new(), removed = new();
-		foreach (T item in other)
-			if (!added.Contains(item) && !removed.Contains(item))
-				if (Contains(item))
-				{
-					RemoveValue(item);
-					removed.TryAdd(item);
-				}
-				else
-				{
-					TryAdd(item);
-					added.TryAdd(item);
-				}
+		TCertain temp = CollectionCreator(other);
+		temp.ExceptWith(this);
+		ExceptWith(other);
+		AddRange(temp);
 	}
 
 	public abstract bool TryAdd(T item);

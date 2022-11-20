@@ -131,7 +131,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 			EnsureCapacity(_size + count);
 			if (index < entries.Length - count)
 				Copy(this, index, this, index + count, entries.Length - index - count);
-			if (this == set)
+			if (this == collection)
 				return this as TCertain ?? throw new InvalidOperationException();
 			else
 				Copy(set, 0, this, index, count);
