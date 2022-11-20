@@ -349,13 +349,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return Equals(m);
 	}
 
-	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 
-	public virtual bool Equals(IEnumerable<T>? collection, int index) => EqualsInternal(collection, index);
+	public virtual bool Equals(IEnumerable<T>? collection, int index = 0, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
 
 	public virtual bool Equals(ListBase<T, TCertain>? list) => EqualsInternal(list, 0, true);
 
-	public virtual bool Equals(ListBase<T, TCertain>? list, int index) => EqualsInternal(list, index);
+	public virtual bool Equals(ListBase<T, TCertain>? list, int index, bool toEnd = false) => EqualsInternal(list, index, toEnd);
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{

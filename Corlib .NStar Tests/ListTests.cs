@@ -249,4 +249,54 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestEquals()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.Contains("MMM");
+			Assert.IsTrue(b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
+			Assert.IsTrue(b);
+			b = a.Contains(new List<string>("PPP", "DDD", "NNN"), 2);
+			Assert.IsTrue(!b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
+			Assert.IsTrue(!b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
+			Assert.IsTrue(!b);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestFilter()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.Filter(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = E.Where(c, x => x.Length == 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			b = a.Filter(x => x.All(y => y is >= 'A' and <= 'Z'));
+			d = E.Where(c, x => E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }
