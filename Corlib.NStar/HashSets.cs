@@ -258,13 +258,14 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 	{
 		get
 		{
-			try
-			{
-				throw new FakeIndexesException();
-			}
-			catch
-			{
-			}
+			if (freeCount != 0)
+				try
+				{
+					throw new FakeIndexesException();
+				}
+				catch
+				{
+				}
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
@@ -272,13 +273,14 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		}
 		set
 		{
-			try
-			{
-				throw new FakeIndexesException();
-			}
-			catch
-			{
-			}
+			if (freeCount != 0)
+				try
+				{
+					throw new FakeIndexesException();
+				}
+				catch
+				{
+				}
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
