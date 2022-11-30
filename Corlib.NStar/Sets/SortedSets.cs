@@ -171,14 +171,6 @@ public abstract class SortedSet<T, TCertain> : SortedSetBase<T, TCertain> where 
 
 	private protected override void ClearInternal(int index, int count) => items.Clear(index, count);
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int length)
-	{
-		if (destination is not TCertain destinationSet)
-			throw new InvalidOperationException();
-		for (int i = 0; i < length; i++)
-			destinationSet.items.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-	}
-
 	private protected override void CopyToInternal(Array array, int arrayIndex) => items.CopyTo(array, arrayIndex);
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => items.CopyTo(index, array, arrayIndex, count);
@@ -284,3 +276,129 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 	private protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
 }
+
+//public class BalancedSet<T, TCertain> : SortedSetBase<T, TCertain> where TCertain : BalancedSet<T, TCertain>, new()
+//{
+//	private INode root;
+//	private protected int _capacity;
+//	private protected int fragment = 1;
+
+//	public override int Capacity
+//	{
+//		get => _capacity;
+//		set
+//		{
+//			if (value < _size)
+//				throw new ArgumentOutOfRangeException(nameof(value));
+//			if (value == _capacity)
+//				return;
+//			if (value <= 0)
+//			{
+//				root = (INode<T>)new SortedSet<T>();
+//			}
+//			else if (value <= CapacityFirstStep && root is Leaf<T> leaf)
+//			{
+//				try
+//				{
+//					throw new ExperimentalException();
+//				}
+//				catch
+//				{
+//				}
+//				root = (INode<T>)new SortedSet<T>(value, leaf.items);
+//			}
+//			else if (root is Leaf<T> leaf2)
+//			{
+//				fragment = (int)1 << ((((value - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
+//				SortedSet<BalancedSet<T, TCertain>.INode> set = new((int)((value + (fragment - 1)) / fragment));
+//				for (int i = 0; i < value / fragment; i++)
+//					set.Add((INode)new SortedSet<T>(fragment));
+//				if (value % fragment != 0)
+//					set.Add((INode)new SortedSet<T>(value % fragment));
+//				set[0].AddRange(low);
+//				low = null;
+//			}
+//			else if (high != null)
+//			{
+//				high.Capacity = (int)((value + fragment - 1) / fragment);
+//				high[^1].Capacity = (high.Length < high.Capacity || value % fragment == 0) ? fragment : value % fragment;
+//				for (int i = high.Length; i < high.Capacity - 1; i++)
+//					high.Add(CapacityCreator(fragment));
+//				if (high.Length < high.Capacity)
+//					high.Add(CapacityCreator(value % fragment == 0 ? fragment : value % fragment));
+//			}
+//			_capacity = value;
+//		}
+//	}
+
+//	private protected virtual int CapacityStepBitLength => 5;
+
+//	private protected virtual int CapacityFirstStepBitLength => 5;
+
+//	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
+//}
+
+//file interface INode<T> : IEnumerable<T>
+//{
+//	int Length { get; }
+
+//	void Add(T item);
+
+//	void AddRange(IEnumerable<T> collection);
+
+//	void Clear();
+
+//	SortedSet<T> GetRange(int index, int count);
+
+//	void Insert(int index, T item);
+
+//	void Remove(int index);
+
+//	void Remove(int index, int count);
+
+//	void RemoveAt(int index);
+
+//	void RemoveValue(T item);
+//}
+
+//file struct Leaf<T> : INode<T>
+//{
+//	public SortedSet<T> items;
+
+//	public Leaf(SortedSet<T> items) => this.items = items;
+
+//	public int Length => items.Length;
+
+//	public void Add(T item) => items.Add(item);
+
+//	public void AddRange(IEnumerable<T> collection) => items.AddRange(collection);
+
+//	public void Clear() => items.Clear();
+
+//	public IEnumerator<T> GetEnumerator() => items.GetEnumerator();
+
+//	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+//	public SortedSet<T> GetRange(int index, int count) => items.GetRange(index, count);
+
+//	public void Insert(int index, T item) => items.Insert(index, item);
+
+//	public void Remove(int index) => items.Remove(index);
+
+//	public void Remove(int index, int count) => items.Remove(index, count);
+
+//	public void RemoveAt(int index) => items.RemoveAt(index);
+
+//	public void RemoveValue(T item) => items.RemoveValue(item);
+
+//	public static implicit operator Leaf<T>(SortedSet<T> items) => new(items);
+//}
+
+//file struct Branch<T> : INode<T>
+//{
+//	public SortedSet<INode<T>> nodes;
+
+//	public Branch(SortedSet<INode<T>> nodes) => this.nodes = nodes;
+
+//	public static implicit operator Branch<T>(SortedSet<INode<T>> nodes) => new(nodes);
+//}

@@ -299,4 +299,57 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestFilterInPlace()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.FilterInPlace(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			c = E.ToList(E.Where(c, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.FilterInPlace(x => x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			c = E.ToList(E.Where(c, x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetAfter()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetAfter("DDD");
+			var c = new G.List<string>() { "MMM", "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

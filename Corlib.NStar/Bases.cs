@@ -1886,6 +1886,19 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
+	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	{
+		if (destination is not TCertain destination2)
+			throw new InvalidOperationException();
+		if (source != destination || sourceIndex >= destinationIndex)
+			for (int i = 0; i < count; i++)
+				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		else
+			for (int i = count - 1; i >= 0; i--)
+				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		destination2.Changed();
+	}
+
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)

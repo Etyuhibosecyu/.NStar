@@ -311,19 +311,6 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		freeList = 0;
 	}
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
-	{
-		if (destination is not TCertain destination2)
-			throw new InvalidOperationException();
-		if (source != destination || sourceIndex >= destinationIndex)
-			for (int i = 0; i < count; i++)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		else
-			for (int i = count - 1; i >= 0; i--)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		destination2.Changed();
-	}
-
 	private protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
@@ -756,156 +743,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 
 	private protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected virtual bool BaseContains(T? item) => BaseContains(item, 0, _size);
-
-	private protected virtual bool BaseContains(T? item, int index, int count) => item != null && BaseIndexOf(item, index, count) >= 0;
-
-	private protected virtual int BaseIndexOf(T item, int index, int count)
-	{
-		if (item == null)
-			throw new ArgumentNullException(nameof(item));
-		if (buckets != null)
-		{
-			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
-					return i;
-		}
-		return -1;
-	}
-
-	private protected virtual ParallelHashSet<T> BaseInsert(T? item, bool add)
-	{
-		if (item == null)
-			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
-			Initialize(0, out buckets, out entries);
-		if (buckets == null)
-			throw new InvalidOperationException();
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
-		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (add)
-					throw new ArgumentException(null);
-				return this;
-			}
-		int index;
-		if (freeCount > 0)
-		{
-			index = ~freeList;
-			freeList = entries[index].next;
-			freeCount--;
-		}
-		else
-		{
-			if (_size == entries.Length)
-			{
-				BaseResize();
-				targetBucket = hashCode % buckets.Length;
-			}
-			index = _size;
-			_size++;
-		}
-		ref Entry t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
-		buckets[targetBucket] = ~index;
-		return this;
-	}
-
-	private protected virtual ParallelHashSet<T> BaseRemoveAt(int index)
-	{
-		if (buckets == null || entries == null)
-			return this;
-		if (entries[index].item == null)
-			return this;
-		int hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
-		if (bucket != index)
-		{
-			ref Entry t = ref entries[bucket];
-			t.next = entries[index].next;
-		}
-		Entry t2 = entries[index];
-		t2.hashCode = 0;
-		t2.next = freeList;
-		t2.item = default!;
-		entries[index] = t2;
-		freeList = ~index;
-		freeCount++;
-		return this;
-	}
-
-	private protected virtual bool BaseRemoveValue(T? item)
-	{
-		if (item == null)
-			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
-			return false;
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
-		int last = 0;
-		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (last < 0)
-					buckets[bucket] = entries[i].next;
-				else
-				{
-					ref Entry t = ref entries[last];
-					t.next = entries[i].next;
-				}
-				Entry t2 = entries[i];
-				t2.hashCode = 0;
-				t2.next = freeList;
-				t2.item = default!;
-				entries[i] = t2;
-				freeList = ~i;
-				freeCount++;
-				return true;
-			}
-		return false;
-	}
-
-	private protected virtual void BaseResize() => BaseResize(ExpandPrime(_size), false);
-
-	private protected virtual void BaseResize(int newSize, bool forceNewHashCodes)
-	{
-		int[] newBuckets = new int[newSize];
-		Entry[] newEntries = new Entry[newSize];
-		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
-		if (forceNewHashCodes)
-			for (int i = 0; i < _size; i++)
-			{
-				ref Entry t = ref newEntries[i];
-				if (t.hashCode != 0)
-				{
-					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-				}
-			}
-		for (int i = 0; i < _size; i++)
-			if (newEntries[i].hashCode < 0)
-			{
-				int bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
-				t.next = newBuckets[bucket];
-				newBuckets[bucket] = ~i;
-			}
-		buckets = newBuckets;
-		entries = newEntries;
-	}
-
-	private protected virtual bool BaseTryAdd(T item)
-	{
-		if (BaseContains(item))
-			return false;
-		BaseInsert(item, true);
-		return true;
-	}
-
 	private protected override void ClearInternal()
 	{
 		if (_size > 0)
@@ -927,7 +764,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		Changed();
 	}
 
-	public override bool Contains(T? item, int index, int count) => BaseContains(item, index, count) || Lock(lockObj, BaseContains, item, index, count);
+	public override bool Contains(T? item, int index, int count) => UnsafeContains(item, index, count) || Lock(lockObj, UnsafeContains, item, index, count);
 
 	public override bool Contains(IEnumerable<T> collection, int index, int count) => Lock(lockObj, base.Contains, collection, index, count);
 
@@ -953,8 +790,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 
 	private protected override int IndexOfInternal(T item, int index, int count)
 	{
-		int foundIndex = BaseIndexOf(item, index, count);
-		return foundIndex < 0 ? foundIndex : Lock(lockObj, BaseIndexOf, item, index, count);
+		int foundIndex = UnsafeIndexOf(item, index, count);
+		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, count);
 	}
 
 	private protected override void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
@@ -1006,7 +843,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			{
 				if (_size == entries.Length)
 				{
-					BaseResize();
+					UnsafeResize();
 					targetBucket = hashCode % buckets.Length;
 				}
 				index = _size;
@@ -1087,7 +924,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		return result;
 	}
 
-	public override ParallelHashSet<T> RemoveAt(int index) => Lock(lockObj, BaseRemoveAt, index);
+	public override ParallelHashSet<T> RemoveAt(int index) => Lock(lockObj, UnsafeRemoveAt, index);
 
 	public override bool RemoveValue(T? item)
 	{
@@ -1100,11 +937,11 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-				return Lock(lockObj, BaseRemoveValue, item);
+				return Lock(lockObj, UnsafeRemoveValue, item);
 		return false;
 	}
 
-	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, BaseResize, newSize, forceNewHashCodes);
+	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, UnsafeResize, newSize, forceNewHashCodes);
 
 	public override bool SetEquals(IEnumerable<T> other)
 	{
@@ -1154,7 +991,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	public override bool TryAdd(T item) => !BaseContains(item) && Lock(lockObj, BaseTryAdd, item);
+	public override bool TryAdd(T item) => !UnsafeContains(item) && Lock(lockObj, UnsafeTryAdd, item);
 
 	public override void UnionWith(IEnumerable<T> other)
 	{
@@ -1162,6 +999,198 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
 			Parallel.ForEach(other, item => TryAdd(item));
+	}
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual bool UnsafeContains(T? item) => UnsafeContains(item, 0, _size);
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual bool UnsafeContains(T? item, int index) => UnsafeContains(item, index, _size - index);
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual bool UnsafeContains(T? item, int index, int count) => item != null && UnsafeIndexOf(item, index, count) >= 0;
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual int UnsafeIndexOf(T item) => UnsafeIndexOf(item, 0, _size);
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual int UnsafeIndexOf(T item, int index) => UnsafeIndexOf(item, index, _size - index);
+
+	/// <summary>
+	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
+	/// вы можете получить некорректный результат чтения (только попробуйте "достучаться" до небезопасных
+	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
+	/// в хэш-множество.
+	/// </summary>
+	public virtual int UnsafeIndexOf(T item, int index, int count)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets != null)
+		{
+			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
+					return i;
+		}
+		return -1;
+	}
+
+	private protected virtual ParallelHashSet<T> UnsafeInsert(T? item, bool add)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			Initialize(0, out buckets, out entries);
+		if (buckets == null)
+			throw new InvalidOperationException();
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int targetBucket = hashCode % buckets.Length;
+		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (add)
+					throw new ArgumentException(null);
+				return this;
+			}
+		int index;
+		if (freeCount > 0)
+		{
+			index = ~freeList;
+			freeList = entries[index].next;
+			freeCount--;
+		}
+		else
+		{
+			if (_size == entries.Length)
+			{
+				UnsafeResize();
+				targetBucket = hashCode % buckets.Length;
+			}
+			index = _size;
+			_size++;
+		}
+		ref Entry t = ref entries[index];
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
+		buckets[targetBucket] = ~index;
+		return this;
+	}
+
+	private protected virtual ParallelHashSet<T> UnsafeRemoveAt(int index)
+	{
+		if (buckets == null || entries == null)
+			return this;
+		if (entries[index].item == null)
+			return this;
+		int hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		if (bucket != index)
+		{
+			ref Entry t = ref entries[bucket];
+			t.next = entries[index].next;
+		}
+		Entry t2 = entries[index];
+		t2.hashCode = 0;
+		t2.next = freeList;
+		t2.item = default!;
+		entries[index] = t2;
+		freeList = ~index;
+		freeCount++;
+		return this;
+	}
+
+	private protected virtual bool UnsafeRemoveValue(T? item)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			return false;
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		int last = 0;
+		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (last < 0)
+					buckets[bucket] = entries[i].next;
+				else
+				{
+					ref Entry t = ref entries[last];
+					t.next = entries[i].next;
+				}
+				Entry t2 = entries[i];
+				t2.hashCode = 0;
+				t2.next = freeList;
+				t2.item = default!;
+				entries[i] = t2;
+				freeList = ~i;
+				freeCount++;
+				return true;
+			}
+		return false;
+	}
+
+	private protected virtual void UnsafeResize() => UnsafeResize(ExpandPrime(_size), false);
+
+	private protected virtual void UnsafeResize(int newSize, bool forceNewHashCodes)
+	{
+		int[] newBuckets = new int[newSize];
+		Entry[] newEntries = new Entry[newSize];
+		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		if (forceNewHashCodes)
+			for (int i = 0; i < _size; i++)
+			{
+				ref Entry t = ref newEntries[i];
+				if (t.hashCode != 0)
+				{
+					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
+				}
+			}
+		for (int i = 0; i < _size; i++)
+			if (newEntries[i].hashCode < 0)
+			{
+				int bucket = ~newEntries[i].hashCode % newSize;
+				ref Entry t = ref newEntries[i];
+				t.next = newBuckets[bucket];
+				newBuckets[bucket] = ~i;
+			}
+		buckets = newBuckets;
+		entries = newEntries;
+	}
+
+	private protected virtual bool UnsafeTryAdd(T item)
+	{
+		if (UnsafeContains(item))
+			return false;
+		UnsafeInsert(item, true);
+		return true;
 	}
 }
 
@@ -1232,15 +1261,6 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 
 	public SlowDeletionHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
 	{
-	}
-
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
-	{
-		if (destination is not TCertain destination2)
-			throw new InvalidOperationException();
-		for (int i = 0; i < count; i++)
-			destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		destination2.Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
