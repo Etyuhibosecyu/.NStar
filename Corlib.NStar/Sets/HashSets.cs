@@ -698,7 +698,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		if (collection is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			Parallel.ForEach(collection, item => TryAdd(item));
+			foreach (T item in collection)
+				TryAdd(item);
 	}
 
 	public ParallelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
@@ -710,7 +711,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		if (collection is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			Parallel.ForEach(collection, item => TryAdd(item));
+			foreach (T item in collection)
+				TryAdd(item);
 	}
 
 	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array)
@@ -777,7 +779,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
-			Parallel.ForEach(other, item => RemoveValue(item));
+			foreach (T item in other)
+				RemoveValue(item);
 	}
 
 	public override ParallelHashSet<T> FixUpFakeIndexes() => Lock(lockObj, base.FixUpFakeIndexes);
@@ -883,14 +886,9 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				}
 			});
 		else
-			Parallel.ForEach(other, (item, pls) =>
-			{
+			foreach (T item in other)
 				if (!Contains(item))
-				{
-					result = false;
-					pls.Stop();
-				}
-			});
+					return false;
 		return result;
 	}
 
@@ -913,14 +911,9 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				}
 			});
 		else
-			Parallel.ForEach(other, (item, pls) =>
-			{
+			foreach (T item in other)
 				if (Contains(item))
-				{
-					result = true;
-					pls.Stop();
-				}
-			});
+					return true;
 		return result;
 	}
 
@@ -964,15 +957,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		{
 			if (Length != count)
 				return false;
-			Parallel.ForEach(other, (item, pls) =>
-			{
+			foreach (T item in other)
 				if (!Contains(item))
-				{
-					result = false;
-					pls.Stop();
-				}
-			});
-			return result;
+					return false;
+			return true;
 		}
 		else
 		{
@@ -998,7 +986,8 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			Parallel.ForEach(other, item => TryAdd(item));
+			foreach (T item in other)
+				TryAdd(item);
 	}
 
 	/// <summary>
