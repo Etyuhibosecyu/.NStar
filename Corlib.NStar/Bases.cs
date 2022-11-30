@@ -1980,7 +1980,9 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICo
 		AddRange(temp);
 	}
 
-	public abstract bool TryAdd(T item);
+	public virtual bool TryAdd(T item) => TryAdd(item, out _);
+
+	public abstract bool TryAdd(T item, out int index);
 
 	public virtual void UnionWith(IEnumerable<T> other)
 	{

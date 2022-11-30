@@ -119,7 +119,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		entries = new Entry[size];
 	}
 
-	private protected abstract TCertain Insert(T? item, bool add);
+	private protected abstract TCertain Insert(T? item, bool add, out int index);
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
@@ -178,11 +178,12 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		entries = newEntries;
 	}
 
-	public override bool TryAdd(T item)
+	public override bool TryAdd(T item, out int index)
 	{
-		if (Contains(item))
+		index = IndexOf(item);
+		if (index < 0)
 			return false;
-		Insert(item, true);
+		Insert(item, true, out index);
 		return true;
 	}
 }
@@ -426,7 +427,7 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	private protected override TCertain Insert(T? item, bool add)
+	private protected override TCertain Insert(T? item, bool add, out int index)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -441,9 +442,9 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			{
 				if (add)
 					throw new ArgumentException(null);
+				index = i;
 				return this as TCertain ?? throw new InvalidOperationException();
 			}
-		int index;
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -809,7 +810,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> Insert(int index, IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
 
-	private protected override ParallelHashSet<T> Insert(T? item, bool add)
+	private protected override ParallelHashSet<T> Insert(T? item, bool add, out int index)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -824,6 +825,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			{
 				if (add)
 					throw new ArgumentException(null);
+				index = i;
 				return this;
 			}
 		lock (lockObj)
@@ -833,9 +835,9 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				{
 					if (add)
 						throw new ArgumentException(null);
+					index = i;
 					return this;
 				}
-			int index;
 			if (freeCount > 0)
 			{
 				index = ~freeList;
@@ -1265,7 +1267,7 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 			array[arrayIndex++] = entries[index++].item;
 	}
 
-	private protected override TCertain Insert(T? item, bool add)
+	private protected override TCertain Insert(T? item, bool add, out int index)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -1280,9 +1282,9 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 			{
 				if (add)
 					throw new ArgumentException(null);
+				index = i;
 				return this as TCertain ?? throw new InvalidOperationException();
 			}
-		int index;
 		if (_size == entries.Length)
 		{
 			Resize();

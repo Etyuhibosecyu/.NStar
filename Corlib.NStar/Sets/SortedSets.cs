@@ -199,14 +199,14 @@ public abstract class SortedSet<T, TCertain> : SortedSetBase<T, TCertain> where 
 		Changed();
 	}
 
-	public override bool TryAdd(T item)
+	public override bool TryAdd(T item, out int index)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		int i = Search(item);
-		if (i >= 0)
+		index = Search(item);
+		if (index >= 0)
 			return false;
-		InsertInternal(~i, item);
+		InsertInternal(index = ~index, item);
 		return true;
 	}
 }
