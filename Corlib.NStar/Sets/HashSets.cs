@@ -181,7 +181,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 	public override bool TryAdd(T item, out int index)
 	{
 		index = IndexOf(item);
-		if (index < 0)
+		if (index >= 0)
 			return false;
 		Insert(item, true, out index);
 		return true;
@@ -981,7 +981,14 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	public override bool TryAdd(T item) => !UnsafeContains(item) && Lock(lockObj, UnsafeTryAdd, item);
+	public override bool TryAdd(T item, out int index)
+	{
+		index = UnsafeIndexOf(item);
+		if (index >= 0)
+			return false;
+		lock (lockObj)
+			return UnsafeTryAdd(item, out index);
+	}
 
 	public override void UnionWith(IEnumerable<T> other)
 	{
@@ -1052,7 +1059,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		return -1;
 	}
 
-	private protected virtual ParallelHashSet<T> UnsafeInsert(T? item, bool add)
+	private protected virtual ParallelHashSet<T> UnsafeInsert(T? item, bool add, out int index)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -1067,9 +1074,9 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			{
 				if (add)
 					throw new ArgumentException(null);
+				index = i;
 				return this;
 			}
-		int index;
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -1176,11 +1183,12 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		entries = newEntries;
 	}
 
-	private protected virtual bool UnsafeTryAdd(T item)
+	private protected virtual bool UnsafeTryAdd(T item, out int index)
 	{
-		if (UnsafeContains(item))
+		index = UnsafeIndexOf(item);
+		if (index >= 0)
 			return false;
-		UnsafeInsert(item, true);
+		UnsafeInsert(item, true, out index);
 		return true;
 	}
 }

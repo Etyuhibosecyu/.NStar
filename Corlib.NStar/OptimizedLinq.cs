@@ -57665,8 +57665,8 @@ public static class OptimizedLinq
 	public static List<TResult> ConvertAndJoin<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TResult>> function) => List<TResult>.ConvertAndJoinEnumerable(source, function);
 	public static IEnumerable<TResult> ConvertAndJoin<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector) => Enumerable.SelectMany(source, collectionSelector, resultSelector);
 	public static IEnumerable<TResult> ConvertAndJoin<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, int, TResult> resultSelector) => List<TResult>.ConvertAndJoin(source, collectionSelector, resultSelector);
-	public static List<List<TSource>> CopyDoubleList<TSource>(this List<List<TSource>> source) => source.Convert<List<TSource>>(x => new List<TSource>(x));
-	public static List<List<List<TSource>>> CopyTripleList<TSource>(this List<List<List<TSource>>> source) => source.Convert<List<List<TSource>>>(x => x.CopyDoubleList());
+	public static List<List<TSource>> CopyDoubleList<TSource>(this List<List<TSource>> source) => source.Convert(x => new List<TSource>(x));
+	public static List<List<List<TSource>>> CopyTripleList<TSource>(this List<List<List<TSource>>> source) => source.Convert(x => x.CopyDoubleList());
 	public static int Count<TSource>(this IEnumerable<TSource> source) => List<int>.CountEnumerable(source);
 	public static int Count<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<int>.CountEnumerable(source, function);
 	public static int Count<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<int>.CountEnumerable(source, function);
@@ -58453,8 +58453,8 @@ public static class OptimizedLinq
 	public static List<int> RepresentIntoNumbers<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<TSource> Reverse<TSource>(this IEnumerable<TSource> source) => List<TSource>.ReverseEnumerable(source);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source) => List<TResult>.SetInnerTypeEnumerable<TResult>(source);
-	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<TResult>.SetInnerTypeEnumerable<TResult>(source, function);
-	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<TResult>.SetInnerTypeEnumerable<TResult>(source, function);
+	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
+	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
 	public static IEnumerable<TSource> Skip<TSource>(this IEnumerable<TSource> source, int count) => Enumerable.Skip(source, count);
 	public static IEnumerable<TSource> SkipLast<TSource>(this IEnumerable<TSource> source, int count) => Enumerable.SkipLast(source, count);
 	public static List<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
