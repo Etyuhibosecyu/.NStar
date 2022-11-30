@@ -55361,6 +55361,36 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static List<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		List<bool> values = new(count);
+		Parallel.For(0, count, i => values._items[i] = function(source[i]));
+		List<TSource> result = new(count / 2);
+		for (int i = 0; i < count; i++)
+			if (values._items[i])
+				result.Add(source[i]);
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, int, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		List<bool> values = new(count);
+		Parallel.For(0, count, i => values._items[i] = function(source[i], i));
+		List<TSource> result = new(count / 2);
+		for (int i = 0; i < count; i++)
+			if (values._items[i])
+				result.Add(source[i]);
+		result.TrimExcess();
+		return result;
+	}
+
 	internal static IEnumerable<TResult> ConvertAndJoin<TSource, TCollection, TResult>(IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, int, TResult> resultSelector)
 	{
 		int i = 0, j = 0;
@@ -60600,6 +60630,8 @@ public static class OptimizedLinq
 	public static bool PContains<TSource>(this G.IList<TSource> source, TSource target, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<bool>.PContainsEnumerable(source, target, equalFunction, hashCodeFunction);
 	public static List<TResult> PConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) => List<TResult>.PConvertEnumerable(source, function);
 	public static List<TResult> PConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.PConvertEnumerable(source, function);
+	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, bool> function) => List<bool>.PFilterEnumerable(source, function);
+	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, int, bool> function) => List<bool>.PFilterEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>) NBreak<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.BreakEnumerable(source, function, function2);
 	public static (NList<TSource>, NList<TSource2>) NBreak<TSource, TSource2>(this IEnumerable<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged => NList<TSource>.BreakEnumerable(source);

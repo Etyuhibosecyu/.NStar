@@ -24,4 +24,14 @@ var list = OptimizedLinq.Fill(x => random.Next(0, 65536), 100000000);
 //Console.WriteLine(sw.ElapsedMilliseconds);
 //Console.WriteLine(OptimizedLinq.Equals(a, b, (x, y) => x.Key == y.Key && OptimizedLinq.Equals(x.Value, y.Value, (x, y) => x == y)));
 
+Stopwatch sw = Stopwatch.StartNew();
+var a = E.ToList(E.Where(list, x => x >= 45000));
+sw.Stop();
+Console.WriteLine(sw.ElapsedMilliseconds);
+sw.Restart();
+var b = list.PFilter(x => x >= 45000);
+sw.Stop();
+Console.WriteLine(sw.ElapsedMilliseconds);
+Console.WriteLine(OptimizedLinq.Equals(a, b, (x, y) => x == y));
+
 BenchmarkRunner.Run<Benchmark.Benchmark>();
