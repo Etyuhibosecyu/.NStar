@@ -509,6 +509,16 @@ public static partial class Extents
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
 
+	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
+	/// <param name="x">Исходное число.</param>
+	/// <returns>Количество бит в числе.</returns>
+	public static int BitLength(this int x) => BitLength((uint)x);
+
+	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
+	/// <param name="x">Исходное число.</param>
+	/// <returns>Количество бит в числе.</returns>
+	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
+
 	public static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
 
 	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);

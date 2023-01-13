@@ -568,59 +568,23 @@ public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
 {
 	public BigList()
 	{
-		low = new();
-		high = null;
-		fragment = 1;
-		isHigh = false;
-		_size = 0;
-		_capacity = 0;
 	}
 
-	public BigList(mpz_t capacity)
+	public BigList(mpz_t capacity) : base(capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity <= CapacityFirstStep)
-		{
-			low = new((int)capacity);
-			high = null;
-			fragment = 1;
-			indexDeleted = new((int)capacity);
-			isHigh = false;
-		}
-		else
-		{
-			low = null;
-			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
-			high = new((int)((capacity + (fragment - 1)) / fragment));
-			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add((BigList<T>)(new(fragment)));
-			if (capacity % fragment != 0)
-				high.Add((BigList<T>)(new(capacity % fragment)));
-			isHigh = true;
-		}
-		_size = 0;
-		_capacity = capacity;
 	}
 
-	public BigList(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
+	public BigList(IEnumerable<T> col) : base(col)
 	{
-		IEnumerator<T> en = col.GetEnumerator();
-		while (en.MoveNext())
-			Add(en.Current);
 	}
 
-	private protected override Func<mpz_t, BigList<T>> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<mpz_t, BigList<T>> CapacityCreator => x => new(x);
 
-	private static Func<mpz_t, BigList<T>> CapacityCreatorStatic => capacity => new(capacity);
+	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => CollectionCreatorStatic;
+	private protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
 
-	private static Func<IEnumerable<T>, BigList<T>> CollectionCreatorStatic => collection => new(collection);
-
-	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => CollectionLowCreatorStatic;
-
-	private static Func<IEnumerable<T>, List<T>> CollectionLowCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 
 	public static void CopyBits(BigList<uint> sourceBits, mpz_t sourceIndex, BigList<uint> destinationBits, mpz_t destinationIndex, mpz_t length)
 	{
@@ -994,6 +958,22 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		if (invoke)
 			Changed();
 		return item;
+	}
+
+	public override NList<T> GetRange(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return new();
+		else if (index == 0 && count == _size)
+			return this;
+		NList<T> list = new(count) { _items = _items + index, _size = count };
+		return list;
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int count)

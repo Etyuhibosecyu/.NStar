@@ -9,10 +9,9 @@ namespace Corlib.NStar;
 public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>*/, IEquatable<ListBase<T, TCertain>> where TCertain : ListBase<T, TCertain>, new()
 {
 	private protected int _size;
+	public abstract int Capacity { get; set; }
 	[NonSerialized]
 	private protected object _syncRoot = new();
-
-	public abstract int Capacity { get; set; }
 
 	private protected abstract Func<int, TCertain> CapacityCreator { get; }
 
@@ -128,10 +127,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual void Clear(int index, int count)
 	{
-		if (index > _size)
+		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > _size - count)
+		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
 		ClearInternal(index, count);
 	}
 
@@ -164,6 +165,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool Contains(T? item, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
 		if (item == null)
 		{
 			for (int i = 0; i < count; i++)
@@ -187,6 +194,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool Contains(IEnumerable<T> collection, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		if (count == 0 || !collection.Any())
 		{
 			return false;
@@ -233,6 +248,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (hs.Contains(GetInternal(index + i)))
@@ -252,6 +275,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (!hs.Contains(GetInternal(index + i)))
@@ -297,6 +328,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual void CopyTo(int index, T[] array, int arrayIndex, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
 		CopyToInternal(index, array, arrayIndex, count);
@@ -358,6 +393,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is G.IList<T> list)
@@ -531,7 +568,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetAfter(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count, out int otherCount);
-		return index == -1 ? new() : GetRange(foundIndex + otherCount);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + otherCount);
 	}
 
 	public virtual TCertain GetAfter(TCertain list) => GetAfter((IEnumerable<T>)list, 0, _size);
@@ -547,7 +584,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count, out int otherCount);
-		return index == -1 ? new() : GetRange(foundIndex + otherCount);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + otherCount);
 	}
 
 	public virtual TCertain GetAfterLast(TCertain list) => GetAfterLast((IEnumerable<T>)list, _size - 1, _size);
@@ -563,7 +600,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBefore(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count);
-		return index == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
 	}
 
 	public virtual TCertain GetBefore(TCertain list) => GetBefore((IEnumerable<T>)list, 0, _size);
@@ -579,7 +616,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count);
-		return index == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
 	}
 
 	public virtual TCertain GetBeforeLast(TCertain list) => GetBeforeLast((IEnumerable<T>)list, _size - 1, _size);
@@ -595,7 +632,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = IndexOf(collection, index, count, out int otherCount);
-		if (index == -1)
+		if (foundIndex == -1)
 		{
 			TCertain toReturn = CollectionCreator(this);
 			Clear();
@@ -622,7 +659,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBeforeSetAfterLast(IEnumerable<T> collection, int index, int count)
 	{
 		int foundIndex = LastIndexOf(collection, index, count, out int otherCount);
-		if (index == -1)
+		if (foundIndex == -1)
 		{
 			TCertain toReturn = CollectionCreator(this);
 			Clear();
@@ -699,10 +736,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int IndexOf(T item, int index, int count)
 	{
-		if (index > _size)
+		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > _size - count)
+		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
 		return IndexOfInternal(item, index, count);
 	}
 
@@ -714,10 +753,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
 	{
-		if (index > _size)
+		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > _size - count)
+		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		if (_size == 0 || count == 0 || !collection.Any())
 		{
 			otherCount = 0;
@@ -754,6 +797,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (hs.Contains(GetInternal(index + i)))
@@ -773,6 +824,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (!hs.Contains(GetInternal(index + i)))
@@ -817,10 +876,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Insert(int index, IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		return InsertInternal(index, collection);
 	}
 
@@ -883,6 +942,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count > index + 1)
 			throw new ArgumentOutOfRangeException(nameof(count));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		if (_size == 0 || count == 0 || !collection.Any())
 		{
 			otherCount = 0;
@@ -912,6 +973,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int count)
 	{
+		if ((_size != 0) && (index < 0))
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if ((_size != 0) && (count < 0))
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = count - 1; i >= 0; i--)
 			if (hs.Contains(GetInternal(index + i)))
@@ -931,6 +1002,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int count)
 	{
+		if ((_size != 0) && (index < 0))
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if ((_size != 0) && (count < 0))
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
 		for (int i = count - 1; i >= 0; i--)
 			if (!hs.Contains(GetInternal(index + i)))
@@ -1037,8 +1118,6 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain ReplaceRange(int index, int count, IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (index < 0)
@@ -1047,25 +1126,24 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		return ReplaceRangeInternal(index, count, collection);
 	}
 
 	internal virtual TCertain ReplaceRangeInternal(int index, int count, IEnumerable<T> collection)
 	{
-		if (collection is TCertain list)
-		{
-			if (list._size > 0)
-			{
-				EnsureCapacity(_size + list._size - count);
-				if (index + count < _size)
-					Copy(this, index + count, this, index + list._size, _size - index - count);
-				Copy(list, 0, this, index, list._size);
-				_size += list._size - count;
-			}
-			return this as TCertain ?? throw new InvalidOperationException();
-		}
-		else
+		if (collection is not TCertain list)
 			return ReplaceRangeInternal(index, count, CollectionCreator(collection));
+		if (list._size > 0)
+		{
+			EnsureCapacity(_size + list._size - count);
+			if (index + count < _size)
+				Copy(this, index + count, this, index + list._size, _size - index - count);
+			Copy(list, 0, this, index, list._size);
+			_size += list._size - count;
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -1087,10 +1165,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain SetRange(int index, IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
 		if (collection is TCertain list)
 		{
 			int count = list._size;
@@ -1284,6 +1362,50 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 	private protected mpz_t fragment = 1;
 	private protected bool isHigh;
 
+	public BigListBase()
+	{
+		low = new();
+		high = null;
+		fragment = 1;
+		isHigh = false;
+		_size = 0;
+		_capacity = 0;
+	}
+
+	public BigListBase(mpz_t capacity)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity <= CapacityFirstStep)
+		{
+			low = CapacityLowCreator((int)capacity);
+			high = null;
+			fragment = 1;
+			indexDeleted = new((int)capacity);
+			isHigh = false;
+		}
+		else
+		{
+			low = null;
+			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
+			high = new((int)((capacity + (fragment - 1)) / fragment));
+			for (mpz_t i = 0; i < capacity / fragment; i++)
+				high.Add(CapacityCreator(fragment));
+			if (capacity % fragment != 0)
+				high.Add(CapacityCreator(capacity % fragment));
+			isHigh = true;
+		}
+		_size = 0;
+		_capacity = capacity;
+	}
+
+	public BigListBase(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
+	{
+		IEnumerator<T> en = col.GetEnumerator();
+		while (en.MoveNext())
+			Add(en.Current);
+	}
+
 	public virtual mpz_t Capacity
 	{
 		get => _capacity;
@@ -1340,6 +1462,8 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 	}
 
 	private protected abstract Func<mpz_t, TCertain> CapacityCreator { get; }
+
+	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
 
 	private protected virtual int CapacityStepBitLength => 16;
 
@@ -1862,12 +1986,8 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T>, ICollection where TCertain : SetBase<T, TCertain>, new()
+public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> where TCertain : SetBase<T, TCertain>, new()
 {
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	object System.Collections.ICollection.SyncRoot => _syncRoot;
-
 	public override TCertain Add(T item)
 	{
 		TryAdd(item);

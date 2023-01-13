@@ -42213,6 +42213,151 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static bool StartsWithEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source is List<TSource> list && source2 is List<TSource2> list2)
+		{
+			if (list._size < list2._size)
+				return false;
+			int count = list2._size;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				TSource2 item2 = list2._items[i];
+				if (!function(item, item2))
+					return false;
+			}
+			return true;
+		}
+		else if (source is TSource[] array && source2 is TSource2[] array2)
+		{
+			if (array.Length < array2.Length)
+				return false;
+			for (int i = 0; i < array2.Length; i++)
+			{
+				TSource item = array[i];
+				TSource2 item2 = array2[i];
+				if (!function(item, item2))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
+		{
+			if (list2_.Count < list2_2.Count)
+				return false;
+			int count = list2_2.Count;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2_[i];
+				TSource2 item2 = list2_2[i];
+				if (!function(item, item2))
+					return false;
+			}
+			return true;
+		}
+		else
+			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+	}
+
+	internal static bool StartsWithEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source is List<TSource> list && source2 is List<TSource2> list2)
+		{
+			if (list._size < list2._size)
+				return false;
+			int count = list2._size;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				TSource2 item2 = list2._items[i];
+				if (!function(item, item2, i))
+					return false;
+			}
+			return true;
+		}
+		else if (source is TSource[] array && source2 is TSource2[] array2)
+		{
+			if (array.Length < array2.Length)
+				return false;
+			for (int i = 0; i < array2.Length; i++)
+			{
+				TSource item = array[i];
+				TSource2 item2 = array2[i];
+				if (!function(item, item2, i))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
+		{
+			if (list2_.Count < list2_2.Count)
+				return false;
+			int count = list2_2.Count;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2_[i];
+				TSource2 item2 = list2_2[i];
+				if (!function(item, item2, i))
+					return false;
+			}
+			return true;
+		}
+		else
+			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+	}
+
+	internal static bool StartsWithEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2)
+	{
+		if (source is List<TSource> list && source2 is List<TSource2> list2)
+		{
+			if (list._size < list2._size)
+				return false;
+			int count = list2._size;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				TSource2 item2 = list2._items[i];
+				if (item == null || !item.Equals(item2))
+					return false;
+			}
+			return true;
+		}
+		else if (source is TSource[] array && source2 is TSource2[] array2)
+		{
+			if (array.Length < array2.Length)
+				return false;
+			for (int i = 0; i < array2.Length; i++)
+			{
+				TSource item = array[i];
+				TSource2 item2 = array2[i];
+				if (item == null || !item.Equals(item2))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<TSource> list2_ && source2 is G.IList<TSource2> list2_2)
+		{
+			if (list2_.Count < list2_2.Count)
+				return false;
+			int count = list2_2.Count;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2_[i];
+				TSource2 item2 = list2_2[i];
+				if (item == null || !item.Equals(item2))
+					return false;
+			}
+			return true;
+		}
+		else
+			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2));
+	}
+
 	internal static decimal SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
@@ -43765,6 +43910,8 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
+		if (source.Length != source2.Length)
+			return false;
 		int count = Math.Min(source.Length, source2.Length);
 		for (int i = 0; i < count; i++)
 			if (!function(source[i], source2[i]))
@@ -43776,6 +43923,8 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
+		if (source.Length != source2.Length)
+			return false;
 		int count = Math.Min(source.Length, source2.Length);
 		for (int i = 0; i < count; i++)
 			if (!function(source[i], source2[i], i))
@@ -43785,6 +43934,8 @@ public partial class List<T, TCertain>
 
 	internal static bool EqualsEnumerable<TSource, TSource2>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2)
 	{
+		if (source.Length != source2.Length)
+			return false;
 		int count = Math.Min(source.Length, source2.Length);
 		for (int i = 0; i < count; i++)
 		{
@@ -54764,6 +54915,46 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static bool StartsWithEnumerable<TSource, TSource2>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source.Length < source2.Length)
+			return false;
+		int count = source2.Length;
+		for (int i = 0; i < count; i++)
+			if (!function(source[i], source2[i]))
+				return false;
+		return true;
+	}
+
+	internal static bool StartsWithEnumerable<TSource, TSource2>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, int, bool> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source.Length < source2.Length)
+			return false;
+		int count = source2.Length;
+		for (int i = 0; i < count; i++)
+			if (!function(source[i], source2[i], i))
+				return false;
+		return true;
+	}
+
+	internal static bool StartsWithEnumerable<TSource, TSource2>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2)
+	{
+		if (source.Length < source2.Length)
+			return false;
+		int count = source2.Length;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (item == null || !item.Equals(source2[i]))
+				return false;
+		}
+		return true;
+	}
+
 	internal static decimal SumEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, decimal> function)
 	{
 		if (function == null)
@@ -57132,6 +57323,30 @@ public unsafe partial class NList<T>
 		}
 	}
 
+	internal static NList<TResult> ConvertEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Length;
+		NList<TResult> result = new(count);
+		for (int i = 0; i < count; i++)
+			result._items[i] = function(source[i]);
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> ConvertEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Length;
+		NList<TResult> result = new(count);
+		for (int i = 0; i < count; i++)
+			result._items[i] = function(source[i], i);
+		result._size = count;
+		return result;
+	}
+
 	internal static NList<TResult> ConvertEnumerable<TSource, TResult>(NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
@@ -57648,6 +57863,407 @@ public unsafe partial class NList<T>
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
 			return result;
 		}
+	}
+
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TSource, TResult, TResult2>(G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (function2 == null)
+			throw new ArgumentNullException(nameof(function2));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			result._items[i] = function(item);
+			result2._items[i] = function2(item);
+		});
+		result._size = count;
+		result2._size = count;
+		return (result, result2);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TSource, TResult, TResult2>(G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (function2 == null)
+			throw new ArgumentNullException(nameof(function2));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			result._items[i] = function(item, i);
+			result2._items[i] = function2(item, i);
+		});
+		result._size = count;
+		result2._size = count;
+		return (result, result2);
+	}
+
+	internal static (NList<TSource>, NList<TSource2>) PBreakEnumerable<TSource, TSource2>(G.IList<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged
+	{
+		int count = source.Count;
+		NList<TSource> result = new(count);
+		NList<TSource2> result2 = new(count);
+		Parallel.For(0, count, i => (result._items[i], result2._items[i]) = source[i]);
+		result._size = count;
+		result2._size = count;
+		return (result, result2);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TSource, TResult, TResult2>(G.IList<TSource> source, Func<TSource, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			(result._items[i], result2._items[i]) = function(item);
+		});
+		result._size = count;
+		result2._size = count;
+		return (result, result2);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TSource, TResult, TResult2>(G.IList<TSource> source, Func<TSource, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			(result._items[i], result2._items[i]) = function(item, i);
+		});
+		result._size = count;
+		result2._size = count;
+		return (result, result2);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TSource, TResult, TResult2, TResult3>(G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2, Func<TSource, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (function2 == null)
+			throw new ArgumentNullException(nameof(function2));
+		if (function3 == null)
+			throw new ArgumentNullException(nameof(function3));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		NList<TResult3> result3 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			result._items[i] = function(item);
+			result2._items[i] = function2(item);
+			result3._items[i] = function3(item);
+		});
+		result._size = count;
+		result2._size = count;
+		result3._size = count;
+		return (result, result2, result3);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TSource, TResult, TResult2, TResult3>(G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2, Func<TSource, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (function2 == null)
+			throw new ArgumentNullException(nameof(function2));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		NList<TResult3> result3 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			result._items[i] = function(item, i);
+			result2._items[i] = function2(item, i);
+			result3._items[i] = function3(item, i);
+		});
+		result._size = count;
+		result2._size = count;
+		result3._size = count;
+		return (result, result2, result3);
+	}
+
+	internal static (NList<TSource>, NList<TSource2>, NList<TSource3>) PBreakEnumerable<TSource, TSource2, TSource3>(G.IList<(TSource, TSource2, TSource3)> source) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged
+	{
+		int count = source.Count;
+		NList<TSource> result = new(count);
+		NList<TSource2> result2 = new(count);
+		NList<TSource3> result3 = new(count);
+		Parallel.For(0, count, i => (result._items[i], result2._items[i], result3._items[i]) = source[i]);
+		result._size = count;
+		result2._size = count;
+		result3._size = count;
+		return (result, result2, result3);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TSource, TResult, TResult2, TResult3>(G.IList<TSource> source, Func<TSource, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		NList<TResult3> result3 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			(result._items[i], result2._items[i], result3._items[i]) = function(item);
+		});
+		result._size = count;
+		result2._size = count;
+		result3._size = count;
+		return (result, result2, result3);
+	}
+
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TSource, TResult, TResult2, TResult3>(G.IList<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		NList<TResult2> result2 = new(count);
+		NList<TResult3> result3 = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
+		});
+		result._size = count;
+		result2._size = count;
+		result3._size = count;
+		return (result, result2, result3);
+	}
+
+	internal static NList<TResult> PCombineEnumerable<TSource, TSource2, TResult>(G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = Math.Min(source.Count, source2.Count);
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			result._items[i] = function(item, item2);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> PCombineEnumerable<TSource, TSource2, TResult>(G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, int, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = Math.Min(source.Count, source2.Count);
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			result._items[i] = function(item, item2, i);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<(TSource, TSource2)> PCombineEnumerable<TSource, TSource2>(G.IList<TSource> source, G.IList<TSource2> source2) where TSource : unmanaged where TSource2 : unmanaged
+	{
+		int count = Math.Min(source.Count, source2.Count);
+		NList<(TSource, TSource2)> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			result._items[i] = (item, item2);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> PCombineEnumerable<TSource, TSource2, TSource3, TResult>(G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			TSource3 item3 = source3[i];
+			result._items[i] = function(item, item2, item3);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> PCombineEnumerable<TSource, TSource2, TSource3, TResult>(G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, int, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			TSource3 item3 = source3[i];
+			result._items[i] = function(item, item2, item3, i);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<(TSource, TSource2, TSource3)> PCombineEnumerable<TSource, TSource2, TSource3>(G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged
+	{
+		int count = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
+		NList<(TSource, TSource2, TSource3)> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			TSource2 item2 = source2[i];
+			TSource3 item3 = source3[i];
+			result._items[i] = (item, item2, item3);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static bool PContainsEnumerable<TSource>(G.IList<TSource> source, TSource target) where TSource : unmanaged
+	{
+		int count = source.Count;
+		bool result = false;
+		Parallel.For(0, count, (i, pls) =>
+		{
+			TSource item = source[i];
+			if (item.Equals(target))
+			{
+				result = true;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	internal static bool PContainsEnumerable<TSource>(G.IList<TSource> source, TSource target, IEqualityComparer<TSource> comparer) where TSource : unmanaged
+	{
+		int count = source.Count;
+		bool result = false;
+		Parallel.For(0, count, (i, pls) =>
+		{
+			TSource item = source[i];
+			if (comparer.Equals(item, target))
+			{
+				result = true;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	internal static bool PContainsEnumerable<TSource>(G.IList<TSource> source, TSource target, Func<TSource, TSource, bool> equalFunction) where TSource : unmanaged
+	{
+		var comparer = new EComparer<TSource>(equalFunction);
+		int count = source.Count;
+		bool result = false;
+		Parallel.For(0, count, (i, pls) =>
+		{
+			TSource item = source[i];
+			if (comparer.Equals(item, target))
+			{
+				result = true;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	internal static bool PContainsEnumerable<TSource>(G.IList<TSource> source, TSource target, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : unmanaged
+	{
+		var comparer = new EComparer<TSource>(equalFunction, hashCodeFunction);
+		int count = source.Count;
+		bool result = false;
+		Parallel.For(0, count, (i, pls) =>
+		{
+			TSource item = source[i];
+			if (comparer.Equals(item, target))
+			{
+				result = true;
+				pls.Stop();
+			}
+		});
+		return result;
+	}
+
+	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i => result._items[i] = function(source[i]));
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i =>
+		{
+			TSource item = source[i];
+			result._items[i] = function(item, i);
+		});
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<bool> values = new(count);
+		Parallel.For(0, count, i => values._items[i] = function(source[i]));
+		NList<TSource> result = new(count / 2);
+		for (int i = 0; i < count; i++)
+			if (values._items[i])
+				result.Add(source[i]);
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static NList<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		NList<bool> values = new(count);
+		Parallel.For(0, count, i => values._items[i] = function(source[i], i));
+		NList<TSource> result = new(count / 2);
+		for (int i = 0; i < count; i++)
+			if (values._items[i])
+				result.Add(source[i]);
+		result.TrimExcess();
+		return result;
 	}
 }
 
@@ -58502,6 +59118,9 @@ public static class OptimizedLinq
 	public static IEnumerable<TSource> SortDesc<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, int> compareFunction) => Enumerable.OrderByDescending(source, function, new Comparer<TResult>(compareFunction));
 	public static IEnumerable<TSource> SortDesc<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, int> compareFunction) => List<TSource>.SortDesc(source, function, compareFunction);
 	public static List<List<TSource>> SplitIntoEqual<TSource>(this IEnumerable<TSource> source, int fragmentLength) => List<TSource>.SplitIntoEqualEnumerable(source, fragmentLength);
+	public static bool StartsWith<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
+	public static bool StartsWith<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
+	public static bool StartsWith<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2) => List<bool>.StartsWithEnumerable(source, source2);
 	public static decimal Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, decimal> function) => List<decimal>.SumEnumerable(source, function);
 	public static decimal Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.SumEnumerable(source, function);
 	public static double Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, double> function) => List<double>.SumEnumerable(source, function);
@@ -60544,6 +61163,15 @@ public static class OptimizedLinq
 	public static List<TSource> Reverse<TSource>(this ReadOnlySpan<TSource> source) => List<TSource>.ReverseEnumerable(source);
 	public static List<TSource> Reverse<TSource>(this Span<TSource> source) => List<TSource>.ReverseEnumerable((ReadOnlySpan<TSource>)source);
 	public static List<TSource> Reverse<TSource>(this TSource[] source) => List<TSource>.ReverseEnumerable((ReadOnlySpan<TSource>)source.AsSpan());
+	public static bool StartsWith<TSource, TSource2>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
+	public static bool StartsWith<TSource, TSource2>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, int, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
+	public static bool StartsWith<TSource, TSource2>(this Span<TSource> source, Span<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2, function);
+	public static bool StartsWith<TSource, TSource2>(this Span<TSource> source, Span<TSource2> source2, Func<TSource, TSource2, int, bool> function) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2, function);
+	public static bool StartsWith<TSource, TSource2>(this TSource[] source, TSource2[] source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), (ReadOnlySpan<TSource2>)source2.AsSpan(), function);
+	public static bool StartsWith<TSource, TSource2>(this TSource[] source, TSource2[] source2, Func<TSource, TSource2, int, bool> function) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), (ReadOnlySpan<TSource2>)source2.AsSpan(), function);
+	public static bool StartsWith<TSource, TSource2>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2) => List<bool>.StartsWithEnumerable(source, source2);
+	public static bool StartsWith<TSource, TSource2>(this Span<TSource> source, Span<TSource2> source2) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2);
+	public static bool StartsWith<TSource, TSource2>(this TSource[] source, TSource2[] source2) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), (ReadOnlySpan<TSource2>)source2.AsSpan());
 	public static decimal Sum<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, decimal> function) => List<decimal>.SumEnumerable(source, function);
 	public static decimal Sum<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, decimal> function) => List<decimal>.SumEnumerable(source, function);
 	public static decimal Sum<TSource>(this Span<TSource> source, Func<TSource, decimal> function) => List<decimal>.SumEnumerable((ReadOnlySpan<TSource>)source, function);
@@ -60708,6 +61336,12 @@ public static class OptimizedLinq
 	public static NList<(TSource, TSource2, TSource3)> NCombine<TSource, TSource2, TSource3>(this NList<TSource> source, NList<TSource2> source2, NList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<(TSource, TSource2, TSource3)>.CombineEnumerable(source, source2, source3);
 	public static NList<TResult> NConvert<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvert<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static NList<TResult> NConvert<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static NList<TResult> NConvert<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static NList<TResult> NConvert<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.ConvertEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
 	public static NList<TResult> NConvert<TSource, TResult>(this NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvert<TSource, TResult>(this NList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<TSource, TResult>(this NList<TSource> source, Func<TSource, IEnumerable<TResult>> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertAndJoinEnumerable(source, function);
@@ -60740,4 +61374,22 @@ public static class OptimizedLinq
 	public static NList<TSource> NTake<TSource>(this IEnumerable<TSource> source, int count) where TSource : unmanaged => NList<TSource>.TakeEnumerable(source, count);
 	public static NList<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
 	public static NList<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2);
+	public static (NList<TSource>, NList<TSource2>) PNBreak<TSource, TSource2>(this G.IList<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged => NList<TSource>.PBreakEnumerable(source);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2, Func<TSource, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2, Func<TSource, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TSource>, NList<TSource2>, NList<TSource3>) PNBreak<TSource, TSource2, TSource3>(this G.IList<(TSource, TSource2, TSource3)> source) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<TSource>.PBreakEnumerable(source);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, int, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
+	public static NList<(TSource, TSource2)> PNCombine<TSource, TSource2>(this G.IList<TSource> source, G.IList<TSource2> source2) where TSource : unmanaged where TSource2 : unmanaged => NList<(TSource, TSource2)>.CombineEnumerable(source, source2);
+	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, int, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
+	public static NList<(TSource, TSource2, TSource3)> PNCombine<TSource, TSource2, TSource3>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<(TSource, TSource2, TSource3)>.CombineEnumerable(source, source2, source3);
+	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
 }

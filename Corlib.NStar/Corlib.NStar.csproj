@@ -20,9 +20,6 @@
 	  <Content Include="Native.NStar.Debug.dll">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </Content>
-	  <Content Include="Native.NStar.dll">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Mpir.NET" Version="0.4.0" />

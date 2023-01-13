@@ -1,5 +1,6 @@
 ﻿namespace Benchmark;
 
+[MemoryDiagnoser]
 public class Benchmark
 {
 	private static readonly Random random = new(1234567890);

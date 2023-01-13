@@ -944,11 +944,11 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	private protected override Func<int, BitList> CapacityCreator => CapacityCreatorStatic;
 
-	private static Func<int, BitList> CapacityCreatorStatic => capacity => new(capacity);
+	private static Func<int, BitList> CapacityCreatorStatic => x => new(x);
 
 	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => CollectionCreatorStatic;
 
-	private static Func<IEnumerable<bool>, BitList> CollectionCreatorStatic => collection => new(collection);
+	private static Func<IEnumerable<bool>, BitList> CollectionCreatorStatic => x => new(x);
 
 	private protected override int DefaultCapacity => 64;
 
@@ -1702,19 +1702,15 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			throw new ArgumentException(null, nameof(bits));
 	}
 
-	private protected override Func<mpz_t, BigBitList> CapacityCreator => CapacityCreatorStatic;
-
-	private static Func<mpz_t, BigBitList> CapacityCreatorStatic => capacity => new(capacity);
+	private protected override Func<mpz_t, BigBitList> CapacityCreator => x => new(x);
 
 	private protected override int CapacityFirstStepBitLength => 24;
 
-	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => CollectionCreatorStatic;
+	private protected override Func<int, BitList> CapacityLowCreator => x => new(x);
 
-	private static Func<IEnumerable<bool>, BigBitList> CollectionCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x);
 
-	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => CollectionLowCreatorStatic;
-
-	private static Func<IEnumerable<bool>, BitList> CollectionLowCreatorStatic => collection => new(collection);
+	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
 
 	private protected override int DefaultCapacity => 256;
 

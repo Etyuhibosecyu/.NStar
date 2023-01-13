@@ -346,6 +346,183 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfter(new());
+			c = new();
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfter(new("DDD", "MMM"));
+			c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetAfterLast()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetAfterLast("MMM");
+			var c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfterLast(new());
+			c = new();
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfterLast(new("DDD", "MMM"));
+			c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetBefore()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetBefore("DDD");
+			var c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBefore(new());
+			c = new(list);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBefore(new("DDD", "MMM"));
+			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetBeforeLast()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetBeforeLast("MMM");
+			var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBeforeLast(new());
+			c = new(list);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBeforeLast(new("DDD", "MMM"));
+			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetBeforeSetAfter()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetBeforeSetAfter("DDD");
+			var c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			var d = new G.List<string>() { "MMM", "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetBeforeSetAfterLast()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetBeforeSetAfterLast("MMM");
+			var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
+			var d = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestGetRange()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.GetRange(..);
+			var c = new G.List<string>(list);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(..^1);
+			c = new G.List<string>(list).GetRange(0, list.Length - 1);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(1..);
+			c = new G.List<string>(list).GetRange(1, list.Length - 1);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(1..^1);
+			c = new G.List<string>(list).GetRange(1, list.Length - 2);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(1..5);
+			c = new G.List<string>(list).GetRange(1, 4);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(^5..^1);
+			c = new G.List<string>(list).GetRange(list.Length - 5, 4);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(^5..5);
+			c = new G.List<string>(list).GetRange(list.Length - 5, 10 - list.Length);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
+			Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
 		}
 		catch (Exception ex)
 		{
