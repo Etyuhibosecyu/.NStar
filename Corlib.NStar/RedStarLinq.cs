@@ -261,11 +261,13 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				i++;
@@ -329,11 +331,13 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				i++;
@@ -381,11 +385,13 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TSource2> result2 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2) item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i]) = item;
 				i++;
 			}
@@ -443,11 +449,13 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i]) = function(item);
 				i++;
 			}
@@ -505,11 +513,13 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i]) = function(item, i);
 				i++;
 			}
@@ -583,12 +593,15 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
+				result3.EnsureCapacity(i + 1);
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -663,12 +676,15 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
+				result3.EnsureCapacity(i + 1);
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -724,12 +740,15 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TSource2> result2 = new(count);
 			List<TSource3> result3 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2, TSource3) item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
+				result3.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i], result3._items[i]) = item;
 				i++;
 			}
@@ -794,12 +813,15 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
+				result3.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 				i++;
 			}
@@ -864,12 +886,15 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
 			{
+				result.EnsureCapacity(i + 1);
+				result2.EnsureCapacity(i + 1);
+				result3.EnsureCapacity(i + 1);
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 				i++;
 			}
@@ -924,7 +949,22 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				result._items[i] = function(item, item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<TResult> CombineEnumerable<TSource, TSource2, TResult>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, TResult> function)
@@ -971,7 +1011,22 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				result._items[i] = function(item, item2, i);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<(TSource, TSource2)> CombineEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2)
@@ -1016,7 +1071,22 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2));
+		{
+			List<(TSource, TSource2)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				result._items[i] = (item, item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<TResult> CombineEnumerable<TSource, TSource2, TSource3, TResult>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, IEnumerable<TSource3> source3, Func<TSource, TSource2, TSource3, TResult> function)
@@ -1066,7 +1136,24 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), ReturnOrConstruct(source3), function);
+		{
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			var en3 = source3.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				TSource3 item3 = en3.Current;
+				result._items[i] = function(item, item2, item3);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<TResult> CombineEnumerable<TSource, TSource2, TSource3, TResult>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, IEnumerable<TSource3> source3, Func<TSource, TSource2, TSource3, int, TResult> function)
@@ -1116,7 +1203,24 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), ReturnOrConstruct(source3), function);
+		{
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			var en3 = source3.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				TSource3 item3 = en3.Current;
+				result._items[i] = function(item, item2, item3, i);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<(TSource, TSource2, TSource3)> CombineEnumerable<TSource, TSource2, TSource3>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, IEnumerable<TSource3> source3)
@@ -1164,7 +1268,24 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return CombineEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), ReturnOrConstruct(source3));
+		{
+			List<(TSource, TSource2, TSource3)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			var en3 = source3.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				TSource3 item3 = en3.Current;
+				result._items[i] = (item, item2, item3);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
 	}
 
 	internal static List<TSource> ConcatEnumerable<TSource>(IEnumerable<TSource> source, params IEnumerable<TSource>[] collections)
@@ -1742,7 +1863,19 @@ public partial class List<T, TCertain>
 			return true;
 		}
 		else
-			return EqualsEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			bool b, b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!function(item, item2))
+					return false;
+			}
+			return !(b || b2);
+		}
 	}
 
 	internal static bool EqualsEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, bool> function)
@@ -1791,7 +1924,21 @@ public partial class List<T, TCertain>
 			return true;
 		}
 		else
-			return EqualsEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			bool b, b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			int i = 0;
+			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!function(item, item2, i))
+					return false;
+				i++;
+			}
+			return !(b || b2);
+		}
 	}
 
 	internal static bool EqualsEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2)
@@ -1805,7 +1952,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -1818,7 +1965,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -1832,13 +1979,25 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
 		}
 		else
-			return EqualsEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2));
+		{
+			bool b, b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!(item?.Equals(item2) ?? item2 is null))
+					return false;
+			}
+			return !(b || b2);
+		}
 	}
 
 	internal static List<TResult> FillEnumerable<TResult>(TResult elem, int count)
@@ -42259,7 +42418,19 @@ public partial class List<T, TCertain>
 			return true;
 		}
 		else
-			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			bool b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!function(item, item2))
+					return false;
+			}
+			return !b2;
+		}
 	}
 
 	internal static bool StartsWithEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, bool> function)
@@ -42308,7 +42479,21 @@ public partial class List<T, TCertain>
 			return true;
 		}
 		else
-			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
+		{
+			bool b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			int i = 0;
+			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!function(item, item2, i))
+					return false;
+				i++;
+			}
+			return !b2;
+		}
 	}
 
 	internal static bool StartsWithEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2)
@@ -42322,7 +42507,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -42335,7 +42520,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
@@ -42349,13 +42534,25 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (item == null || !item.Equals(item2))
+				if (!(item?.Equals(item2) ?? item2 is null))
 					return false;
 			}
 			return true;
 		}
 		else
-			return StartsWithEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2));
+		{
+			bool b2 = true;
+			var en = source.GetEnumerator();
+			var en2 = source2.GetEnumerator();
+			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			{
+				TSource item = en.Current;
+				TSource2 item2 = en2.Current;
+				if (!(item?.Equals(item2) ?? item2 is null))
+					return false;
+			}
+			return !b2;
+		}
 	}
 
 	internal static decimal SumEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, decimal> function)
@@ -55812,7 +56009,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55880,7 +56077,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -55932,7 +56129,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TSource2> result2 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2) item in source)
@@ -55994,7 +56191,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56056,7 +56253,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56134,7 +56331,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56214,7 +56411,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56275,7 +56472,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TSource2> result2 = new(count);
 			NList<TSource3> result3 = new(count);
 			int i = 0;
@@ -56345,7 +56542,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56415,7 +56612,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -57258,7 +57455,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -57311,7 +57508,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 0);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -57798,7 +57995,7 @@ public unsafe partial class NList<T>
 		int index = 0;
 		for (int i = 0; i < count2; i++)
 		{
-			result.Add((NList<TSource>)(new(fragmentLength)));
+			result.Add(new(fragmentLength));
 			for (int j = 0; j < fragmentLength; j++)
 				result[i]._items[j] = source[index++];
 			result[i]._size = fragmentLength;
@@ -57806,7 +58003,7 @@ public unsafe partial class NList<T>
 		int rest = source._size % fragmentLength;
 		if (rest != 0)
 		{
-			result.Add((NList<TSource>)(new(rest)));
+			result.Add(new(rest));
 			for (int j = 0; j < rest; j++)
 				result[count2]._items[j] = source[index++];
 			result[count2]._size = rest;
@@ -58267,7 +58464,7 @@ public unsafe partial class NList<T>
 	}
 }
 
-public static class OptimizedLinq
+public static class RedStarLinq
 {
 	public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<bool>.AllEnumerable(source, function);
 	public static bool All<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<bool>.AllEnumerable(source, function);

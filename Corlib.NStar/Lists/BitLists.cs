@@ -1526,9 +1526,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 			high = new((int)((capacity + (fragment - 1)) / fragment));
 			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add((BigBitList)(new(fragment)));
+				high.Add(new(fragment));
 			if (capacity % fragment != 0)
-				high.Add((BigBitList)(new(capacity % fragment)));
+				high.Add(new(capacity % fragment));
 			isHigh = true;
 		}
 		_size = 0;
@@ -1552,9 +1552,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			fragment = (mpz_t)1 << ((((length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
 			high = new((int)((length + (fragment - 1)) / fragment));
 			for (mpz_t i = 0; i < length / fragment; i++)
-				high.Add((BigBitList)(new(fragment, defaultValue)));
+				high.Add(new(fragment, defaultValue));
 			if (length % fragment != 0)
-				high.Add((BigBitList)(new(length % fragment, defaultValue)));
+				high.Add(new(length % fragment, defaultValue));
 			isHigh = true;
 		}
 		_size = length;
@@ -1607,9 +1607,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 				high = new(GetArrayLength(bitList.Length, fragment2));
 				int index = 0;
 				for (; index <= bitList.Length - fragment2; index += fragment2)
-					high.Add((BigBitList)(new(bitList.GetRange(index, fragment2))));
+					high.Add(new(bitList.GetRange(index, fragment2)));
 				if (bitList.Length % fragment2 != 0)
-					high.Add((BigBitList)(new(bitList.GetRange(index, bitList.Length - index))));
+					high.Add(new(bitList.GetRange(index, bitList.Length - index)));
 				isHigh = true;
 			}
 			_size = bitList.Length;
@@ -1635,9 +1635,9 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 				high = new((int)((count + uintsFragment - 1) / uintsFragment));
 				int index = 0;
 				for (; index <= count - uintsFragment; index += uintsFragment)
-					high.Add((BigBitList)(new(bigUIntList.GetRange(index, uintsFragment))));
+					high.Add(new(bigUIntList.GetRange(index, uintsFragment)));
 				if (index != count)
-					high.Add((BigBitList)(new(bigUIntList.GetRange(index, count - index))));
+					high.Add(new(bigUIntList.GetRange(index, count - index)));
 				isHigh = true;
 			}
 			_size = count * BitsPerInt;
