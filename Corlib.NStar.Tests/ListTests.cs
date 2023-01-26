@@ -210,7 +210,7 @@ public class ListTests
 		try
 		{
 			var a = new List<string>(list);
-			var b = OptimizedLinq.FillArray(16, x => new string(OptimizedLinq.FillArray(3, x => (char)random.Next(65536))));
+			var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 			var c = (string[])b.Clone();
 			var d = (string[])b.Clone();
 			var e = (string[])b.Clone();
@@ -523,6 +523,63 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 			Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestIndexOf()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.IndexOf("MMM");
+			Assert.AreEqual(b, 0);
+			b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 2);
+			b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
+			Assert.AreEqual(b, -1);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestIndexOfAny()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 0);
+			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
+			Assert.AreEqual(b, 2);
+			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, -1);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestIndexOfAnyExcluding()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 1);
+			b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, 0);
+			b = a.IndexOfAnyExcluding(a);
+			Assert.AreEqual(b, -1);
 		}
 		catch (Exception ex)
 		{

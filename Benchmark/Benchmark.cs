@@ -4,8 +4,8 @@
 public class Benchmark
 {
 	private static readonly Random random = new(1234567890);
-	private static readonly List<int> list7 = OptimizedLinq.Fill(x => random.Next(0, 65536), 10000000);
-	private static readonly List<int> list8 = OptimizedLinq.Fill(x => random.Next(0, 65536), 100000000);
+	private static readonly List<int> list7 = RedStarLinq.Fill(x => random.Next(0, 65536), 10000000);
+	private static readonly List<int> list8 = RedStarLinq.Fill(x => random.Next(0, 65536), 100000000);
 
 	public G.HashSet<int> GHashSet { get; set; } = new();
 	public ParallelHashSet<int> ParallelHashSet { get; set; } = new();

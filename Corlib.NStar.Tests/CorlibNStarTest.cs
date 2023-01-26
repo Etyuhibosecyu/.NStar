@@ -23,7 +23,7 @@ public class CorlibNStarTest
 	//[TestMethod]
 	//public void ClearTest()
 	//{
-	//	BigBitList bitList = new(OptimizedLinq.Fill(x => (byte)random.Next(), 2500000));
+	//	BigBitList bitList = new(RedStarLinq.Fill(x => (byte)random.Next(), 2500000));
 	//	BigBitList bitList2 = new(bitList);
 	//	int x = random.Next(20000000), y = random.Next(20000000);
 	//	(int index, int endIndex) = (x < y) ? (x, y) : (y, x);
