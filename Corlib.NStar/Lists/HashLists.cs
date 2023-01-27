@@ -28,6 +28,61 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
 			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
 
+	public HashListBase() : this(0, (IEqualityComparer<T>?)null) { }
+
+	public HashListBase(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+
+	public HashListBase(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+
+	public HashListBase(int capacity, IEqualityComparer<T>? comparer)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity > 0)
+			Initialize(capacity, out buckets, out entries);
+		else
+		{
+			buckets = default!;
+			entries = default!;
+		}
+		Comparer = comparer ?? EqualityComparer<T>.Default;
+	}
+
+	public HashListBase(IEnumerable<T> collection) : this(collection, null) { }
+
+	public HashListBase(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetCountEasily(out int count) ? count : 0, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			Add(item);
+	}
+
+	public HashListBase(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+
+	public HashListBase(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			Add(item);
+	}
+
+	public HashListBase(params T[] array) : this((IEnumerable<T>)array)
+	{
+	}
+
+	public HashListBase(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	{
+	}
+
+	public HashListBase(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public HashListBase(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	{
+	}
 
 	public override int Capacity
 	{
@@ -45,6 +100,8 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 	public override TCertain Add(T item) => Add(item, out _);
 
 	public virtual TCertain Add(T item, out int index) => Insert(item, false, out index);
+
+	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
 	private protected override void ClearInternal()
 	{
@@ -346,59 +403,51 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 	private protected int freeCount;
 	private protected int freeList;
 
-	public FakeIndAftDelHashList() : this(0, (IEqualityComparer<T>?)null) { }
-
-	public FakeIndAftDelHashList(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
-
-	public FakeIndAftDelHashList(IEqualityComparer<T>? comparer) : this(0, comparer) { }
-
-	public FakeIndAftDelHashList(int capacity, IEqualityComparer<T>? comparer)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
-		else
-		{
-			buckets = default!;
-			entries = default!;
-		}
-		Comparer = comparer ?? EqualityComparer<T>.Default;
-	}
-
-	public FakeIndAftDelHashList(IEnumerable<T> collection) : this(collection, null) { }
-
-	public FakeIndAftDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			Add(item);
-	}
-
-	public FakeIndAftDelHashList(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
-
-	public FakeIndAftDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			Add(item);
-	}
-
-	public FakeIndAftDelHashList(params T[] array) : this((IEnumerable<T>)array)
+	protected FakeIndAftDelHashList()
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	protected FakeIndAftDelHashList(int capacity) : base(capacity)
 	{
 	}
 
-	public FakeIndAftDelHashList(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	protected FakeIndAftDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	protected FakeIndAftDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	protected FakeIndAftDelHashList(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	protected FakeIndAftDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	{
+	}
+
+	protected FakeIndAftDelHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	protected FakeIndAftDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	{
+	}
+
+	protected FakeIndAftDelHashList(params T[] array) : base(array)
+	{
+	}
+
+	protected FakeIndAftDelHashList(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	protected FakeIndAftDelHashList(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	protected FakeIndAftDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
@@ -443,8 +492,6 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 	public override int Length => _size - freeCount;
 
 	public virtual int Size => _size;
-
-	public override Span<T> AsSpan(int index, int count) => throw new NotSupportedException();
 
 	private protected override void ClearInternal()
 	{
@@ -821,61 +868,53 @@ public class FakeIndAftDelHashList<T> : FakeIndAftDelHashList<T, FakeIndAftDelHa
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
 /// серию удалений, используйте FakeIndAftDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
-public abstract class SlowDeletionHashList<T, TCertain> : HashSetBase<T, TCertain> where TCertain : SlowDeletionHashList<T, TCertain>, new()
+public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : SlowDeletionHashList<T, TCertain>, new()
 {
-	public SlowDeletionHashList() : this(0, (IEqualityComparer<T>?)null) { }
-
-	public SlowDeletionHashList(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
-
-	public SlowDeletionHashList(IEqualityComparer<T>? comparer) : this(0, comparer) { }
-
-	public SlowDeletionHashList(int capacity, IEqualityComparer<T>? comparer)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
-		else
-		{
-			buckets = default!;
-			entries = default!;
-		}
-		Comparer = comparer ?? EqualityComparer<T>.Default;
-	}
-
-	public SlowDeletionHashList(IEnumerable<T> collection) : this(collection, null) { }
-
-	public SlowDeletionHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			TryAdd(item);
-	}
-
-	public SlowDeletionHashList(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
-
-	public SlowDeletionHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			TryAdd(item);
-	}
-
-	public SlowDeletionHashList(params T[] array) : this((IEnumerable<T>)array)
+	protected SlowDeletionHashList()
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	protected SlowDeletionHashList(int capacity) : base(capacity)
 	{
 	}
 
-	public SlowDeletionHashList(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	protected SlowDeletionHashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	protected SlowDeletionHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	protected SlowDeletionHashList(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	protected SlowDeletionHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	{
+	}
+
+	protected SlowDeletionHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	protected SlowDeletionHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	{
+	}
+
+	protected SlowDeletionHashList(params T[] array) : base(array)
+	{
+	}
+
+	protected SlowDeletionHashList(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	protected SlowDeletionHashList(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	protected SlowDeletionHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 

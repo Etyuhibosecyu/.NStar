@@ -17,7 +17,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
 
-	private protected virtual int DefaultCapacity => 4;
+	private protected virtual int DefaultCapacity => 32;
 
 	bool System.Collections.IList.IsFixedSize => false;
 
