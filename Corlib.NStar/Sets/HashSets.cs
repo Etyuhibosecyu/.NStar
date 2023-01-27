@@ -1310,11 +1310,14 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 
 	internal override void SetInternal(int index, T item)
 	{
-		if (entries[index].item != null)
-			RemoveAt(index);
-		if (item == null)
-			return;
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		if (_size == entries.Length)
 		{

@@ -261,7 +261,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -331,7 +331,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -385,7 +385,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TSource2> result2 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2) item in source)
@@ -449,7 +449,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -513,7 +513,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -593,7 +593,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
@@ -676,7 +676,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
@@ -740,7 +740,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TSource2> result2 = new(count);
 			List<TSource3> result3 = new(count);
 			int i = 0;
@@ -813,7 +813,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
@@ -886,7 +886,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			List<TResult2> result2 = new(count);
 			List<TResult3> result3 = new(count);
 			int i = 0;
@@ -950,7 +950,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
@@ -1012,7 +1012,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
@@ -1072,7 +1072,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<(TSource, TSource2)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 32);
+			List<(TSource, TSource2)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
@@ -1137,7 +1137,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			var en3 = source3.GetEnumerator();
@@ -1204,7 +1204,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			List<TResult> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			var en3 = source3.GetEnumerator();
@@ -1269,7 +1269,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<(TSource, TSource2, TSource3)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 32);
+			List<(TSource, TSource2, TSource3)> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : TryGetCountEasilyEnumerable(source2, out count) ? count : TryGetCountEasilyEnumerable(source3, out count) ? count : 1024);
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			var en3 = source3.GetEnumerator();
@@ -56009,7 +56009,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56077,7 +56077,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56129,7 +56129,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TSource2> result2 = new(count);
 			int i = 0;
 			foreach ((TSource, TSource2) item in source)
@@ -56191,7 +56191,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56253,7 +56253,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			int i = 0;
 			foreach (TSource item in source)
@@ -56331,7 +56331,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56411,7 +56411,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56472,7 +56472,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TSource> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TSource2> result2 = new(count);
 			NList<TSource3> result3 = new(count);
 			int i = 0;
@@ -56542,7 +56542,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -56612,7 +56612,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			NList<TResult2> result2 = new(count);
 			NList<TResult3> result3 = new(count);
 			int i = 0;
@@ -57455,7 +57455,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			int i = 0;
 			foreach (TSource item in source)
 			{
@@ -57508,7 +57508,7 @@ public unsafe partial class NList<T>
 		}
 		else
 		{
-			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 32);
+			NList<TResult> result = new(List<TSource>.TryGetCountEasilyEnumerable(source, out int count) ? count : count = 1024);
 			int i = 0;
 			foreach (TSource item in source)
 			{

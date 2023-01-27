@@ -586,4 +586,33 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestInsert()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, defaultString);
+			var b = new G.List<string>(list);
+			b.Insert(3, defaultString);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).Insert(4, defaultCollection);
+			b = new G.List<string>(list);
+			b.InsertRange(4, defaultCollection);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).Insert(2, defaultCollection.AsSpan(2, 3));
+			b = new G.List<string>(list);
+			b.InsertRange(2, defaultCollection.Skip(2).Take(3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new List<string>(list).Insert(1000, defaultString));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).Insert(-1, defaultCollection));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

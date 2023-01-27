@@ -136,7 +136,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		}
 	}
 
-	public virtual TCertain AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
+	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
 
 	public override Span<T> AsSpan(int index, int count)
 	{
@@ -232,7 +232,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual TCertain InsertRange(int index, ReadOnlySpan<T> span)
+	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
 		int count = span.Length;
 		if (count == 0)
