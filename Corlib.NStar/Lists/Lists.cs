@@ -336,7 +336,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			_size += count;
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
-		else if (collection is ICollection<T> list2)
+		else if (collection is G.ICollection<T> list2)
 		{
 			int count = list2.Count;
 			if (count == 0)

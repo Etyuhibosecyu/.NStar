@@ -603,24 +603,23 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 	private protected override int IndexOfInternal(bool item, int index, int count)
 	{
 		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
-		int startRemainder = index % BitsPerInt;
-		int endRemainder = (index + count) % BitsPerInt;
-		if (startIndex == endIndex && startRemainder != 0)
+		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
+		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
+		if (startIndex == endIndex)
+		{
 			for (int i = startRemainder; i < endRemainder; i++)
 				if ((_items[startIndex] & (1 << i)) != 0)
 					return startIndex * BitsPerInt + i;
-		if (startRemainder != 0)
-		{
-			int invRemainder = BitsPerInt - startRemainder;
-			int mask = (1 << invRemainder) - 1;
-			uint first = _items[startIndex - 1] >> startRemainder;
-			if (first != (item ? 0 : mask))
-				for (int i = 0; i < invRemainder; i++)
-					if ((first & (1 << i)) != 0)
-						return index + i;
+			return -1;
 		}
-		for (int i = startIndex; i < endIndex; i++)
+		int invRemainder = BitsPerInt - startRemainder;
+		int mask = (1 << invRemainder) - 1;
+		uint first = _items[startIndex] >> startRemainder;
+		if (first != (item ? 0 : mask))
+			for (int i = 0; i < invRemainder; i++)
+				if ((first & (1 << i)) != 0)
+					return index + i;
+		for (int i = startIndex + 1; i < endIndex; i++)
 			if (_items[i] != fillValue)
 				for (int j = 0; j < BitsPerInt; j++)
 					if ((_items[i] & (1 << j)) != 0)
@@ -665,32 +664,31 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 	private protected override int LastIndexOfInternal(bool item, int index, int count)
 	{
 		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
-		int startRemainder = index % BitsPerInt;
-		int endRemainder = (index + count) % BitsPerInt;
-		if (startIndex == endIndex && startRemainder != 0)
+		(int startIndex, int startRemainder) = DivRem(index + 1 - count, BitsPerInt);
+		(int endIndex, int endRemainder) = DivRem(index + 1, BitsPerInt);
+		if (startIndex == endIndex)
+		{
 			for (int i = endRemainder - 1; i >= startRemainder; i--)
 				if ((_items[startIndex] & (1 << i)) != 0)
 					return startIndex * BitsPerInt + i;
+			return -1;
+		}
 		if (endRemainder != 0)
 			for (int i = endRemainder - 1; i >= 0; i--)
 				if ((_items[endIndex] & (1 << i)) != 0)
 					return endIndex * BitsPerInt + i;
-		for (int i = endIndex - 1; i >= startIndex; i--)
+		for (int i = endIndex - 1; i >= startIndex + 1; i--)
 			if (_items[i] != fillValue)
 				for (int j = BitsPerInt; j >= 0; j--)
 					if ((_items[i] & (1 << j)) != 0)
 						return i * BitsPerInt + j;
-		if (startRemainder != 0)
-		{
-			int invRemainder = BitsPerInt - startRemainder;
-			int mask = (1 << invRemainder) - 1;
-			uint first = _items[startIndex - 1] >> startRemainder;
-			if (first != (item ? 0 : mask))
-				for (int i = invRemainder - 1; i >= 0; i--)
-					if ((first & (1 << i)) != 0)
-						return index + i;
-		}
+		int invRemainder = BitsPerInt - startRemainder;
+		int mask = (1 << invRemainder) - 1;
+		uint first = _items[startIndex] >> startRemainder;
+		if (first != (item ? 0 : mask))
+			for (int i = invRemainder - 1; i >= 0; i--)
+				if ((first & (1 << i)) != 0)
+					return index + i;
 		return -1;
 	}
 

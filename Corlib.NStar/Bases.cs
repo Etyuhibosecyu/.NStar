@@ -1169,16 +1169,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is TCertain list)
-		{
-			int count = list._size;
-			if (index + count > _size)
-				throw new ArgumentException(null);
-			EnsureCapacity(index + count);
-			return SetRangeInternal(index, count, list);
-		}
-		else
+		if (collection is not TCertain list)
 			return SetRange(index, CollectionCreator(collection));
+		int count = list._size;
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		EnsureCapacity(index + count);
+		return SetRangeInternal(index, count, list);
 	}
 
 	internal virtual TCertain SetRangeAndSizeInternal(int index, int count, TCertain list)
