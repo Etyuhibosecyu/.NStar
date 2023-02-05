@@ -205,6 +205,34 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		}
 	}
 
+	public virtual bool TryPeek(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Peek();
+			return true;
+		}
+	}
+
+	public virtual bool TryPop(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Pop();
+			return true;
+		}
+	}
+
 	[Serializable()]
 	public struct Enumerator : IEnumerator<T>,
 		IEnumerator

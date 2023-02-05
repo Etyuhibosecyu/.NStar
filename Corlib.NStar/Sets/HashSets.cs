@@ -15,7 +15,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		internal T item;
 	}
 
-	private protected List<int> buckets = default!;
+	private protected int[] buckets = default!;
 	private protected Entry[] entries = default!;
 	internal const int HashPrime = 101;
 	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
@@ -59,12 +59,29 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 			RemoveValue(GetInternal(index + i));
 		Changed();
 	}
+
+	public override void Dispose()
+	{
+		buckets = default!;
+		entries = default!;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
+
 	internal static int ExpandPrime(int oldSize)
 	{
 		int newSize = 2 * oldSize;
 		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
 			return MaxPrimeArrayLength;
 		return GetPrime(newSize);
+	}
+
+	internal override T GetInternal(int index, bool invoke = true)
+	{
+		T item = entries[index].item;
+		if (invoke)
+			Changed();
+		return item;
 	}
 
 	internal static int GetPrime(int min)
@@ -82,22 +99,6 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		return min;
 	}
 
-	public override void Dispose()
-	{
-		buckets = default!;
-		entries = default!;
-		_size = 0;
-		GC.SuppressFinalize(this);
-	}
-
-	internal override T GetInternal(int index, bool invoke = true)
-	{
-		T item = entries[index].item;
-		if (invoke)
-			Changed();
-		return item;
-	}
-
 	private protected override int IndexOfInternal(T item, int index, int count)
 	{
 		if (item == null)
@@ -112,7 +113,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		return -1;
 	}
 
-	private protected virtual void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
+	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
 		int size = GetPrime(capacity);
 		buckets = new int[size];
@@ -798,7 +799,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, count);
 	}
 
-	private protected override void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
+	private protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
 		int size = GetPrime(capacity);
 		buckets = new int[size];

@@ -15,7 +15,7 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		internal T item;
 	}
 
-	private protected List<int> buckets = default!;
+	private protected int[] buckets = default!;
 	private protected Entry[] entries = default!;
 	private protected readonly FakeIndAftDelHashSet<T> uniqueElements = new();
 	internal const int HashPrime = 101;
@@ -95,6 +95,7 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			Changed();
 		}
 	}
+
 	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
 
 	public override TCertain Add(T item) => Add(item, out _);
@@ -123,6 +124,8 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		Changed();
 	}
 
+	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
+
 	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
 	{
 		if (destination is not TCertain destination2)
@@ -136,35 +139,20 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		destination2.Changed();
 	}
 
-	internal static int ExpandPrime(int oldSize)
-	{
-		int newSize = 2 * oldSize;
-		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
-			return MaxPrimeArrayLength;
-		return GetPrime(newSize);
-	}
-
-	internal static int GetPrime(int min)
-	{
-		if (min < 0)
-			throw new ArgumentException(null);
-		for (int i = 0; i < primes.Length; i++)
-		{
-			int prime = primes[i];
-			if (prime >= min) return prime;
-		}
-		for (int i = min | 1; i < int.MaxValue; i += 2)
-			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-				return i;
-		return min;
-	}
-
 	public override void Dispose()
 	{
 		buckets = default!;
 		entries = default!;
 		_size = 0;
 		GC.SuppressFinalize(this);
+	}
+
+	internal static int ExpandPrime(int oldSize)
+	{
+		int newSize = 2 * oldSize;
+		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
+			return MaxPrimeArrayLength;
+		return GetPrime(newSize);
 	}
 
 	public virtual int FirstHashIndexOf(T item) => FirstHashIndexOf(item, _size - 1, _size);
@@ -207,6 +195,25 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		return item;
 	}
 
+	internal static int GetPrime(int min)
+	{
+		if (min < 0)
+			throw new ArgumentException(null);
+		for (int i = 0; i < primes.Length; i++)
+		{
+			int prime = primes[i];
+			if (prime >= min) return prime;
+		}
+		for (int i = min | 1; i < int.MaxValue; i += 2)
+			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+				return i;
+		return min;
+	}
+
+	public virtual List<int> HashIndexesOf(T item) => HashIndexesOf(item, _size - 1, _size);
+
+	public virtual List<int> HashIndexesOf(T item, int index) => HashIndexesOf(item, index, index + 1);
+
 	public virtual List<int> HashIndexesOf(T item, int index, int count)
 	{
 		if (item == null)
@@ -221,6 +228,10 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		}
 		return result;
 	}
+
+	public virtual int HashIndexOf(T item) => HashIndexOf(item, _size - 1, _size);
+
+	public virtual int HashIndexOf(T item, int index) => HashIndexOf(item, index, index + 1);
 
 	public virtual int HashIndexOf(T item, int index, int count)
 	{
@@ -246,11 +257,11 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual List<int> IndexesOf(T item, int index) => IndexesOf(item, index, _size - index);
 
-	public virtual List<int> IndexesOf(T item, int index, int count) => HashIndexesOf(item, index, count);
+	public virtual List<int> IndexesOf(T item, int index, int count) => IsHashSearchBetter() ? HashIndexesOf(item, index, count) : LinearIndexesOf(item, index, count);
 
 	private protected override int IndexOfInternal(T item, int index, int count) => uniqueElements.Length >= AnyHashIndexThreshold ? HashIndexOf(item, index, count) : LinearIndexOf(item, index, count);
 
-	private protected virtual void Initialize(int capacity, out List<int> buckets, out Entry[] entries)
+	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
 		int size = GetPrime(capacity);
 		buckets = new int[size];
@@ -483,8 +494,6 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 				throw new IndexOutOfRangeException();
 			if (entries[index2].item?.Equals(value) ?? false)
 				return;
-			if (Contains(value))
-				throw new ArgumentException(null, nameof(value));
 			SetInternal(index2, value);
 		}
 	}

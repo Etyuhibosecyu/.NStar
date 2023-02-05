@@ -174,7 +174,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (item == null)
 		{
 			for (int i = 0; i < count; i++)
-				if (this[index + i] == null)
+				if (GetInternal(index + i) == null)
 					return true;
 			return false;
 		}
@@ -182,7 +182,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		{
 			EqualityComparer<T> c = EqualityComparer<T>.Default;
 			for (int i = 0; i < count; i++)
-				if (c.Equals(this[index + i], item))
+				if (c.Equals(GetInternal(index + i), item))
 					return true;
 			return false;
 		}

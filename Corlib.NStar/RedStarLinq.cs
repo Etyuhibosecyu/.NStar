@@ -1,8 +1,4 @@
-﻿using Mpir.NET;
-using System.Collections;
-using System.Text;
-using static Corlib.NStar.Extents;
-
+﻿
 namespace Corlib.NStar;
 public partial class List<T, TCertain>
 {
@@ -1816,6 +1812,8 @@ public partial class List<T, TCertain>
 			return n;
 		}
 	}
+
+	internal static List<TResult> EmptyListEnumerable<TResult>(int count) => new(count) { _size = count };
 
 	internal static bool EqualsEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, bool> function)
 	{
@@ -58250,7 +58248,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = Math.Min(source.Count, source2.Count);
+		int count = Min(source.Count, source2.Count);
 		NList<TResult> result = new(count);
 		Parallel.For(0, count, i =>
 		{
@@ -58266,7 +58264,7 @@ public unsafe partial class NList<T>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		int count = Math.Min(source.Count, source2.Count);
+		int count = Min(source.Count, source2.Count);
 		NList<TResult> result = new(count);
 		Parallel.For(0, count, i =>
 		{
@@ -58280,7 +58278,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(TSource, TSource2)> PCombineEnumerable<TSource, TSource2>(G.IList<TSource> source, G.IList<TSource2> source2) where TSource : unmanaged where TSource2 : unmanaged
 	{
-		int count = Math.Min(source.Count, source2.Count);
+		int count = Min(source.Count, source2.Count);
 		NList<(TSource, TSource2)> result = new(count);
 		Parallel.For(0, count, i =>
 		{
@@ -58519,6 +58517,7 @@ public static class RedStarLinq
 	public static TSource ElementAt<TSource>(this IEnumerable<TSource> source, int index) => Enumerable.ElementAt(source, index);
 	public static TSource? ElementAtOrDefault<TSource>(this IEnumerable<TSource> source, int index) => Enumerable.ElementAtOrDefault(source, index);
 	public static IEnumerable<TSource?> Empty<TSource>() => Enumerable.Empty<TSource>();
+	public static List<TSource> EmptyList<TSource>(int count) => List<TSource>.EmptyListEnumerable<TSource>(count);
 	public static bool Equals<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.EqualsEnumerable(source, source2, function);
 	public static bool Equals<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, bool> function) => List<bool>.EqualsEnumerable(source, source2, function);
 	public static bool Equals<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2) => List<bool>.EqualsEnumerable(source, source2);

@@ -6,6 +6,7 @@ global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static System.Math;
 using System.Runtime.Serialization;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Corlib.NStar;
 
@@ -187,7 +188,7 @@ public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 {
 }
 
-public static partial class Extents
+public static unsafe partial class Extents
 {
 	internal static readonly int[] primesList = { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
 		71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
@@ -486,25 +487,6 @@ public static partial class Extents
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
 	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
 
-	//[LibraryImport("kernel32", SetLastError = true)]
-	//public static partial IntPtr LocalFree(IntPtr mem);
-
-#if RELEASE
-	[LibraryImport("Native.NStar.dll", SetLastError = true)]
-#else
-	[LibraryImport("Native.NStar.Debug.dll", SetLastError = true)]
-#endif
-	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-	internal static unsafe partial void RadixSort(uint* array, int index, int count);
-
-#if RELEASE
-	[LibraryImport("Native.NStar.dll", SetLastError = true)]
-#else
-	[LibraryImport("Native.NStar.Debug.dll", SetLastError = true)]
-#endif
-	[UnmanagedCallConv(CallConvs = new Type[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-	internal static unsafe partial void RadixSort2(uint* array, int* array2, int index, int count);
-
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
@@ -519,9 +501,9 @@ public static partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
 
-	public static unsafe void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
+	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
 
-	public static unsafe void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
+	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
 	public static T CreateVar<T>(T value, out T @out) => @out = value;
 
@@ -537,7 +519,7 @@ public static partial class Extents
 		return (quotient, remainder);
 	}
 
-	public static unsafe void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
+	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
@@ -762,7 +744,7 @@ public static partial class Extents
 
 	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
 
-	public static unsafe uint[] NSort(this uint[] array, int index, int count)
+	public static uint[] NSort(this uint[] array, int index, int count)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -771,13 +753,16 @@ public static partial class Extents
 		if (index + count > array.Length)
 			throw new ArgumentException(null);
 		fixed (uint* items = array)
-			RadixSort(items, index, count);
+		{
+			uint* shiftedItems = items + index;
+			RadixSort(&shiftedItems, count);
+		}
 		return array;
 	}
 
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
 
-	public static unsafe T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int count)
+	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int count)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -792,13 +777,117 @@ public static partial class Extents
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
-		//fixed (int* indexes2 = indexes)
-		RadixSort2(converted, indexes, 0, count);
+		RadixSort(&converted, &indexes, count);
 		Marshal.FreeHGlobal((IntPtr)converted);
 		T[] oldItems = array[index..(index + count)];
 		for (int i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((IntPtr)indexes);
 		return array;
+	}
+
+	internal static void RadixSort<T>(T** @in, int n) where T : unmanaged
+	{
+		T* @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		CreateCounters(*@in, counters, n);
+		for (ushort i = 0; i < sizeof(T); i++)
+		{
+			count = counters + 256 * i;
+			if (count[0] == n) continue;
+			RadixPass(i, n, *@in, @out, count);
+#pragma warning disable IDE0180 // Использовать кортеж для переключения значений
+			var temp = *@in;
+			*@in = @out;
+			@out = temp;
+#pragma warning restore IDE0180 // Использовать кортеж для переключения значений
+		}
+		Marshal.FreeHGlobal((IntPtr)@out);
+		Marshal.FreeHGlobal((IntPtr)counters);
+	}
+
+	internal static void RadixSort<T, T2>(T** @in, T2** in2, int n) where T : unmanaged where T2 : unmanaged
+	{
+		T* @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
+		T2* @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		CreateCounters(*@in, counters, n);
+		for (ushort i = 0; i < sizeof(T); i++)
+		{
+			count = counters + 256 * i;
+			if (count[0] == n) continue;
+			RadixPass(i, n, *@in, *in2, @out, out2, count);
+#pragma warning disable IDE0180 // Использовать кортеж для переключения значений
+			var temp = *@in;
+			*@in = @out;
+			@out = temp;
+			var temp2 = *@in2;
+			*@in2 = @out2;
+			@out2 = temp2;
+#pragma warning restore IDE0180 // Использовать кортеж для переключения значений
+		}
+		Marshal.FreeHGlobal((IntPtr)@out);
+		Marshal.FreeHGlobal((IntPtr)out2);
+		Marshal.FreeHGlobal((IntPtr)counters);
+	}
+
+	private static void RadixPass<T>(ushort offset, int n, T* @in, T* @out, int* count) where T : unmanaged
+	{
+		T* sp;
+		int s, c, i;
+		byte* bp;
+		s = 0;
+		int* cp = count;
+		for (i = 256; i > 0; --i, ++cp)
+		{
+			c = *cp;
+			*cp = s;
+			s += c;
+		}
+		bp = (byte*)@in +offset;
+		sp = @in;
+		for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
+		{
+			cp = count + *bp;
+			@out[*cp] = *sp;
+			++*cp;
+		}
+	}
+
+	private static void RadixPass<T, T2>(ushort offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
+	{
+		T* sp;
+		T2* sp2;
+		int s, c, i;
+		byte* bp;
+		s = 0;
+		int* cp = count;
+		for (i = 256; i > 0; --i, ++cp)
+		{
+			c = *cp;
+			*cp = s;
+			s += c;
+		}
+		bp = (byte*)@in +offset;
+		sp = @in;
+		sp2 = in2;
+		for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
+		{
+			cp = count + *bp;
+			@out[*cp] = *sp;
+			out2[*cp] = *sp2;
+			++*cp;
+		}
+	}
+
+	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
+	{
+		FillMemory((IntPtr)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
+		byte* bp = (byte*)data;
+		byte* dataEnd = (byte*)(data + n);
+		ushort i;
+		while (bp != dataEnd)
+			for (i = 0; i < sizeof(T); i++)
+				counters[256 * i + *bp++]++;
 	}
 }

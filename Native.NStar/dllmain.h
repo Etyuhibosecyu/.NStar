@@ -213,7 +213,7 @@ private:
 				counters[256 * i + *bp++]++;
 	}
 
-	template<class T> static void radixPassUnsigned(short offset, int n, T* in, T* out, int* count)
+	template<class T> static void radixPassUnsigned(USHORT offset, int n, T* in, T* out, int* count)
 	{
 		T* sp;
 		int s, c, i, * cp;
@@ -236,18 +236,7 @@ private:
 		}
 	}
 
-	template<class T, class T2> static void createCountersUnsigned(T* data, int* counters, int n)
-	{
-		memset(counters, 0, 256 * sizeof(T) * sizeof(int));
-		UCHAR* bp = (UCHAR*)data;
-		UCHAR* dataEnd = (UCHAR*)(data + n);
-		USHORT i;
-		while (bp != dataEnd)
-			for (i = 0; i < sizeof(T); i++)
-				counters[256 * i + *bp++]++;
-	}
-
-	template<class T, class T2> static void radixPassUnsigned(short offset, int n, T* in, T2* in2, T* out, T2* out2, int* count)
+	template<class T, class T2> static void radixPassUnsigned(USHORT offset, int n, T* in, T2* in2, T* out, T2* out2, int* count)
 	{
 		T* sp;
 		T2* sp2;

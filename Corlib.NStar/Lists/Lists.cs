@@ -1187,7 +1187,8 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	{
 		if (this is NList<uint> uintList)
 		{
-			RadixSort(uintList._items, index, count);
+			uint* shiftedItems = uintList._items + index;
+			RadixSort(&shiftedItems, count);
 			return this;
 		}
 		else
