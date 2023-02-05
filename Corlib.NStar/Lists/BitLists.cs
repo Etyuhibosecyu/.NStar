@@ -1,742 +1,6 @@
 ﻿using System.Diagnostics;
 
 namespace Corlib.NStar;
-#if NETCOREAPP//RELEASE
-
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-public class BitList : ListBase<bool, BitList>, ICloneable
-{
-	private uint[] _items;
-
-	private const int _shrinkThreshold = 256;
-
-	// XPerY=n means that n Xs can be stored in 1 Y. 
-	private const int BitsPerInt = sizeof(int) * BitsPerByte;
-	private const int BytesPerInt = sizeof(int);
-	private const int BitsPerByte = 8;
-
-	private static readonly uint[] _emptyArray = Array.Empty<uint>();
-
-	public BitList()
-	{
-		_items = _emptyArray;
-		_size = 0;
-	}
-
-	public BitList(int capacity)
-	{
-		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity == 0)
-			_items = _emptyArray;
-		else
-			_items = new uint[GetArrayLength(capacity, BitsPerInt)];
-	}
-
-	public BitList(int length, bool defaultValue)
-	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		_items = new uint[GetArrayLength(length, BitsPerInt)];
-		_size = length;
-		uint fillValue = defaultValue ? 0xffffffff : 0;
-		for (int i = 0; i < _items.Length; i++)
-			_items[i] = fillValue;
-	}
-
-	public BitList(uint[] values)
-	{
-		if (values == null)
-			throw new ArgumentNullException(nameof(values));
-		// this value is chosen to prevent overflow when computing m_length
-		if (values.Length > int.MaxValue / BitsPerInt)
-			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
-		_items = new uint[values.Length];
-		_size = values.Length * BitsPerInt;
-		Array.Copy(values, _items, values.Length);
-	}
-
-	public BitList(IEnumerable bits)
-	{
-		if (bits == null)
-			throw new ArgumentNullException(nameof(bits));
-		else if (bits is BitList bitList)
-		{
-			int arrayLength = GetArrayLength(bitList._size, BitsPerInt);
-			_items = new uint[arrayLength];
-			_size = bitList._size;
-			Array.Copy(bitList._items, _items, arrayLength);
-		}
-		else if (bits is BitArray bitArray)
-		{
-			int arrayLength = GetArrayLength(bitArray.Length, BitsPerInt);
-			_items = new uint[arrayLength];
-			_size = bitArray.Length;
-			bitArray.CopyTo(_items, 0);
-		}
-		else if (bits is byte[] byteArray)
-		{
-			if (byteArray.Length > int.MaxValue / BitsPerByte)
-				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
-			_items = new uint[GetArrayLength(byteArray.Length, BytesPerInt)];
-			_size = byteArray.Length * BitsPerByte;
-			int i = 0;
-			int j = 0;
-			while (byteArray.Length - j >= 4)
-			{
-				_items[i++] = (uint)((byteArray[j] & 0xff) |
-					((byteArray[j + 1] & 0xff) << 8) |
-					((byteArray[j + 2] & 0xff) << 16) |
-					((byteArray[j + 3] & 0xff) << 24));
-				j += 4;
-			}
-			switch (byteArray.Length - j)
-			{
-				case 3:
-					_items[i] = (uint)(byteArray[j + 2] & 0xff) << 16;
-					goto case 2;
-				case 2:
-					_items[i] |= (uint)(byteArray[j + 1] & 0xff) << 8;
-					goto case 1;
-				case 1:
-					_items[i] |= (uint)(byteArray[j] & 0xff);
-					break;
-			}
-		}
-		else if (bits is bool[] boolArray)
-		{
-			_items = new uint[GetArrayLength(boolArray.Length, BitsPerInt)];
-			_size = boolArray.Length;
-			for (int i = 0; i < boolArray.Length; i++)
-				if (boolArray[i])
-					_items[i / BitsPerInt] |= (uint)1 << (i % BitsPerInt);
-		}
-		else if (bits is IEnumerable<int> ints)
-		{
-			_items = ints.ToArray(x => (uint)x);
-			_size = _items.Length * BitsPerInt;
-		}
-		else if (bits is IEnumerable<uint> uints)
-		{
-			_items = uints.ToArray();
-			_size = _items.Length * BitsPerInt;
-		}
-		else if (bits is IEnumerable<byte> bytes)
-		{
-			if (!bytes.TryGetNonEnumeratedCount(out int count))
-				count = bytes.Count();
-			if (count > int.MaxValue / BitsPerByte)
-				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
-			int arrayLength = GetArrayLength(count, BytesPerInt);
-			_items = new uint[arrayLength];
-			int i = 0;
-			using IEnumerator<byte> en = bytes.GetEnumerator();
-			while (en.MoveNext())
-			{
-				(int index, int remainder) = DivRem(i++, BytesPerInt);
-				_items[index] |= (uint)en.Current << remainder * BitsPerByte;
-			}
-			_size = count * BitsPerByte;
-		}
-		else if (bits is IEnumerable<bool> bools)
-		{
-			if (!bools.TryGetNonEnumeratedCount(out int count))
-				count = bools.Count();
-			int arrayLength = GetArrayLength(count, BitsPerInt);
-			_items = new uint[arrayLength];
-			int i = 0;
-			using IEnumerator<bool> en = bools.GetEnumerator();
-			while (en.MoveNext())
-			{
-				(int index, int remainder) = DivRem(i++, BitsPerInt);
-				if (en.Current)
-					_items[index] |= (uint)1 << remainder;
-			}
-			_size = count;
-		}
-		else
-			throw new ArgumentException(null, nameof(bits));
-	}
-
-	public override int Capacity
-	{
-		get => _items.Length * BitsPerInt;
-		set
-		{
-			if (value < 0)
-				throw new ArgumentOutOfRangeException(nameof(value));
-			int newints = GetArrayLength(value, BitsPerInt);
-			if (newints > _items.Length || newints + _shrinkThreshold < _items.Length)
-			{
-				uint[] newarray = new uint[newints];
-				Array.Copy(_items, newarray, newints > _items.Length ? _items.Length : newints);
-				_items = newarray;
-			}
-			if (value > _size)
-			{
-				int last = GetArrayLength(_size, BitsPerInt) - 1;
-				int bits = _size % BitsPerInt;
-				if (bits > 0)
-					_items[last] &= ((uint)1 << bits) - 1;
-				Array.Clear(_items, last + 1, newints - last - 1);
-			}
-			Changed();
-		}
-	}
-
-	private protected override Func<int, BitList> CapacityCreator => x => new(x);
-
-	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => x => new(x);
-
-	private protected override int DefaultCapacity => 64;
-
-	internal override bool GetInternal(int index, bool invoke = true)
-	{
-		bool item = (_items[index / BitsPerInt] & (1 << (index % BitsPerInt))) != 0;
-		if (invoke)
-			Changed();
-		return item;
-	}
-
-	internal override void SetInternal(int index, bool value)
-	{
-		if (value)
-			_items[index / BitsPerInt] |= (uint)1 << (index % BitsPerInt);
-		else
-			_items[index / BitsPerInt] &= ~((uint)1 << (index % BitsPerInt));
-		Changed();
-	}
-
-	public virtual void SetAll(bool value)
-	{
-		uint fillValue = value ? 0xffffffff : 0;
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] = fillValue;
-	}
-
-	public virtual BitList And(BitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] &= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Or(BitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] |= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Xor(BitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] ^= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Not()
-	{
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] = ~_items[i];
-		return this;
-	}
-
-	public override Span<bool> AsSpan(int index, int count) => throw new NotSupportedException();
-
-	private protected override void ClearInternal(int index, int count)
-	{
-		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
-		uint startMask = ((uint)1 << startRemainder) - 1;
-		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
-		uint endMask = ~0u << endRemainder;
-		if (startIndex == endIndex)
-			_items[startIndex] &= startMask | endMask;
-		else
-		{
-			_items[startIndex] &= startMask;
-			for (int i = startIndex + 1; i < endIndex; i++)
-				_items[i] = 0;
-			_items[endIndex] &= endMask;
-		}
-		Changed();
-	}
-
-	//private protected override int CompareToInternal(BitList other)
-	//{
-	//	int _size = Min(_size, other._size), c;
-	//	(int intCount, int bitsCount) = DivRem(_size, BitsPerInt);
-	//	for (int i = 0; i < intCount; i++)
-	//		if ((c = _items[i].CompareTo(other._items[i])) != 0)
-	//			return c;
-	//	if (bitsCount != 0)
-	//	{
-	//		uint mask = ((uint)1 << bitsCount) - 1;
-	//		if ((c = (_items[intCount] & mask).CompareTo(other._items[intCount] & mask)) != 0)
-	//			return c;
-	//	}
-	//	return _size.CompareTo(other._size);
-	//}
-
-	public override bool Contains(bool item)
-	{
-		int emptyValue = item ? 0 : unchecked((int)0xffffffff);
-		for (int i = 0; i < _size / BitsPerInt; i++)
-			if (_items[i] != emptyValue)
-				return true;
-		int rest = _size / BitsPerInt;
-		if (rest != 0)
-			if ((_items[^1] & (1 << rest)) != (item ? 0 : (1 << rest) - 1))
-				return true;
-		return false;
-	}
-
-	public static void CopyBits(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
-	{
-		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
-		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
-			return;
-		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
-			return;
-		(int sourceIntIndex, int sourceBitsIndex) = DivRem(sourceIndex, BitsPerInt);               // Целый индех в исходном массиве.
-		(int destinationIntIndex, int destinationBitsIndex) = DivRem(destinationIndex, BitsPerInt);     // Целый индекс в целевом массиве.
-		int bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
-		int intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
-		uint sourceStartMask = ~0u << sourceBitsIndex; // Маска "головы" источника
-		int destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
-		(int destinationEndIntIndex, int destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);  // Индекс инта последнего бита.
-		if (destinationEndIntIndex == destinationIntIndex)
-		{
-			uint buff = sourceBits[sourceIntIndex] & sourceStartMask;
-			uint destinationMask = (~(~0u << length)) << destinationBitsIndex;
-			if (bitsOffset >= 0)
-				buff <<= bitsOffset;
-			else
-			{
-				buff >>= -bitsOffset;
-				if (length + sourceBitsIndex > BitsPerInt)
-					buff |= sourceBits[sourceIntIndex + 1] << (BitsPerInt + bitsOffset);
-			}
-			buff &= destinationMask;
-			destinationBits[destinationIntIndex] &= ~destinationMask;
-			destinationBits[destinationIntIndex] |= buff;
-		}
-		else if (sourceIndex >= destinationIndex)
-		{
-			if (bitsOffset < 0)
-			{
-				bitsOffset = -bitsOffset;
-				ulong buff = destinationBits[destinationIntIndex];
-				buff &= ((ulong)1 << destinationBitsIndex) - 1;
-				buff |= (ulong)(sourceBits[sourceIntIndex] & sourceStartMask) >> bitsOffset;
-				int sourceEndIntIndex = (sourceIndex + length - 1) / BitsPerInt; // Индекс инта "хвоста".
-				for (int sourceCurrentIntIndex = sourceIntIndex + 1; sourceCurrentIntIndex <= sourceEndIntIndex; sourceCurrentIntIndex++)
-				{
-					buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << (BitsPerInt - bitsOffset);
-					destinationBits[sourceCurrentIntIndex + intOffset - 1] = (uint)buff;
-					buff >>= BitsPerInt;
-				}
-				if (sourceEndIntIndex + intOffset < destinationBits.Count)
-				{
-					ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-					buff &= destinationMask;
-					destinationBits[sourceEndIntIndex + intOffset] &= (uint)~destinationMask;
-					destinationBits[sourceEndIntIndex + intOffset] |= (uint)buff;
-				}
-			}
-			else
-			{
-				ulong buff = destinationBits[destinationIntIndex];
-				buff &= ((ulong)1 << destinationBitsIndex) - 1;
-				buff |= ((ulong)(sourceBits[sourceIntIndex] & sourceStartMask)) << bitsOffset;
-				int sourceEndIntIndex = (sourceIndex + length - 1) / BitsPerInt; // Индекс инта "хвоста".
-				for (int sourceCurrentIntIndex = sourceIntIndex; sourceCurrentIntIndex < sourceEndIntIndex; sourceCurrentIntIndex++)
-				{
-					destinationBits[sourceCurrentIntIndex + intOffset] = (uint)buff;
-					buff >>= BitsPerInt;
-					if (sourceCurrentIntIndex + 1 < sourceBits.Count) buff |= ((ulong)sourceBits[sourceCurrentIntIndex + 1]) << bitsOffset;
-				}
-				if (sourceEndIntIndex + intOffset < destinationBits.Count)
-				{
-					ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-					buff &= destinationMask;
-					destinationBits[sourceEndIntIndex + intOffset] &= (uint)~destinationMask;
-					destinationBits[sourceEndIntIndex + intOffset] |= (uint)buff;
-				}
-			}
-		}
-		else
-		{
-			var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
-			var sourceEndBitsIndex = sourceEndIndex % BitsPerInt; // Индекс последнего бита в инт.
-			var sourceEndIntIndex = sourceEndIndex / BitsPerInt;  // Индекс инта последнего бита.
-			uint sourceEndMask = ~0u >> (BitsPerInt - sourceEndBitsIndex - 1); // Маска "хвоста" источника
-			if (bitsOffset < 0)
-			{
-				bitsOffset = -bitsOffset;
-				ulong buff = destinationBits[destinationEndIntIndex];
-				buff &= ~0ul << (destinationEndBitsIndex + 1);
-				buff <<= BitsPerInt;
-				buff |= ((ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask)) << (BitsPerInt - bitsOffset);
-				for (int sourceCurrentIntIndex = sourceEndIntIndex; sourceCurrentIntIndex > sourceIntIndex; sourceCurrentIntIndex--)
-				{
-					destinationBits[sourceCurrentIntIndex + intOffset] = (uint)(buff >> BitsPerInt);
-					buff <<= BitsPerInt;
-					buff |= ((ulong)sourceBits[sourceCurrentIntIndex - 1]) << (BitsPerInt - bitsOffset);
-				}
-				ulong destinationMask = ~0ul << (BitsPerInt + destinationBitsIndex);
-				buff &= destinationMask;
-				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
-				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
-			}
-			else
-			{
-				ulong buff = destinationBits[destinationEndIntIndex];
-				buff &= ~0ul << (destinationEndBitsIndex + 1);
-				buff <<= BitsPerInt;
-				buff |= (ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask) << (BitsPerInt + bitsOffset);
-				for (int sourceCurrentIntIndex = sourceEndIntIndex - 1; sourceCurrentIntIndex >= sourceIntIndex; sourceCurrentIntIndex--)
-				{
-					buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
-					destinationBits[sourceCurrentIntIndex + intOffset + 1] = (uint)(buff >> BitsPerInt);
-					buff <<= BitsPerInt;
-				}
-				ulong destinationMask = ~0ul << (BitsPerInt + destinationBitsIndex);
-				buff &= destinationMask;
-				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
-				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
-			}
-		}
-	}
-
-	private static void CheckParams(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
-	{
-		if (sourceBits == null)
-			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
-		if (sourceBits.Count == 0)
-			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
-		if (destinationBits == null)
-			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
-		if (destinationBits.Count == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
-		int sourceLengthBits = sourceBits.Count * BitsPerInt; // Длина массивов в битах.
-		int destinationLengthBits = destinationBits.Count * BitsPerInt; // Длина массивов в битах.
-		if (sourceIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
-		if (destinationIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
-		if (sourceIndex + length > sourceLengthBits)
-			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
-		if (destinationIndex + length > destinationLengthBits)
-			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
-	}
-
-	public virtual object Clone()
-	{
-		BitList bitList = new(_items) { _size = _size };
-		return bitList;
-	}
-
-	private protected override void Copy(ListBase<bool, BitList> source, int sourceIndex, ListBase<bool, BitList> destination, int destinationIndex, int count)
-	{
-		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
-		CopyBits((source as BitList ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, destination2._items, destinationIndex, count);
-		destination2.Changed();
-	}
-
-	private protected override void CopyToInternal(Array array, int index)
-	{
-		if (array.Rank != 1)
-			throw new RankException();
-		if (array is int[])
-			Array.Copy(_items, 0, array, index, GetArrayLength(_size, BitsPerInt));
-		else if (array is byte[] byteArray)
-		{
-			int arrayLength = GetArrayLength(_size, BitsPerByte);
-			if (array.Length - index < arrayLength)
-				throw new ArgumentException(null);
-			byte[] b = byteArray;
-			int mask = unchecked((1 << BitsPerByte) - 1);
-			for (int i = 0; i < arrayLength; i++)
-				b[index + i] = (byte)((_items[i / BytesPerInt] >> (i % BytesPerInt * BitsPerByte)) & mask); // Shift to bring the required byte to LSB, then mask
-		}
-		else if (array is bool[] boolArray)
-			CopyToInternal(boolArray, index);
-		else
-			throw new ArgumentException(null, nameof(array));
-	}
-
-	private void CopyToInternal(bool[] array, int index)
-	{
-		if (array.Length - index < _size)
-			throw new ArgumentException(null);
-		CopyToInternal(index, array, 0, array.Length);
-	}
-
-	private protected override void CopyToInternal(int index, bool[] array, int arrayIndex, int count)
-	{
-		for (int i = 0; i < count; i++)
-			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
-	}
-
-	public override void Dispose()
-	{
-		_items = default!;
-		_size = 0;
-		GC.SuppressFinalize(this);
-	}
-
-	private protected override bool EqualsInternal(IEnumerable<bool>? collection, int index, bool toEnd = false)
-	{
-		try
-		{
-			throw new ExperimentalException();
-		}
-		catch
-		{
-		}
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (collection is BitList bitList)
-		{
-			if (index > _size - bitList.Length)
-				throw new ArgumentOutOfRangeException(nameof(index));
-			if (toEnd && index < _size - bitList.Length)
-				return false;
-			(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
-			uint startMask = ~0u << bitsIndex;
-			int endIndex = bitList._size - 1;
-			(int endIntIndex, int endBitsIndex) = DivRem(endIndex, BitsPerInt);
-			if (endIntIndex == 0)
-			{
-				uint buff = _items[intIndex] & startMask;
-				uint destinationMask = ~(~0u << bitList._size);
-				buff >>= bitsIndex;
-				if (bitList._size + bitsIndex > BitsPerInt)
-					buff |= _items[intIndex + 1] << (BitsPerInt - bitsIndex);
-				buff &= destinationMask;
-				return (bitList._items[0] & destinationMask) == buff;
-			}
-			else
-			{
-				ulong buff = bitList._items[0];
-				buff |= (ulong)(_items[intIndex] & startMask) >> bitsIndex;
-				int sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
-				for (int currentIntIndex = intIndex + 1; currentIntIndex <= sourceEndIntIndex; currentIntIndex++)
-				{
-					buff |= ((ulong)_items[currentIntIndex]) << (BitsPerInt - bitsIndex);
-					if (bitList._items[currentIntIndex - intIndex - 1] != (uint)buff) return false;
-					buff >>= BitsPerInt;
-				}
-				if (sourceEndIntIndex - intIndex < bitList._items.Length)
-				{
-					ulong destinationMask = ((ulong)1 << endBitsIndex + 1) - 1;
-					buff &= destinationMask;
-					return (bitList._items[sourceEndIntIndex - intIndex] & (uint)destinationMask) == (uint)buff;
-				}
-				return true;
-			}
-		}
-		else
-		{
-			if (collection.TryGetCountEasily(out int count))
-			{
-				if (index > _size - count)
-					throw new ArgumentOutOfRangeException(nameof(index));
-				if (toEnd && index < _size - count)
-					return false;
-			}
-			foreach (bool item in collection)
-				if (index >= _size || !GetInternal(index++).Equals(item))
-					return false;
-			return !toEnd || index == _size;
-		}
-	}
-
-	public override int GetHashCode() => _items.Length < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
-
-	public virtual uint GetSmallRange(int index, int count)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
-			throw new ArgumentException(null);
-		if (count == 0)
-			return new();
-		if (count > BitsPerInt)
-			throw new ArgumentException(null, nameof(count));
-		(int quotient, int remainder) = DivRem(index, BitsPerInt);
-		(int quotient2, int remainder2) = DivRem(index + count, BitsPerInt);
-		uint result;
-		if (quotient == quotient2)
-			result = _items[quotient] & (~(~0u << count) << remainder);
-		else
-		{
-			result = _items[quotient] & (~0u << remainder);
-			result |= (_items[quotient + 1] & (((uint)1 << remainder2) - 1)) << (BitsPerInt - remainder2);
-		}
-		return result;
-	}
-
-	private protected override int IndexOfInternal(bool item, int index, int count)
-	{
-		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
-		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
-		if (startIndex == endIndex)
-		{
-			for (int i = startRemainder; i < endRemainder; i++)
-				if ((_items[startIndex] & (1 << i)) != 0)
-					return startIndex * BitsPerInt + i;
-			return -1;
-		}
-		int invRemainder = BitsPerInt - startRemainder;
-		int mask = (1 << invRemainder) - 1;
-		uint first = _items[startIndex] >> startRemainder;
-		if (first != (item ? 0 : mask))
-			for (int i = 0; i < invRemainder; i++)
-				if ((first & (1 << i)) != 0)
-					return index + i;
-		for (int i = startIndex + 1; i < endIndex; i++)
-			if (_items[i] != fillValue)
-				for (int j = 0; j < BitsPerInt; j++)
-					if ((_items[i] & (1 << j)) != 0)
-						return i * BitsPerInt + j;
-		if (endRemainder != 0)
-			for (int i = 0; i < endRemainder; i++)
-				if ((_items[endIndex] & (1 << i)) != 0)
-					return endIndex * BitsPerInt + i;
-		return -1;
-	}
-
-	public virtual void InsertRange(int index, IEnumerable collection)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if ((uint)index > (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is BitList bitList)
-		{
-			int count = bitList._size;
-			if (count == 0)
-				return;
-			EnsureCapacity(_size + count);
-			CopyBits(_items, index, _items, index + count, _size - index);
-			CopyBits(bitList._items, 0, _items, index, count);
-			_size += count;
-		}
-		else if (collection is uint[] intArray)
-		{
-			int count = intArray.Length * BitsPerInt;
-			if (count == 0)
-				return;
-			EnsureCapacity(_size + count);
-			CopyBits(_items, index, _items, index + count, _size - index);
-			CopyBits(intArray, 0, _items, index, count);
-			_size += count;
-		}
-		else
-			InsertRange(index, new BitList(collection));
-	}
-
-	private protected override int LastIndexOfInternal(bool item, int index, int count)
-	{
-		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		(int startIndex, int startRemainder) = DivRem(index + 1 - count, BitsPerInt);
-		(int endIndex, int endRemainder) = DivRem(index + 1, BitsPerInt);
-		if (startIndex == endIndex)
-		{
-			for (int i = endRemainder - 1; i >= startRemainder; i--)
-				if ((_items[startIndex] & (1 << i)) != 0)
-					return startIndex * BitsPerInt + i;
-			return -1;
-		}
-		if (endRemainder != 0)
-			for (int i = endRemainder - 1; i >= 0; i--)
-				if ((_items[endIndex] & (1 << i)) != 0)
-					return endIndex * BitsPerInt + i;
-		for (int i = endIndex - 1; i >= startIndex + 1; i--)
-			if (_items[i] != fillValue)
-				for (int j = BitsPerInt; j >= 0; j--)
-					if ((_items[i] & (1 << j)) != 0)
-						return i * BitsPerInt + j;
-		int invRemainder = BitsPerInt - startRemainder;
-		int mask = (1 << invRemainder) - 1;
-		uint first = _items[startIndex] >> startRemainder;
-		if (first != (item ? 0 : mask))
-			for (int i = invRemainder - 1; i >= 0; i--)
-				if ((first & (1 << i)) != 0)
-					return index + i;
-		return -1;
-	}
-
-	private protected override BitList ReverseInternal(int index, int count)
-	{
-		for (int i = 0; i < count / 2; i++)
-		{
-			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
-		}
-		Changed();
-		return this;
-	}
-
-	public virtual void SetRange(int index, IEnumerable collection)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if ((uint)index > (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is BitList bitList)
-		{
-			int count = bitList._size;
-			if (index + count > _size)
-				throw new ArgumentException(null);
-			if (count > 0)
-				CopyBits(bitList._items, 0, _items, index, count);
-		}
-		else
-			SetRange(index, new BitList(collection));
-	}
-
-	public virtual List<uint> ToUIntList() => _items.Take(GetArrayLength(_size, BitsPerInt));
-
-	public virtual object SyncRoot
-	{
-		get
-		{
-			if (_syncRoot == null)
-				Interlocked.CompareExchange<object?>(ref _syncRoot, new(), null);
-			return _syncRoot;
-		}
-	}
-
-	public virtual bool IsReadOnly => false;
-
-	public virtual bool IsSynchronized => false;
-}
-#else
 
 [DebuggerDisplay("Count = {Count}")]
 [ComVisible(true)]
@@ -744,7 +8,7 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 {
 	private uint* _items;
-	private int _capacity = 0;
+	private int _capacity;
 
 	private const int _shrinkThreshold = 256;
 
@@ -950,8 +214,6 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	private protected override int DefaultCapacity => 64;
 
-	public event ListChangedHandler? ListChanged;
-
 	internal override bool GetInternal(int index, bool invoke = true)
 	{
 		bool item = (_items[index / BitsPerInt] & (1 << (index % BitsPerInt))) != 0;
@@ -1021,6 +283,8 @@ internal override void SetInternal(int index, bool value)
 		return this;
 	}
 
+	public override Span<bool> AsSpan(int index, int count) => throw new NotSupportedException();
+
 	private protected override void ClearInternal(int index, int count)
 	{
 		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
@@ -1039,22 +303,6 @@ internal override void SetInternal(int index, bool value)
 		Changed();
 	}
 
-	//private protected override int CompareToInternal(BitList other)
-	//{
-	//	int count = Min(_size, other._size), c;
-	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
-	//	for (int i = 0; i < intCount; i++)
-	//		if ((c = _items[i].CompareTo(other._items[i])) != 0)
-	//			return c;
-	//	if (bitsCount != 0)
-	//	{
-	//		uint mask = ((uint)1 << bitsCount) - 1;
-	//		if ((c = (_items[intCount] & mask).CompareTo(other._items[intCount] & mask)) != 0)
-	//			return c;
-	//	}
-	//	return _size.CompareTo(other._size);
-	//}
-
 	public override bool Contains(bool item)
 	{
 		int emptyValue = item ? 0 : unchecked((int)0xffffffff);
@@ -1068,7 +316,7 @@ internal override void SetInternal(int index, bool value)
 		return false;
 	}
 
-	public static void CopyBits(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
+	public static void CopyBits(G.IList<uint> sourceBits, int sourceIndex, G.IList<uint> destinationBits, int destinationIndex, int length)
 	{
 		fixed (uint* sourcePtr = sourceBits.AsSpan(), destinationPtr = destinationBits.AsSpan())
 			CopyBits(sourcePtr, sourceBits.Count, sourceIndex, destinationPtr, destinationBits.Count, destinationIndex, length);
@@ -1192,30 +440,6 @@ internal override void SetInternal(int index, bool value)
 		}
 	}
 
-	private static void CheckParams(IList<uint> sourceBits, int sourceIndex, IList<uint> destinationBits, int destinationIndex, int length)
-	{
-		if (sourceBits == null)
-			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
-		if (sourceBits.Count == 0)
-			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
-		if (destinationBits == null)
-			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
-		if (destinationBits.Count == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
-		int sourceLengthBits = sourceBits.Count * BitsPerInt; // Длина массивов в битах.
-		int destinationLengthBits = destinationBits.Count * BitsPerInt; // Длина массивов в битах.
-		if (sourceIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
-		if (destinationIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
-		if (sourceIndex + length > sourceLengthBits)
-			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
-		if (destinationIndex + length > destinationLengthBits)
-			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
-	}
-
 	private static void CheckParams(uint* sourceBits, int sourceBound, int sourceIndex, uint* destinationBits, int destinationBound, int destinationIndex, int length)
 	{
 		if (sourceBits == null)
@@ -1293,29 +517,79 @@ internal override void SetInternal(int index, bool value)
 	public override void Dispose()
 	{
 		Marshal.FreeHGlobal((IntPtr)_items);
+		_capacity = 0;
+		_size = 0;
 		GC.SuppressFinalize(this);
 	}
 
-	//private protected override bool EqualsInternal(BitList other)
-	//{
-	//	int count = Min(_size, other._size);
-	//	(int intCount, int bitsCount) = DivRem(count, BitsPerInt);
-	//	for (int i = 0; i < intCount; i++)
-	//		if (_items[i] != other._items[i])
-	//			return false;
-	//	if (bitsCount != 0)
-	//	{
-	//		uint mask = ((uint)1 << bitsCount) - 1;
-	//		if ((_items[intCount] & mask) != (other._items[intCount] & mask))
-	//			return false;
-	//	}
-	//	return true;
-	//}
+	private protected override bool EqualsInternal(IEnumerable<bool>? collection, int index, bool toEnd = false)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is BitList bitList)
+		{
+			if (index > _size - bitList.Length)
+				throw new ArgumentOutOfRangeException(nameof(index));
+			if (toEnd && index < _size - bitList.Length)
+				return false;
+			(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
+			uint startMask = ~0u << bitsIndex;
+			int endIndex = bitList._size - 1;
+			(int endIntIndex, int endBitsIndex) = DivRem(endIndex, BitsPerInt);
+			if (endIntIndex == 0)
+			{
+				uint buff = _items[intIndex] & startMask;
+				uint destinationMask = ~(~0u << bitList._size);
+				buff >>= bitsIndex;
+				if (bitList._size + bitsIndex > BitsPerInt)
+					buff |= _items[intIndex + 1] << (BitsPerInt - bitsIndex);
+				buff &= destinationMask;
+				return (bitList._items[0] & destinationMask) == buff;
+			}
+			else
+			{
+				ulong buff = bitList._items[0];
+				buff |= (ulong)(_items[intIndex] & startMask) >> bitsIndex;
+				int sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
+				for (int currentIntIndex = intIndex + 1; currentIntIndex <= sourceEndIntIndex; currentIntIndex++)
+				{
+					buff |= ((ulong)_items[currentIntIndex]) << (BitsPerInt - bitsIndex);
+					if (bitList._items[currentIntIndex - intIndex - 1] != (uint)buff) return false;
+					buff >>= BitsPerInt;
+				}
+				if (sourceEndIntIndex - intIndex < bitList._capacity)
+				{
+					ulong destinationMask = ((ulong)1 << endBitsIndex + 1) - 1;
+					buff &= destinationMask;
+					return (bitList._items[sourceEndIntIndex - intIndex] & (uint)destinationMask) == (uint)buff;
+				}
+				return true;
+			}
+		}
+		else
+		{
+			if (collection.TryGetCountEasily(out int count))
+			{
+				if (index > _size - count)
+					throw new ArgumentOutOfRangeException(nameof(index));
+				if (toEnd && index < _size - count)
+					return false;
+			}
+			foreach (bool item in collection)
+				if (index >= _size || !GetInternal(index++).Equals(item))
+					return false;
+			return !toEnd || index == _size;
+		}
+	}
 
-	//public override int GetHashCode()
-	//{
-	//	return _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[^1].GetHashCode();
-	//}
+	public override int GetHashCode() => _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[_capacity - 1].GetHashCode();
 
 	public virtual uint GetSmallRange(int index, int count)
 	{
@@ -1345,24 +619,23 @@ internal override void SetInternal(int index, bool value)
 	private protected override int IndexOfInternal(bool item, int index, int count)
 	{
 		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
-		int startRemainder = index % BitsPerInt;
-		int endRemainder = (index + count) % BitsPerInt;
-		if (startIndex == endIndex && startRemainder != 0)
+		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
+		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
+		if (startIndex == endIndex)
+		{
 			for (int i = startRemainder; i < endRemainder; i++)
 				if ((_items[startIndex] & (1 << i)) != 0)
 					return startIndex * BitsPerInt + i;
-		if (startRemainder != 0)
-		{
-			int invRemainder = BitsPerInt - startRemainder;
-			int mask = (1 << invRemainder) - 1;
-			uint first = _items[startIndex - 1] >> startRemainder;
-			if (first != (item ? 0 : mask))
-				for (int i = 0; i < invRemainder; i++)
-					if ((first & (1 << i)) != 0)
-						return index + i;
+			return -1;
 		}
-		for (int i = startIndex; i < endIndex; i++)
+		int invRemainder = BitsPerInt - startRemainder;
+		int mask = (1 << invRemainder) - 1;
+		uint first = _items[startIndex] >> startRemainder;
+		if (first != (item ? 0 : mask))
+			for (int i = 0; i < invRemainder; i++)
+				if ((first & (1 << i)) != 0)
+					return index + i;
+		for (int i = startIndex + 1; i < endIndex; i++)
 			if (_items[i] != fillValue)
 				for (int j = 0; j < BitsPerInt; j++)
 					if ((_items[i] & (1 << j)) != 0)
@@ -1408,32 +681,31 @@ internal override void SetInternal(int index, bool value)
 	private protected override int LastIndexOfInternal(bool item, int index, int count)
 	{
 		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		int startIndex = GetArrayLength(index, BitsPerInt), endIndex = (index + count) / BitsPerInt;
-		int startRemainder = index % BitsPerInt;
-		int endRemainder = (index + count) % BitsPerInt;
-		if (startIndex == endIndex && startRemainder != 0)
+		(int startIndex, int startRemainder) = DivRem(index + 1 - count, BitsPerInt);
+		(int endIndex, int endRemainder) = DivRem(index + 1, BitsPerInt);
+		if (startIndex == endIndex)
+		{
 			for (int i = endRemainder - 1; i >= startRemainder; i--)
 				if ((_items[startIndex] & (1 << i)) != 0)
 					return startIndex * BitsPerInt + i;
+			return -1;
+		}
 		if (endRemainder != 0)
 			for (int i = endRemainder - 1; i >= 0; i--)
 				if ((_items[endIndex] & (1 << i)) != 0)
 					return endIndex * BitsPerInt + i;
-		for (int i = endIndex - 1; i >= startIndex; i--)
+		for (int i = endIndex - 1; i >= startIndex + 1; i--)
 			if (_items[i] != fillValue)
 				for (int j = BitsPerInt; j >= 0; j--)
 					if ((_items[i] & (1 << j)) != 0)
 						return i * BitsPerInt + j;
-		if (startRemainder != 0)
-		{
-			int invRemainder = BitsPerInt - startRemainder;
-			int mask = (1 << invRemainder) - 1;
-			uint first = _items[startIndex - 1] >> startRemainder;
-			if (first != (item ? 0 : mask))
-				for (int i = invRemainder - 1; i >= 0; i--)
-					if ((first & (1 << i)) != 0)
-						return index + i;
-		}
+		int invRemainder = BitsPerInt - startRemainder;
+		int mask = (1 << invRemainder) - 1;
+		uint first = _items[startIndex] >> startRemainder;
+		if (first != (item ? 0 : mask))
+			for (int i = invRemainder - 1; i >= 0; i--)
+				if ((first & (1 << i)) != 0)
+					return index + i;
 		return -1;
 	}
 
@@ -1488,7 +760,6 @@ internal override void SetInternal(int index, bool value)
 
 	public virtual bool IsSynchronized => false;
 }
-#endif
 
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]

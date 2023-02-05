@@ -954,7 +954,13 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			CopyMemory(_items, index, ptr, arrayIndex, count);
 	}
 
-	public override void Dispose() => GC.SuppressFinalize(this);
+	public override void Dispose()
+	{
+		Marshal.FreeHGlobal((IntPtr)_items);
+		_capacity = 0;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{

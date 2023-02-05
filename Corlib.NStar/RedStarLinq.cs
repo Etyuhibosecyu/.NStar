@@ -58405,7 +58405,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58416,7 +58416,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -61580,12 +61580,12 @@ public static class RedStarLinq
 	public static (NList<TSource>, NList<TSource2>, NList<TSource3>) PNBreak<TSource, TSource2, TSource3>(this G.IList<(TSource, TSource2, TSource3)> source) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<TSource>.PBreakEnumerable(source);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<TSource, TResult, TResult2, TResult3>(this G.IList<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<TResult>.PBreakEnumerable(source, function);
-	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
-	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, int, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, TResult> function) where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, Func<TSource, TSource2, int, TResult> function) where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, function);
 	public static NList<(TSource, TSource2)> PNCombine<TSource, TSource2>(this G.IList<TSource> source, G.IList<TSource2> source2) where TSource : unmanaged where TSource2 : unmanaged => NList<(TSource, TSource2)>.CombineEnumerable(source, source2);
-	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
-	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, int, TResult> function) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, TResult> function) where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<TSource, TSource2, TSource3, TResult>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3, Func<TSource, TSource2, TSource3, int, TResult> function) where TResult : unmanaged => NList<TResult>.CombineEnumerable(source, source2, source3, function);
 	public static NList<(TSource, TSource2, TSource3)> PNCombine<TSource, TSource2, TSource3>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<(TSource, TSource2, TSource3)>.CombineEnumerable(source, source2, source3);
-	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
-	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
 }
