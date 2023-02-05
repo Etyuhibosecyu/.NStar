@@ -34,11 +34,11 @@ public class ListTests
 			b.AddRange(defaultCollection);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-			var c = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3));
-			var d = new G.List<string>(list);
-			d.AddRange(defaultCollection.Skip(2).Take(3));
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
+			a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3));
+			b = new G.List<string>(list);
+			b.AddRange(defaultCollection.Skip(2).Take(3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 		catch (Exception ex)
 		{
@@ -132,10 +132,13 @@ public class ListTests
 			var a = new List<string>(list);
 			var b = a.Contains("MMM");
 			Assert.IsTrue(b);
+			b = a.Contains("BBB", 2);
+			Assert.IsTrue(!b);
 			b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
 			Assert.IsTrue(b);
 			b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
 			Assert.IsTrue(!b);
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{
@@ -538,10 +541,19 @@ public class ListTests
 			var a = new List<string>(list);
 			var b = a.IndexOf("MMM");
 			Assert.AreEqual(b, 0);
+			b = a.IndexOf("BBB", 2);
+			Assert.AreEqual(b, -1);
+			b = a.IndexOf("BBB", 1, 2);
+			Assert.AreEqual(b, 1);
 			b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
 			Assert.AreEqual(b, 2);
 			b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
 			Assert.AreEqual(b, -1);
+			b = a.IndexOf(new[] { "MMM", "EEE" }, 4);
+			Assert.AreEqual(b, 4);
+			b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{
@@ -559,8 +571,11 @@ public class ListTests
 			Assert.AreEqual(b, 0);
 			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
 			Assert.AreEqual(b, 2);
+			b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
+			Assert.AreEqual(b, -1);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{
@@ -580,6 +595,7 @@ public class ListTests
 			Assert.AreEqual(b, 0);
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{
@@ -609,6 +625,8 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new List<string>(list).Insert(1000, defaultString));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).Insert(-1, defaultCollection));
+			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(1, null));
+			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(5, (G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{

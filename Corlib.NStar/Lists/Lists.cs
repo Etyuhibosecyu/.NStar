@@ -234,6 +234,10 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (span == null)
+			throw new ArgumentNullException(nameof(span));
 		int count = span.Length;
 		if (count == 0)
 			return this as TCertain ?? throw new InvalidOperationException();
