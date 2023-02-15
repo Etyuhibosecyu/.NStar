@@ -24,14 +24,6 @@ var list = RedStarLinq.Fill(x => random.Next(0, 65536), 100000000);
 //Console.WriteLine(sw.ElapsedMilliseconds);
 //Console.WriteLine(RedStarLinq.Equals(a, b, (x, y) => x.Key == y.Key && RedStarLinq.Equals(x.Value, y.Value, (x, y) => x == y)));
 
-FakeIndAftDelHashList<string> list2 = new() { "a", "b", "c", "c", "b", "a" };
-list2.RemoveValue("b");
-list2.AddRange(list2);
-list2.Add("d");
-list2.RemoveAt(0);
-list2.Insert(4, "e");
-list2.ToArray();
-
 Stopwatch sw = Stopwatch.StartNew();
 var a = E.ToList(E.Where(list, x => x >= 45000));
 sw.Stop();

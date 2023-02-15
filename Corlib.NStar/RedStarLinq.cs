@@ -1813,7 +1813,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<TResult> EmptyListEnumerable<TResult>(int count) => new(count) { _size = count };
+	internal static List<TSource> EmptyListEnumerable<TSource>(int count) => new(count) { _size = count };
 
 	internal static bool EqualsEnumerable<TSource, TSource2>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, bool> function)
 	{
@@ -57591,6 +57591,28 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
+	internal static NList<TSource> EmptyListEnumerable<TSource>(int count) where TSource : unmanaged => new(count) { _size = count };
+
+	internal static NList<TResult> FillEnumerable<TResult>(TResult elem, int count) where TResult : unmanaged
+	{
+		NList<TResult> result = new(count);
+		for (int i = 0; i < count; i++)
+			result._items[i] = elem;
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> FillEnumerable<TResult>(Func<int, TResult> function, int count) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		NList<TResult> result = new(count);
+		for (int i = 0; i < count; i++)
+			result._items[i] = function(i);
+		result._size = count;
+		return result;
+	}
+
 	internal static NList<TSource> FilterEnumerable<TSource>(NList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
 	{
 		if (function == null)
@@ -61542,6 +61564,10 @@ public static class RedStarLinq
 	public static NList<TResult> NConvert<TSource, TResult>(this NList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<TSource, TResult>(this NList<TSource> source, Func<TSource, IEnumerable<TResult>> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertAndJoinEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<TSource, TResult>(this NList<TSource> source, Func<TSource, int, IEnumerable<TResult>> function) where TSource : unmanaged where TResult : unmanaged => NList<TResult>.ConvertAndJoinEnumerable(source, function);
+	public static NList<TSource> NEmptyList<TSource>(int count) where TSource : unmanaged => NList<TSource>.EmptyListEnumerable<TSource>(count);
+	public static NList<TResult> NFill<TResult>(TResult elem, int count) where TResult : unmanaged => NList<TResult>.FillEnumerable(elem, count);
+	public static NList<TResult> NFill<TResult>(Func<int, TResult> function, int count) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, count);
+	public static NList<TResult> NFill<TResult>(int count, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, count);
 	public static NList<TSource> NFilter<TSource>(this NList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.FilterEnumerable(source, function);
 	public static NList<TSource> NFilter<TSource>(this NList<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.FilterEnumerable(source, function);
 	public static NList<TSource> NFindAll<TSource>(this NList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.FindAllEnumerable(source, function);
