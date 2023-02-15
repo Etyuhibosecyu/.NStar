@@ -460,8 +460,6 @@ public class BitList : ListBase<bool, BitList>, ICloneable
 		destination2.Changed();
 	}
 
-	public virtual void Copy2(ListBase<bool, BitList> source, int sourceIndex, ListBase<bool, BitList> destination, int destinationIndex, int count) => Copy(source, sourceIndex, destination, destinationIndex, count);
-
 	private protected override void CopyToInternal(Array array, int index)
 	{
 		if (array.Rank != 1)
