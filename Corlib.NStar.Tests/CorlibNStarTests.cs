@@ -18,7 +18,7 @@ internal static class Global
 }
 
 [TestClass]
-public class CorlibNStarTest
+public class CorlibNStarTests
 {
 	//[TestMethod]
 	//public void ClearTest()

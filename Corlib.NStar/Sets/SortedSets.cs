@@ -34,7 +34,7 @@ public abstract class SortedSetBase<T, TCertain> : SetBase<T, TCertain> where TC
 		return ret >= index && ret < index + count ? ret : -1;
 	}
 
-	internal virtual int IndexOfNotLess(T item)
+	public virtual int IndexOfNotLess(T item)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));

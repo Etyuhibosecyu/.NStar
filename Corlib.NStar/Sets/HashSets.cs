@@ -1663,7 +1663,7 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 		t2.next = 0;
 		t2.item = default!;
 		deleted.TryAdd(index);
-		if (deleted.Length >= Length)
+		if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 			FixUpDeleted();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -1692,7 +1692,7 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 				t2.next = 0;
 				t2.item = default!;
 				deleted.TryAdd(i);
-				if (deleted.Length >= Length)
+				if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 					FixUpDeleted();
 				return true;
 			}
