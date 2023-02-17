@@ -2044,7 +2044,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 
 	public virtual bool IsProperSupersetOf(IEnumerable<T> other) => !SetEquals(other) && IsSupersetOf(other);
 
-	public virtual bool IsSubsetOf(IEnumerable<T> other) => other is ISet<T> set ? set.IsSupersetOf(this) : IsSubsetOf(CollectionCreator(other));
+	public virtual bool IsSubsetOf(IEnumerable<T> other) => (other is ISet<T> set ? set : CollectionCreator(other)).IsSupersetOf(this);
 
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{

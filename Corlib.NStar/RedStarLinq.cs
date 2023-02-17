@@ -1865,7 +1865,7 @@ public partial class List<T, TCertain>
 			bool b, b2 = true;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
@@ -1927,7 +1927,7 @@ public partial class List<T, TCertain>
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
-			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
@@ -1987,7 +1987,7 @@ public partial class List<T, TCertain>
 			bool b, b2 = true;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while ((b = en.MoveNext()) && (b2 = en2.MoveNext()))
+			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
@@ -42420,7 +42420,7 @@ public partial class List<T, TCertain>
 			bool b2 = true;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
@@ -42482,7 +42482,7 @@ public partial class List<T, TCertain>
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
-			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
@@ -42542,7 +42542,7 @@ public partial class List<T, TCertain>
 			bool b2 = true;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while (en.MoveNext() && (b2 = en2.MoveNext()))
+			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;

@@ -483,11 +483,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = freeList;
 		t2.item = default!;
-		entries[index] = t2;
 		freeList = ~index;
 		freeCount++;
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -512,11 +511,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				Entry t2 = entries[i];
+				ref Entry t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
-				entries[i] = t2;
 				freeList = ~i;
 				freeCount++;
 				return true;
@@ -546,11 +544,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			}
 			_size++;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
-		entries[index] = t2;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}
@@ -1115,11 +1112,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = freeList;
 		t2.item = default!;
-		entries[index] = t2;
 		freeList = ~index;
 		freeCount++;
 		return this;
@@ -1144,11 +1140,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				Entry t2 = entries[i];
+				ref Entry t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
-				entries[i] = t2;
 				freeList = ~i;
 				freeCount++;
 				return true;
@@ -1326,11 +1321,10 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 			targetBucket = hashCode % buckets.Length;
 		}
 		_size++;
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
-		entries[index] = t2;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}
@@ -1389,4 +1383,448 @@ public class SlowDeletionHashSet<T> : SlowDeletionHashSet<T, SlowDeletionHashSet
 	private protected override Func<int, SlowDeletionHashSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, SlowDeletionHashSet<T>> CollectionCreator => x => new(x);
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
+{
+	private protected readonly TreeSet<int> deleted = new();
+
+	public TreeHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+
+	public TreeHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+
+	public TreeHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+
+	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity > 0)
+			Initialize(capacity, out buckets, out entries);
+		else
+		{
+			buckets = default!;
+			entries = default!;
+		}
+		Comparer = comparer ?? EqualityComparer<T>.Default;
+	}
+
+	public TreeHashSet(IEnumerable<T> collection) : this(collection, null) { }
+
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
+	}
+
+	public TreeHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+
+	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
+	}
+
+	public TreeHashSet(params T[] array) : this((IEnumerable<T>)array)
+	{
+	}
+
+	public TreeHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	{
+	}
+
+	public TreeHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public override T this[Index index, bool invoke = true]
+	{
+		get
+		{
+			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			if ((uint)index2 >= (uint)entries.Length)
+				throw new IndexOutOfRangeException();
+			return GetInternal(index2, invoke);
+		}
+		set
+		{
+			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			if ((uint)index2 >= (uint)entries.Length)
+				throw new IndexOutOfRangeException();
+			if (entries[index2].item?.Equals(value) ?? false)
+				return;
+			if (Contains(value))
+				throw new ArgumentException(null, nameof(value));
+			SetInternal(index2, value);
+		}
+	}
+
+	public override int Length => _size - deleted.Length;
+
+	public virtual int Size => _size;
+
+	private protected override void ClearInternal()
+	{
+		base.ClearInternal();
+		deleted.Clear();
+	}
+
+	private protected override void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is not T[] array2)
+			throw new ArgumentException(null, nameof(array));
+		CopyToInternal(0, array2, arrayIndex, _size);
+	}
+
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	{
+		int skipped = 0;
+		for (int i = 0; i < index; i++)
+			if (entries[i].hashCode >= 0)
+				skipped++;
+		for (int i = 0; i < count; i++)
+			if (entries[i].hashCode < 0)
+				array[arrayIndex++] = entries[index + i + skipped].item;
+			else
+				count++;
+	}
+
+	public override void Dispose()
+	{
+		deleted.Dispose();
+		base.Dispose();
+		GC.SuppressFinalize(this);
+	}
+
+	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is G.IList<T> list)
+		{
+			if (index > _size - list.Count)
+				throw new ArgumentOutOfRangeException(nameof(index));
+			for (int i = 0; i < list.Count; i++)
+			{
+				while (entries[index].hashCode >= 0)
+					index++;
+				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
+					return false;
+			}
+			return !toEnd || index == _size;
+		}
+		else
+		{
+			if (collection.TryGetCountEasily(out int count) && index > _size - count)
+				throw new ArgumentOutOfRangeException(nameof(index));
+			foreach (T item in collection)
+			{
+				while (entries[index].hashCode >= 0)
+					index++;
+				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
+					return false;
+			}
+			return !toEnd || index == _size;
+		}
+	}
+
+	public override TCertain FilterInPlace(Func<T, bool> match)
+	{
+		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+			if (!match(item))
+				RemoveValue(item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override TCertain FilterInPlace(Func<T, int, bool> match)
+	{
+		int i = 0;
+		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+			if (!match(item, i++))
+				RemoveValue(item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain FixUpDeleted()
+	{
+		int newSize = GetPrime(_size - deleted.Length);
+		int[] newBuckets = new int[newSize];
+		Entry[] newEntries = new Entry[newSize];
+		int skipped = 0;
+		for (int i = 0; i < entries.Length; i++)
+			if (entries[i].hashCode < 0)
+				newEntries[i - skipped] = entries[i];
+			else
+				skipped++;
+		for (int i = 0; i < newSize; i++)
+			if (newEntries[i].hashCode < 0)
+			{
+				int bucket = ~newEntries[i].hashCode % newSize;
+				ref Entry t = ref newEntries[i];
+				t.next = newBuckets[bucket];
+				newBuckets[bucket] = ~i;
+			}
+		_size = newSize;
+		buckets = newBuckets;
+		entries = newEntries;
+		deleted.Clear();
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
+
+	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
+
+	internal override T GetInternal(int index, bool invoke = true) => GetPotential(IndexGetPotential(index));
+
+	private protected virtual T GetPotential(int index) => base.GetInternal(index);
+
+	private protected virtual int IndexGetActual(int potential) => potential - deleted.IndexOfNotLess(potential);
+
+	private protected virtual int IndexGetPotential(int actual) => deleted.NthAbsent(actual);
+
+	private protected override int IndexOfInternal(T item, int index, int count) => IndexGetActual(IndexOfPotential(item, CreateVar(IndexGetPotential(index), out int index2), IndexGetPotential(index + count) - index2));
+
+	private protected virtual int IndexOfPotential(T item, int index, int count) => base.IndexOfInternal(item, index, count);
+
+	private protected override TCertain Insert(T? item, bool add, out int index)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			Initialize(0, out buckets, out entries);
+		if (buckets == null)
+			throw new InvalidOperationException();
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int targetBucket = hashCode % buckets.Length;
+		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (add)
+					throw new ArgumentException(null);
+				index = i;
+				return this as TCertain ?? throw new InvalidOperationException();
+			}
+		if (deleted.Length > 0)
+		{
+			index = deleted.GetAndRemove(^1);
+		}
+		else
+		{
+			if (_size == entries.Length)
+			{
+				Resize();
+				targetBucket = hashCode % buckets.Length;
+			}
+			index = _size;
+			_size++;
+		}
+		ref Entry t = ref entries[index];
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
+		buckets[targetBucket] = ~index;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override TCertain RemoveAt(int index)
+	{
+		if (buckets == null || entries == null)
+			return this as TCertain ?? throw new InvalidOperationException();
+		if (entries[index].item == null)
+			return this as TCertain ?? throw new InvalidOperationException();
+		int hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		if (bucket != index)
+		{
+			ref Entry t = ref entries[bucket];
+			t.next = entries[index].next;
+		}
+		ref Entry t2 = ref entries[index];
+		t2.hashCode = 0;
+		t2.next = 0;
+		t2.item = default!;
+		deleted.TryAdd(index);
+		if (deleted.Length >= Length)
+			FixUpDeleted();
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override bool RemoveValue(T? item)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			return false;
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		int last = 0;
+		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (last < 0)
+					buckets[bucket] = entries[i].next;
+				else
+				{
+					ref Entry t = ref entries[last];
+					t.next = entries[i].next;
+				}
+				ref Entry t2 = ref entries[i];
+				t2.hashCode = 0;
+				t2.next = 0;
+				t2.item = default!;
+				deleted.TryAdd(i);
+				if (deleted.Length >= Length)
+					FixUpDeleted();
+				return true;
+			}
+		return false;
+	}
+
+	internal override void SetInternal(int index, T item) => SetPotential(IndexGetPotential(index), item);
+
+	internal virtual void SetPotential(int index, T item)
+	{
+		if (entries[index].item != null)
+			RemoveAt(index);
+		if (item == null)
+			return;
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int targetBucket = hashCode % buckets.Length;
+		if (deleted.Length > 0 && deleted.RemoveValue(index))
+		{
+		}
+		else
+		{
+			if (_size == entries.Length)
+			{
+				Resize();
+				targetBucket = hashCode % buckets.Length;
+			}
+			_size++;
+		}
+		ref Entry t2 = ref entries[index];
+		t2.hashCode = ~hashCode;
+		t2.next = buckets[targetBucket];
+		t2.item = item;
+		buckets[targetBucket] = ~index;
+		Changed();
+	}
+
+	public new struct Enumerator : IEnumerator<T>
+	{
+		private readonly TreeHashSet<T, TCertain> dictionary;
+		private int index;
+
+		internal Enumerator(TreeHashSet<T, TCertain> dictionary)
+		{
+			this.dictionary = dictionary;
+			index = 0;
+			Current = default!;
+		}
+
+		public bool MoveNext()
+		{
+			while ((uint)index < (uint)dictionary.entries.Length)
+			{
+				if (dictionary.entries[index].hashCode < 0)
+				{
+					Current = dictionary.entries[index].item;
+					index++;
+					return true;
+				}
+				index++;
+			}
+			index = dictionary._size + 1;
+			Current = default!;
+			return false;
+		}
+
+		public T Current { get; private set; }
+
+		object? IEnumerator.Current => Current;
+
+		public void Dispose()
+		{
+		}
+
+		void IEnumerator.Reset()
+		{
+			index = 0;
+			Current = default!;
+		}
+	}
+}
+
+public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
+{
+	public TreeHashSet()
+	{
+	}
+
+	public TreeHashSet(int capacity) : base(capacity)
+	{
+	}
+
+	public TreeHashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	{
+	}
+
+	public TreeHashSet(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	public TreeHashSet(params T[] array) : base(array)
+	{
+	}
+
+	public TreeHashSet(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	{
+	}
+
+	public TreeHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	public TreeHashSet(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	{
+	}
+
+	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	{
+	}
+
+	private protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, TreeHashSet<T>> CollectionCreator => x => new(x);
 }

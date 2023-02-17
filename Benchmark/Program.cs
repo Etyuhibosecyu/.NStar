@@ -8,6 +8,8 @@ global using System.Threading;
 global using System.Threading.Tasks;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
 using System.Diagnostics;
 
 // See https://aka.ms/new-console-template for more information
