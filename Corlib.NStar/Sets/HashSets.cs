@@ -60,6 +60,27 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		Changed();
 	}
 
+	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	{
+		if (source is not TCertain source2 || destination is not TCertain destination2)
+			throw new InvalidOperationException();
+		if (source != destination || sourceIndex >= destinationIndex)
+			for (int i = 0; i < count; i++)
+				CopyOne(sourceIndex + i, destinationIndex + i, source2, destination2);
+		else
+			for (int i = count - 1; i >= 0; i--)
+				CopyOne(sourceIndex + i, destinationIndex + i, source2, destination2);
+		destination2.Changed();
+	}
+
+	private static void CopyOne(int sourceIndex, int destinationIndex, TCertain source2, TCertain destination2)
+	{
+		int hashCode = ~source2.entries[sourceIndex].hashCode;
+		int targetBucket = hashCode % destination2.buckets.Length;
+		destination2.entries[destinationIndex] = source2.entries[sourceIndex];
+		destination2.buckets[targetBucket] = ~destinationIndex;
+	}
+
 	public override void Dispose()
 	{
 		buckets = default!;
@@ -179,6 +200,17 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		entries = newEntries;
 	}
 
+	private protected virtual void SetNull(int index)
+	{
+		ref Entry t = ref entries[index];
+		int targetBucket = ~t.hashCode % buckets.Length;
+		t.hashCode = 0;
+		t.next = 0;
+		t.item = default!;
+		if (buckets[targetBucket] == ~index)
+			buckets[targetBucket] = 0;
+	}
+
 	public override bool TryAdd(T item, out int index)
 	{
 		index = IndexOf(item);
@@ -296,7 +328,9 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 				throw new IndexOutOfRangeException();
 			if (entries[index2].item?.Equals(value) ?? false)
 				return;
-			if (Contains(value))
+			if (CreateVar(IndexOf(value), out int foundIndex) == index2)
+				return;
+			else if (foundIndex != -1)
 				throw new ArgumentException(null, nameof(value));
 			SetInternal(index2, value);
 		}
@@ -1258,6 +1292,24 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 	{
 	}
 
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			if ((uint)index2 >= (uint)entries.Length)
+				throw new IndexOutOfRangeException();
+			if (entries[index2].item?.Equals(value) ?? false)
+				return;
+			if (CreateVar(IndexOf(value), out int foundIndex) == index2)
+				return;
+			else if (foundIndex != -1)
+				throw new ArgumentException(null, nameof(value));
+			SetInternal(index2, value);
+		}
+	}
+
 	private protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
@@ -1304,27 +1356,34 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	public override TCertain RemoveAt(int index)
+	{
+		if ((uint)index >= (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		_size--;
+		if (index < _size)
+			Copy(this, index + 1, this, index, _size - index);
+		SetNull(_size);
+		Changed();
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
 	internal override void SetInternal(int index, T item)
 	{
-		try
-		{
-			throw new ExperimentalException();
-		}
-		catch
-		{
-		}
+		//try
+		//{
+		//	throw new ExperimentalException();
+		//}
+		//catch
+		//{
+		//}
+		SetNull(index);
 		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
-		if (_size == entries.Length)
-		{
-			Resize();
-			targetBucket = hashCode % buckets.Length;
-		}
-		_size++;
-		ref Entry t2 = ref entries[index];
-		t2.hashCode = ~hashCode;
-		t2.next = buckets[targetBucket];
-		t2.item = item;
+		ref Entry t = ref entries[index];
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}
