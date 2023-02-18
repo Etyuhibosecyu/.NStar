@@ -326,11 +326,9 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? false)
+			if (entries[index2].item?.Equals(value) ?? value == null)
 				return;
-			if (CreateVar(IndexOf(value), out int foundIndex) == index2)
-				return;
-			else if (foundIndex != -1)
+			if (Contains(value))
 				throw new ArgumentException(null, nameof(value));
 			SetInternal(index2, value);
 		}
@@ -578,10 +576,13 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			}
 			_size++;
 		}
-		ref Entry t2 = ref entries[index];
-		t2.hashCode = ~hashCode;
-		t2.next = buckets[targetBucket];
-		t2.item = item;
+		ref Entry t = ref entries[index];
+		int oldBucket = ~t.hashCode % buckets.Length;
+		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
+			buckets[oldBucket] = 0;
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}
@@ -646,7 +647,7 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 /// </summary>
 public class FakeIndAftDelHashSet<T> : FakeIndAftDelHashSet<T, FakeIndAftDelHashSet<T>>
 {
-	public FakeIndAftDelHashSet()
+	public FakeIndAftDelHashSet() : base()
 	{
 	}
 
@@ -706,7 +707,7 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 {
 	private protected readonly object lockObj = new();
 
-	public ParallelHashSet()
+	public ParallelHashSet() : base()
 	{
 	}
 
@@ -1300,11 +1301,9 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? false)
+			if (entries[index2].item?.Equals(value) ?? value == null)
 				return;
-			if (CreateVar(IndexOf(value), out int foundIndex) == index2)
-				return;
-			else if (foundIndex != -1)
+			if (Contains(value))
 				throw new ArgumentException(null, nameof(value));
 			SetInternal(index2, value);
 		}
@@ -1377,10 +1376,12 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 		//catch
 		//{
 		//}
-		SetNull(index);
 		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		ref Entry t = ref entries[index];
+		int oldBucket = ~t.hashCode % buckets.Length;
+		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
+			buckets[oldBucket] = 0;
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -1391,7 +1392,7 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 
 public class SlowDeletionHashSet<T> : SlowDeletionHashSet<T, SlowDeletionHashSet<T>>
 {
-	public SlowDeletionHashSet()
+	public SlowDeletionHashSet() : base()
 	{
 	}
 
@@ -1521,7 +1522,7 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? false)
+			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value == null)
 				return;
 			if (Contains(value))
 				throw new ArgumentException(null, nameof(value));
@@ -1652,17 +1653,17 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	internal override T GetInternal(int index, bool invoke = true) => GetPotential(IndexGetPotential(index));
+	internal override T GetInternal(int index, bool invoke = true) => GetDirect(IndexGetDirect(index));
 
-	private protected virtual T GetPotential(int index) => base.GetInternal(index);
+	private protected virtual T GetDirect(int index) => base.GetInternal(index);
 
-	private protected virtual int IndexGetActual(int potential) => potential - deleted.IndexOfNotLess(potential);
+	private protected virtual int IndexGetActual(int direct) => direct - deleted.IndexOfNotLess(direct);
 
-	private protected virtual int IndexGetPotential(int actual) => deleted.NthAbsent(actual);
+	private protected virtual int IndexGetDirect(int actual) => deleted.NthAbsent(actual);
 
-	private protected override int IndexOfInternal(T item, int index, int count) => IndexGetActual(IndexOfPotential(item, CreateVar(IndexGetPotential(index), out int index2), IndexGetPotential(index + count) - index2));
+	private protected override int IndexOfInternal(T item, int index, int count) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out int index2), IndexGetDirect(index + count) - index2));
 
-	private protected virtual int IndexOfPotential(T item, int index, int count) => base.IndexOfInternal(item, index, count);
+	private protected virtual int IndexOfDirect(T item, int index, int count) => base.IndexOfInternal(item, index, count);
 
 	private protected override TCertain Insert(T? item, bool add, out int index)
 	{
@@ -1758,9 +1759,9 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 		return false;
 	}
 
-	internal override void SetInternal(int index, T item) => SetPotential(IndexGetPotential(index), item);
+	internal override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item);
 
-	internal virtual void SetPotential(int index, T item)
+	internal virtual void SetDirect(int index, T item)
 	{
 		if (entries[index].item != null)
 			RemoveAt(index);
@@ -1780,10 +1781,13 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 			}
 			_size++;
 		}
-		ref Entry t2 = ref entries[index];
-		t2.hashCode = ~hashCode;
-		t2.next = buckets[targetBucket];
-		t2.item = item;
+		ref Entry t = ref entries[index];
+		int oldBucket = ~t.hashCode % buckets.Length;
+		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
+			buckets[oldBucket] = 0;
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}
@@ -1835,7 +1839,7 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 
 public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 {
-	public TreeHashSet()
+	public TreeHashSet() : base()
 	{
 	}
 

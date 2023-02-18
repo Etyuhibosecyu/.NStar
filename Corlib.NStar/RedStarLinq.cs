@@ -20319,7 +20319,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new();
+		SlowDeletionHashSet<TResult> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20329,13 +20329,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20349,13 +20346,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20370,13 +20364,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20390,13 +20381,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20409,7 +20397,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new();
+		SlowDeletionHashSet<TResult> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20419,13 +20407,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20439,13 +20424,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20460,13 +20442,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20480,13 +20459,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20497,7 +20473,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new();
+		SlowDeletionHashSet<TSource> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20507,13 +20483,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20527,13 +20500,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20548,13 +20518,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20568,13 +20535,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20587,7 +20551,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20597,13 +20561,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20617,13 +20578,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20638,13 +20596,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20658,13 +20613,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20677,7 +20629,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20687,13 +20639,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20707,13 +20656,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20728,13 +20674,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20748,13 +20691,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20765,7 +20705,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(comparer);
+		SlowDeletionHashSet<TSource> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20775,13 +20715,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20795,13 +20732,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20816,13 +20750,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20836,13 +20767,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20855,7 +20783,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20865,13 +20793,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20885,13 +20810,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20906,13 +20828,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20926,13 +20845,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -20945,7 +20861,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -20955,13 +20871,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20975,13 +20888,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -20996,13 +20906,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21016,13 +20923,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21033,7 +20937,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21043,13 +20947,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21063,13 +20964,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21084,13 +20982,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21104,13 +20999,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21123,7 +21015,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21133,13 +21025,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21153,13 +21042,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21174,13 +21060,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21194,13 +21077,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21213,7 +21093,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21223,13 +21103,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21243,13 +21120,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21264,13 +21138,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21284,13 +21155,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21301,7 +21169,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21311,13 +21179,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21331,13 +21196,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21352,13 +21214,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21372,13 +21231,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value] = (f, result._items[value].Count + 1);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index] = (f, result._items[index].Count + 1);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = (f, 1);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21391,7 +21247,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new();
+		SlowDeletionHashSet<TResult> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21401,13 +21257,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
+				if (!dic.TryAdd(f = function(item), out int value))
 					result._items[value].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21421,13 +21274,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
+				if (!dic.TryAdd(f = function(item), out int value))
 					result._items[value].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21442,13 +21292,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
+				if (!dic.TryAdd(f = function(item), out int value))
 					result._items[value].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21462,13 +21309,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
+				if (!dic.TryAdd(f = function(item), out int value))
 					result._items[value].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21481,7 +21325,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new();
+		SlowDeletionHashSet<TResult> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21491,13 +21335,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21511,13 +21352,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21532,13 +21370,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21552,13 +21387,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21569,7 +21401,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new();
+		SlowDeletionHashSet<TSource> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21579,13 +21411,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21599,13 +21428,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21620,13 +21446,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21640,13 +21463,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21659,7 +21479,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21669,13 +21489,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21689,13 +21506,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21710,13 +21524,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21730,13 +21541,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21749,7 +21557,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21759,13 +21567,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21779,13 +21584,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21800,13 +21602,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21820,13 +21619,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21837,7 +21633,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(comparer);
+		SlowDeletionHashSet<TSource> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21847,13 +21643,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21867,13 +21660,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21888,13 +21678,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21908,13 +21695,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -21927,7 +21711,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -21937,13 +21721,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21957,13 +21738,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21978,13 +21756,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -21998,13 +21773,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -22017,7 +21789,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -22027,13 +21799,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22047,13 +21816,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22068,13 +21834,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22088,13 +21851,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -22105,7 +21865,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -22115,13 +21875,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22135,13 +21892,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22156,13 +21910,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22176,13 +21927,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -22195,7 +21943,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -22205,13 +21953,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22225,13 +21970,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22246,13 +21988,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22266,13 +22005,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -22285,7 +22021,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -22295,13 +22031,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22315,13 +22048,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22336,13 +22066,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22356,13 +22083,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = function(item, i), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -22373,7 +22097,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -22383,13 +22107,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22403,13 +22124,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22424,13 +22142,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -22444,13 +22159,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(f = item, out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(item);
 				else
-				{
-					dic.Add(f, j);
 					result._items[j++] = new((List<TSource>)item, f);
-				}
 				i++;
 			}
 			result._size = j;
@@ -41799,7 +41511,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new();
+		SlowDeletionHashSet<TSource> dic = new();
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -41808,10 +41520,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41823,10 +41535,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = array.Length;
 			return result;
@@ -41839,10 +41551,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41854,10 +41566,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 				i++;
 			}
 			result._size = i;
@@ -41867,7 +41579,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(comparer);
+		SlowDeletionHashSet<TSource> dic = new(comparer);
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -41876,10 +41588,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41891,10 +41603,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = array.Length;
 			return result;
@@ -41907,10 +41619,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41922,10 +41634,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 				i++;
 			}
 			result._size = i;
@@ -41935,7 +41647,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -41944,10 +41656,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41959,10 +41671,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = array.Length;
 			return result;
@@ -41975,10 +41687,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -41990,10 +41702,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 				i++;
 			}
 			result._size = i;
@@ -42003,7 +41715,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		if (source is List<TSource> list)
 		{
 			int count = list._size;
@@ -42012,10 +41724,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -42027,10 +41739,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = array.Length;
 			return result;
@@ -42043,10 +41755,10 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 			}
 			result._size = count;
 			return result;
@@ -42058,10 +41770,10 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (dic.TryGetValue(item, out int value))
-					result._items[i] = value;
+				if (!dic.TryAdd(item, out int index))
+					result._items[i] = index;
 				else
-					dic.Add(item, result._items[i] = j++);
+					result._items[i] = j++;
 				i++;
 			}
 			result._size = i;
@@ -49523,20 +49235,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(EqualityComparer<TResult>.Default);
+		SlowDeletionHashSet<TResult> dic = new();
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i]), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i]), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49547,20 +49256,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(EqualityComparer<TResult>.Default);
+		SlowDeletionHashSet<TResult> dic = new();
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i], i), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i], i), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49569,20 +49275,17 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(ReadOnlySpan<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(EqualityComparer<TSource>.Default);
+		SlowDeletionHashSet<TSource> dic = new();
 		int count = source.Length;
 		List<(TSource Key, int Count)> result = new(count);
 		int j = 0;
 		TSource f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = source[i], out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = source[i], out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49593,20 +49296,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i]), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i]), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49617,20 +49317,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i], i), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i], i), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49639,20 +49336,17 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		int count = source.Length;
 		List<(TSource Key, int Count)> result = new(count);
 		int j = 0;
 		TSource f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = source[i], out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = source[i], out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49663,20 +49357,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i]), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i]), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49687,20 +49378,17 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<(TResult Key, int Count)> result = new(count);
 		int j = 0;
 		TResult f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = function(source[i], i), out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = function(source[i], i), out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49709,20 +49397,17 @@ public partial class List<T, TCertain>
 
 	internal static List<(TSource Key, int Count)> FrequencyTableEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<(TSource Key, int Count)> result = new(count);
 		int j = 0;
 		TSource f;
 		for (int i = 0; i < count; i++)
 		{
-			if (dic.TryGetValue(f = source[i], out int value))
-				result._items[value].Count++;
+			if (!dic.TryAdd(f = source[i], out int index))
+				result._items[index].Count++;
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = (f, 1);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49733,7 +49418,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(EqualityComparer<TResult>.Default);
+		SlowDeletionHashSet<TResult> dic = new();
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49741,13 +49426,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49758,7 +49440,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(EqualityComparer<TResult>.Default);
+		SlowDeletionHashSet<TResult> dic = new();
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49766,13 +49448,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item, i), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49781,7 +49460,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(ReadOnlySpan<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(EqualityComparer<TSource>.Default);
+		SlowDeletionHashSet<TSource> dic = new();
 		int count = source.Length;
 		List<Group<TSource, TSource>> result = new(count);
 		int j = 0;
@@ -49789,13 +49468,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = item, out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49806,7 +49482,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49814,13 +49490,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49831,7 +49504,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(comparer);
+		SlowDeletionHashSet<TResult> dic = new(comparer);
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49839,13 +49512,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item, i), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49854,7 +49524,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(ReadOnlySpan<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(comparer);
+		SlowDeletionHashSet<TSource> dic = new(comparer);
 		int count = source.Length;
 		List<Group<TSource, TSource>> result = new(count);
 		int j = 0;
@@ -49862,13 +49532,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = item, out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49879,7 +49546,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49887,13 +49554,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49904,7 +49568,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49912,13 +49576,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item, i), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49927,7 +49588,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		int count = source.Length;
 		List<Group<TSource, TSource>> result = new(count);
 		int j = 0;
@@ -49935,13 +49596,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = item, out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49952,7 +49610,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49960,13 +49618,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49977,7 +49632,7 @@ public partial class List<T, TCertain>
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		Dictionary<TResult, int> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<Group<TSource, TResult>> result = new(count);
 		int j = 0;
@@ -49985,13 +49640,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = function(item, i), out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -50000,7 +49652,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<TSource, TSource>> GroupEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<Group<TSource, TSource>> result = new(count);
 		int j = 0;
@@ -50008,13 +49660,10 @@ public partial class List<T, TCertain>
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(f = item, out int value))
-				result._items[value].Add(item);
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(item);
 			else
-			{
-				dic.Add(f, j);
 				result._items[j++] = new((List<TSource>)item, f);
-			}
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -55048,17 +54697,17 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(ReadOnlySpan<TSource> source) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(EqualityComparer<TSource>.Default);
+		SlowDeletionHashSet<TSource> dic = new();
 		int count = source.Length;
 		List<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;
@@ -55066,17 +54715,17 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		int count = source.Length;
 		List<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;
@@ -55084,17 +54733,17 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source.Length;
 		List<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;
@@ -57913,17 +57562,17 @@ public unsafe partial class NList<T>
 
 	internal static NList<int> RepresentIntoNumbersEnumerable<TSource>(NList<TSource> source) where TSource : unmanaged
 	{
-		Dictionary<TSource, int> dic = new(EqualityComparer<TSource>.Default);
+		SlowDeletionHashSet<TSource> dic = new();
 		int count = source._size;
 		NList<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;
@@ -57931,17 +57580,17 @@ public unsafe partial class NList<T>
 
 	internal static NList<int> RepresentIntoNumbersEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : unmanaged
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
 		int count = source._size;
 		NList<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;
@@ -57949,17 +57598,17 @@ public unsafe partial class NList<T>
 
 	internal static NList<int> RepresentIntoNumbersEnumerable<TSource>(NList<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : unmanaged
 	{
-		Dictionary<TSource, int> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
 		int count = source._size;
 		NList<int> result = new(count);
 		int j = 0;
 		for (int i = 0; i < count; i++)
 		{
 			TSource item = source._items[i];
-			if (dic.TryGetValue(item, out int value))
-				result._items[i] = value;
+			if (!dic.TryAdd(item, out int index))
+				result._items[i] = index;
 			else
-				dic.Add(item, result._items[i] = j++);
+				result._items[i] = j++;
 		}
 		result._size = count;
 		return result;

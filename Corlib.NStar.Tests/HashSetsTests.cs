@@ -137,8 +137,7 @@ public class SlowDeletionHashSetTests
 			}
 			Assert.IsTrue(shs.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(shs));
-			shs = new(shs.Sort(x => x));
-			G.List<int> list = new(gs.Sort(x => x));
+			G.List<int> list = new(shs);
 			for (int i = 0; i < 10; i++)
 			{
 				int n = random.Next(shs.Length);
@@ -201,6 +200,20 @@ public class TreeHashSetTests
 				ths.Add(n);
 				gs.Add(n);
 			}
+			Assert.IsTrue(ths.SetEquals(gs));
+			Assert.IsTrue(gs.SetEquals(ths));
+			G.List<int> list = new(ths);
+			for (int i = 0; i < 10; i++)
+			{
+				int n = random.Next(ths.Length);
+				int n2 = random.Next(16);
+				if (CreateVar(ths.IndexOf(n2), out int foundIndex) == n || foundIndex == -1)
+				{
+					ths[n] = n2;
+					list[n] = n2;
+				}
+			}
+			gs = new(list);
 			Assert.IsTrue(ths.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(ths));
 			for (int i = 0; i < 100; i++)

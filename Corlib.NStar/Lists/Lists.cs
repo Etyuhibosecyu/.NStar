@@ -520,7 +520,7 @@ public class List<T> : List<T, List<T>>
 [Serializable]
 public class String : List<char, String>
 {
-	public String()
+	public String() : base()
 	{
 	}
 

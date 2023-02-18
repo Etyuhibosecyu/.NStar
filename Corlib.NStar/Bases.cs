@@ -324,7 +324,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
 
-	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, _size);
+	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, Length);
 
 	public virtual void CopyTo(int index, T[] array, int arrayIndex, int count)
 	{

@@ -813,7 +813,7 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 /// </summary>
 public class FakeIndAftDelHashList<T> : FakeIndAftDelHashList<T, FakeIndAftDelHashList<T>>
 {
-	public FakeIndAftDelHashList()
+	public FakeIndAftDelHashList() : base()
 	{
 	}
 
@@ -993,7 +993,7 @@ public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCerta
 
 public class SlowDeletionHashList<T> : SlowDeletionHashList<T, SlowDeletionHashList<T>>
 {
-	public SlowDeletionHashList()
+	public SlowDeletionHashList() : base()
 	{
 	}
 
