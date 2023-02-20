@@ -114,6 +114,80 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual Span<T> AsSpan(Range range) => AsSpan()[range];
 
+	public virtual TCertain BreakFilter(Func<T, bool> match, out TCertain result2)
+	{
+		TCertain result = CapacityCreator(_size / 2);
+		result2 = CapacityCreator(_size / 2);
+		for (int i = 0; i < _size; i++)
+		{
+			T item = GetInternal(i);
+			if (match(item))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		if (result._size < _size * 0.8)
+			result.TrimExcess();
+		return result;
+	}
+
+	public virtual TCertain BreakFilter(Func<T, int, bool> match, out TCertain result2)
+	{
+		TCertain result = CapacityCreator(_size / 2);
+		result2 = CapacityCreator(_size / 2);
+		for (int i = 0; i < _size; i++)
+		{
+			T item = GetInternal(i);
+			if (match(item, i))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		if (result._size < _size * 0.8)
+			result.TrimExcess();
+		return result;
+	}
+
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, bool> match) => (BreakFilter(match, out TCertain result2), result2);
+
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out TCertain result2), result2);
+
+	public virtual TCertain BreakFilterInPlace(Func<T, bool> match, out TCertain result2)
+	{
+		result2 = CapacityCreator(_size / 2);
+		int targetIndex = 0;
+		for (int i = 0; i < _size; i++)
+		{
+			T item = GetInternal(i);
+			if (match(item) && i != targetIndex++)
+				SetInternal(targetIndex - 1, item);
+			else
+				result2.Add(item);
+		}
+		_size = targetIndex;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain BreakFilterInPlace(Func<T, int, bool> match, out TCertain result2)
+	{
+		result2 = CapacityCreator(_size / 2);
+		int targetIndex = 0;
+		for (int i = 0; i < _size; i++)
+		{
+			T item = GetInternal(i);
+			if (match(item, i) && i != targetIndex++)
+				SetInternal(targetIndex - 1, item);
+			else
+				result2.Add(item);
+		}
+		_size = targetIndex;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out TCertain result2), result2);
+
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out TCertain result2), result2);
+
 	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 
 	public virtual void Clear()
@@ -428,7 +502,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
-		TCertain result = CapacityCreator(_size);
+		TCertain result = CapacityCreator(_size / 2);
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
@@ -442,7 +516,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, int, bool> match)
 	{
-		TCertain result = CapacityCreator(_size);
+		TCertain result = CapacityCreator(_size / 2);
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);

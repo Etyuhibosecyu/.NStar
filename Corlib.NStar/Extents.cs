@@ -941,4 +941,28 @@ public static unsafe partial class Extents
 		n = (n >> 16) & 0x0000ffff | (n << 16) & 0xffff0000;
 		return n;
 	}
+
+	public static T[] Sort<T>(this T[] source)
+	{
+		Array.Sort(source);
+		return source;
+	}
+
+	public static T[] Sort<T>(this T[] source, IComparer<T> comparer)
+	{
+		Array.Sort(source, comparer);
+		return source;
+	}
+
+	public static T[] Sort<T>(this T[] source, int index, int length)
+	{
+		Array.Sort(source, index, length);
+		return source;
+	}
+
+	public static T[] Sort<T>(this T[] source, int index, int length, IComparer<T> comparer)
+	{
+		Array.Sort(source, index, length, comparer);
+		return source;
+	}
 }
