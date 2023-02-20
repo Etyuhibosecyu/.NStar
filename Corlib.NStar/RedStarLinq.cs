@@ -901,6 +901,152 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static List<TSource> BreakFilterEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function, out List<TSource> result2)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<TSource> result = new(count / 2);
+			result2 = new(count / 2);
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (function(item))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<TSource> result = new(array.Length / 2);
+			result2 = new(array.Length / 2);
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (function(item))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<TSource> result = new(count / 2);
+			result2 = new(count / 2);
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (function(item))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
+			result2 = new(count / 2);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (function(item))
+					result.Add(item);
+				else
+					result2.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<TSource> BreakFilterEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<TSource> result = new(count / 2);
+			result2 = new(count / 2);
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (function(item, i))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<TSource> result = new(array.Length / 2);
+			result2 = new(array.Length / 2);
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (function(item, i))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<TSource> result = new(count / 2);
+			result2 = new(count / 2);
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (function(item, i))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count / 2 : 0);
+			result2 = new(count / 2);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (function(item, i))
+					result.Add(item);
+				else
+					result2.Add(item);
+				i++;
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
+	}
+
 	internal static List<TResult> CombineEnumerable<TSource, TSource2, TResult>(IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, TResult> function)
 	{
 		if (function == null)
@@ -1862,7 +2008,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b, b2 = true;
+			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
@@ -1923,7 +2069,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b, b2 = true;
+			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
@@ -1984,7 +2130,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b, b2 = true;
+			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
@@ -43057,7 +43203,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b2 = true;
+			bool b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
@@ -43118,7 +43264,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b2 = true;
+			bool b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
@@ -43179,7 +43325,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b2 = true;
+			bool b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
@@ -44591,6 +44737,46 @@ public partial class List<T, TCertain>
 		result2._size = count;
 		result3._size = count;
 		return (result, result2, result3);
+	}
+
+	internal static List<TSource> BreakFilterEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, bool> function, out List<TSource> result2)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Length;
+		List<TSource> result = new(count / 2);
+		result2 = new(count / 2);
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (function(item))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		result.TrimExcess();
+		result2.TrimExcess();
+		return result;
+	}
+
+	internal static List<TSource> BreakFilterEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Length;
+		List<TSource> result = new(count / 2);
+		result2 = new(count / 2);
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (function(item, i))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		result.TrimExcess();
+		result2.TrimExcess();
+		return result;
 	}
 
 	internal static List<TResult> CombineEnumerable<TSource, TSource2, TResult>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, TResult> function)
@@ -50592,6 +50778,262 @@ public partial class List<T, TCertain>
 				result._items[index].Add(item);
 			else
 				result._items[j++] = new((List<TSource>)item, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new();
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new();
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(ReadOnlySpan<TSource> source) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new();
+		int count = source.Length;
+		List<Group<int, TSource>> result = new(count);
+		int j = 0;
+		TSource f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(comparer);
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(comparer);
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(ReadOnlySpan<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(comparer);
+		int count = source.Length;
+		List<Group<int, TSource>> result = new(count);
+		int j = 0;
+		TSource f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
+		int count = source.Length;
+		List<Group<int, TSource>> result = new(count);
+		int j = 0;
+		TSource f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		int count = source.Length;
+		List<Group<int, TResult>> result = new(count);
+		int j = 0;
+		TResult f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = function(item, i), out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
+		}
+		result._size = j;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		int count = source.Length;
+		List<Group<int, TSource>> result = new(count);
+		int j = 0;
+		TSource f;
+		for (int i = 0; i < count; i++)
+		{
+			TSource item = source[i];
+			if (!dic.TryAdd(f = item, out int index))
+				result._items[index].Add(i);
+			else
+				result._items[j++] = new((List<int>)i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -59082,6 +59524,10 @@ public static class RedStarLinq
 	public static (List<TSource>, List<TSource2>, List<TSource3>) Break<TSource, TSource2, TSource3>(this IEnumerable<(TSource, TSource2, TSource3)> source) => List<TSource>.BreakEnumerable(source);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this IEnumerable<TSource> source, Func<TSource, (TResult, TResult2, TResult3)> function) => List<TSource>.BreakEnumerable(source, function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this IEnumerable<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) => List<TSource>.BreakEnumerable(source, function);
+	public static List<TSource> BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<(TSource, TSource2)> Combine<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2) => List<(TSource, TSource2)>.CombineEnumerable(source, source2);
@@ -60066,6 +60512,18 @@ public static class RedStarLinq
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this Span<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) => List<TResult>.BreakEnumerable((ReadOnlySpan<TSource>)source, function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this TSource[] source, Func<TSource, (TResult, TResult2, TResult3)> function) => List<TResult>.BreakEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this TSource[] source, Func<TSource, int, (TResult, TResult2, TResult3)> function) => List<TResult>.BreakEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static List<TSource> BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this Span<TSource> source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this Span<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this TSource[] source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out result2);
+	public static List<TSource> BreakFilter<TSource>(this TSource[] source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out List<TSource> result2), result2);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, int, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this Span<TSource> source, Span<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2, function);
@@ -61062,6 +61520,42 @@ public static class RedStarLinq
 	public static List<Group<TSource, TSource>> Group<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<Group<TSource, TSource>> Group<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupEnumerable((ReadOnlySpan<TSource>)source, equalFunction, hashCodeFunction);
 	public static List<Group<TSource, TSource>> Group<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this ReadOnlySpan<TSource> source) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this Span<TSource> source) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this TSource[] source) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan());
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, comparer);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this ReadOnlySpan<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, comparer);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this Span<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, comparer);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this TSource[] source, IEqualityComparer<TSource> comparer) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, equalFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, equalFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this TSource[] source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, equalFunction, hashCodeFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this Span<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source, equalFunction, hashCodeFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this TSource[] source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), equalFunction, hashCodeFunction);
 	public static List<int> IndexesOf<TSource>(this ReadOnlySpan<TSource> source, TSource target) => List<int>.IndexesOfEnumerable(source, target);
 	public static List<int> IndexesOf<TSource>(this Span<TSource> source, TSource target) => List<int>.IndexesOfEnumerable((ReadOnlySpan<TSource>)source, target);
 	public static List<int> IndexesOf<TSource>(this TSource[] source, TSource target) => List<int>.IndexesOfEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), target);
