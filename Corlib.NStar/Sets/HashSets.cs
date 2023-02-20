@@ -56,7 +56,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 	private protected override void ClearInternal(int index, int count)
 	{
 		for (int i = 0; i < count; i++)
-			RemoveValue(GetInternal(index + i));
+			SetNull(index + i);
 		Changed();
 	}
 
@@ -203,12 +203,14 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 	private protected virtual void SetNull(int index)
 	{
 		ref Entry t = ref entries[index];
-		int targetBucket = ~t.hashCode % buckets.Length;
+		if (t.hashCode >= 0)
+			return;
+		int bucket = ~t.hashCode % buckets.Length;
 		t.hashCode = 0;
 		t.next = 0;
 		t.item = default!;
-		if (buckets[targetBucket] == ~index)
-			buckets[targetBucket] = 0;
+		if (buckets[bucket] == ~index)
+			buckets[bucket] = entries[index].next;
 	}
 
 	public override bool TryAdd(T item, out int index)
@@ -1377,15 +1379,15 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 		//{
 		//}
 		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
+		int bucket = hashCode % buckets.Length;
 		ref Entry t = ref entries[index];
 		int oldBucket = ~t.hashCode % buckets.Length;
 		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
-			buckets[oldBucket] = 0;
+			buckets[oldBucket] = entries[index].next;
 		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
+		t.next = buckets[bucket];
 		t.item = item;
-		buckets[targetBucket] = ~index;
+		buckets[bucket] = ~index;
 		Changed();
 	}
 }
@@ -1768,7 +1770,7 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 		if (item == null)
 			return;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
+		int bucket = hashCode % buckets.Length;
 		if (deleted.Length > 0 && deleted.RemoveValue(index))
 		{
 		}
@@ -1777,18 +1779,18 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 			if (_size == entries.Length)
 			{
 				Resize();
-				targetBucket = hashCode % buckets.Length;
+				bucket = hashCode % buckets.Length;
 			}
 			_size++;
 		}
 		ref Entry t = ref entries[index];
 		int oldBucket = ~t.hashCode % buckets.Length;
 		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
-			buckets[oldBucket] = 0;
+			buckets[oldBucket] = entries[index].next;
 		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
+		t.next = buckets[bucket];
 		t.item = item;
-		buckets[targetBucket] = ~index;
+		buckets[bucket] = ~index;
 		Changed();
 	}
 

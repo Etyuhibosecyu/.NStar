@@ -460,8 +460,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (match(item))
-				SetInternal(targetIndex++, item);
+			if (match(item) && i != targetIndex++)
+				SetInternal(targetIndex - 1, item);
 		}
 		_size = targetIndex;
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -473,8 +473,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (match(item, i))
-				SetInternal(targetIndex++, item);
+			if (match(item, i) && i != targetIndex++)
+				SetInternal(targetIndex - 1, item);
 		}
 		_size = targetIndex;
 		return this as TCertain ?? throw new InvalidOperationException();

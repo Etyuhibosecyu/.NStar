@@ -120,7 +120,7 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 	private protected override void ClearInternal(int index, int count)
 	{
 		for (int i = 0; i < count; i++)
-			RemoveValue(GetInternal(index + i));
+			SetNull(index + i);
 		Changed();
 	}
 
@@ -393,6 +393,19 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 	}
 
 	private protected override TCertain ReverseInternal(int index, int count) => throw new NotImplementedException();
+
+	private protected virtual void SetNull(int index)
+	{
+		ref Entry t = ref entries[index];
+		if (t.hashCode >= 0)
+			return;
+		int bucket = ~t.hashCode % buckets.Length;
+		t.hashCode = 0;
+		t.next = 0;
+		t.item = default!;
+		if (buckets[bucket] == ~index)
+			buckets[bucket] = entries[index].next;
+	}
 }
 
 [DebuggerDisplay("Length = {Length}")]
@@ -967,13 +980,6 @@ public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCerta
 
 	internal override void SetInternal(int index, T item)
 	{
-		try
-		{
-			throw new ExperimentalException();
-		}
-		catch
-		{
-		}
 		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		if (_size == entries.Length)

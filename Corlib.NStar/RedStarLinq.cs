@@ -21257,8 +21257,8 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];
-				if (!dic.TryAdd(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
 					result._items[j++] = new((List<TSource>)item, f);
 			}
@@ -21274,8 +21274,8 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < array.Length; i++)
 			{
 				TSource item = array[i];
-				if (!dic.TryAdd(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
 					result._items[j++] = new((List<TSource>)item, f);
 			}
@@ -21292,8 +21292,8 @@ public partial class List<T, TCertain>
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list2[i];
-				if (!dic.TryAdd(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
 					result._items[j++] = new((List<TSource>)item, f);
 			}
@@ -21309,8 +21309,8 @@ public partial class List<T, TCertain>
 			int i = 0;
 			foreach (TSource item in source)
 			{
-				if (!dic.TryAdd(f = function(item), out int value))
-					result._items[value].Add(item);
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(item);
 				else
 					result._items[j++] = new((List<TSource>)item, f);
 				i++;
@@ -22163,6 +22163,934 @@ public partial class List<T, TCertain>
 					result._items[index].Add(item);
 				else
 					result._items[j++] = new((List<TSource>)item, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new();
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new();
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(IEnumerable<TSource> source) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new();
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TSource>> result = new(array.Length);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TSource f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(comparer);
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(comparer);
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(comparer);
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TSource>> result = new(array.Length);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TSource f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TSource>> result = new(array.Length);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TSource f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		SlowDeletionHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TResult>> result = new(array.Length);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TResult>> result = new(count);
+			int j = 0;
+			TResult f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TResult>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TResult f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+				i++;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<Group<int, TSource>> GroupIndexesEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull
+	{
+		SlowDeletionHashSet<TSource> dic = new(new EComparer<TSource>(equalFunction, hashCodeFunction));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list._items[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<Group<int, TSource>> result = new(array.Length);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < array.Length; i++)
+			{
+				TSource item = array[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			List<Group<int, TSource>> result = new(count);
+			int j = 0;
+			TSource f;
+			for (int i = 0; i < count; i++)
+			{
+				TSource item = list2[i];
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<Group<int, TSource>> result = new(TryGetCountEasilyEnumerable(source, out int count) ? count : 0);
+			int j = 0;
+			TSource f;
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (!dic.TryAdd(f = item, out int index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
 				i++;
 			}
 			result._size = j;
@@ -58177,7 +59105,8 @@ public static class RedStarLinq
 	public static List<TResult> ConvertAndJoin<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TResult>> function) => List<TResult>.ConvertAndJoinEnumerable(source, function);
 	public static IEnumerable<TResult> ConvertAndJoin<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector) => Enumerable.SelectMany(source, collectionSelector, resultSelector);
 	public static IEnumerable<TResult> ConvertAndJoin<TSource, TCollection, TResult>(this IEnumerable<TSource> source, Func<TSource, int, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, int, TResult> resultSelector) => List<TResult>.ConvertAndJoin(source, collectionSelector, resultSelector);
-	public static List<List<TSource>> CopyDoubleList<TSource>(this List<List<TSource>> source) => source.Convert(x => new List<TSource>(x));
+	public static List<TSource> Copy<TSource>(this List<TSource> source) => new(source);
+	public static List<List<TSource>> CopyDoubleList<TSource>(this List<List<TSource>> source) => source.Convert(x => x.Copy());
 	public static List<List<List<TSource>>> CopyTripleList<TSource>(this List<List<List<TSource>>> source) => source.Convert(x => x.CopyDoubleList());
 	public static int Count<TSource>(this IEnumerable<TSource> source) => List<int>.CountEnumerable(source);
 	public static int Count<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<int>.CountEnumerable(source, function);
@@ -58550,6 +59479,18 @@ public static class RedStarLinq
 	public static IEnumerable<TResult> Group<TSource, TKey, TElement, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TKey> keySelector, Func<TSource, int, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, int, TResult> resultSelector, Func<TKey, TKey, bool> equalFunction) => List<TSource>.Group(source, keySelector, elementSelector, resultSelector, equalFunction);
 	public static IEnumerable<TResult> Group<TSource, TKey, TElement, TResult>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector, Func<TSource, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, TResult> resultSelector, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) => Enumerable.GroupBy(source, keySelector, elementSelector, resultSelector, new EComparer<TKey>(equalFunction, hashCodeFunction));
 	public static IEnumerable<TResult> Group<TSource, TKey, TElement, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TKey> keySelector, Func<TSource, int, TElement> elementSelector, Func<TKey, IEnumerable<TElement>, int, TResult> resultSelector, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) => List<TSource>.Group(source, keySelector, elementSelector, resultSelector, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this IEnumerable<TSource> source) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, comparer);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<TResult>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TSource>> GroupIndexes<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<TSource>.GroupIndexesEnumerable(source, equalFunction, hashCodeFunction);
 	public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector) => Enumerable.GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 	public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, int, TKey> outerKeySelector, Func<TInner, int, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, int, TResult> resultSelector) => List<TResult>.GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
 	public static IEnumerable<TResult> GroupJoin<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, IEnumerable<TInner>, TResult> resultSelector, IEqualityComparer<TKey> comparer) => Enumerable.GroupJoin(outer, inner, outerKeySelector, innerKeySelector, resultSelector, comparer);
