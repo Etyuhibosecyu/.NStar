@@ -237,18 +237,18 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 /// может повести себя непредсказуемым способом. В случае, если вы уже завершили серию удалений и хотите
 /// снова перейти к обращениям по индексу, используйте метод FixUpFakeIndexes() для "починки" индексации.
 /// </summary>
-public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : FakeIndAftDelHashSet<T, TCertain>, new()
+public abstract class FastDelHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : FastDelHashSet<T, TCertain>, new()
 {
 	private protected int freeCount;
 	private protected int freeList;
 
-	public FakeIndAftDelHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+	public FastDelHashSet() : this(0, (IEqualityComparer<T>?)null) { }
 
-	public FakeIndAftDelHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+	public FastDelHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
 
-	public FakeIndAftDelHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	public FastDelHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
 
-	public FakeIndAftDelHashSet(int capacity, IEqualityComparer<T>? comparer)
+	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer)
 	{
 		if (capacity < 0)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
@@ -262,9 +262,9 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
-	public FakeIndAftDelHashSet(IEnumerable<T> collection) : this(collection, null) { }
+	public FastDelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public FakeIndAftDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public FastDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -272,9 +272,9 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			TryAdd(item);
 	}
 
-	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public FastDelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public FastDelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -282,19 +282,19 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			TryAdd(item);
 	}
 
-	public FakeIndAftDelHashSet(params T[] array) : this((IEnumerable<T>)array)
+	public FastDelHashSet(params T[] array) : this((IEnumerable<T>)array)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
 	{
 	}
 
-	public FakeIndAftDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	public FastDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
 	{
 	}
 
@@ -603,10 +603,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly FakeIndAftDelHashSet<T, TCertain> dictionary;
+		private readonly FastDelHashSet<T, TCertain> dictionary;
 		private int index;
 
-		internal Enumerator(FakeIndAftDelHashSet<T, TCertain> dictionary)
+		internal Enumerator(FastDelHashSet<T, TCertain> dictionary)
 		{
 			this.dictionary = dictionary;
 			index = 0;
@@ -659,65 +659,296 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 /// особенно в качестве релизации стандартного интерфейса IList<T> из .NET, так как такая реализация
 /// может повести себя непредсказуемым способом.
 /// </summary>
-public class FakeIndAftDelHashSet<T> : FakeIndAftDelHashSet<T, FakeIndAftDelHashSet<T>>
+public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 {
-	public FakeIndAftDelHashSet() : base()
+	public FastDelHashSet() : base()
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity) : base(capacity)
+	public FastDelHashSet(int capacity) : base(capacity)
 	{
 	}
 
-	public FakeIndAftDelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	public FastDelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public FakeIndAftDelHashSet(IEnumerable<T> set) : base(set)
+	public FastDelHashSet(IEnumerable<T> set) : base(set)
 	{
 	}
 
-	public FakeIndAftDelHashSet(params T[] array) : base(array)
+	public FastDelHashSet(params T[] array) : base(array)
 	{
 	}
 
-	public FakeIndAftDelHashSet(ReadOnlySpan<T> span) : base(span)
+	public FastDelHashSet(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	public FakeIndAftDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
+	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
+	public FastDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, params T[] array) : base(capacity, array)
+	public FastDelHashSet(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
-	public FakeIndAftDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
+	public FastDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
 	{
 	}
 
-	private protected override Func<int, FakeIndAftDelHashSet<T>> CapacityCreator => x => new(x);
+	private protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, FakeIndAftDelHashSet<T>> CollectionCreator => x => new(x);
+	private protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
 }
 
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
+/// <summary>
+/// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
+/// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
+/// что здесь, в отличие от класса FastDelHashSet<T>, индексация гарантированно "правильная", но за это
+/// приходится платить тем, что после каждого удаления нужно сдвинуть все следующие элементы влево, а это
+/// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
+/// серию удалений, используйте FastDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
+/// </summary>
+public abstract class ListHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : ListHashSet<T, TCertain>, new()
+{
+	public ListHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+
+	public ListHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+
+	public ListHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+
+	public ListHashSet(int capacity, IEqualityComparer<T>? comparer)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity > 0)
+			Initialize(capacity, out buckets, out entries);
+		else
+		{
+			buckets = default!;
+			entries = default!;
+		}
+		Comparer = comparer ?? EqualityComparer<T>.Default;
+	}
+
+	public ListHashSet(IEnumerable<T> collection) : this(collection, null) { }
+
+	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
+	}
+
+	public ListHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+
+	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		foreach (T item in collection)
+			TryAdd(item);
+	}
+
+	public ListHashSet(params T[] array) : this((IEnumerable<T>)array)
+	{
+	}
+
+	public ListHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	{
+	}
+
+	public ListHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	{
+	}
+
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			if ((uint)index2 >= (uint)entries.Length)
+				throw new IndexOutOfRangeException();
+			if (entries[index2].item?.Equals(value) ?? value == null)
+				return;
+			if (Contains(value))
+				throw new ArgumentException(null, nameof(value));
+			SetInternal(index2, value);
+		}
+	}
+
+	private protected override void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is not T[] array2)
+			throw new ArgumentException(null, nameof(array));
+		CopyToInternal(0, array2, arrayIndex, _size);
+	}
+
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	{
+		for (int i = 0; i < count; i++)
+			array[arrayIndex++] = entries[index++].item;
+	}
+
+	private protected override TCertain Insert(T? item, bool add, out int index)
+	{
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		if (buckets == null)
+			Initialize(0, out buckets, out entries);
+		if (buckets == null)
+			throw new InvalidOperationException();
+		uint collisionCount = 0;
+		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int targetBucket = hashCode % buckets.Length;
+		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
+			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
+			{
+				if (add)
+					throw new ArgumentException(null);
+				index = i;
+				return this as TCertain ?? throw new InvalidOperationException();
+			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
+		if (_size == entries.Length)
+		{
+			Resize();
+			targetBucket = hashCode % buckets.Length;
+		}
+		index = _size;
+		_size++;
+		ref Entry t = ref entries[index];
+		t.hashCode = ~hashCode;
+		t.next = buckets[targetBucket];
+		t.item = item;
+		buckets[targetBucket] = ~index;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override TCertain RemoveAt(int index)
+	{
+		if ((uint)index >= (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		_size--;
+		if (index < _size)
+			Copy(this, index + 1, this, index, _size - index);
+		SetNull(_size);
+		Changed();
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	internal override void SetInternal(int index, T item)
+	{
+		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		int bucket = hashCode % buckets.Length;
+		ref Entry t = ref entries[index];
+		int oldBucket = ~t.hashCode % buckets.Length;
+		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
+			buckets[oldBucket] = entries[index].next;
+		t.hashCode = ~hashCode;
+		t.next = buckets[bucket];
+		t.item = item;
+		buckets[bucket] = ~index;
+		Changed();
+	}
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+/// <summary>
+/// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
+/// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
+/// что здесь, в отличие от класса FastDelHashSet<T>, индексация гарантированно "правильная", но за это
+/// приходится платить тем, что после каждого удаления нужно сдвинуть все следующие элементы влево, а это
+/// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
+/// серию удалений, используйте FastDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
+/// </summary>
+public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
+{
+	public ListHashSet() : base()
+	{
+	}
+
+	public ListHashSet(int capacity) : base(capacity)
+	{
+	}
+
+	public ListHashSet(IEqualityComparer<T>? comparer) : base(comparer)
+	{
+	}
+
+	public ListHashSet(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	public ListHashSet(params T[] array) : base(array)
+	{
+	}
+
+	public ListHashSet(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	public ListHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	{
+	}
+
+	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	{
+	}
+
+	public ListHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	public ListHashSet(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	public ListHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	{
+	}
+
+	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	{
+	}
+
+	private protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 {
 	private protected readonly object lockObj = new();
 
@@ -1266,233 +1497,6 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 		UnsafeInsert(item, true, out index);
 		return true;
 	}
-}
-
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-/// <summary>
-/// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
-/// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
-/// что здесь, в отличие от класса FakeIndAftDelHashSet<T>, индексация гарантированно "правильная", но за это
-/// приходится платить тем, что после каждого удаления нужно сдвинуть все следующие элементы влево, а это
-/// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
-/// серию удалений, используйте FakeIndAftDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
-/// </summary>
-public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : SlowDeletionHashSet<T, TCertain>, new()
-{
-	public SlowDeletionHashSet() : this(0, (IEqualityComparer<T>?)null) { }
-
-	public SlowDeletionHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
-
-	public SlowDeletionHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
-
-	public SlowDeletionHashSet(int capacity, IEqualityComparer<T>? comparer)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity > 0)
-			Initialize(capacity, out buckets, out entries);
-		else
-		{
-			buckets = default!;
-			entries = default!;
-		}
-		Comparer = comparer ?? EqualityComparer<T>.Default;
-	}
-
-	public SlowDeletionHashSet(IEnumerable<T> collection) : this(collection, null) { }
-
-	public SlowDeletionHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			TryAdd(item);
-	}
-
-	public SlowDeletionHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
-
-	public SlowDeletionHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
-			TryAdd(item);
-	}
-
-	public SlowDeletionHashSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
-
-	public SlowDeletionHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
-
-	public override T this[Index index, bool invoke = true]
-	{
-		get => base[index, invoke];
-		set
-		{
-			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
-			if ((uint)index2 >= (uint)entries.Length)
-				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? value == null)
-				return;
-			if (Contains(value))
-				throw new ArgumentException(null, nameof(value));
-			SetInternal(index2, value);
-		}
-	}
-
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
-	}
-
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
-	{
-		for (int i = 0; i < count; i++)
-			array[arrayIndex++] = entries[index++].item;
-	}
-
-	private protected override TCertain Insert(T? item, bool add, out int index)
-	{
-		if (item == null)
-			throw new ArgumentNullException(nameof(item));
-		if (buckets == null)
-			Initialize(0, out buckets, out entries);
-		if (buckets == null)
-			throw new InvalidOperationException();
-		uint collisionCount = 0;
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
-		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
-		{
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (add)
-					throw new ArgumentException(null);
-				index = i;
-				return this as TCertain ?? throw new InvalidOperationException();
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
-		if (_size == entries.Length)
-		{
-			Resize();
-			targetBucket = hashCode % buckets.Length;
-		}
-		index = _size;
-		_size++;
-		ref Entry t = ref entries[index];
-		t.hashCode = ~hashCode;
-		t.next = buckets[targetBucket];
-		t.item = item;
-		buckets[targetBucket] = ~index;
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public override TCertain RemoveAt(int index)
-	{
-		if ((uint)index >= (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		_size--;
-		if (index < _size)
-			Copy(this, index + 1, this, index, _size - index);
-		SetNull(_size);
-		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	internal override void SetInternal(int index, T item)
-	{
-		//try
-		//{
-		//	throw new ExperimentalException();
-		//}
-		//catch
-		//{
-		//}
-		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
-		ref Entry t = ref entries[index];
-		int oldBucket = ~t.hashCode % buckets.Length;
-		if (oldBucket >= 0 && buckets[oldBucket] == ~index)
-			buckets[oldBucket] = entries[index].next;
-		t.hashCode = ~hashCode;
-		t.next = buckets[bucket];
-		t.item = item;
-		buckets[bucket] = ~index;
-		Changed();
-	}
-}
-
-public class SlowDeletionHashSet<T> : SlowDeletionHashSet<T, SlowDeletionHashSet<T>>
-{
-	public SlowDeletionHashSet() : base()
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity) : base(capacity)
-	{
-	}
-
-	public SlowDeletionHashSet(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
-
-	public SlowDeletionHashSet(IEnumerable<T> collection) : base(collection)
-	{
-	}
-
-	public SlowDeletionHashSet(params T[] array) : base(array)
-	{
-	}
-
-	public SlowDeletionHashSet(ReadOnlySpan<T> span) : base(span)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
-
-	public SlowDeletionHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
-
-	public SlowDeletionHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
-
-	private protected override Func<int, SlowDeletionHashSet<T>> CapacityCreator => x => new(x);
-
-	private protected override Func<IEnumerable<T>, SlowDeletionHashSet<T>> CollectionCreator => x => new(x);
 }
 
 [DebuggerDisplay("Length = {Length}")]

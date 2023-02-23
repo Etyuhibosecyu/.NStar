@@ -17,7 +17,7 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 
 	private protected int[] buckets = default!;
 	private protected Entry[] entries = default!;
-	private protected readonly FakeIndAftDelHashSet<T> uniqueElements = new();
+	private protected readonly FastDelHashSet<T> uniqueElements = new();
 	internal const int HashPrime = 101;
 	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
 	internal const int HashSearchMultiplier = 32, AnyHashIndexThreshold = HashSearchMultiplier << 1;
@@ -422,56 +422,56 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 /// может повести себя непредсказуемым способом. В случае, если вы уже завершили серию удалений и хотите
 /// снова перейти к обращениям по индексу, используйте метод FixUpFakeIndexes() для "починки" индексации.
 /// </summary>
-public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : FakeIndAftDelHashList<T, TCertain>, new()
+public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : FastDelHashList<T, TCertain>, new()
 {
 	private protected int freeCount;
 	private protected int freeList;
 
-	protected FakeIndAftDelHashList()
+	protected FastDelHashList()
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity) : base(capacity)
+	protected FastDelHashList(int capacity) : base(capacity)
 	{
 	}
 
-	protected FakeIndAftDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
+	protected FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	protected FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	protected FakeIndAftDelHashList(IEnumerable<T> collection) : base(collection)
+	protected FastDelHashList(IEnumerable<T> collection) : base(collection)
 	{
 	}
 
-	protected FakeIndAftDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	protected FastDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	protected FastDelHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	protected FastDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
 	{
 	}
 
-	protected FakeIndAftDelHashList(params T[] array) : base(array)
+	protected FastDelHashList(params T[] array) : base(array)
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity, params T[] array) : base(capacity, array)
+	protected FastDelHashList(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	protected FakeIndAftDelHashList(ReadOnlySpan<T> span) : base(span)
+	protected FastDelHashList(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	protected FakeIndAftDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	protected FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
@@ -771,10 +771,10 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly FakeIndAftDelHashList<T, TCertain> dictionary;
+		private readonly FastDelHashList<T, TCertain> dictionary;
 		private int index;
 
-		internal Enumerator(FakeIndAftDelHashList<T, TCertain> dictionary)
+		internal Enumerator(FastDelHashList<T, TCertain> dictionary)
 		{
 			this.dictionary = dictionary;
 			index = 0;
@@ -827,59 +827,59 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 /// особенно в качестве релизации стандартного интерфейса IList<T> из .NET, так как такая реализация
 /// может повести себя непредсказуемым способом.
 /// </summary>
-public class FakeIndAftDelHashList<T> : FakeIndAftDelHashList<T, FakeIndAftDelHashList<T>>
+public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 {
-	public FakeIndAftDelHashList() : base()
+	public FastDelHashList() : base()
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity) : base(capacity)
+	public FastDelHashList(int capacity) : base(capacity)
 	{
 	}
 
-	public FakeIndAftDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
+	public FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public FakeIndAftDelHashList(IEnumerable<T> set) : base(set)
+	public FastDelHashList(IEnumerable<T> set) : base(set)
 	{
 	}
 
-	public FakeIndAftDelHashList(params T[] array) : base(array)
+	public FastDelHashList(params T[] array) : base(array)
 	{
 	}
 
-	public FakeIndAftDelHashList(ReadOnlySpan<T> span) : base(span)
+	public FastDelHashList(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	public FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	public FakeIndAftDelHashList(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
+	public FastDelHashList(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, IEnumerable<T> set) : base(capacity, set)
+	public FastDelHashList(int capacity, IEnumerable<T> set) : base(capacity, set)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, params T[] array) : base(capacity, array)
+	public FastDelHashList(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	public FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
-	public FakeIndAftDelHashList(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
+	public FastDelHashList(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
 	{
 	}
 
-	private protected override Func<int, FakeIndAftDelHashList<T>> CapacityCreator => x => new(x);
+	private protected override Func<int, FastDelHashList<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, FakeIndAftDelHashList<T>> CollectionCreator => x => new(x);
+	private protected override Func<IEnumerable<T>, FastDelHashList<T>> CollectionCreator => x => new(x);
 }
 
 [DebuggerDisplay("Length = {Length}")]
@@ -893,53 +893,53 @@ public class FakeIndAftDelHashList<T> : FakeIndAftDelHashList<T, FakeIndAftDelHa
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
 /// серию удалений, используйте FakeIndAftDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
-public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : SlowDeletionHashList<T, TCertain>, new()
+public abstract class HashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : HashList<T, TCertain>, new()
 {
-	protected SlowDeletionHashList()
+	protected HashList()
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity) : base(capacity)
+	protected HashList(int capacity) : base(capacity)
 	{
 	}
 
-	protected SlowDeletionHashList(IEqualityComparer<T>? comparer) : base(comparer)
+	protected HashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	protected HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	protected SlowDeletionHashList(IEnumerable<T> collection) : base(collection)
+	protected HashList(IEnumerable<T> collection) : base(collection)
 	{
 	}
 
-	protected SlowDeletionHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	protected HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	protected HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	protected HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
 	{
 	}
 
-	protected SlowDeletionHashList(params T[] array) : base(array)
+	protected HashList(params T[] array) : base(array)
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity, params T[] array) : base(capacity, array)
+	protected HashList(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	protected SlowDeletionHashList(ReadOnlySpan<T> span) : base(span)
+	protected HashList(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	protected SlowDeletionHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	protected HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
@@ -999,57 +999,57 @@ public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCerta
 	}
 }
 
-public class SlowDeletionHashList<T> : SlowDeletionHashList<T, SlowDeletionHashList<T>>
+public class HashList<T> : HashList<T, HashList<T>>
 {
-	public SlowDeletionHashList() : base()
+	public HashList() : base()
 	{
 	}
 
-	public SlowDeletionHashList(int capacity) : base(capacity)
+	public HashList(int capacity) : base(capacity)
 	{
 	}
 
-	public SlowDeletionHashList(IEqualityComparer<T>? comparer) : base(comparer)
+	public HashList(IEqualityComparer<T>? comparer) : base(comparer)
 	{
 	}
 
-	public SlowDeletionHashList(IEnumerable<T> collection) : base(collection)
+	public HashList(IEnumerable<T> collection) : base(collection)
 	{
 	}
 
-	public SlowDeletionHashList(params T[] array) : base(array)
+	public HashList(params T[] array) : base(array)
 	{
 	}
 
-	public SlowDeletionHashList(ReadOnlySpan<T> span) : base(span)
+	public HashList(ReadOnlySpan<T> span) : base(span)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
+	public HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
 	{
 	}
 
-	public SlowDeletionHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
+	public HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	public HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, params T[] array) : base(capacity, array)
+	public HashList(int capacity, params T[] array) : base(capacity, array)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	public HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
 	{
 	}
 
-	public SlowDeletionHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
+	public HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
 	{
 	}
 
-	private protected override Func<int, SlowDeletionHashList<T>> CapacityCreator => x => new(x);
+	private protected override Func<int, HashList<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, SlowDeletionHashList<T>> CollectionCreator => x => new(x);
+	private protected override Func<IEnumerable<T>, HashList<T>> CollectionCreator => x => new(x);
 }

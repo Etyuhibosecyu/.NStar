@@ -330,7 +330,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (hs.Contains(GetInternal(index + i)))
 				return true;
@@ -357,7 +357,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (!hs.Contains(GetInternal(index + i)))
 				return true;
@@ -888,7 +888,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (hs.Contains(GetInternal(index + i)))
 				return index + i;
@@ -915,7 +915,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = 0; i < count; i++)
 			if (!hs.Contains(GetInternal(index + i)))
 				return index + i;
@@ -1066,7 +1066,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = count - 1; i >= 0; i--)
 			if (hs.Contains(GetInternal(index + i)))
 				return index + i;
@@ -1095,7 +1095,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		FakeIndAftDelHashSet<T> hs = collection.ToHashSet();
+		ListHashSet<T> hs = collection.ToHashSet();
 		for (int i = count - 1; i >= 0; i--)
 			if (!hs.Contains(GetInternal(index + i)))
 				return index + i;
@@ -2102,7 +2102,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = new SlowDeletionHashSet<T>(other);
+			set = new ListHashSet<T>(other);
 		FilterInPlace(x => !set.Contains(x));
 	}
 
@@ -2119,7 +2119,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = new SlowDeletionHashSet<T>(other);
+			set = new ListHashSet<T>(other);
 		FilterInPlace(set.Contains);
 	}
 
