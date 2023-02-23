@@ -24,22 +24,18 @@ public class FakeIndAftDelHashListTests
 				fhs.RemoveValue(n);
 				gs.Remove(n);
 			}
-			Assert.IsTrue(RedStarLinq.Equals(gs, fhs));
+			Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), fhs.Sort(x => x).ToList()));
 			for (int i = 0; i < 10; i++)
 			{
 				int n = random.Next(16);
 				fhs.Add(n);
 				gs.Add(n);
 			}
-			Assert.IsTrue(RedStarLinq.Equals(gs, fhs));
+			Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), fhs.Sort(x => x).ToList()));
 			for (int i = 0; i < 100; i++)
 			{
-				int n;
-				do
-				{
-					n = random.Next(fhs.Length);
-				} while (fhs[n] == 0);
-				Assert.AreEqual(fhs.IndexOf(fhs[n]), n);
+				int n = random.Next(fhs.Length);
+				Assert.AreEqual(fhs[fhs.IndexOf(fhs[n])], fhs[n]);
 			}
 		}
 		catch (Exception ex)
@@ -72,14 +68,14 @@ public class SlowDeletionHashListTests
 				shs.RemoveValue(n);
 				gs.Remove(n);
 			}
-			Assert.IsTrue(RedStarLinq.Equals(gs, shs));
+			Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
 			for (int i = 0; i < 10; i++)
 			{
 				int n = random.Next(16);
 				shs.Add(n);
 				gs.Add(n);
 			}
-			Assert.IsTrue(RedStarLinq.Equals(gs, shs));
+			Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
 			G.List<int> list = new(shs);
 			for (int i = 0; i < 10; i++)
 			{
@@ -92,14 +88,10 @@ public class SlowDeletionHashListTests
 				}
 			}
 			gs = new(list);
-			Assert.IsTrue(RedStarLinq.Equals(gs, shs));
+			Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
 			for (int i = 0; i < 100; i++)
 			{
-				int n;
-				do
-				{
-					n = random.Next(shs.Length);
-				} while (shs[n] == 0);
+				int n = random.Next(shs.Length);
 				Assert.AreEqual(shs[shs.IndexOf(shs[n])], shs[n]);
 			}
 		}

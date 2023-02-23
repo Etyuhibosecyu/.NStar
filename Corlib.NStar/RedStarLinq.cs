@@ -20461,6 +20461,66 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static void ForEachEnumerable<TSource>(IEnumerable<TSource> source, Action<TSource> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			for (int i = 0; i < count; i++)
+				action(list._items[i]);
+		}
+		else if (source is TSource[] array)
+		{
+			for (int i = 0; i < array.Length; i++)
+				action(array[i]);
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			for (int i = 0; i < count; i++)
+				action(list2[i]);
+		}
+		else
+		{
+			foreach (TSource item in source)
+				action(item);
+		}
+	}
+
+	internal static void ForEachEnumerable<TSource>(IEnumerable<TSource> source, Action<TSource, int> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		if (source is List<TSource> list)
+		{
+			int count = list._size;
+			for (int i = 0; i < count; i++)
+				action(list._items[i], i);
+		}
+		else if (source is TSource[] array)
+		{
+			for (int i = 0; i < array.Length; i++)
+				action(array[i], i);
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			int count = list2.Count;
+			for (int i = 0; i < count; i++)
+				action(list2[i], i);
+		}
+		else
+		{
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				action(item, i);
+				i++;
+			}
+		}
+	}
+
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull
 	{
 		if (function == null)
@@ -50345,6 +50405,24 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static void ForEachEnumerable<TSource>(ReadOnlySpan<TSource> source, Action<TSource> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		int count = source.Length;
+		for (int i = 0; i < count; i++)
+			action(source[i]);
+	}
+
+	internal static void ForEachEnumerable<TSource>(ReadOnlySpan<TSource> source, Action<TSource, int> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		int count = source.Length;
+		for (int i = 0; i < count; i++)
+			action(source[i], i);
+	}
+
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : notnull
 	{
 		if (function == null)
@@ -56757,11 +56835,7 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		int count = source.Count;
 		List<TResult> result = new(count);
-		Parallel.For(0, count, i =>
-		{
-			TSource item = source[i];
-			result._items[i] = function(item, i);
-		});
+		Parallel.For(0, count, i => result._items[i] = function(source[i], i));
 		result._size = count;
 		return result;
 	}
@@ -56793,6 +56867,34 @@ public partial class List<T, TCertain>
 			if (values._items[i])
 				result.Add(source[i]);
 		result.TrimExcess();
+		return result;
+	}
+
+	internal static TResult[] PToArrayEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, TResult> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		TResult[] result = new TResult[count];
+		Parallel.For(0, count, i => result[i] = function(source[i]));
+		return result;
+	}
+
+	internal static TResult[] PToArrayEnumerable<TSource, TResult>(G.IList<TSource> source, Func<TSource, int, TResult> function)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		int count = source.Count;
+		TResult[] result = new TResult[count];
+		Parallel.For(0, count, i => result[i] = function(source[i], i));
+		return result;
+	}
+
+	internal static TSource[] PToArrayEnumerable<TSource>(G.IList<TSource> source)
+	{
+		int count = source.Count;
+		TSource[] result = new TSource[count];
+		Parallel.For(0, count, i => result[i] = source[i]);
 		return result;
 	}
 
@@ -59877,6 +59979,8 @@ public static class RedStarLinq
 	public static int FindMinIndex<TSource>(this IEnumerable<TSource> source, Func<TSource, int, long> function) => List<long>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<TSource>(this IEnumerable<TSource> source, Func<TSource, mpz_t> function) => List<mpz_t>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<TSource>(this IEnumerable<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.FindMinIndexEnumerable(source, function);
+	public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action) => List<TSource>.ForEachEnumerable(source, action);
+	public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action) => List<TSource>.ForEachEnumerable(source, action);
 	public static List<(TResult Key, int Count)> FrequencyTable<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.FrequencyTableEnumerable(source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.FrequencyTableEnumerable(source, function);
 	public static List<(TSource Key, int Count)> FrequencyTable<TSource>(this IEnumerable<TSource> source) where TSource : notnull => List<TSource>.FrequencyTableEnumerable(source);
@@ -61457,6 +61561,12 @@ public static class RedStarLinq
 	public static int FindMinIndex<TSource>(this Span<TSource> source, Func<TSource, int, mpz_t> function) => List<mpz_t>.FindMinIndexEnumerable((ReadOnlySpan<TSource>)source, function);
 	public static int FindMinIndex<TSource>(this TSource[] source, Func<TSource, mpz_t> function) => List<mpz_t>.FindMinIndexEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
 	public static int FindMinIndex<TSource>(this TSource[] source, Func<TSource, int, mpz_t> function) => List<mpz_t>.FindMinIndexEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function);
+	public static void ForEach<TSource>(this ReadOnlySpan<TSource> source, Action<TSource> action) => List<TSource>.ForEachEnumerable(source, action);
+	public static void ForEach<TSource>(this ReadOnlySpan<TSource> source, Action<TSource, int> action) => List<TSource>.ForEachEnumerable(source, action);
+	public static void ForEach<TSource>(this Span<TSource> source, Action<TSource> action) => List<TSource>.ForEachEnumerable((ReadOnlySpan<TSource>)source, action);
+	public static void ForEach<TSource>(this Span<TSource> source, Action<TSource, int> action) => List<TSource>.ForEachEnumerable((ReadOnlySpan<TSource>)source, action);
+	public static void ForEach<TSource>(this TSource[] source, Action<TSource> action) => List<TSource>.ForEachEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), action);
+	public static void ForEach<TSource>(this TSource[] source, Action<TSource, int> action) => List<TSource>.ForEachEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), action);
 	public static List<(TResult Key, int Count)> FrequencyTable<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.FrequencyTableEnumerable(source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) where TResult : notnull => List<TResult>.FrequencyTableEnumerable(source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function) where TResult : notnull => List<TResult>.FrequencyTableEnumerable((ReadOnlySpan<TSource>)source, function);
@@ -62562,6 +62672,9 @@ public static class RedStarLinq
 	public static List<TResult> PConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.PConvertEnumerable(source, function);
 	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, bool> function) => List<bool>.PFilterEnumerable(source, function);
 	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, int, bool> function) => List<bool>.PFilterEnumerable(source, function);
+	public static TResult[] PToArray<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) => List<TResult>.PToArrayEnumerable(source, function);
+	public static TResult[] PToArray<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.PToArrayEnumerable(source, function);
+	public static TSource[] PToArray<TSource>(this G.IList<TSource> source) => List<TSource>.PToArrayEnumerable(source);
 	public static (NList<TResult>, NList<TResult2>) NBreak<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.BreakEnumerable(source, function, function2);
 	public static (NList<TSource>, NList<TSource2>) NBreak<TSource, TSource2>(this IEnumerable<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged => NList<TSource>.BreakEnumerable(source);

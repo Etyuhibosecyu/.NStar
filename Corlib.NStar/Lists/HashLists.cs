@@ -687,11 +687,10 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 			ref Entry t = ref entries[bucket];
 			t.next = entries[index].next;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = freeList;
 		t2.item = default!;
-		entries[index] = t2;
 		freeList = ~index;
 		freeCount++;
 		if (!Contains(item))
@@ -706,24 +705,25 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 			throw new ArgumentNullException(nameof(item));
 		if (buckets == null)
 			return false;
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
-				if (last < 0)
+				if (last >= 0)
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref Entry t = ref entries[~last];
 					t.next = entries[i].next;
 				}
-				Entry t2 = entries[i];
+				ref Entry t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
-				entries[i] = t2;
 				freeList = ~i;
 				freeCount++;
 				if (!Contains(item))
@@ -731,6 +731,10 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 				Changed();
 				return true;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		return false;
 	}
 
@@ -756,11 +760,10 @@ public abstract class FakeIndAftDelHashList<T, TCertain> : HashListBase<T, TCert
 			}
 			_size++;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
-		entries[index] = t2;
 		buckets[targetBucket] = ~index;
 		uniqueElements.TryAdd(item);
 		Changed();
@@ -987,11 +990,10 @@ public abstract class SlowDeletionHashList<T, TCertain> : HashListBase<T, TCerta
 			Resize();
 			targetBucket = hashCode % buckets.Length;
 		}
-		Entry t2 = entries[index];
+		ref Entry t2 = ref entries[index];
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
-		entries[index] = t2;
 		buckets[targetBucket] = ~index;
 		Changed();
 	}

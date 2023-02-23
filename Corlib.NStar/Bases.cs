@@ -635,6 +635,15 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	public virtual TCertain ForEach(Action<T, int> action)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		for (int i = 0; i < _size; i++)
+			action(this[i], i);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
 	public virtual TCertain GetAfter(IEnumerable<T> collection) => GetAfter(collection, 0, _size);
 
 	public virtual TCertain GetAfter(IEnumerable<T> collection, int index) => GetAfter(collection, index, _size - index);

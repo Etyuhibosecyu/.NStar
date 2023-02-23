@@ -470,9 +470,11 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -480,6 +482,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 				index = i;
 				return this as TCertain ?? throw new InvalidOperationException();
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -532,17 +538,19 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 			throw new ArgumentNullException(nameof(item));
 		if (buckets == null)
 			return false;
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
-				if (last < 0)
+				if (last >= 0)
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref Entry t = ref entries[~last];
 					t.next = entries[i].next;
 				}
 				ref Entry t2 = ref entries[i];
@@ -553,6 +561,10 @@ public abstract class FakeIndAftDelHashSet<T, TCertain> : HashSetBase<T, TCertai
 				freeCount++;
 				return true;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		return false;
 	}
 
@@ -853,9 +865,11 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -863,6 +877,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				index = i;
 				return this;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		lock (lockObj)
 		{
 			for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
@@ -962,12 +980,18 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			throw new ArgumentNullException(nameof(item));
 		if (buckets == null)
 			return false;
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 				return Lock(lockObj, UnsafeRemoveValue, item);
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		return false;
 	}
 
@@ -1086,10 +1110,16 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			throw new ArgumentNullException(nameof(item));
 		if (buckets != null)
 		{
+			uint collisionCount = 0;
 			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
 					return i;
+				collisionCount++;
+				if (collisionCount > entries.Length)
+					throw new InvalidOperationException();
+			}
 		}
 		return -1;
 	}
@@ -1102,9 +1132,11 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1112,6 +1144,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				index = i;
 				return this;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -1164,17 +1200,19 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 			throw new ArgumentNullException(nameof(item));
 		if (buckets == null)
 			return false;
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
-				if (last < 0)
+				if (last >= 0)
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref Entry t = ref entries[~last];
 					t.next = entries[i].next;
 				}
 				ref Entry t2 = ref entries[i];
@@ -1185,6 +1223,10 @@ public class ParallelHashSet<T> : FakeIndAftDelHashSet<T, ParallelHashSet<T>>
 				freeCount++;
 				return true;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		return false;
 	}
 
@@ -1332,9 +1374,11 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1342,6 +1386,10 @@ public abstract class SlowDeletionHashSet<T, TCertain> : HashSetBase<T, TCertain
 				index = i;
 				return this as TCertain ?? throw new InvalidOperationException();
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		if (_size == entries.Length)
 		{
 			Resize();
@@ -1675,9 +1723,11 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int targetBucket = hashCode % buckets.Length;
 		for (int i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1685,6 +1735,10 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 				index = i;
 				return this as TCertain ?? throw new InvalidOperationException();
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		if (deleted.Length > 0)
 		{
 			index = deleted.GetAndRemove(^1);
@@ -1736,17 +1790,19 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 			throw new ArgumentNullException(nameof(item));
 		if (buckets == null)
 			return false;
+		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
 		int last = 0;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
-				if (last < 0)
+				if (last >= 0)
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref Entry t = ref entries[~last];
 					t.next = entries[i].next;
 				}
 				ref Entry t2 = ref entries[i];
@@ -1758,6 +1814,10 @@ public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 					FixUpDeleted();
 				return true;
 			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
+		}
 		return false;
 	}
 
