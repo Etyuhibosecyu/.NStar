@@ -159,9 +159,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (match(item) && i != targetIndex++)
+			if (CreateVar(match(item), out bool b) && i != targetIndex++)
 				SetInternal(targetIndex - 1, item);
-			else
+			else if (!b)
 				result2.Add(item);
 		}
 		_size = targetIndex;
@@ -175,9 +175,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (match(item, i) && i != targetIndex++)
+			if (CreateVar(match(item, i), out bool b) && i != targetIndex++)
 				SetInternal(targetIndex - 1, item);
-			else
+			else if (!b)
 				result2.Add(item);
 		}
 		_size = targetIndex;

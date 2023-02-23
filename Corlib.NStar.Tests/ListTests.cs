@@ -88,6 +88,79 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestBreakFilter()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.BreakFilter(x => x.Length == 3, out var c);
+			var d = new G.List<string>(list);
+			d.InsertRange(3, new G.List<string>() { "$", "###" });
+			var e = E.Where(d, x => x.Length == 3);
+			var f = E.Where(d, x => x.Length != 3);
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(e));
+			Assert.IsTrue(E.SequenceEqual(e, b));
+			Assert.IsTrue(c.Equals(f));
+			Assert.IsTrue(E.SequenceEqual(f, c));
+			b = a.BreakFilter(x => x.All(y => y is >= 'A' and <= 'Z'), out c);
+			e = E.Where(d, x => E.All(x, y => y is >= 'A' and <= 'Z'));
+			f = E.Where(d, x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(e));
+			Assert.IsTrue(E.SequenceEqual(e, b));
+			Assert.IsTrue(c.Equals(f));
+			Assert.IsTrue(E.SequenceEqual(f, c));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestBreakFilterInPlace()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.BreakFilterInPlace(x => x.Length == 3, out var c);
+			var d = new G.List<string>(list);
+			d.InsertRange(3, new G.List<string>() { "$", "###" });
+			var e = E.ToList(E.Where(d, x => x.Length != 3));
+			d = E.ToList(E.Where(d, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(c.Equals(e));
+			Assert.IsTrue(E.SequenceEqual(e, c));
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.BreakFilterInPlace(x => x.All(y => y is >= 'A' and <= 'Z'), out c);
+			d = new G.List<string>(list);
+			d.InsertRange(3, new G.List<string>() { "$", "###" });
+			e = E.ToList(E.Where(d, x => !E.All(x, y => y is >= 'A' and <= 'Z')));
+			d = E.ToList(E.Where(d, x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(c.Equals(e));
+			Assert.IsTrue(E.SequenceEqual(e, c));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
 	public void TestClear()
 	{
 		try
