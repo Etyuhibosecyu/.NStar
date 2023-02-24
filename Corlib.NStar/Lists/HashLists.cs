@@ -221,10 +221,16 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		List<int> result = new();
 		if (buckets != null)
 		{
+			uint collisionCount = 0;
 			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
 					result.Add(i);
+				collisionCount++;
+				if (collisionCount > entries.Length)
+					throw new InvalidOperationException();
+			}
 		}
 		return result;
 	}
@@ -245,10 +251,16 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			throw new ArgumentException(null);
 		if (buckets != null)
 		{
+			uint collisionCount = 0;
 			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
 					return i;
+				collisionCount++;
+				if (collisionCount > entries.Length)
+					throw new InvalidOperationException();
+			}
 		}
 		return -1;
 	}
@@ -370,7 +382,6 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
-		int[] newBuckets = new int[newSize];
 		Entry[] newEntries = new Entry[newSize];
 		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
@@ -380,15 +391,15 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 				if (t.hashCode != 0)
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
 			}
+		buckets = new int[newSize];
 		for (int i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
 			{
 				int bucket = ~newEntries[i].hashCode % newSize;
 				ref Entry t = ref newEntries[i];
-				t.next = newBuckets[bucket];
-				newBuckets[bucket] = ~i;
+				t.next = buckets[bucket];
+				buckets[bucket] = ~i;
 			}
-		buckets = newBuckets;
 		entries = newEntries;
 	}
 
@@ -630,6 +641,7 @@ public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> w
 		entries = newEntries;
 		freeCount = 0;
 		freeList = 0;
+		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
@@ -708,16 +720,16 @@ public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> w
 		uint collisionCount = 0;
 		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		int bucket = hashCode % buckets.Length;
-		int last = 0;
+		int last = -1;
 		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
-				if (last >= 0)
+				if (last < 0)
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[~last];
+					ref Entry t = ref entries[last];
 					t.next = entries[i].next;
 				}
 				ref Entry t2 = ref entries[i];
@@ -740,7 +752,7 @@ public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> w
 
 	internal override void SetInternal(int index, T item)
 	{
-		if (entries[index].item != null)
+		if (entries[index].hashCode < 0)
 			RemoveAt(index);
 		if (item == null)
 			return;
@@ -761,10 +773,13 @@ public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> w
 			_size++;
 		}
 		ref Entry t2 = ref entries[index];
+		T? oldItem = t2.item;
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
 		buckets[targetBucket] = ~index;
+		if (!Contains(item))
+			uniqueElements.RemoveValue(oldItem);
 		uniqueElements.TryAdd(item);
 		Changed();
 	}
@@ -978,23 +993,59 @@ public abstract class HashList<T, TCertain> : HashListBase<T, TCertain> where TC
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
+		uniqueElements.TryAdd(item);
+		Changed();
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override TCertain RemoveAt(int index)
+	{
+		if ((uint)index >= (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		T? item = entries[index].item;
+		_size--;
+		if (index < _size)
+			Copy(this, index + 1, this, index, _size - index);
+		SetNull(_size);
+		if (!Contains(item))
+			uniqueElements.RemoveValue(item);
+		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	internal override void SetInternal(int index, T item)
 	{
 		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
-		if (_size == entries.Length)
+		int bucket = hashCode % buckets.Length;
+		ref Entry t = ref entries[index];
+		uint collisionCount = 0;
+		int oldBucket = ~t.hashCode % buckets.Length;
+		int last = -1;
+		for (int i = ~buckets[oldBucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
-			Resize();
-			targetBucket = hashCode % buckets.Length;
+			if (i == index)
+			{
+				if (last < 0)
+					buckets[oldBucket] = entries[i].next;
+				else
+				{
+					ref Entry t2 = ref entries[last];
+					t2.next = entries[i].next;
+				}
+				break;
+			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
 		}
-		ref Entry t2 = ref entries[index];
-		t2.hashCode = ~hashCode;
-		t2.next = buckets[targetBucket];
-		t2.item = item;
-		buckets[targetBucket] = ~index;
+		T? oldItem = t.item;
+		t.hashCode = ~hashCode;
+		t.next = buckets[bucket];
+		t.item = item;
+		buckets[bucket] = ~index;
+		if (!Contains(item))
+			uniqueElements.RemoveValue(oldItem);
+		uniqueElements.TryAdd(item);
 		Changed();
 	}
 }

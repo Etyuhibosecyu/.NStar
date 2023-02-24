@@ -1,5 +1,4 @@
-﻿using Corlib.NStar;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Corlib.NStar;
 
@@ -159,9 +158,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (CreateVar(match(item), out bool b) && i != targetIndex++)
-				SetInternal(targetIndex - 1, item);
-			else if (!b)
+			if (match(item))
+			{
+				if (i != targetIndex)
+					SetInternal(targetIndex, item);
+				targetIndex++;
+			}
+			else
 				result2.Add(item);
 		}
 		_size = targetIndex;
@@ -175,9 +178,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		for (int i = 0; i < _size; i++)
 		{
 			T item = GetInternal(i);
-			if (CreateVar(match(item, i), out bool b) && i != targetIndex++)
-				SetInternal(targetIndex - 1, item);
-			else if (!b)
+			if (match(item, i))
+			{
+				if (i != targetIndex)
+					SetInternal(targetIndex, item);
+				targetIndex++;
+			}
+			else
 				result2.Add(item);
 		}
 		_size = targetIndex;
@@ -247,16 +254,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (item == null)
 		{
-			for (int i = 0; i < count; i++)
-				if (GetInternal(index + i) == null)
+			for (int i = index; i < index + count; i++)
+				if (GetInternal(i) == null)
 					return true;
 			return false;
 		}
 		else
 		{
 			EqualityComparer<T> c = EqualityComparer<T>.Default;
-			for (int i = 0; i < count; i++)
-				if (c.Equals(GetInternal(index + i), item))
+			for (int i = index; i < index + count; i++)
+				if (c.Equals(GetInternal(i), item))
 					return true;
 			return false;
 		}
@@ -331,8 +338,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = 0; i < count; i++)
-			if (hs.Contains(GetInternal(index + i)))
+		for (int i = index; i < index + count; i++)
+			if (hs.Contains(GetInternal(i)))
 				return true;
 		return false;
 	}
@@ -358,8 +365,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = 0; i < count; i++)
-			if (!hs.Contains(GetInternal(index + i)))
+		for (int i = index; i < index + count; i++)
+			if (!hs.Contains(GetInternal(i)))
 				return true;
 		return false;
 	}
@@ -852,9 +859,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection is not G.ICollection<T> c)
 			return IndexOf(CollectionCreator(collection), index, count, out otherCount);
 		otherCount = c.Count;
-		for (int i = 0; i <= count - otherCount; i++)
-			if (EqualsInternal(collection, index + i))
-				return index + i;
+		for (int i = index; i <= index + count - otherCount; i++)
+			if (EqualsInternal(collection, i))
+				return i;
 		return -1;
 	}
 
@@ -889,9 +896,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = 0; i < count; i++)
-			if (hs.Contains(GetInternal(index + i)))
-				return index + i;
+		for (int i = index; i < index + count; i++)
+			if (hs.Contains(GetInternal(i)))
+				return i;
 		return -1;
 	}
 
@@ -916,9 +923,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = 0; i < count; i++)
-			if (!hs.Contains(GetInternal(index + i)))
-				return index + i;
+		for (int i = index; i < index + count; i++)
+			if (!hs.Contains(GetInternal(i)))
+				return i;
 		return -1;
 	}
 
@@ -1067,9 +1074,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = count - 1; i >= 0; i--)
-			if (hs.Contains(GetInternal(index + i)))
-				return index + i;
+		int startIndex = index + 1 - count;
+		for (int i = index; i >= startIndex; i--)
+			if (hs.Contains(GetInternal(i)))
+				return i;
 		return -1;
 	}
 
@@ -1096,9 +1104,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		ListHashSet<T> hs = collection.ToHashSet();
-		for (int i = count - 1; i >= 0; i--)
-			if (!hs.Contains(GetInternal(index + i)))
-				return index + i;
+		int startIndex = index + 1 - count;
+		for (int i = index; i >= startIndex; i--)
+			if (!hs.Contains(GetInternal(i)))
+				return i;
 		return -1;
 	}
 
@@ -2080,8 +2089,8 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 
 	private protected override void ClearInternal(int index, int count)
 	{
-		for (int i = 0; i < count; i++)
-			SetInternal(index + i, default!);
+		for (int i = index; i < index + count; i++)
+			SetInternal(i, default!);
 	}
 
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;

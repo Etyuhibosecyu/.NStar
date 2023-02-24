@@ -1,5 +1,4 @@
-﻿
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
 
 namespace Corlib.NStar.Tests;
@@ -701,6 +700,76 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).Insert(-1, defaultCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(1, null));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(5, (G.IEnumerable<string>)null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestLastIndexOf()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.LastIndexOf("MMM");
+			Assert.AreEqual(b, 4);
+			b = a.LastIndexOf("BBB", 2);
+			Assert.AreEqual(b, 1);
+			b = a.LastIndexOf("BBB", 3, 2);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 2);
+			b = a.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOf(new[] { "MMM", "EEE" }, 3);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
+			Assert.AreEqual(b, 4);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestLastIndexOfAny()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 6);
+			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
+			Assert.AreEqual(b, 2);
+			b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestLastIndexOfAnyExcluding()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 5);
+			b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, 6);
+			b = a.LastIndexOfAnyExcluding(a);
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 		catch (Exception ex)
 		{

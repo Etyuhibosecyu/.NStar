@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
@@ -948,6 +947,19 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 		grandParent.ColorRed();
 		newChildOfGreatGrandParent.ColorBlack();
 		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
+#if DEBUG
+		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
+		{
+			if (x?.Right != null && x?.Right == x?.Left)
+				throw new InvalidOperationException();
+			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
+				throw new InvalidOperationException();
+			if (x?.Left != null && x?.Left.Parent == null)
+				throw new InvalidOperationException();
+			if (x?.Right != null && x?.Right.Parent == null)
+				throw new InvalidOperationException();
+		}
+#endif
 	}
 
 	/// <summary>
@@ -1293,6 +1305,21 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
 		}
+#if DEBUG
+		if (_size != root.LeavesCount)
+			throw new InvalidOperationException();
+		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		{
+			if (x?.Right != null && x?.Right == x?.Left)
+				throw new InvalidOperationException();
+			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
+				throw new InvalidOperationException();
+			if (x?.Left != null && x?.Left.Parent == null)
+				throw new InvalidOperationException();
+			if (x?.Right != null && x?.Right.Parent == null)
+				throw new InvalidOperationException();
+		}
+#endif
 		root?.ColorBlack();
 		return foundMatch;
 	}
@@ -1328,7 +1355,10 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 		if (parent != null)
 			parent.ReplaceChild(child, newChild);
 		else
+		{
 			root = newChild;
+			root?.Isolate();
+		}
 	}
 
 	/// <summary>
@@ -1354,12 +1384,26 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 				// Detach the successor from its parent and set its right child.
 				parentOfSuccessor.Left = successor.Right;
 				successor.Right = match.Right;
+				parentOfSuccessor.FixUp();
 			}
 			successor.Left = match.Left;
 		}
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
+#if DEBUG
+		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
+		{
+			if (x?.Right != null && x?.Right == x?.Left)
+				throw new InvalidOperationException();
+			if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
+				throw new InvalidOperationException();
+			if (x?.Left != null && x?.Left.Parent == null)
+				throw new InvalidOperationException();
+			if (x?.Right != null && x?.Right.Parent == null)
+				throw new InvalidOperationException();
+		}
+#endif
 	}
 
 	public override int Search(T item)
@@ -1740,6 +1784,19 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 				_left = value;
 				if (_left != null)
 					_left.Parent = this;
+#if DEBUG
+				foreach (var x in new[] { this, _left, _right, Parent })
+				{
+					if (x?.Right != null && x?.Right == x?.Left)
+						throw new InvalidOperationException();
+					if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
+						throw new InvalidOperationException();
+					if (x?.Left != null && x?.Left.Parent == null)
+						throw new InvalidOperationException();
+					if (x?.Right != null && x?.Right.Parent == null)
+						throw new InvalidOperationException();
+				}
+#endif
 			}
 		}
 
@@ -1756,6 +1813,19 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 				_right = value;
 				if (_right != null)
 					_right.Parent = this;
+#if DEBUG
+				foreach (var x in new[] { this, _left, _right, Parent })
+				{
+					if (x?.Right != null && x?.Right == x?.Left)
+						throw new InvalidOperationException();
+					if (x != null && x.LeavesCount != (x.Left?.LeavesCount ?? 0) + (x.Right?.LeavesCount ?? 0) + 1)
+						throw new InvalidOperationException();
+					if (x?.Left != null && x?.Left.Parent == null)
+						throw new InvalidOperationException();
+					if (x?.Right != null && x?.Right.Parent == null)
+						throw new InvalidOperationException();
+				}
+#endif
 			}
 		}
 
@@ -1813,6 +1883,14 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 			return newRoot;
 		}
 
+		public void FixUp()
+		{
+			if (Left != null)
+				Left.Parent = this;
+			if (Right != null)
+				Right.Parent = this;
+		}
+
 		/// <summary>
 		/// Gets the rotation this node should undergo during a removal.
 		/// </summary>
@@ -1844,6 +1922,14 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 		public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
 
 		public static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+
+		public void Isolate()
+		{
+			if (Parent != null && Parent.Left == this)
+				Parent.Left = null;
+			if (Parent != null && Parent.Right == this)
+				Parent.Right = null;
+		}
 
 		/// <summary>
 		/// Combines two 2-nodes into a 4-node.

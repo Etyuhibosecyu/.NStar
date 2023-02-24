@@ -2,14 +2,14 @@
 namespace Corlib.NStar.Tests;
 
 [TestClass]
-public class FakeIndAftDelHashListTests
+public class FastDelHashListTests
 {
 	[TestMethod]
 	public void ComplexTest()
 	{
 		try
 		{
-			FakeIndAftDelHashList<int> fhs = new();
+			FastDelHashList<int> fhs = new();
 			G.List<int> gs = new();
 			for (int i = 0; i < 100; i++)
 			{
@@ -46,14 +46,14 @@ public class FakeIndAftDelHashListTests
 }
 
 [TestClass]
-public class SlowDeletionHashListTests
+public class HashListTests
 {
 	[TestMethod]
 	public void ComplexTest()
 	{
 		try
 		{
-			SlowDeletionHashList<int> shs = new();
+			HashList<int> shs = new();
 			G.List<int> gs = new();
 			for (int i = 0; i < 100; i++)
 			{

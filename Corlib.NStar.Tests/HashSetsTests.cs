@@ -2,14 +2,14 @@
 namespace Corlib.NStar.Tests;
 
 [TestClass]
-public class FakeIndAftDelHashSetTests
+public class FastDelHashSetTests
 {
 	[TestMethod]
 	public void ComplexTest()
 	{
 		try
 		{
-			FakeIndAftDelHashSet<int> fhs = new();
+			FastDelHashSet<int> fhs = new();
 			G.HashSet<int> gs = new();
 			for (int i = 0; i < 100; i++)
 			{
@@ -43,6 +43,71 @@ public class FakeIndAftDelHashSetTests
 					n = random.Next(fhs.Length);
 				} while (fhs[n] == 0);
 				Assert.AreEqual(fhs.IndexOf(fhs[n]), n);
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+}
+
+[TestClass]
+public class ListHashSetTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		try
+		{
+			ListHashSet<int> shs = new();
+			G.HashSet<int> gs = new();
+			for (int i = 0; i < 100; i++)
+			{
+				int n = random.Next(16);
+				shs.Add(n);
+				gs.Add(n);
+			}
+			Assert.IsTrue(shs.SetEquals(gs));
+			Assert.IsTrue(gs.SetEquals(shs));
+			for (int i = 0; i < 10; i++)
+			{
+				int n = random.Next(16);
+				shs.RemoveValue(n);
+				gs.Remove(n);
+			}
+			Assert.IsTrue(shs.SetEquals(gs));
+			Assert.IsTrue(gs.SetEquals(shs));
+			for (int i = 0; i < 10; i++)
+			{
+				int n = random.Next(16);
+				shs.Add(n);
+				gs.Add(n);
+			}
+			Assert.IsTrue(shs.SetEquals(gs));
+			Assert.IsTrue(gs.SetEquals(shs));
+			G.List<int> list = new(shs);
+			for (int i = 0; i < 10; i++)
+			{
+				int n = random.Next(shs.Length);
+				int n2 = random.Next(16);
+				if (CreateVar(shs.IndexOf(n2), out int foundIndex) == n || foundIndex == -1)
+				{
+					shs[n] = n2;
+					list[n] = n2;
+				}
+			}
+			gs = new(list);
+			Assert.IsTrue(shs.SetEquals(gs));
+			Assert.IsTrue(gs.SetEquals(shs));
+			for (int i = 0; i < 100; i++)
+			{
+				int n;
+				do
+				{
+					n = random.Next(shs.Length);
+				} while (shs[n] == 0);
+				Assert.AreEqual(shs.IndexOf(shs[n]), n);
 			}
 		}
 		catch (Exception ex)
@@ -94,71 +159,6 @@ public class ParallelHashSetTests
 					n = random.Next(phs.Length);
 				} while (phs[n] == 0);
 				Assert.AreEqual(phs.IndexOf(phs[n]), n);
-			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
-	}
-}
-
-[TestClass]
-public class SlowDeletionHashSetTests
-{
-	[TestMethod]
-	public void ComplexTest()
-	{
-		try
-		{
-			SlowDeletionHashSet<int> shs = new();
-			G.HashSet<int> gs = new();
-			for (int i = 0; i < 100; i++)
-			{
-				int n = random.Next(16);
-				shs.Add(n);
-				gs.Add(n);
-			}
-			Assert.IsTrue(shs.SetEquals(gs));
-			Assert.IsTrue(gs.SetEquals(shs));
-			for (int i = 0; i < 10; i++)
-			{
-				int n = random.Next(16);
-				shs.RemoveValue(n);
-				gs.Remove(n);
-			}
-			Assert.IsTrue(shs.SetEquals(gs));
-			Assert.IsTrue(gs.SetEquals(shs));
-			for (int i = 0; i < 10; i++)
-			{
-				int n = random.Next(16);
-				shs.Add(n);
-				gs.Add(n);
-			}
-			Assert.IsTrue(shs.SetEquals(gs));
-			Assert.IsTrue(gs.SetEquals(shs));
-			G.List<int> list = new(shs);
-			for (int i = 0; i < 10; i++)
-			{
-				int n = random.Next(shs.Length);
-				int n2 = random.Next(16);
-				if (CreateVar(shs.IndexOf(n2), out int foundIndex) == n || foundIndex == -1)
-				{
-					shs[n] = n2;
-					list[n] = n2;
-				}
-			}
-			gs = new(list);
-			Assert.IsTrue(shs.SetEquals(gs));
-			Assert.IsTrue(gs.SetEquals(shs));
-			for (int i = 0; i < 100; i++)
-			{
-				int n;
-				do
-				{
-					n = random.Next(shs.Length);
-				} while (shs[n] == 0);
-				Assert.AreEqual(shs.IndexOf(shs[n]), n);
 			}
 		}
 		catch (Exception ex)

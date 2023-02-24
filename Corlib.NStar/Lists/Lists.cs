@@ -369,7 +369,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 			return InsertInternal(index, CollectionCreator(collection));
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, index, count);
+	private protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, item, index, count);
 
 	public virtual TCertain NSort() => NSort(0, _size);
 
