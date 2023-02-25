@@ -832,7 +832,7 @@ public static unsafe partial class Extents
 		T* @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
 		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
 		CreateCounters(*@in, counters, n);
-		for (ushort i = 0; i < sizeof(T); i++)
+		for (int i = 0; i < sizeof(T); i++)
 		{
 			count = counters + 256 * i;
 			if (count[0] == n) continue;
@@ -853,7 +853,7 @@ public static unsafe partial class Extents
 		T2* @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
 		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
 		CreateCounters(*@in, counters, n);
-		for (ushort i = 0; i < sizeof(T); i++)
+		for (int i = 0; i < sizeof(T); i++)
 		{
 			count = counters + 256 * i;
 			if (count[0] == n) continue;
@@ -872,7 +872,7 @@ public static unsafe partial class Extents
 		Marshal.FreeHGlobal((IntPtr)counters);
 	}
 
-	private static void RadixPass<T>(ushort offset, int n, T* @in, T* @out, int* count) where T : unmanaged
+	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* count) where T : unmanaged
 	{
 		T* sp;
 		int s, c, i;
@@ -895,7 +895,7 @@ public static unsafe partial class Extents
 		}
 	}
 
-	private static void RadixPass<T, T2>(ushort offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
+	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
 	{
 		T* sp;
 		T2* sp2;
@@ -926,7 +926,7 @@ public static unsafe partial class Extents
 		FillMemory((IntPtr)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
 		byte* bp = (byte*)data;
 		byte* dataEnd = (byte*)(data + n);
-		ushort i;
+		int i;
 		while (bp != dataEnd)
 			for (i = 0; i < sizeof(T); i++)
 				counters[256 * i + *bp++]++;

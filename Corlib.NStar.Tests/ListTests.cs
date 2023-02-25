@@ -776,4 +776,74 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestNSort()
+	{
+		try
+		{
+			var c = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
+			var a = new List<string>(c);
+			var b = new List<string>(a).NSort(x => x[^1]);
+			c = E.ToList(E.OrderBy(c, x => x[^1]));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestRemove()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = new List<string>(a).Remove(6);
+			var c = new G.List<string>(list);
+			c.RemoveRange(6, 1);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Remove(0, 1);
+			c = new G.List<string>(list);
+			c.RemoveRange(0, 1);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Remove(1, list.Length - 2);
+			c = new G.List<string>(list);
+			c.RemoveRange(1, list.Length - 2);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Remove(1, 4);
+			c = new G.List<string>(list);
+			c.RemoveRange(1, 4);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Remove(list.Length - 5, 4);
+			c = new G.List<string>(list);
+			c.RemoveRange(list.Length - 5, 4);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Remove(list.Length - 5, 10 - list.Length);
+			c = new G.List<string>(list);
+			c.RemoveRange(list.Length - 5, 10 - list.Length);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1, 6));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(list.Length - 1, 2 - list.Length));
+			Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

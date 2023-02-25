@@ -337,7 +337,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		for (int i = index; i < index + count; i++)
 			if (hs.Contains(GetInternal(i)))
 				return true;
@@ -364,7 +364,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		for (int i = index; i < index + count; i++)
 			if (!hs.Contains(GetInternal(i)))
 				return true;
@@ -895,7 +895,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		for (int i = index; i < index + count; i++)
 			if (hs.Contains(GetInternal(i)))
 				return i;
@@ -922,7 +922,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		for (int i = index; i < index + count; i++)
 			if (!hs.Contains(GetInternal(i)))
 				return i;
@@ -1073,7 +1073,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		int startIndex = index + 1 - count;
 		for (int i = index; i >= startIndex; i--)
 			if (hs.Contains(GetInternal(i)))
@@ -1103,7 +1103,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		ListHashSet<T> hs = collection.ToHashSet();
+		var hs = collection.ToHashSet();
 		int startIndex = index + 1 - count;
 		for (int i = index; i >= startIndex; i--)
 			if (!hs.Contains(GetInternal(i)))
@@ -2111,7 +2111,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 	public virtual void ExceptWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = new ListHashSet<T>(other);
+			set = other.ToHashSet();
 		FilterInPlace(x => !set.Contains(x));
 	}
 
@@ -2128,7 +2128,7 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 	public virtual void IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
-			set = new ListHashSet<T>(other);
+			set = other.ToHashSet();
 		FilterInPlace(set.Contains);
 	}
 
