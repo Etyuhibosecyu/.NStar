@@ -846,4 +846,83 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestRemoveAll()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.RemoveAll(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.RemoveAll(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.RemoveAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.RemoveAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestRemoveAt()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			for (int i = 0; i < 1000; i++)
+			{
+				int index = random.Next(a.Length);
+				var b = new List<string>(a).RemoveAt(index);
+				var c = new G.List<string>(a);
+				c.RemoveAt(index);
+				Assert.IsTrue(a[..index].Equals(b[..index]));
+				Assert.IsTrue(E.SequenceEqual(b[..index], a[..index]));
+				Assert.IsTrue(a[(index + 1)..].Equals(b[index..]));
+				Assert.IsTrue(E.SequenceEqual(b[index..], a[(index + 1)..]));
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestRemoveValue()
+	{
+		try
+		{
+			var a = new Chain(15, 10).ToList();
+			for (int i = 0; i < 1000; i++)
+			{
+				int value = a[random.Next(a.Length)];
+				var b = new List<int>(a);
+				b.RemoveValue(value);
+				var c = new G.List<int>(a);
+				c.Remove(value);
+				foreach (var x in a)
+					Assert.AreEqual(b.Contains(x), x != value);
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

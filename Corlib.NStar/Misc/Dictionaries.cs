@@ -27,7 +27,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	[NonSerialized]
 	private object? _syncRoot;
 
-	private const int _defaultCapacity = 4;
+	private const int _defaultCapacity = 32;
 	private const int _sortingThreshold = 64;
 
 	public SortedDictionary()

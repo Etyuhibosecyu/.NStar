@@ -1207,9 +1207,11 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
-	public virtual NList<T> Sort(Func<T, uint> function, int index, int count) =>
-		//Radix.Sort(_items + index, function, count);
-		this;
+	public virtual NList<T> Sort(Func<T, uint> function, int index, int count)
+	{
+		NSort(_items, function, index, count);
+		return this;
+	}
 
 	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
 }

@@ -60547,6 +60547,7 @@ public static class RedStarLinq
 	public static Dictionary<TSource, TSource2> ToDictionary<TSource, TSource2>(this IEnumerable<KeyValuePair<TSource, TSource2>> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => new(source, equalFunction, hashCodeFunction);
 	public static ListHashSet<TSource> ToHashSet<TSource>(this IEnumerable<TSource> source) => new(source);
 	public static List<TSource> ToList<TSource>(this IEnumerable<TSource> source) => List<TSource>.ReturnOrConstruct(source);
+	public static NList<TSource> ToNList<TSource>(this IEnumerable<TSource> source) where TSource : unmanaged => NList<TSource>.ReturnOrConstruct(source);
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));
 	public static string ToString<TSource>(this IEnumerable<TSource> source, Func<TSource, int, char> function) => new(List<TSource>.ToArrayEnumerable(source, function));
 	public static string ToString(this IEnumerable<char> source) => new(List<char>.ToArrayEnumerable(source));

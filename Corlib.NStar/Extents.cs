@@ -10,6 +10,17 @@ using System.Runtime.InteropServices.JavaScript;
 
 namespace Corlib.NStar;
 
+public enum PrimitiveType : byte
+{
+	ByteType,
+	ShortType,
+	UShortType,
+	IntType,
+	UIntType,
+	LongType,
+	ULongType,
+}
+
 public class Comparer<T> : IComparer<T>
 {
 	private readonly Func<T, T, int> comparer;
@@ -487,6 +498,23 @@ public static unsafe partial class Extents
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
 	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
 
+	public static Comparer<T[]> ArraySequentialComparer<T>() where T : unmanaged, IComparable<T> => new((x, y) =>
+	{
+		int minLength = Min(x.Length, y.Length);
+		for (int i = 0; i < minLength; i++)
+		{
+			if (x[i].CompareTo(y[i]) < 0)
+				return -1;
+			if (x[i].CompareTo(y[i]) > 0)
+				return 1;
+		}
+		if (x.Length < y.Length)
+			return -1;
+		if (x.Length > y.Length)
+			return 1;
+		return 0;
+	});
+
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
@@ -501,9 +529,23 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
 
-	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)source, (IntPtr)destination, (uint)(sizeof(T) * length));
+	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)destination, (IntPtr)source, (uint)(sizeof(T) * length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
+
+	public static void CopyMemory<T>(T[] source, T[] destination, int length) where T : unmanaged
+	{
+		fixed (T* source2 = source)
+		fixed (T* destination2 = destination)
+			CopyMemory(source2, destination2, length);
+	}
+
+	public static void CopyMemory<T>(T[] source, int sourceIndex, T[] destination, int destinationIndex, int length) where T : unmanaged
+	{
+		fixed (T* source2 = source)
+		fixed (T* destination2 = destination)
+			CopyMemory(source2 + sourceIndex, destination2 + destinationIndex, length);
+	}
 
 	public static T CreateVar<T>(T value, out T @out) => @out = value;
 
@@ -786,6 +828,30 @@ public static unsafe partial class Extents
 		return array;
 	}
 
+	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int count) where T : unmanaged
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		uint* converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
+		int* indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
+		for (int i = 0; i < count; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort(&converted, &indexes, count);
+		Marshal.FreeHGlobal((IntPtr)converted);
+		T* oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
+		CopyMemory(array + index, oldItems, count);
+		for (int i = 0; i < count; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((IntPtr)oldItems);
+		Marshal.FreeHGlobal((IntPtr)indexes);
+		return array;
+	}
+
 	public static int NthAbsent<TCertain>(this SortedSetBase<int, TCertain> set, int n) where TCertain : SortedSetBase<int, TCertain>, new()
 	{
 		if (set == null)
@@ -965,4 +1031,18 @@ public static unsafe partial class Extents
 		Array.Sort(source, index, length, comparer);
 		return source;
 	}
+
+	public static PrimitiveType GetPrimitiveType<T>() where T : unmanaged => typeof(T).Equals(typeof(byte)) ? PrimitiveType.ByteType : typeof(T).Equals(typeof(short)) ? PrimitiveType.ShortType : typeof(T).Equals(typeof(ushort)) ? PrimitiveType.UShortType : typeof(T).Equals(typeof(int)) ? PrimitiveType.IntType : typeof(T).Equals(typeof(uint)) ? PrimitiveType.UIntType : typeof(T).Equals(typeof(long)) ? PrimitiveType.LongType : typeof(T).Equals(typeof(ulong)) ? PrimitiveType.ULongType : throw new InvalidOperationException();
+
+	public static int ToInt<T>(T item, PrimitiveType type) where T : unmanaged => type switch
+	{
+		PrimitiveType.ByteType => (byte)(object)item,
+		PrimitiveType.ShortType => (short)(object)item,
+		PrimitiveType.UShortType => (ushort)(object)item,
+		PrimitiveType.IntType => (int)(object)item,
+		PrimitiveType.UIntType => (int)(uint)(object)item,
+		PrimitiveType.LongType => (int)(long)(object)item,
+		PrimitiveType.ULongType => (int)(ulong)(object)item,
+		_ => default,
+	};
 }
