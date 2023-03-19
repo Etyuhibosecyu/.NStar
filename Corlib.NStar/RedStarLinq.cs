@@ -56840,6 +56840,40 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static List<TResult> PFillEnumerable<TResult>(TResult elem, int count)
+	{
+		List<TResult> result = new(count);
+		Parallel.For(0, count, i => result._items[i] = elem);
+		result._size = count;
+		return result;
+	}
+
+	internal static List<TResult> PFillEnumerable<TResult>(Func<int, TResult> function, int count)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		List<TResult> result = new(count);
+		Parallel.For(0, count, i => result._items[i] = function(i));
+		result._size = count;
+		return result;
+	}
+
+	internal static TResult[] PFillArrayEnumerable<TResult>(TResult elem, int count)
+	{
+		TResult[] result = new TResult[count];
+		Parallel.For(0, count, i => result[i] = elem);
+		return result;
+	}
+
+	internal static TResult[] PFillArrayEnumerable<TResult>(Func<int, TResult> function, int count)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		TResult[] result = new TResult[count];
+		Parallel.For(0, count, i => result[i] = function(i));
+		return result;
+	}
+
 	internal static List<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, bool> function)
 	{
 		if (function == null)
@@ -62671,6 +62705,12 @@ public static class RedStarLinq
 	public static bool PContains<TSource>(this G.IList<TSource> source, TSource target, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) => List<bool>.PContainsEnumerable(source, target, equalFunction, hashCodeFunction);
 	public static List<TResult> PConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) => List<TResult>.PConvertEnumerable(source, function);
 	public static List<TResult> PConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.PConvertEnumerable(source, function);
+	public static List<TResult> PFill<TResult>(TResult elem, int count) => List<TResult>.PFillEnumerable(elem, count);
+	public static List<TResult> PFill<TResult>(Func<int, TResult> function, int count) => List<TResult>.PFillEnumerable(function, count);
+	public static List<TResult> PFill<TResult>(int count, Func<int, TResult> function) => List<TResult>.PFillEnumerable(function, count);
+	public static TResult[] PFillArray<TResult>(TResult elem, int count) => List<TResult>.PFillArrayEnumerable(elem, count);
+	public static TResult[] PFillArray<TResult>(Func<int, TResult> function, int count) => List<TResult>.PFillArrayEnumerable(function, count);
+	public static TResult[] PFillArray<TResult>(int count, Func<int, TResult> function) => List<TResult>.PFillArrayEnumerable(function, count);
 	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, bool> function) => List<bool>.PFilterEnumerable(source, function);
 	public static List<TSource> PFilter<TSource>(this G.IList<TSource> source, Func<TSource, int, bool> function) => List<bool>.PFilterEnumerable(source, function);
 	public static TResult[] PToArray<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) => List<TResult>.PToArrayEnumerable(source, function);
