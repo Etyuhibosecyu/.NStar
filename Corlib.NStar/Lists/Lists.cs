@@ -1083,6 +1083,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 					CopyMemory(list._items, 0, newItems, index, count);
 				Marshal.FreeHGlobal((IntPtr)_items);
 				_items = newItems;
+				_capacity = newCapacity;
 			}
 			else
 			{

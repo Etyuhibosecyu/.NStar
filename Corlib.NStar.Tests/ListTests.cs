@@ -411,6 +411,146 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestFind()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.Find(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.Find(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestFindAll()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.FindAll(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindAll(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestFindIndex()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.FindIndex(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindIndex(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestFindLast()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.FindLast(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindLast(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestFindLastIndex()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.FindLastIndex(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindLastIndex(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
 	public void TestGetAfter()
 	{
 		try

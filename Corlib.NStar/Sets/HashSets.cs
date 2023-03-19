@@ -561,17 +561,30 @@ public abstract class FastDelHashSet<T, TCertain> : HashSetBase<T, TCertain> whe
 			return this as TCertain ?? throw new InvalidOperationException();
 		if (entries[index].item == null)
 			return this as TCertain ?? throw new InvalidOperationException();
-		int hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
-		if (bucket != index)
+		ref Entry t = ref entries[index];
+		uint collisionCount = 0;
+		int bucket = ~t.hashCode % buckets.Length;
+		int last = -1;
+		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
-			ref Entry t = ref entries[bucket];
-			t.next = entries[index].next;
+			if (i == index)
+			{
+				if (last < 0)
+					buckets[bucket] = entries[i].next;
+				else
+				{
+					ref Entry t2 = ref entries[last];
+					t2.next = entries[i].next;
+				}
+				break;
+			}
+			collisionCount++;
+			if (collisionCount > entries.Length)
+				throw new InvalidOperationException();
 		}
-		ref Entry t2 = ref entries[index];
-		t2.hashCode = 0;
-		t2.next = freeList;
-		t2.item = default!;
+		t.hashCode = 0;
+		t.next = freeList;
+		t.item = default!;
 		freeList = ~index;
 		freeCount++;
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -636,26 +649,6 @@ public abstract class FastDelHashSet<T, TCertain> : HashSetBase<T, TCertain> whe
 			_size++;
 		}
 		ref Entry t = ref entries[index];
-		uint collisionCount = 0;
-		int oldBucket = ~t.hashCode % buckets.Length;
-		int last = -1;
-		for (int i = ~buckets[oldBucket]; i >= 0; last = i, i = ~entries[i].next)
-		{
-			if (i == index)
-			{
-				if (last < 0)
-					buckets[oldBucket] = entries[i].next;
-				else
-				{
-					ref Entry t2 = ref entries[last];
-					t2.next = entries[i].next;
-				}
-				break;
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;

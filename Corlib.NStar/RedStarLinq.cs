@@ -1967,7 +1967,7 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<TSource> list && source2 is List<TSource2> list2)
 		{
-			int count = list._size;
+			int count = Math.Min(list._size, list2._size);
 			for (int i = 0; i < count; i++)
 			{
 				TSource item = list._items[i];

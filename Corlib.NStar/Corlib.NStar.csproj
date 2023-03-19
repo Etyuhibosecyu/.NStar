@@ -6,6 +6,8 @@
 		<DefineConstants>$(DefineConstants)</DefineConstants>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 		<PlatformTarget>x64</PlatformTarget>
+	  <DebugType>none</DebugType>
+	  <Platforms>AnyCPU</Platforms>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Mpir.NET" Version="0.4.0" />
