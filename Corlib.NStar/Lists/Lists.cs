@@ -892,12 +892,12 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
 				if (_size > 0)
 					CopyMemory(_items, newItems, _size);
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 			}
 			else
 			{
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = _emptyArray;
 			}
 			_capacity = value;
@@ -956,7 +956,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	public override void Dispose()
 	{
-		Marshal.FreeHGlobal((IntPtr)_items);
+		Marshal.FreeHGlobal((nint)_items);
 		_capacity = 0;
 		_size = 0;
 		GC.SuppressFinalize(this);
@@ -1011,7 +1011,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			if (index < _size)
 				CopyMemory(_items, index, newItems, index + 1, _size - index);
 			newItems[index] = item;
-			Marshal.FreeHGlobal((IntPtr)_items);
+			Marshal.FreeHGlobal((nint)_items);
 			_items = newItems;
 		}
 		else
@@ -1042,7 +1042,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			if (index < _size)
 				CopyMemory(_items, index, newItems, index + count, _size - index);
 			span.CopyTo(new(newItems + index, newCapacity - index));
-			Marshal.FreeHGlobal((IntPtr)_items);
+			Marshal.FreeHGlobal((nint)_items);
 			_items = newItems;
 		}
 		else
@@ -1081,7 +1081,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 				}
 				else
 					CopyMemory(list._items, 0, newItems, index, count);
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 				_capacity = newCapacity;
 			}
@@ -1118,7 +1118,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 					CopyMemory(_items, index, newItems, index + count, _size - index);
 				fixed (T* ptr = array)
 					CopyMemory(ptr, 0, newItems, index, count);
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 			}
 			else
@@ -1149,7 +1149,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 					CopyMemory(_items, index, newItems, index + count, _size - index);
 				fixed (T* ptr = list2.AsSpan())
 					CopyMemory(ptr, 0, newItems, index, list2.Count);
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 			}
 			else

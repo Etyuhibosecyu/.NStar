@@ -188,7 +188,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			{
 				uint* newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
 				CopyMemory(_items, newarray, newints > _capacity ? _capacity : newints);
-				Marshal.FreeHGlobal((IntPtr)_items);
+				Marshal.FreeHGlobal((nint)_items);
 				_items = newarray;
 				_capacity = newints;
 			}
@@ -496,7 +496,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	public override void Dispose()
 	{
-		Marshal.FreeHGlobal((IntPtr)_items);
+		Marshal.FreeHGlobal((nint)_items);
 		_capacity = 0;
 		_size = 0;
 		GC.SuppressFinalize(this);
@@ -586,14 +586,14 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		if (count > BitsPerInt)
 			throw new ArgumentException(null, nameof(count));
 		(int quotient, int remainder) = DivRem(index, BitsPerInt);
-		(int quotient2, int remainder2) = DivRem(index + count, BitsPerInt);
+		(int quotient2, int remainder2) = DivRem(index + count - 1, BitsPerInt);
 		uint result;
 		if (quotient == quotient2)
-			result = _items[quotient] & (~(~0u << count) << remainder);
+			result = (_items[quotient] >> remainder) & (((uint)1 << count) - 1);
 		else
 		{
-			result = _items[quotient] & (~0u << remainder);
-			result |= (_items[quotient + 1] & (((uint)1 << remainder2) - 1)) << BitsPerInt - remainder2;
+			result = _items[quotient] >> remainder;
+			result |= (_items[quotient + 1] & (((uint)1 << remainder2 + 1) - 1)) << BitsPerInt - remainder;
 		}
 		return result;
 	}

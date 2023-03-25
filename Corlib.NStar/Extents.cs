@@ -493,10 +493,10 @@ public static unsafe partial class Extents
 		46279, 46301, 46307, 46309, 46327, 46337 };
 
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlCopyMemory", SetLastError = false)]
-	private static partial void CopyMemory(IntPtr destination, IntPtr source, uint length);
+	private static partial void CopyMemory(nint destination, nint source, uint length);
 
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
-	private static partial void FillMemory(IntPtr destination, uint length, byte fill);
+	private static partial void FillMemory(nint destination, uint length, byte fill);
 
 	public static Comparer<T[]> ArraySequentialComparer<T>() where T : unmanaged, IComparable<T> => new((x, y) =>
 	{
@@ -529,7 +529,7 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
 
-	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((IntPtr)destination, (IntPtr)source, (uint)(sizeof(T) * length));
+	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((nint)destination, (nint)source, (uint)(sizeof(T) * length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
@@ -561,7 +561,7 @@ public static unsafe partial class Extents
 		return (quotient, remainder);
 	}
 
-	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((IntPtr)source, (uint)(sizeof(T) * length), fill);
+	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((nint)source, (uint)(sizeof(T) * length), fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
@@ -820,11 +820,11 @@ public static unsafe partial class Extents
 			indexes[i] = i;
 		}
 		RadixSort(&converted, &indexes, count);
-		Marshal.FreeHGlobal((IntPtr)converted);
+		Marshal.FreeHGlobal((nint)converted);
 		T[] oldItems = array[index..(index + count)];
 		for (int i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((IntPtr)indexes);
+		Marshal.FreeHGlobal((nint)indexes);
 		return array;
 	}
 
@@ -842,13 +842,13 @@ public static unsafe partial class Extents
 			indexes[i] = i;
 		}
 		RadixSort(&converted, &indexes, count);
-		Marshal.FreeHGlobal((IntPtr)converted);
+		Marshal.FreeHGlobal((nint)converted);
 		T* oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
 		CopyMemory(array + index, oldItems, count);
 		for (int i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((IntPtr)oldItems);
-		Marshal.FreeHGlobal((IntPtr)indexes);
+		Marshal.FreeHGlobal((nint)oldItems);
+		Marshal.FreeHGlobal((nint)indexes);
 		return array;
 	}
 
@@ -909,8 +909,8 @@ public static unsafe partial class Extents
 			@out = temp;
 #pragma warning restore IDE0180 // Использовать кортеж для переключения значений
 		}
-		Marshal.FreeHGlobal((IntPtr)@out);
-		Marshal.FreeHGlobal((IntPtr)counters);
+		Marshal.FreeHGlobal((nint)@out);
+		Marshal.FreeHGlobal((nint)counters);
 	}
 
 	internal static void RadixSort<T, T2>(T** @in, T2** in2, int n) where T : unmanaged where T2 : unmanaged
@@ -933,9 +933,9 @@ public static unsafe partial class Extents
 			@out2 = temp2;
 #pragma warning restore IDE0180 // Использовать кортеж для переключения значений
 		}
-		Marshal.FreeHGlobal((IntPtr)@out);
-		Marshal.FreeHGlobal((IntPtr)out2);
-		Marshal.FreeHGlobal((IntPtr)counters);
+		Marshal.FreeHGlobal((nint)@out);
+		Marshal.FreeHGlobal((nint)out2);
+		Marshal.FreeHGlobal((nint)counters);
 	}
 
 	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* count) where T : unmanaged
@@ -989,7 +989,7 @@ public static unsafe partial class Extents
 
 	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
 	{
-		FillMemory((IntPtr)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
+		FillMemory((nint)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
 		byte* bp = (byte*)data;
 		byte* dataEnd = (byte*)(data + n);
 		int i;
