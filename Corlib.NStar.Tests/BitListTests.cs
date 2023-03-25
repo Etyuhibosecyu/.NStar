@@ -61,6 +61,16 @@ public class BitListTests
 				range = bitList.GetSmallRange(sourceIndex, length);
 				Assert.IsTrue(bitList[sourceIndex..(sourceIndex + length)].Equals(new BitList(new[] { range })[..length]));
 			}
+			length = 32;
+			for (int i = 0; i < 100; i++)
+			{
+				bytes = new byte[40];
+				random.NextBytes(bytes);
+				sourceIndex = random.Next(bytes.Length * 8 - length);
+				bitList = new(bytes);
+				range = bitList.GetSmallRange(sourceIndex, length);
+				Assert.IsTrue(bitList[sourceIndex..(sourceIndex + length)].Equals(new BitList(new[] { range })[..length]));
+			}
 		}
 		catch (Exception ex)
 		{

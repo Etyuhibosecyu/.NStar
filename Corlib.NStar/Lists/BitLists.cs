@@ -328,7 +328,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		if (destinationEndIntIndex == destinationIntIndex)
 		{
 			uint buff = sourceBits[sourceIntIndex] & sourceStartMask;
-			uint destinationMask = ~(~0u << length) << destinationBitsIndex;
+			uint destinationMask = ~(length == BitsPerInt ? 0 : ~0u << length) << destinationBitsIndex;
 			if (bitsOffset >= 0)
 				buff <<= bitsOffset;
 			else
@@ -589,7 +589,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		(int quotient2, int remainder2) = DivRem(index + count - 1, BitsPerInt);
 		uint result;
 		if (quotient == quotient2)
-			result = (_items[quotient] >> remainder) & (((uint)1 << count) - 1);
+			result = (_items[quotient] >> remainder) & ~(count == BitsPerInt ? 0 : ~0u << count);
 		else
 		{
 			result = _items[quotient] >> remainder;
