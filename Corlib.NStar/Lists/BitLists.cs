@@ -504,13 +504,6 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	private protected override bool EqualsInternal(IEnumerable<bool>? collection, int index, bool toEnd = false)
 	{
-		//try
-		//{
-		//	throw new ExperimentalException();
-		//}
-		//catch
-		//{
-		//}
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is BitList bitList)
@@ -523,12 +516,12 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 				return !toEnd || index == _size;
 			(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
 			uint startMask = ~0u << bitsIndex;
-			int endIndex = bitList._size - 1;
-			(int endIntIndex, int endBitsIndex) = DivRem(endIndex, BitsPerInt);
-			if (endIntIndex == 0)
+			int destinationEndIndex = bitList._size - 1;
+			(int destinationEndIntIndex, int destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);
+			if (destinationEndIntIndex == 0)
 			{
 				uint buff = _items[intIndex] & startMask;
-				uint destinationMask = ~(~0u << bitList._size);
+				uint destinationMask = ~(bitList._size == BitsPerInt ? 0 : ~0u << bitList._size);
 				buff >>= bitsIndex;
 				if (bitList._size + bitsIndex > BitsPerInt)
 					buff |= _items[intIndex + 1] << BitsPerInt - bitsIndex;
@@ -537,22 +530,19 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			}
 			else
 			{
-				ulong buff = bitList._items[0];
-				buff |= (ulong)(_items[intIndex] & startMask) >> bitsIndex;
+				ulong buff = (ulong)(_items[intIndex] & startMask) >> bitsIndex;
 				int sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
-				for (int currentIntIndex = intIndex + 1; currentIntIndex <= sourceEndIntIndex; currentIntIndex++)
+				for (int sourceCurrentIntIndex = intIndex + 1, destinationCurrentIntIndex = 0; destinationCurrentIntIndex < destinationEndIntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
 				{
-					buff |= ((ulong)_items[currentIntIndex]) << BitsPerInt - bitsIndex;
-					if (bitList._items[currentIntIndex - intIndex - 1] != (uint)buff) return false;
+					buff |= ((ulong)_items[sourceCurrentIntIndex]) << BitsPerInt - bitsIndex;
+					if (bitList._items[destinationCurrentIntIndex] != (uint)buff) return false;
 					buff >>= BitsPerInt;
 				}
-				if (sourceEndIntIndex - intIndex < bitList._capacity)
-				{
-					ulong destinationMask = ((ulong)1 << endBitsIndex + 1) - 1;
-					buff &= destinationMask;
-					return (bitList._items[sourceEndIntIndex - intIndex] & (uint)destinationMask) == (uint)buff;
-				}
-				return true;
+				if (sourceEndIntIndex - intIndex != destinationEndIntIndex)
+					buff |= (ulong)_items[sourceEndIntIndex] << BitsPerInt - bitsIndex;
+				ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+				buff &= destinationMask;
+				return (bitList._items[destinationEndIntIndex] & destinationMask) == buff;
 			}
 		}
 		else

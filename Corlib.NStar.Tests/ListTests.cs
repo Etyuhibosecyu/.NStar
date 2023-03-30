@@ -1065,4 +1065,121 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestReplace()
+	{
+		try
+		{
+			var a = new List<string>(list).Replace(defaultCollection);
+			var b = new G.List<string>(list);
+			b.Clear();
+			b.AddRange(defaultCollection);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3));
+			b = new G.List<string>(list);
+			b.AddRange(defaultCollection.Skip(2).Take(3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestReplace2()
+	{
+		try
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				var arr = new char[1000];
+				for (int j = 0; j < 1000; j++)
+					arr[j] = (char)random.Next(33, 127);
+				string s = new(arr);
+				String a = s;
+				char oldItem = (char)random.Next(33, 127);
+				char newItem = (char)random.Next(33, 127);
+				var b = a.Replace(oldItem, newItem);
+				var c = s.Replace(oldItem, newItem);
+				Assert.IsTrue(a.Equals(s));
+				Assert.IsTrue(E.SequenceEqual(s, a));
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+			for (int i = 0; i < 100; i++)
+			{
+				var arr = new char[1000];
+				for (int j = 0; j < 1000; j++)
+					arr[j] = (char)random.Next(33, 127);
+				string s = new(arr);
+				String a = s;
+				var oldCollection = a.GetRange(random.Next(991), random.Next(1, 10)).ToString();
+				var newArray = new char[random.Next(10)];
+				for (int j = 0; j < newArray.Length; j++)
+					newArray[j] = (char)random.Next(33, 127);
+				string newCollection = new(newArray);
+				var b = a.Replace(oldCollection, newArray);
+				var c = s.Replace(oldCollection, newCollection);
+				Assert.IsTrue(a.Equals(s));
+				Assert.IsTrue(E.SequenceEqual(s, a));
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestReplaceInPlace()
+	{
+		try
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				var arr = new char[1000];
+				for (int j = 0; j < 1000; j++)
+					arr[j] = (char)random.Next(33, 127);
+				string s = new(arr);
+				String a = s;
+				char oldItem = (char)random.Next(33, 127);
+				char newItem = (char)random.Next(33, 127);
+				var b = a.ReplaceInPlace(oldItem, newItem);
+				var c = s.Replace(oldItem, newItem);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+			for (int i = 0; i < 100; i++)
+			{
+				var arr = new char[1000];
+				for (int j = 0; j < 1000; j++)
+					arr[j] = (char)random.Next(33, 127);
+				string s = new(arr);
+				String a = s;
+				var oldCollection = a.GetRange(random.Next(991), random.Next(1, 10)).ToString();
+				var newArray = new char[random.Next(10)];
+				for (int j = 0; j < newArray.Length; j++)
+					newArray[j] = (char)random.Next(33, 127);
+				string newCollection = new(newArray);
+				var b = a.ReplaceInPlace(oldCollection, newArray);
+				var c = s.Replace(oldCollection, newCollection);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				Assert.IsTrue(b.Equals(c));
+				Assert.IsTrue(E.SequenceEqual(c, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

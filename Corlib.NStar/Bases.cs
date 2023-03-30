@@ -1208,6 +1208,52 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Replace(IEnumerable<T> collection) => ReplaceRangeInternal(0, _size, collection);
 
+	public virtual TCertain Replace(T oldItem, T newItem)
+	{
+		TCertain result = CollectionCreator(this);
+		for (int index = IndexOf(oldItem); index >= 0; index = IndexOf(oldItem, index + 1))
+		{
+			result.SetInternal(index, newItem);
+		}
+		return result;
+	}
+
+	public virtual TCertain Replace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection)
+	{
+		int count = oldCollection.Count();
+		if (count == 0 || count > _size)
+			return CollectionCreator(this);
+		TCertain result = CapacityCreator(_size);
+		LimitedQueue<T> queue = new(count);
+		for (int i = 0; i < count - 1; i++)
+		{
+			queue.Enqueue(GetInternal(i));
+		}
+		for (int i = count - 1; i < _size; i++)
+		{
+			queue.Enqueue(GetInternal(i));
+			if (RedStarLinq.Equals(queue, oldCollection))
+			{
+				result.AddRange(newCollection);
+				queue.Clear();
+			}
+			else if (queue.Length == count)
+				result.Add(queue.Dequeue());
+		}
+		return result.AddRange(queue);
+	}
+
+	public virtual TCertain ReplaceInPlace(T oldItem, T newItem)
+	{
+		for (int index = IndexOf(oldItem); index >= 0; index = IndexOf(oldItem, index + 1))
+		{
+			SetInternal(index, newItem);
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain ReplaceInPlace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection) => Replace(Replace(oldCollection, newCollection));
+
 	public virtual TCertain ReplaceRange(int index, int count, IEnumerable<T> collection)
 	{
 		if ((uint)index > (uint)_size)

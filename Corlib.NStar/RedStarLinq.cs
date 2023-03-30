@@ -59608,6 +59608,24 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
+	internal static NList<TResult> PFillEnumerable<TResult>(TResult elem, int count) where TResult : unmanaged
+	{
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i => result._items[i] = elem);
+		result._size = count;
+		return result;
+	}
+
+	internal static NList<TResult> PFillEnumerable<TResult>(Func<int, TResult> function, int count) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		NList<TResult> result = new(count);
+		Parallel.For(0, count, i => result._items[i] = function(i));
+		result._size = count;
+		return result;
+	}
+
 	internal static NList<TSource> PFilterEnumerable<TSource>(G.IList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
 	{
 		if (function == null)
@@ -62852,4 +62870,7 @@ public static class RedStarLinq
 	public static NList<(TSource, TSource2, TSource3)> PNCombine<TSource, TSource2, TSource3>(this G.IList<TSource> source, G.IList<TSource2> source2, G.IList<TSource3> source3) where TSource : unmanaged where TSource2 : unmanaged where TSource3 : unmanaged => NList<(TSource, TSource2, TSource3)>.CombineEnumerable(source, source2, source3);
 	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, TResult> function) where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
 	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNFill<TResult>(TResult elem, int count) where TResult : unmanaged => NList<TResult>.PFillEnumerable(elem, count);
+	public static NList<TResult> PNFill<TResult>(Func<int, TResult> function, int count) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, count);
+	public static NList<TResult> PNFill<TResult>(int count, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, count);
 }

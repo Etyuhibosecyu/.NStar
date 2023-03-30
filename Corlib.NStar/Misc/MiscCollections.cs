@@ -439,8 +439,10 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		return arr;
 	}
 
-	private void SetCapacity(int capacity)
+	private protected void SetCapacity(int capacity)
 	{
+		if (Capacity == capacity)
+			return;
 		T[] newArray = new T[capacity];
 		if (_size > 0)
 		{
@@ -677,7 +679,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private Queue<T> PeekQueue()
+	private protected Queue<T> PeekQueue()
 	{
 		if (!isHigh && low != null)
 			return low;
@@ -804,9 +806,7 @@ public class LimitedQueue<T> : Queue<T>
 	{
 	}
 
-	public LimitedQueue(IEnumerable<T> col) : base(col)
-	{
-	}
+	public LimitedQueue(IEnumerable<T> col) : base(col) => SetCapacity(Length);
 
 	public override void Enqueue(T obj)
 	{
