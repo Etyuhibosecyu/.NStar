@@ -1182,4 +1182,54 @@ public class ListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestReplaceRange()
+	{
+		try
+		{
+			var a = new List<string>(list).ReplaceRange(2, 3, defaultCollection);
+			var b = new G.List<string>(list);
+			b.RemoveRange(2, 3);
+			b.InsertRange(2, defaultCollection);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).Insert(2, defaultCollection.AsSpan(2, 3));
+			b = new G.List<string>(list);
+			b.InsertRange(2, defaultCollection.Skip(2).Take(3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsException<ArgumentException>(() => a = new List<string>(list).ReplaceRange(1, 1000, defaultString));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(-1, 3, defaultCollection));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(4, -2, defaultCollection));
+			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).ReplaceRange(4, 1, null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestReverse()
+	{
+		try
+		{
+			var a = new List<string>(list).Reverse();
+			var b = new G.List<string>(list);
+			b.Reverse();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3)).Reverse();
+			b = new G.List<string>(list);
+			b.AddRange(defaultCollection.Skip(2).Take(3));
+			b.Reverse();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

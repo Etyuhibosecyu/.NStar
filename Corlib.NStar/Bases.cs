@@ -1243,6 +1243,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result.AddRange(queue);
 	}
 
+	public virtual TCertain Replace(TCertain oldList, TCertain newList) => Replace((IEnumerable<T>)oldList, newList);
+
 	public virtual TCertain ReplaceInPlace(T oldItem, T newItem)
 	{
 		for (int index = IndexOf(oldItem); index >= 0; index = IndexOf(oldItem, index + 1))
@@ -1253,6 +1255,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	}
 
 	public virtual TCertain ReplaceInPlace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection) => Replace(Replace(oldCollection, newCollection));
+
+	public virtual TCertain ReplaceInPlace(TCertain oldList, TCertain newList) => ReplaceInPlace((IEnumerable<T>)oldList, newList);
 
 	public virtual TCertain ReplaceRange(int index, int count, IEnumerable<T> collection)
 	{
@@ -1268,6 +1272,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentNullException(nameof(collection));
 		return ReplaceRangeInternal(index, count, collection);
 	}
+
+	public virtual TCertain ReplaceRange(int index, int count, TCertain list) => ReplaceRange(index, count, (IEnumerable<T>)list);
 
 	internal virtual TCertain ReplaceRangeInternal(int index, int count, IEnumerable<T> collection)
 	{
