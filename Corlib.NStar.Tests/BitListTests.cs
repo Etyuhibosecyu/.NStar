@@ -29,7 +29,6 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList[(destinationIndex + length)..], E.Skip(bitList2, destinationIndex + length)));
 			for (int i = 0; i < 1000; i++)
 			{
-				bytes = new byte[40];
 				random.NextBytes(bytes);
 				length = random.Next(97);
 				sourceIndex = random.Next(bytes.Length * 8 - length + 1);

@@ -1119,6 +1119,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract int LastIndexOfInternal(T item, int index, int count);
 
+	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];
+
 	public virtual TCertain Remove(int index) => Remove(index, _size - index);
 
 	public virtual TCertain Remove(int index, int count)
@@ -1318,7 +1320,6 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		int count = list._size;
 		if (index + count > _size)
 			throw new ArgumentException(null);
-		EnsureCapacity(index + count);
 		return SetRangeInternal(index, count, list);
 	}
 
@@ -1331,6 +1332,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	internal virtual TCertain SetRangeInternal(int index, int count, TCertain list)
 	{
+		EnsureCapacity(index + count);
 		if (count > 0)
 			Copy(list, 0, this, index, count);
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -1658,20 +1660,20 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is TCertain bigList)
 		{
-			mpz_t count = bigList.Length;
-			if (count == 0)
+		mpz_t count = bigList.Length;
+		if (count == 0)
 				return;
-			mpz_t offset = new(count < deletedCount ? count : deletedCount);
-			for (mpz_t i = 0; i < offset; i++)
-			{
-				mpz_t index = GetDeletedIndex();
-				SetInternal(index, bigList[i]);
-			}
-			mpz_t count2 = count - offset;
-			EnsureCapacity(_size + count2);
-			SetRangeInternal(_size, bigList.GetRange(offset, count2));
-			_size += count2;
+		mpz_t offset = new(count < deletedCount ? count : deletedCount);
+		for (mpz_t i = 0; i < offset; i++)
+		{
+			mpz_t index = GetDeletedIndex();
+			SetInternal(index, bigList[i]);
 		}
+		mpz_t count2 = count - offset;
+		EnsureCapacity(_size + count2);
+		SetRangeInternal(_size, bigList.GetRange(offset, count2));
+		_size += count2;
+	}
 		else
 			AddRange(CollectionCreator(collection));
 	}
@@ -1892,7 +1894,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		{
 			RemoveAt(index);
 			return true;
-		}
+	}
 		return false;
 	}
 
@@ -1973,11 +1975,11 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is TCertain bigList)
 		{
-			if (index + bigList.Length > _size)
-				throw new ArgumentException(null);
-			EnsureCapacity(index + bigList.Length);
+		if (index + bigList.Length > _size)
+			throw new ArgumentException(null);
+		EnsureCapacity(index + bigList.Length);
 			SetRangeInternal(index, bigList);
-		}
+	}
 		else
 			SetRange(index, CollectionLowCreator(collection));
 	}

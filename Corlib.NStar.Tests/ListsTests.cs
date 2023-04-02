@@ -1233,3 +1233,73 @@ public class ListTests
 		}
 	}
 }
+
+[TestClass]
+public class SumListTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		try
+		{
+			var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+			SumList sl = new(arr);
+			G.List<int> gl = new(arr);
+			var updateActions = new[] { (int key) =>
+			{
+				int newValue = random.Next(16);
+				sl.Update(key, newValue);
+				gl[key] = newValue;
+			}, key =>
+			{
+				sl.Increase(key);
+				gl[key]++;
+			}, key =>
+			{
+				sl.Decrease(key);
+				gl[key]--;
+			} };
+			var actions = new[] { () =>
+			{
+				int n = random.Next(16);
+				if (random.Next(2) == 0)
+				{
+					sl.Add(n);
+					gl.Add(n);
+				}
+				else
+				{
+					int n2 = random.Next(sl.Length + 1);
+					sl.Insert(n2, n);
+					gl.Insert(n2, n);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				gl.RemoveAt(n);
+				sl.RemoveAt(n);
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				updateActions.Random(random)(n);
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+				Assert.AreEqual(sl.GetLeftValuesSum(n, out int value), E.Sum(E.Take(gl, n)));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				Assert.AreEqual(sl[n], gl[n]);
+			} };
+			for (int i = 0; i < 1000; i++)
+				actions.Random(random)();
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+}
