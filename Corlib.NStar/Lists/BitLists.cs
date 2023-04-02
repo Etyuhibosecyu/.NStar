@@ -454,12 +454,10 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		return bitList;
 	}
 
-	private protected override void Copy(ListBase<bool, BitList> source, int sourceIndex, ListBase<bool, BitList> destination, int destinationIndex, int count)
+	private protected override void Copy(BitList source, int sourceIndex, BitList destination, int destinationIndex, int count)
 	{
-		BitList source2 = source as BitList ?? throw new ArgumentException(null, nameof(source));
-		BitList destination2 = destination as BitList ?? throw new ArgumentException(null, nameof(destination));
-		CopyBits(source2._items, source2._capacity, sourceIndex, destination2._items, destination2._capacity, destinationIndex, count);
-		destination2.Changed();
+		CopyBits(source._items, source._capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, count);
+		destination.Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int index)

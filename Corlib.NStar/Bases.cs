@@ -399,9 +399,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	public static void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count) => source.Copy(source, sourceIndex, destination, destinationIndex, count);
-
-	private protected abstract void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count);
+	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count);
 
 	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
 
@@ -796,7 +794,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		else if (index == 0 && count == _size && this is TCertain thisList)
 			return thisList;
 		TCertain list = CapacityCreator(count);
-		Copy(this, index, list, 0, count);
+		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
 		list._size = count;
 		return list;
 	}
@@ -942,11 +940,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity) EnsureCapacity(_size + 1);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (index < _size)
-			Copy(this, index, this, index + 1, _size - index);
+			Copy(this2, index, this2, index + 1, _size - index);
 		SetInternal(index, item);
 		_size++;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	void G.IList<T>.Insert(int index, T item) => Insert(index, item);
@@ -977,22 +976,23 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (collection is not TCertain list)
 			return InsertInternal(index, CollectionCreator(collection));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		int count = list._size;
 		if (count > 0)
 		{
 			EnsureCapacity(_size + count);
 			if (index < _size)
-				Copy(this, index, this, index + count, _size - index);
+				Copy(this2, index, this2, index + count, _size - index);
 			if (this == list)
 			{
-				Copy(this, 0, this, index, index);
-				Copy(this, index + count, this, index * 2, _size - index);
+				Copy(this2, 0, this2, index, index);
+				Copy(this2, index + count, this2, index * 2, _size - index);
 			}
 			else
-				Copy(list, 0, this, index, count);
+				Copy(list, 0, this2, index, count);
 			_size += count;
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	protected static bool IsCompatibleObject(object? value) => (value is T) || (value == null && default(T) == null);
@@ -1131,14 +1131,15 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (count > 0)
 		{
 			_size -= count;
 			if (index < _size)
-				Copy(this, index + count, this, index, _size - index);
+				Copy(this2, index + count, this2, index, _size - index);
 			ClearInternal(_size, count);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	void System.Collections.IList.Remove(object? item)
@@ -1172,11 +1173,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		_size--;
 		if (index < _size)
-			Copy(this, index + 1, this, index, _size - index);
+			Copy(this2, index + 1, this2, index, _size - index);
 		SetInternal(_size, default!);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	void System.Collections.IList.RemoveAt(int index) => RemoveAt(index);
@@ -1281,15 +1283,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (collection is not TCertain list)
 			return ReplaceRangeInternal(index, count, CollectionCreator(collection));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (list._size > 0)
 		{
 			EnsureCapacity(_size + list._size - count);
 			if (index + count < _size)
-				Copy(this, index + count, this, index + list._size, _size - index - count);
-			Copy(list, 0, this, index, list._size);
+				Copy(this2, index + count, this2, index + list._size, _size - index - count);
+			Copy(list, 0, this2, index, list._size);
 			_size += list._size - count;
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -1333,9 +1336,10 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	internal virtual TCertain SetRangeInternal(int index, int count, TCertain list)
 	{
 		EnsureCapacity(index + count);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (count > 0)
-			Copy(list, 0, this, index, count);
-		return this as TCertain ?? throw new InvalidOperationException();
+			Copy(list, 0, this2, index, count);
+		return this2;
 	}
 
 	public virtual TCertain Shuffle()
@@ -2149,17 +2153,15 @@ public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> wher
 
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
-		if (destination is not TCertain destination2)
-			throw new InvalidOperationException();
 		if (source != destination || sourceIndex >= destinationIndex)
 			for (int i = 0; i < count; i++)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
 		else
 			for (int i = count - 1; i >= 0; i--)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		destination2.Changed();
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		destination.Changed();
 	}
 
 	public virtual void ExceptWith(IEnumerable<T> other)

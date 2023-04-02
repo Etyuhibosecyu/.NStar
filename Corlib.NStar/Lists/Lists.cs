@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace Corlib.NStar;
 
@@ -176,7 +177,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public virtual List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
 		Array.Copy((source as TCertain ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as TCertain ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
 		Changed();
@@ -934,7 +935,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
-	private protected override void Copy(ListBase<T, NList<T>> source, int sourceIndex, ListBase<T, NList<T>> destination, int destinationIndex, int count)
+	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int count)
 	{
 		CopyMemory((source as NList<T> ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as NList<T> ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
 		Changed();
@@ -1227,8 +1228,6 @@ public partial class SumList : ListBase<int, SumList>
 	private Node? root;
 	private int version;
 
-	internal const int StackAllocThreshold = 100;
-
 	public SumList()
 	{
 	}
@@ -1399,21 +1398,19 @@ public partial class SumList : ListBase<int, SumList>
 		return root;
 	}
 
-	private protected override void Copy(ListBase<int, SumList> source, int sourceIndex, ListBase<int, SumList> destination, int destinationIndex, int count)
+	private protected override void Copy(SumList source, int sourceIndex, SumList destination, int destinationIndex, int count)
 	{
-		if (destination is not SumList destination2)
-			throw new InvalidOperationException();
 		if (count == 0)
 			return;
 		if (count == 1)
 		{
-			destination2.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source as SumList ?? throw new ArgumentException(null, nameof(source)), sourceIndex, sourceIndex + count - 1, true, true);
 		var en = subset.GetEnumerator();
-		if (destinationIndex < destination2._size)
-			new TreeSubSet(destination2, destinationIndex, Min(destinationIndex + count, destination2._size) - 1, true, true).InOrderTreeWalk(node =>
+		if (destinationIndex < destination._size)
+			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
 			{
 				bool b = en.MoveNext();
 				if (b)
@@ -1421,7 +1418,7 @@ public partial class SumList : ListBase<int, SumList>
 				return b;
 			});
 		while (en.MoveNext())
-			destination2.Add(en.Current);
+			destination.Add(en.Current);
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
@@ -2714,6 +2711,1560 @@ public partial class SumList : ListBase<int, SumList>
 		}
 
 		public override SumList Insert(int index, int value)
+		{
+			if (!IsWithinRange(index))
+			{
+				throw new ArgumentOutOfRangeException(nameof(value));
+			}
+			var ret = _underlying.Insert(index, value);
+			VersionCheck();
+#if DEBUG
+			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
+#endif
+			return ret;
+		}
+
+		internal override bool IsWithinRange(int index)
+		{
+			int comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
+			if (comp > 0)
+			{
+				return false;
+			}
+			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
+			return comp >= 0;
+		}
+
+		/// <summary>
+		/// Returns the number of elements <c>count</c> of the parent list.
+		/// </summary>
+		internal override int TotalCount()
+		{
+			Debug.Assert(_underlying != null);
+			return _underlying.Length;
+		}
+
+		/// <summary>
+		/// Checks whether this subset is out of date, and updates it if necessary.
+		/// </summary>
+		/// <param name="updateCount">Updates the count variable if necessary.</param>
+		internal override void VersionCheck(bool updateCount = false) => VersionCheckImpl(updateCount);
+
+		private void VersionCheckImpl(bool updateCount)
+		{
+			Debug.Assert(_underlying != null);
+			if (version != _underlying.version)
+			{
+				root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive);
+				version = _underlying.version;
+			}
+			if (updateCount && _countVersion != _underlying.version)
+			{
+				_size = 0;
+				InOrderTreeWalk(n => { _size++; return true; });
+				_countVersion = _underlying.version;
+			}
+		}
+
+#if DEBUG
+		internal override bool VersionUpToDate() => version == _underlying.version;
+#endif
+	}
+}
+
+internal delegate bool BigSumWalkPredicate(BigSumList.Node node);
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public partial class BigSumList : ListBase<mpz_t, BigSumList>
+{
+	private Node? root;
+	private int version;
+
+	public BigSumList()
+	{
+	}
+
+	public BigSumList(IEnumerable<mpz_t> collection) : this()
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		// These are explicit type checks in the mold of HashSet. It would have worked better with
+		// something like an ISorted interface. (We could make this work for SortedList.Keys, etc.)
+		if (collection is BigSumList sumList && sumList is not TreeSubSet)
+		{
+			if (sumList.Length > 0)
+			{
+				Debug.Assert(sumList.root != null);
+				_size = sumList._size;
+				root = sumList.root.DeepClone(_size);
+			}
+			return;
+		}
+		var elements = collection.ToArray();
+		int count = elements.Length;
+		if (count > 0)
+		{
+			root = ConstructRootFromSortedArray(elements, 0, count - 1, null);
+			_size = count;
+		}
+	}
+
+	public BigSumList(params mpz_t[] array) : this((IEnumerable<mpz_t>)array)
+	{
+	}
+
+	public BigSumList(ReadOnlySpan<mpz_t> span) : this((IEnumerable<mpz_t>)span.ToArray())
+	{
+	}
+
+	public override int Capacity
+	{
+		get => _size;
+		set
+		{
+		}
+	}
+
+	private protected override Func<int, BigSumList> CapacityCreator => x => new();
+
+	private protected override Func<IEnumerable<mpz_t>, BigSumList> CollectionCreator => x => new(x);
+
+	private protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
+
+	public override int Length
+	{
+		get
+		{
+			VersionCheck(updateCount: true);
+			return _size;
+		}
+	}
+
+	public virtual int Max => MaxInternal;
+
+	internal virtual int MaxInternal => _size - 1;
+
+	public virtual int Min => MinInternal;
+
+	internal virtual int MinInternal => 0;
+
+	public override BigSumList Add(mpz_t value) => Insert(_size, value);
+
+	public override Span<mpz_t> AsSpan(int index, int count) => throw new NotSupportedException();
+
+	/// <summary>
+	/// Does a left-to-right breadth-first tree walk and calls the delegate for each node.
+	/// </summary>
+	/// <param name="action">
+	/// The delegate to invoke on each node.
+	/// If the delegate returns <c>false</c>, the walk is stopped.
+	/// </param>
+	/// <returns><c>true</c> if the entire tree has been walked; otherwise, <c>false</c>.</returns>
+	internal virtual bool BreadthFirstTreeWalk(BigSumWalkPredicate action)
+	{
+		if (root == null)
+			return true;
+		var processQueue = new Queue<Node>();
+		processQueue.Enqueue(root);
+		Node current;
+		while (processQueue.Length != 0)
+		{
+			current = processQueue.Dequeue();
+			if (!action(current))
+				return false;
+			if (current.Left != null)
+				processQueue.Enqueue(current.Left);
+			if (current.Right != null)
+				processQueue.Enqueue(current.Right);
+		}
+		return true;
+	}
+
+	public override void Clear()
+	{
+		root = null;
+		_size = 0;
+		++version;
+	}
+
+	private protected override void ClearInternal(int index, int count) => new TreeSubSet(this, index, index + count - 1, true, true).Clear();
+
+	private static Node? ConstructRootFromSortedArray(mpz_t[] arr, int startIndex, int endIndex, Node? redNode)
+	{
+		// You're given a sorted array... say 1 2 3 4 5 6
+		// There are 2 cases:
+		// -  If there are odd # of elements, pick the middle element (in this case 4), and compute
+		//    its left and right branches
+		// -  If there are even # of elements, pick the left middle element, save the right middle element
+		//    and call the function on the rest
+		//    1 2 3 4 5 6 -> pick 3, save 4 and call the fn on 1,2 and 5,6
+		//    now add 4 as a red node to the lowest element on the right branch
+		//             3                       3
+		//         1       5       ->     1        5
+		//           2       6             2     4   6
+		//    As we're adding to the leftmost of the right branch, nesting will not hurt the red-black properties
+		//    Leaf nodes are red if they have no sibling (if there are 2 nodes or if a node trickles
+		//    down to the bottom
+
+		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
+		// Only some base cases are handled below.
+		int size = endIndex - startIndex + 1;
+		Node root;
+		switch (size)
+		{
+			case 0:
+				return null;
+			case 1:
+				root = new Node(arr[startIndex], NodeColor.Black);
+				if (redNode != null)
+					root.Left = redNode;
+				break;
+			case 2:
+				root = new Node(arr[startIndex], NodeColor.Black)
+				{
+					Right = new Node(arr[endIndex], NodeColor.Black)
+				};
+				root.Right.ColorRed();
+				if (redNode != null)
+					root.Left = redNode;
+				break;
+			case 3:
+				root = new Node(arr[startIndex + 1], NodeColor.Black)
+				{
+					Left = new Node(arr[startIndex], NodeColor.Black),
+					Right = new Node(arr[endIndex], NodeColor.Black)
+				};
+				if (redNode != null)
+					root.Left.Left = redNode;
+				break;
+			default:
+				int midpt = (startIndex + endIndex) / 2;
+				root = new Node(arr[midpt], NodeColor.Black)
+				{
+					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
+					Right = size % 2 == 0 ?
+					ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(arr[midpt + 1], NodeColor.Red)) :
+					ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null)
+				};
+				break;
+		}
+		return root;
+	}
+
+	private protected override void Copy(BigSumList source, int sourceIndex, BigSumList destination, int destinationIndex, int count)
+	{
+		if (count == 0)
+			return;
+		if (count == 1)
+		{
+			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			return;
+		}
+		TreeSubSet subset = new(source as BigSumList ?? throw new ArgumentException(null, nameof(source)), sourceIndex, sourceIndex + count - 1, true, true);
+		var en = subset.GetEnumerator();
+		if (destinationIndex < destination._size)
+			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
+			{
+				bool b = en.MoveNext();
+				if (b)
+					node.Value = en.Current;
+				return b;
+			});
+		while (en.MoveNext())
+			destination.Add(en.Current);
+	}
+
+	private protected override void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is mpz_t[] array2)
+			CopyToInternal(0, array2, arrayIndex, _size);
+		else
+			throw new ArgumentException(null, nameof(array));
+	}
+
+	private protected override void CopyToInternal(int index, mpz_t[] array, int arrayIndex, int count)
+	{
+		ArgumentNullException.ThrowIfNull(array);
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (count > array.Length - index)
+			throw new ArgumentException(null);
+		count += index; // Make `count` the upper bound.
+		int i = 0;
+		InOrderTreeWalk(node =>
+		{
+			if (i >= count)
+				return false;
+			if (i++ < index)
+				return true;
+			array[arrayIndex++] = node.Value;
+			return true;
+		});
+	}
+
+	public virtual bool Decrease(int index) => Update(index, GetInternal(index) - 1);
+
+	public override void Dispose()
+	{
+		root = null;
+		_size = 0;
+		version = 0;
+		GC.SuppressFinalize(this);
+	}
+
+	private void FindForRemove(int index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	{
+		// Search for a node and then find its successor.
+		// Then copy the value from the successor to the matching node, and delete the successor.
+		// If a node doesn't have a successor, we can replace it with its left child (if not empty),
+		// or delete the matching node.
+		//
+		// In top-down implementation, it is important to make sure the node to be deleted is not a 2-node.
+		// Following code will make sure the node on the path is not a 2-node.
+
+		// Even if we don't actually remove from the list, we may be altering its structure (by doing rotations
+		// and such). So update our version to disable any enumerators/subsets working on it.
+		version++;
+		Node? current = root;
+		parent = null;
+		grandParent = null;
+		match = null;
+		parentOfMatch = null;
+		bool foundMatch = false;
+		while (current != null)
+		{
+			if (current.Is2Node)
+			{
+				// Fix up 2-node
+				if (parent == null)
+					current.ColorRed();
+				else if (parent.Left != null && parent.Right != null)
+				{
+					Node sibling = parent.GetSibling(current);
+					if (sibling.IsRed)
+					{
+						// If parent is a 3-node, flip the orientation of the red link.
+						// We can achieve this by a single rotation.
+						// This case is converted to one of the other cases below.
+						Debug.Assert(parent.IsBlack);
+						if (parent.Right == sibling)
+							parent.RotateLeft();
+						else
+							parent.RotateRight();
+						parent.ColorRed();
+						sibling.ColorBlack(); // The red parent can't have black children.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+						ReplaceChildOrRoot(grandParent, parent, sibling);
+						// `sibling` will become the grandparent of `current`.
+						grandParent = sibling;
+						if (parent == match)
+							parentOfMatch = sibling;
+						sibling = parent.GetSibling(current);
+					}
+					Debug.Assert(Node.IsNonNullBlack(sibling));
+					if (sibling.Is2Node)
+						parent.Merge2Nodes();
+					else
+					{
+						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
+						// We can change the color of `current` to red by some rotation.
+						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						newGrandParent.Color = parent.Color;
+						parent.ColorBlack();
+						current.ColorRed();
+						ReplaceChildOrRoot(grandParent, parent, newGrandParent);
+						if (parent == match)
+							parentOfMatch = newGrandParent;
+					}
+				}
+			}
+			grandParent = parent;
+			parent = current;
+			if (foundMatch)
+				current = current.Left;
+			else if ((current.Left?.LeavesCount ?? 0) == index2)
+			{
+				// Save the matching node.
+				foundMatch = true;
+				match = current;
+				parentOfMatch = grandParent;
+				current = current.Right;
+			}
+			else if (current.Left == null)
+			{
+				index2--;
+				current = current.Right;
+			}
+			else if (current.Left.LeavesCount >= index2)
+				current = current.Left;
+			else
+			{
+				index2 -= current.Left.LeavesCount + 1;
+				current = current.Right;
+			}
+		}
+	}
+
+	internal virtual Node? FindNode(int index)
+	{
+		Node? current = root;
+		while (current != null)
+		{
+			if ((current.Left?.LeavesCount ?? 0) == index)
+				return current;
+			else if (current.Left == null)
+			{
+				index--;
+				current = current.Right;
+			}
+			else if (current.Left.LeavesCount > index)
+				current = current.Left;
+			else
+			{
+				index -= current.Left.LeavesCount + 1;
+				current = current.Right;
+			}
+		}
+		return null;
+	}
+
+	internal Node? FindRange(int from, int to) => FindRange(from, to, true, true);
+
+	internal Node? FindRange(int from, int to, bool lowerBoundActive, bool upperBoundActive)
+	{
+		Node? current = root;
+		while (current != null)
+		{
+			if (lowerBoundActive && Comparer.Compare(from, current.Left?.LeavesCount ?? 0) > 0)
+				current = current.Right;
+			else if (upperBoundActive && Comparer.Compare(to, current.Left?.LeavesCount ?? 0) < 0)
+				current = current.Left;
+			else
+				return current;
+		}
+		return null;
+	}
+
+	public virtual int GetAndRemove(Index index)
+	{
+		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		if (root == null)
+		{
+			return default!;
+		}
+		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		int found = default!;
+		// Move successor to the matching node position and replace links.
+		if (match != null)
+		{
+			found = match.Left?.LeavesCount ?? 0;
+			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
+			--_size;
+		}
+		root?.ColorBlack();
+#if DEBUG
+		if (_size != (root?.LeavesCount ?? 0))
+			throw new InvalidOperationException();
+		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+			x?.Verify();
+#endif
+		return found;
+	}
+
+	public override IEnumerator<mpz_t> GetEnumerator() => new Enumerator(this);
+
+	internal override mpz_t GetInternal(int index, bool invoke = true)
+	{
+		Node? current = root;
+		while (current != null)
+		{
+			if ((current.Left?.LeavesCount ?? 0) == index)
+			{
+				var value = current.Value;
+				if (invoke)
+					Changed();
+				return value;
+			}
+			else if (current.Left == null)
+			{
+				index--;
+				current = current.Right;
+			}
+			else if (current.Left.LeavesCount > index)
+				current = current.Left;
+			else
+			{
+				index -= current.Left.LeavesCount + 1;
+				current = current.Right;
+			}
+		}
+		throw new ArgumentOutOfRangeException(nameof(index));
+	}
+
+	public virtual mpz_t GetLeftValuesSum(int index, out mpz_t actualValue)
+	{
+		Node? current = root;
+		mpz_t sum = 0;
+		while (current != null)
+		{
+			int order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
+			if (order == 0)
+			{
+				actualValue = current.Value;
+				return sum + (current.Left?.ValuesSum ?? 0);
+			}
+			else if (order < 0)
+			{
+				current = current.Left;
+			}
+			else
+			{
+				index -= (current.Left?.LeavesCount ?? 0) + 1;
+				sum += (current.Left?.ValuesSum ?? 0) + current.Value;
+				current = current.Right;
+			}
+		}
+		actualValue = 0;
+		return sum;
+	}
+
+	public virtual BigSumList GetViewBetween(int lowerValue, int upperValue)
+	{
+		if (Comparer.Compare(lowerValue, upperValue) > 0)
+			throw new ArgumentException(null, nameof(lowerValue));
+		return new TreeSubSet(this, lowerValue, upperValue, true, true);
+	}
+
+	public virtual bool Increase(int index) => Update(index, GetInternal(index) + 1);
+
+	private protected override int IndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
+
+	/// <summary>
+	/// Does an in-order tree walk and calls the delegate for each node.
+	/// </summary>
+	/// <param name="action">
+	/// The delegate to invoke on each node.
+	/// If the delegate returns <c>false</c>, the walk is stopped.
+	/// </param>
+	/// <returns><c>true</c> if the entire tree has been walked; otherwise, <c>false</c>.</returns>
+	internal virtual bool InOrderTreeWalk(BigSumWalkPredicate action)
+	{
+		if (root == null)
+			return true;
+		// The maximum height of a red-black tree is 2 * log2(n+1).
+		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
+		// Note: It's not strictly necessary to provide the stack capacity, but we don't
+		// want the stack to unnecessarily allocate arrays as it grows.
+		var stack = new Stack<Node>(2 * Log2(Length + 1));
+		Node? current = root;
+		while (current != null)
+		{
+			stack.Push(current);
+			current = current.Left;
+		}
+		while (stack.Length != 0)
+		{
+			current = stack.Pop();
+			if (!action(current))
+				return false;
+			Node? node = current.Right;
+			while (node != null)
+			{
+				stack.Push(node);
+				node = node.Left;
+			}
+		}
+		return true;
+	}
+
+	public override BigSumList Insert(int index, mpz_t value)
+	{
+		if (root == null)
+		{
+			// The tree is empty and this is the first value.
+			root = new Node(value, NodeColor.Black);
+			_size = 1;
+			version++;
+			return this;
+		}
+		// Search for a node at bottom to insert the new node.
+		// If we can guarantee the node we found is not a 4-node, it would be easy to do insertion.
+		// We split 4-nodes along the search path.
+		Node? current = root;
+		Node? parent = null;
+		Node? grandParent = null;
+		Node? greatGrandParent = null;
+		// Even if we don't actually add to the list, we may be altering its structure (by doing rotations and such).
+		// So update `_version` to disable any instances of Enumerator/TreeSubSet from working on it.
+		version++;
+		int oldIndex = index;
+		int order = 0;
+		bool foundMatch = false;
+		while (current != null)
+		{
+			order = foundMatch ? 1 : Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
+			if (order == 0)
+			{
+				// We could have changed root node to red during the search process.
+				// We need to set it to black before we return.
+				root.ColorBlack();
+				foundMatch = true;
+			}
+			// Split a 4-node into two 2-nodes.
+			if (current.Is4Node)
+			{
+				current.Split4Node();
+				// We could have introduced two consecutive red nodes after split. Fix that by rotation.
+				if (Node.IsNonNullRed(parent))
+					InsertionBalance(current, ref parent!, grandParent!, greatGrandParent!);
+				index = oldIndex;
+				current = root;
+				greatGrandParent = grandParent = parent = null;
+				foundMatch = false;
+				continue;
+			}
+			//if (current.Is2Node)
+			//{
+			//	// Fix up 2-node
+			//	if (parent == null)
+			//		current.ColorRed();
+			//	else if (parent.Left != null && parent.Right != null)
+			//	{
+			//		Node sibling = parent.GetSibling(current);
+			//		if (sibling.IsRed)
+			//		{
+			//			// If parent is a 3-node, flip the orientation of the red link.
+			//			// We can achieve this by a single rotation.
+			//			// This case is converted to one of the other cases below.
+			//			Debug.Assert(parent.IsBlack);
+			//			if (parent.Right == sibling)
+			//				parent.RotateLeft();
+			//			else
+			//				parent.RotateRight();
+			//			parent.ColorRed();
+			//			sibling.ColorBlack(); // The red parent can't have black children.
+			//								  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+			//			ReplaceChildOrRoot(grandParent, parent, sibling);
+			//			// `sibling` will become the grandparent of `current`.
+			//			grandParent = sibling;
+			//			sibling = parent.GetSibling(current);
+			//		}
+			//		Debug.Assert(Node.IsNonNullBlack(sibling));
+			//		if (sibling.Is2Node)
+			//			parent.Merge2Nodes();
+			//		else
+			//		{
+			//			// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
+			//			// We can change the color of `current` to red by some rotation.
+			//			Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+			//			newGrandParent.Color = parent.Color;
+			//			parent.ColorBlack();
+			//			current.ColorRed();
+			//			ReplaceChildOrRoot(grandParent, parent, newGrandParent);
+			//		}
+			//	}
+			//}
+			greatGrandParent = grandParent;
+			grandParent = parent;
+			parent = current;
+			if (order <= 0)
+				current = current.Left;
+			else
+			{
+				index -= (current.Left?.LeavesCount ?? 0) + 1;
+				current = current.Right;
+			}
+		}
+#if DEBUG
+		if (index != 0)
+			throw new InvalidOperationException();
+#endif
+		Debug.Assert(parent != null);
+		// We're ready to insert the new node.
+		Node node = new(value, NodeColor.Red);
+		if (order <= 0)
+			parent.Left = node;
+		else
+			parent.Right = node;
+		// The new node will be red, so we will need to adjust colors if its parent is also red.
+		if (parent.IsRed)
+			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
+#if DEBUG
+		if (_size + 1 != root.LeavesCount)
+			throw new InvalidOperationException();
+		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
+			x?.Verify();
+#endif
+		// The root node is always black.
+		root.ColorBlack();
+		++_size;
+		return this;
+	}
+
+	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
+	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
+	// need to split again in the next node.
+	// By the time we need to split again, everything will be correctly set.
+	private void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
+	{
+		Debug.Assert(parent != null);
+		Debug.Assert(grandParent != null);
+		bool parentIsOnRight = grandParent.Right == parent;
+		bool currentIsOnRight = parent.Right == current;
+		Node newChildOfGreatGrandParent;
+		if (parentIsOnRight == currentIsOnRight)
+			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeft() : grandParent.RotateRight();
+		else
+		{
+			// Different orientation, double rotation
+			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeftRight() : grandParent.RotateRightLeft();
+			// Current node now becomes the child of `greatGrandParent`
+			parent = greatGrandParent;
+		}
+		// `grandParent` will become a child of either `parent` of `current`.
+		grandParent.ColorRed();
+		newChildOfGreatGrandParent.ColorBlack();
+		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
+#if DEBUG
+		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
+			x?.Verify();
+#endif
+	}
+
+	// Virtual function for TreeSubSet, which may need to do range checks.
+	internal virtual bool IsWithinRange(int index) => true;
+
+	private protected override int LastIndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
+
+	// Used for set checking operations (using enumerables) that rely on counting
+	private static int Log2(int value) => BitOperations.Log2((uint)value);
+
+	public override BigSumList RemoveAt(int index)
+	{
+		if (root == null)
+		{
+			return this;
+		}
+		FindForRemove(index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		// Move successor to the matching node position and replace links.
+		if (match != null)
+		{
+			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
+			--_size;
+		}
+		root?.ColorBlack();
+#if DEBUG
+		if (_size != (root?.LeavesCount ?? 0))
+			throw new InvalidOperationException();
+		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+			x?.Verify();
+#endif
+		return this;
+	}
+
+	/// <summary>
+	/// Replaces the child of a parent node, or replaces the root if the parent is <c>null</c>.
+	/// </summary>
+	/// <param name="parent">The (possibly <c>null</c>) parent.</param>
+	/// <param name="child">The child node to replace.</param>
+	/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
+	private void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
+	{
+		if (parent != null)
+			parent.ReplaceChild(child, newChild);
+		else
+		{
+			root = newChild;
+			root?.Isolate();
+		}
+	}
+
+	/// <summary>
+	/// Replaces the matching node with its successor.
+	/// </summary>
+	private void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
+	{
+		Debug.Assert(match != null);
+		if (successor == match)
+		{
+			// This node has no successor. This can only happen if the right child of the match is null.
+			Debug.Assert(match.Right == null);
+			successor = match.Left!;
+		}
+		else
+		{
+			Debug.Assert(parentOfSuccessor != null);
+			Debug.Assert(successor.Left == null);
+			Debug.Assert((successor.Right == null && successor.IsRed) || (successor.Right!.IsRed && successor.IsBlack));
+			successor.Right?.ColorBlack();
+			if (parentOfSuccessor != match)
+			{
+				// Detach the successor from its parent and set its right child.
+				parentOfSuccessor.Left = successor.Right;
+				successor.Right = match.Right;
+				parentOfSuccessor.FixUp();
+			}
+			successor.Left = match.Left;
+		}
+		if (successor != null)
+			successor.Color = match.Color;
+		ReplaceChildOrRoot(parentOfMatch, match, successor!);
+#if DEBUG
+		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
+			x?.Verify();
+#endif
+	}
+
+	private protected override BigSumList ReverseInternal(int index, int count) => throw new NotSupportedException();
+
+	internal override void SetInternal(int index, mpz_t value)
+	{
+		Node? current = root;
+		while (current != null)
+		{
+			if ((current.Left?.LeavesCount ?? 0) == index)
+			{
+				current.Value = value;
+				Changed();
+				return;
+			}
+			else if (current.Left == null)
+			{
+				index--;
+				current = current.Right;
+			}
+			else if (current.Left.LeavesCount >= index)
+				current = current.Left;
+			else
+			{
+				index -= current.Left.LeavesCount + 1;
+				current = current.Right;
+			}
+		}
+		throw new ArgumentOutOfRangeException(nameof(index));
+	}
+
+	// Virtual function for TreeSubSet, which may need the count variable of the parent list.
+	internal virtual int TotalCount() => Length;
+
+	public virtual bool Update(int index, mpz_t value)
+	{
+		var node = FindNode(index);
+		if (node != null)
+		{
+			node.Update(value);
+#if DEBUG
+			foreach (var x in new[] { node, root })
+				x?.Verify();
+#endif
+			return true;
+		}
+		else
+			return false;
+	}
+
+	internal void UpdateVersion() => ++version;
+
+	// Virtual function for TreeSubSet, which may need to update its count.
+	internal virtual void VersionCheck(bool updateCount = false) { }
+
+#if DEBUG
+	/// <summary>
+	/// debug status to be checked whenever any operation is called
+	/// </summary>
+	/// <returns></returns>
+	internal virtual bool VersionUpToDate() => true;
+#endif
+
+	[DebuggerDisplay("{Value.ToString()}, Left = {Left?.Value.ToString()}, Right = {Right?.Value.ToString()}, Parent = {Parent?.Value.ToString()}")]
+	internal sealed class Node
+	{
+		private Node? _left;
+		private Node? _right;
+		private Node? Parent { get; set; }
+		private int _leavesCount;
+		private mpz_t _valuesSum;
+
+		public Node(mpz_t value, NodeColor color)
+		{
+			Value = value;
+			Color = color;
+			_leavesCount = 1;
+			_valuesSum = value;
+		}
+
+		public mpz_t Value { get; set; }
+
+		internal Node? Left
+		{
+			get => _left;
+			set
+			{
+				if (_left == value)
+					return;
+				if (_left != null && _left.Parent != value)
+					_left.Parent = null;
+				LeavesCount += (value?.LeavesCount ?? 0) - (_left?.LeavesCount ?? 0);
+				ValuesSum += (value?.ValuesSum ?? 0) - (_left?.ValuesSum ?? 0);
+				_left = value;
+				if (_left != null)
+					_left.Parent = this;
+#if DEBUG
+				foreach (var x in new[] { this, _left, _right, Parent })
+					x?.Verify();
+#endif
+			}
+		}
+
+		internal Node? Right
+		{
+			get => _right;
+			set
+			{
+				if (_right == value)
+					return;
+				if (_right != null && _right.Parent != value)
+					_right.Parent = null;
+				LeavesCount += (value?.LeavesCount ?? 0) - (_right?.LeavesCount ?? 0);
+				ValuesSum += (value?.ValuesSum ?? 0) - (_right?.ValuesSum ?? 0);
+				_right = value;
+				if (_right != null)
+					_right.Parent = this;
+#if DEBUG
+				foreach (var x in new[] { this, _left, _right, Parent })
+					x?.Verify();
+#endif
+			}
+		}
+
+		internal int LeavesCount
+		{
+			get => _leavesCount;
+			set
+			{
+				if (Parent != null)
+					Parent.LeavesCount += value - _leavesCount;
+				_leavesCount = value;
+				if (Parent != null && Parent.LeavesCount != (Parent._left?.LeavesCount ?? 0) + (Parent._right?.LeavesCount ?? 0) + 1)
+					throw new InvalidOperationException();
+			}
+		}
+
+		internal mpz_t ValuesSum
+		{
+			get => _valuesSum;
+			set
+			{
+				if (Parent != null)
+					Parent.ValuesSum += value - _valuesSum;
+				_valuesSum = value;
+				if (Parent != null && Parent.ValuesSum != (Parent._left?.ValuesSum ?? 0) + (Parent._right?.ValuesSum ?? 0) + Parent.Value)
+					throw new InvalidOperationException();
+			}
+		}
+
+		public NodeColor Color { get; set; }
+
+		public bool IsBlack => Color == NodeColor.Black;
+
+		public bool IsRed => Color == NodeColor.Red;
+
+		public bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
+
+		public bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
+
+		public void ColorBlack() => Color = NodeColor.Black;
+
+		public void ColorRed() => Color = NodeColor.Red;
+
+		public Node DeepClone(int count)
+		{
+#if DEBUG
+			Debug.Assert(count == GetCount());
+#endif
+			Node newRoot = ShallowClone();
+			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(count) + 2);
+			pendingNodes.Push((this, newRoot));
+			while (pendingNodes.TryPop(out var next))
+			{
+				Node clonedNode;
+				if (next.source.Left is Node left)
+				{
+					clonedNode = left.ShallowClone();
+					next.target.Left = clonedNode;
+					pendingNodes.Push((left, clonedNode));
+				}
+				if (next.source.Right is Node right)
+				{
+					clonedNode = right.ShallowClone();
+					next.target.Right = clonedNode;
+					pendingNodes.Push((right, clonedNode));
+				}
+			}
+			return newRoot;
+		}
+
+		public void FixUp()
+		{
+			if (Left != null)
+				Left.Parent = this;
+			if (Right != null)
+				Right.Parent = this;
+		}
+
+		/// <summary>
+		/// Gets the rotation this node should undergo during a removal.
+		/// </summary>
+		public TreeRotation GetRotation(Node current, Node sibling)
+		{
+			Debug.Assert(IsNonNullRed(sibling.Left) || IsNonNullRed(sibling.Right));
+#if DEBUG
+			Debug.Assert(HasChildren(current, sibling));
+#endif
+
+			bool currentIsLeftChild = Left == current;
+			return IsNonNullRed(sibling.Left) ?
+				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
+				(currentIsLeftChild ? TreeRotation.Left : TreeRotation.LeftRight);
+		}
+
+		/// <summary>
+		/// Gets the sibling of one of this node's children.
+		/// </summary>
+		public Node GetSibling(Node node)
+		{
+			Debug.Assert(node != null);
+			Debug.Assert(node == Left ^ node == Right);
+			return node == Left ? Right! : Left!;
+		}
+
+		public static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+
+		public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+
+		public static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+
+		public void Isolate()
+		{
+			if (Parent != null && Parent.Left == this)
+				Parent.Left = null;
+			if (Parent != null && Parent.Right == this)
+				Parent.Right = null;
+		}
+
+		/// <summary>
+		/// Combines two 2-nodes into a 4-node.
+		/// </summary>
+		public void Merge2Nodes()
+		{
+			Debug.Assert(IsRed);
+			Debug.Assert(Left!.Is2Node);
+			Debug.Assert(Right!.Is2Node);
+			// Combine two 2-nodes into a 4-node.
+			ColorBlack();
+			Left.ColorRed();
+			Right.ColorRed();
+		}
+
+		/// <summary>
+		/// Replaces a child of this node with a new node.
+		/// </summary>
+		/// <param name="child">The child to replace.</param>
+		/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
+		public void ReplaceChild(Node child, Node newChild)
+		{
+			if (Left == child)
+				Left = newChild;
+			else if (Right == child)
+				Right = newChild;
+		}
+
+		/// <summary>
+		/// Does a rotation on this tree. May change the color of a grandchild from red to black.
+		/// </summary>
+		public Node? Rotate(TreeRotation rotation)
+		{
+			Node removeRed;
+			switch (rotation)
+			{
+				case TreeRotation.Right:
+					removeRed = Left!.Left!;
+					Debug.Assert(removeRed.IsRed);
+					removeRed.ColorBlack();
+					return RotateRight();
+				case TreeRotation.Left:
+					removeRed = Right!.Right!;
+					Debug.Assert(removeRed.IsRed);
+					removeRed.ColorBlack();
+					return RotateLeft();
+				case TreeRotation.RightLeft:
+					Debug.Assert(Right!.Left!.IsRed);
+					return RotateRightLeft();
+				case TreeRotation.LeftRight:
+					Debug.Assert(Left!.Right!.IsRed);
+					return RotateLeftRight();
+				default:
+					Debug.Fail($"{nameof(rotation)}: {rotation} is not a defined {nameof(TreeRotation)} value.");
+					return null;
+			}
+		}
+
+		/// <summary>
+		/// Does a left rotation on this tree, making this this the new left child of the current right child.
+		/// </summary>
+		public Node RotateLeft()
+		{
+			Node child = Right!;
+			var parent = Parent;
+			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			Right = child.Left;
+			child.Left = this;
+			if (parent != null)
+			{
+				if (isRight)
+					parent.Right = child;
+				else
+					parent.Left = child;
+			}
+			return child;
+		}
+
+		/// <summary>
+		/// Does a left-right rotation on this tree. The left child is rotated left, then this this is rotated right.
+		/// </summary>
+		public Node RotateLeftRight()
+		{
+			Node child = Left!;
+			Node grandChild = child.Right!;
+			var parent = Parent;
+			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			Left = grandChild.Right;
+			grandChild.Right = this;
+			child.Right = grandChild.Left;
+			grandChild.Left = child;
+			if (parent != null)
+			{
+				if (isRight)
+					parent.Right = grandChild;
+				else
+					parent.Left = grandChild;
+			}
+			return grandChild;
+		}
+
+		/// <summary>
+		/// Does a right rotation on this tree, making this this the new right child of the current left child.
+		/// </summary>
+		public Node RotateRight()
+		{
+			Node child = Left!;
+			var parent = Parent;
+			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			Left = child.Right;
+			child.Right = this;
+			if (parent != null)
+			{
+				if (isRight)
+					parent.Right = child;
+				else
+					parent.Left = child;
+			}
+			return child;
+		}
+
+		/// <summary>
+		/// Does a right-left rotation on this tree. The right child is rotated right, then this this is rotated left.
+		/// </summary>
+		public Node RotateRightLeft()
+		{
+			Node child = Right!;
+			Node grandChild = child.Left!;
+			var parent = Parent;
+			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			Right = grandChild.Left;
+			grandChild.Left = this;
+			child.Left = grandChild.Right;
+			grandChild.Right = child;
+			if (parent != null)
+			{
+				if (isRight)
+					parent.Right = grandChild;
+				else
+					parent.Left = grandChild;
+			}
+			return grandChild;
+		}
+
+		public Node ShallowClone() => new(Value, Color);
+
+		public void Split4Node()
+		{
+			Debug.Assert(Left != null);
+			Debug.Assert(Right != null);
+			ColorRed();
+			Left.ColorBlack();
+			Right.ColorBlack();
+		}
+
+		public void Update(mpz_t value)
+		{
+			ValuesSum += value - Value;
+			Value = value;
+		}
+
+#if DEBUG
+		private int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
+
+		private bool HasChild(Node child) => child == Left || child == Right;
+
+		private bool HasChildren(Node child1, Node child2)
+		{
+			Debug.Assert(child1 != child2);
+			return (Left == child1 && Right == child2)
+				|| (Left == child2 && Right == child1);
+		}
+
+		internal void Verify()
+		{
+			if (Right != null && Right == Left)
+				throw new InvalidOperationException();
+			if (LeavesCount != (Left?.LeavesCount ?? 0) + (Right?.LeavesCount ?? 0) + 1)
+				throw new InvalidOperationException();
+			if (ValuesSum != (Left?.ValuesSum ?? 0) + (Right?.ValuesSum ?? 0) + Value)
+				throw new InvalidOperationException();
+			if (Left != null && Left.Parent == null)
+				throw new InvalidOperationException();
+			if (Right != null && Right.Parent == null)
+				throw new InvalidOperationException();
+		}
+#endif
+	}
+
+	public new struct Enumerator : IEnumerator<mpz_t>
+	{
+		private readonly BigSumList _tree;
+		private readonly int _version;
+
+		private readonly Stack<Node> _stack;
+		private Node? _current;
+
+		private readonly bool _reverse;
+
+		internal Enumerator(BigSumList list) : this(list, reverse: false)
+		{
+		}
+
+		internal Enumerator(BigSumList list, bool reverse)
+		{
+			_tree = list;
+			list.VersionCheck();
+			_version = list.version;
+			// 2 log(n + 1) is the maximum height.
+			_stack = new Stack<Node>(2 * Log2(list.TotalCount() + 1));
+			_current = null;
+			_reverse = reverse;
+			Initialize();
+		}
+
+		public mpz_t Current
+		{
+			get
+			{
+				if (_current != null)
+				{
+					return _current.Value;
+				}
+				return default!; // Should only happen when accessing Current is undefined behavior
+			}
+		}
+
+		object? IEnumerator.Current
+		{
+			get
+			{
+				if (_current == null)
+				{
+					throw new InvalidOperationException();
+				}
+				return _current.Value;
+			}
+		}
+
+		internal bool NotStartedOrEnded => _current == null;
+
+		public void Dispose() { }
+
+		private void Initialize()
+		{
+			_current = null;
+			Node? node = _tree.root;
+			Node? next, other;
+			while (node != null)
+			{
+				next = _reverse ? node.Right : node.Left;
+				other = _reverse ? node.Left : node.Right;
+				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				{
+					_stack.Push(node);
+					node = next;
+				}
+				else if (next == null || !_tree.IsWithinRange(next.Left?.LeavesCount ?? 0))
+					node = other;
+				else
+					node = next;
+			}
+		}
+
+		public bool MoveNext()
+		{
+			// Make sure that the underlying subset has not been changed since
+			_tree.VersionCheck();
+			if (_version != _tree.version)
+			{
+				throw new InvalidOperationException();
+			}
+			if (_stack.Length == 0)
+			{
+				_current = null;
+				return false;
+			}
+			_current = _stack.Pop();
+			Node? node = _reverse ? _current.Left : _current.Right;
+			Node? next, other;
+			while (node != null)
+			{
+				next = _reverse ? node.Right : node.Left;
+				other = _reverse ? node.Left : node.Right;
+				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				{
+					_stack.Push(node);
+					node = next;
+				}
+				else if (other == null || !_tree.IsWithinRange(other.Left?.LeavesCount ?? 0))
+					node = next;
+				else
+					node = other;
+			}
+			return true;
+		}
+
+		internal void Reset()
+		{
+			if (_version != _tree.version)
+			{
+				throw new InvalidOperationException();
+			}
+			_stack.Clear();
+			Initialize();
+		}
+
+		void IEnumerator.Reset() => Reset();
+	}
+
+	internal sealed class TreeSubSet : BigSumList
+	{
+		private readonly BigSumList _underlying;
+		private readonly int _min;
+		private readonly int _max;
+		// keeps track of whether the count variable is up to date
+		// up to date -> _countVersion = _underlying.version
+		// not up to date -> _countVersion < _underlying.version
+		private int _countVersion;
+		// these exist for unbounded collections
+		// for instance, you could allow this subset to be defined for i > 10. The list will throw if
+		// anything <= 10 is added, but there is no upper bound. These features Head(), Tail(), were punted
+		// in the spec, and are not available, but the framework is there to make them available at some point.
+		private readonly bool _lBoundActive, _uBoundActive;
+		// used to see if the count is out of date
+
+		public TreeSubSet(BigSumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
+		{
+			_underlying = Underlying;
+			_min = Min;
+			_max = Max;
+			_lBoundActive = lowerBoundActive;
+			_uBoundActive = upperBoundActive;
+			root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive); // root is first element within range
+			_size = 0;
+			version = -1;
+			_countVersion = -1;
+		}
+
+		internal override int MaxInternal
+		{
+			get
+			{
+				VersionCheck();
+				Node? current = root;
+				int result = default;
+				while (current != null)
+				{
+					int comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
+					if (comp < 0)
+						current = current.Left;
+					else
+					{
+						result = current.Left?.LeavesCount ?? 0;
+						if (comp == 0)
+						{
+							break;
+						}
+						current = current.Right;
+					}
+				}
+				return result!;
+			}
+		}
+
+		internal override int MinInternal
+		{
+			get
+			{
+				VersionCheck();
+				Node? current = root;
+				int result = default;
+				while (current != null)
+				{
+					int comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
+					if (comp > 0)
+						current = current.Right;
+					else
+					{
+						result = current.Left?.LeavesCount ?? 0;
+						if (comp == 0)
+						{
+							break;
+						}
+						current = current.Left;
+					}
+				}
+				return result!;
+			}
+		}
+
+		internal override bool BreadthFirstTreeWalk(BigSumWalkPredicate action)
+		{
+			VersionCheck();
+			if (root == null)
+			{
+				return true;
+			}
+			Queue<Node> processQueue = new();
+			processQueue.Enqueue(root);
+			Node current;
+			while (processQueue.Length != 0)
+			{
+				current = processQueue.Dequeue();
+				if (IsWithinRange(current.Left?.LeavesCount ?? 0) && !action(current))
+				{
+					return false;
+				}
+				if (current.Left != null && (!_lBoundActive || Comparer.Compare(_min, current.Left.LeavesCount) < 0))
+					processQueue.Enqueue(current.Left);
+				if (current.Right != null && (!_uBoundActive || Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) > 0))
+					processQueue.Enqueue(current.Right);
+			}
+			return true;
+		}
+
+		public override void Clear()
+		{
+			if (Length == 0)
+			{
+				return;
+			}
+			List<int> toRemove = new();
+			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
+			while (toRemove.Length != 0)
+			{
+				_underlying.RemoveAt(toRemove[^1]);
+				toRemove.RemoveAt(toRemove.Length - 1);
+			}
+			root = null;
+			_size = 0;
+			version = _underlying.version;
+		}
+
+		internal override Node? FindNode(int index)
+		{
+			if (!IsWithinRange(index))
+			{
+				return null;
+			}
+			VersionCheck();
+#if DEBUG
+			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
+#endif
+			return base.FindNode(index);
+		}
+
+		// This passes functionality down to the underlying tree, clipping edges if necessary
+		// There's nothing gained by having a nested subset. May as well draw it from the base
+		// Cannot increase the bounds of the subset, can only decrease it
+		public override BigSumList GetViewBetween(int lowerValue, int upperValue)
+		{
+			if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(lowerValue));
+			}
+			if (_uBoundActive && Comparer.Compare(_max, upperValue) < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(upperValue));
+			}
+			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
+		}
+
+		internal override bool InOrderTreeWalk(BigSumWalkPredicate action)
+		{
+			VersionCheck();
+			if (root == null)
+			{
+				return true;
+			}
+			// The maximum height of a red-black tree is 2*lg(n+1).
+			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
+			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
+			Node? current = root;
+			while (current != null)
+			{
+				if (IsWithinRange(current.Left?.LeavesCount ?? 0))
+				{
+					stack.Push(current);
+					current = current.Left;
+				}
+				else if (_lBoundActive && Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) > 0)
+					current = current.Right;
+				else
+					current = current.Left;
+			}
+			while (stack.Length != 0)
+			{
+				current = stack.Pop();
+				if (!action(current))
+				{
+					return false;
+				}
+				Node? node = current.Right;
+				while (node != null)
+				{
+					if (IsWithinRange(node.Left?.LeavesCount ?? 0))
+					{
+						stack.Push(node);
+						node = node.Left;
+					}
+					else if (_lBoundActive && Comparer.Compare(_min, node.Left?.LeavesCount ?? 0) > 0)
+						node = node.Right;
+					else
+						node = node.Left;
+				}
+			}
+			return true;
+		}
+
+		public override BigSumList Insert(int index, mpz_t value)
 		{
 			if (!IsWithinRange(index))
 			{

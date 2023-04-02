@@ -59,17 +59,15 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		Changed();
 	}
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
-		if (source is not TCertain source2 || destination is not TCertain destination2)
-			throw new InvalidOperationException();
 		if (source != destination || sourceIndex >= destinationIndex)
 			for (int i = 0; i < count; i++)
-				CopyOne(sourceIndex + i, destinationIndex + i, source2, destination2);
+				CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
 		else
 			for (int i = count - 1; i >= 0; i--)
-				CopyOne(sourceIndex + i, destinationIndex + i, source2, destination2);
-		destination2.Changed();
+				CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
+		destination.Changed();
 	}
 
 	private static void CopyOne(int sourceIndex, int destinationIndex, TCertain source2, TCertain destination)
@@ -172,6 +170,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		TCertain set = CollectionCreator(collection);
 		set.ExceptWith(this);
 		int count = set._size;
@@ -179,13 +178,13 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 		{
 			EnsureCapacity(_size + count);
 			if (index < entries.Length - count)
-				Copy(this, index, this, index + count, entries.Length - index - count);
+				Copy(this2, index, this2, index + count, entries.Length - index - count);
 			if (this == collection)
 				return this as TCertain ?? throw new InvalidOperationException();
 			else
-				Copy(set, 0, this, index, count);
+				Copy(set, 0, this2, index, count);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	protected static bool IsPrime(int candidate)
@@ -910,12 +909,13 @@ public abstract class ListHashSet<T, TCertain> : HashSetBase<T, TCertain> where 
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		_size--;
 		if (index < _size)
-			Copy(this, index + 1, this, index, _size - index);
+			Copy(this2, index + 1, this2, index, _size - index);
 		SetNull(_size);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	internal override void SetInternal(int index, T item)
@@ -1121,7 +1121,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool Contains(IEnumerable<T> collection, int index, int count) => Lock(lockObj, base.Contains, collection, index, count);
 
-	private protected override void Copy(ListBase<T, ParallelHashSet<T>> source, int sourceIndex, ListBase<T, ParallelHashSet<T>> destination, int destinationIndex, int count) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, count);
+	private protected override void Copy(ParallelHashSet<T> source, int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int count) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, count);
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 

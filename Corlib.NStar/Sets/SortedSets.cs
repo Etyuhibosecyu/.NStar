@@ -577,21 +577,19 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 		return true;
 	}
 
-	private protected override void Copy(ListBase<T, TreeSet<T>> source, int sourceIndex, ListBase<T, TreeSet<T>> destination, int destinationIndex, int count)
+	private protected override void Copy(TreeSet<T> source, int sourceIndex, TreeSet<T> destination, int destinationIndex, int count)
 	{
-		if (destination is not TreeSet<T> destination2)
-			throw new InvalidOperationException();
 		if (count == 0)
 			return;
 		if (count == 1)
 		{
-			destination2.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source as TreeSet<T> ?? throw new ArgumentException(null, nameof(source)), source.GetInternal(sourceIndex), source.GetInternal(sourceIndex + count - 1), true, true);
 		var en = subset.GetEnumerator();
-		if (destinationIndex < destination2._size)
-			new TreeSubSet(destination2, destination2.GetInternal(destinationIndex), destination2.GetInternal(Min(destinationIndex + count, destination2._size) - 1), true, true).InOrderTreeWalk(node =>
+		if (destinationIndex < destination._size)
+			new TreeSubSet(destination, destination.GetInternal(destinationIndex), destination.GetInternal(Min(destinationIndex + count, destination._size) - 1), true, true).InOrderTreeWalk(node =>
 			{
 				bool b = en.MoveNext();
 				if (b)
@@ -599,7 +597,7 @@ public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 				return b;
 			});
 		while (en.MoveNext())
-			destination2.TryAdd(en.Current);
+			destination.TryAdd(en.Current);
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
@@ -2923,21 +2921,19 @@ public partial class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	private protected override void Copy(ListBase<(T Key, int Value), SumSet<T>> source, int sourceIndex, ListBase<(T Key, int Value), SumSet<T>> destination, int destinationIndex, int count)
+	private protected override void Copy(SumSet<T> source, int sourceIndex, SumSet<T> destination, int destinationIndex, int count)
 	{
-		if (destination is not SumSet<T> destination2)
-			throw new InvalidOperationException();
 		if (count == 0)
 			return;
 		if (count == 1)
 		{
-			destination2.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source as SumSet<T> ?? throw new ArgumentException(null, nameof(source)), source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + count - 1).Key, true, true);
 		var en = subset.GetEnumerator();
-		if (destinationIndex < destination2._size)
-			new TreeSubSet(destination2, destination2.GetInternal(destinationIndex).Key, destination2.GetInternal(Min(destinationIndex + count, destination2._size) - 1).Key, true, true).InOrderTreeWalk(node =>
+		if (destinationIndex < destination._size)
+			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + count, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
 			{
 				bool b = en.MoveNext();
 				if (b)
@@ -2945,7 +2941,7 @@ public partial class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 				return b;
 			});
 		while (en.MoveNext())
-			destination2.TryAdd(en.Current);
+			destination.TryAdd(en.Current);
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)

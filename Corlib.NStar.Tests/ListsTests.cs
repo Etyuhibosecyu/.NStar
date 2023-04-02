@@ -1303,3 +1303,80 @@ public class SumListTests
 		}
 	}
 }
+
+[TestClass]
+public class BigSumListTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		try
+		{
+			var bytes = new byte[20];
+			var arr = RedStarLinq.FillArray(16, _ =>
+			{
+				random.NextBytes(bytes);
+				return new mpz_t(bytes, 1);
+			});
+			BigSumList sl = new(arr);
+			G.List<mpz_t> gl = new(arr);
+			var updateActions = new[] { (int key) =>
+			{
+				random.NextBytes(bytes);
+				mpz_t newValue = new(bytes, 1);
+				sl.Update(key, newValue);
+				gl[key] = newValue;
+			}, key =>
+			{
+				sl.Increase(key);
+				gl[key]++;
+			}, key =>
+			{
+				sl.Decrease(key);
+				gl[key]--;
+			} };
+			var actions = new[] { () =>
+			{
+				random.NextBytes(bytes);
+				mpz_t n = new(bytes, 1);
+				if (random.Next(2) == 0)
+				{
+					sl.Add(n);
+					gl.Add(n);
+				}
+				else
+				{
+					int n2 = random.Next(sl.Length + 1);
+					sl.Insert(n2, n);
+					gl.Insert(n2, n);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				gl.RemoveAt(n);
+				sl.RemoveAt(n);
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				updateActions.Random(random)(n);
+				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+				Assert.AreEqual(sl.GetLeftValuesSum(n, out mpz_t value), n == 0 ? 0 : E.Aggregate(E.Take(gl, n), (x, y) => x + y));
+			}, () =>
+			{
+				if (sl.Length == 0) return;
+				int n = random.Next(sl.Length);
+				Assert.AreEqual(sl[n], gl[n]);
+			} };
+			for (int i = 0; i < 1000; i++)
+				actions.Random(random)();
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+}

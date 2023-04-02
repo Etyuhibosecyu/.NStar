@@ -126,17 +126,15 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 
 	public override bool Contains(T? item, int index, int count) => item != null && IndexOf(item, index, count) >= 0;
 
-	private protected override void Copy(ListBase<T, TCertain> source, int sourceIndex, ListBase<T, TCertain> destination, int destinationIndex, int count)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
-		if (destination is not TCertain destination2)
-			throw new InvalidOperationException();
 		if (source != destination || sourceIndex >= destinationIndex)
 			for (int i = 0; i < count; i++)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
 		else
 			for (int i = count - 1; i >= 0; i--)
-				destination2.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
-		destination2.Changed();
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		destination.Changed();
 	}
 
 	public override void Dispose()
@@ -285,27 +283,29 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity) EnsureCapacity(_size + 1);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (index < _size)
-			Copy(this, index, this, index + 1, _size - index);
+			Copy(this2, index, this2, index + 1, _size - index);
 		entries[index].item = item;
 		uniqueElements.TryAdd(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	private protected abstract TCertain Insert(T? item, bool add, out int index);
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		TCertain list = CollectionCreator(collection);
 		int count = list._size;
 		if (count > 0)
 		{
 			EnsureCapacity(_size + count);
 			if (index < entries.Length - count)
-				Copy(this, index, this, index + count, entries.Length - index - count);
-			Copy(list, 0, this, index, count);
+				Copy(this2, index, this2, index + count, entries.Length - index - count);
+			Copy(list, 0, this2, index, count);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	private protected virtual bool IsHashSearchBetter() => (long)_size * HashSearchMultiplier < (long)uniqueElements.Length * uniqueElements.Length;
@@ -1002,15 +1002,16 @@ public abstract class HashList<T, TCertain> : HashListBase<T, TCertain> where TC
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		T? item = entries[index].item;
 		_size--;
 		if (index < _size)
-			Copy(this, index + 1, this, index, _size - index);
+			Copy(this2, index + 1, this2, index, _size - index);
 		SetNull(_size);
 		if (!Contains(item))
 			uniqueElements.RemoveValue(item);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return this2;
 	}
 
 	internal override void SetInternal(int index, T item)
