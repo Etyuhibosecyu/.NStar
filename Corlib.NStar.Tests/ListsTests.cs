@@ -1242,26 +1242,33 @@ public class SumListTests
 	{
 		try
 		{
-			var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+			var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
 			SumList sl = new(arr);
 			G.List<int> gl = new(arr);
+			var bytes = new byte[16];
 			var updateActions = new[] { (int key) =>
 			{
 				int newValue = random.Next(16);
 				sl.Update(key, newValue);
-				gl[key] = newValue;
+				if (newValue <= 0)
+					gl.RemoveAt(key);
+				else
+					gl[key] = newValue;
 			}, key =>
 			{
 				sl.Increase(key);
 				gl[key]++;
 			}, key =>
 			{
+				if (sl[key] == 1)
+					gl.RemoveAt(key);
+				else
+					gl[key]--;
 				sl.Decrease(key);
-				gl[key]--;
 			} };
 			var actions = new[] { () =>
 			{
-				int n = random.Next(16);
+				int n = random.Next(1, 16);
 				if (random.Next(2) == 0)
 				{
 					sl.Add(n);
@@ -1269,30 +1276,35 @@ public class SumListTests
 				}
 				else
 				{
-					int n2 = random.Next(sl.Length + 1);
-					sl.Insert(n2, n);
-					gl.Insert(n2, n);
+					int index = random.Next(sl.Length + 1);
+					sl.Insert(index, n);
+					gl.Insert(index, n);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				gl.RemoveAt(n);
-				sl.RemoveAt(n);
+				int index = random.Next(sl.Length);
+				gl.RemoveAt(index);
+				sl.RemoveAt(index);
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				updateActions.Random(random)(n);
+				int index = random.Next(sl.Length);
+				updateActions.Random(random)(index);
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-				Assert.AreEqual(sl.GetLeftValuesSum(n, out int value), E.Sum(E.Take(gl, n)));
+				Assert.AreEqual(sl.GetLeftValuesSum(index, out int value), E.Sum(E.Take(gl, index)));
+			}, () =>
+			{
+				random.NextBytes(bytes);
+				int index = sl.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
+				Assert.IsTrue((index == gl.Count && sum == E.Sum(gl)) || (CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				Assert.AreEqual(sl[n], gl[n]);
+				int index = random.Next(sl.Length);
+				Assert.AreEqual(sl[index], gl[index]);
 			} };
 			for (int i = 0; i < 1000; i++)
 				actions.Random(random)();
@@ -1313,6 +1325,7 @@ public class BigSumListTests
 		try
 		{
 			var bytes = new byte[20];
+			var bytes2 = new byte[48];
 			var arr = RedStarLinq.FillArray(16, _ =>
 			{
 				random.NextBytes(bytes);
@@ -1325,15 +1338,21 @@ public class BigSumListTests
 				random.NextBytes(bytes);
 				mpz_t newValue = new(bytes, 1);
 				sl.Update(key, newValue);
-				gl[key] = newValue;
+				if (newValue <= 0)
+					gl.RemoveAt(key);
+				else
+					gl[key] = newValue;
 			}, key =>
 			{
 				sl.Increase(key);
 				gl[key]++;
 			}, key =>
 			{
+				if (sl[key] == 1)
+					gl.RemoveAt(key);
+				else
+					gl[key]--;
 				sl.Decrease(key);
-				gl[key]--;
 			} };
 			var actions = new[] { () =>
 			{
@@ -1346,30 +1365,35 @@ public class BigSumListTests
 				}
 				else
 				{
-					int n2 = random.Next(sl.Length + 1);
-					sl.Insert(n2, n);
-					gl.Insert(n2, n);
+					int index = random.Next(sl.Length + 1);
+					sl.Insert(index, n);
+					gl.Insert(index, n);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				gl.RemoveAt(n);
-				sl.RemoveAt(n);
+				int index = random.Next(sl.Length);
+				gl.RemoveAt(index);
+				sl.RemoveAt(index);
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				updateActions.Random(random)(n);
+				int index = random.Next(sl.Length);
+				updateActions.Random(random)(index);
 				Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-				Assert.AreEqual(sl.GetLeftValuesSum(n, out mpz_t value), n == 0 ? 0 : E.Aggregate(E.Take(gl, n), (x, y) => x + y));
+				Assert.AreEqual(sl.GetLeftValuesSum(index, out mpz_t value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y));
+			}, () =>
+			{
+				random.NextBytes(bytes2);
+				int index = sl.IndexOfNotGreaterSum(CreateVar(new mpz_t(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
+				Assert.IsTrue((index == 0 && (gl.Count == 0 || sum < gl[0])) || (index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y)) || (CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
 			}, () =>
 			{
 				if (sl.Length == 0) return;
-				int n = random.Next(sl.Length);
-				Assert.AreEqual(sl[n], gl[n]);
+				int index = random.Next(sl.Length);
+				Assert.AreEqual(sl[index], gl[index]);
 			} };
 			for (int i = 0; i < 1000; i++)
 				actions.Random(random)();

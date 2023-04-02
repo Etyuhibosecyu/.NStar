@@ -38,7 +38,12 @@ public class SumSetTests
 			{
 				int newValue = random.Next(16);
 				int index = ss.IndexOf(key);
-				if (index != -1)
+				if (index != -1 && newValue <= 0)
+				{
+					gs.Remove(key);
+					gl.RemoveAt(index);
+				}
+				else if (index != -1)
 					gl[index] = newValue;
 				ss.Update(key, newValue);
 			}, key =>
@@ -52,13 +57,20 @@ public class SumSetTests
 				gs.Add(key);
 			}, key =>
 			{
-				if (ss.Decrease(key))
-					gl[ss.IndexOf(key)]--;
+				int index = ss.IndexOf(key);
+				if (ss.TryGetValue(key, out int value) && value == 1)
+				{
+					gs.Remove(key);
+					gl.RemoveAt(index);
+				}
+				else if (index != -1)
+					gl[index]--;
+				ss.Decrease(key);
 			} };
 			var actions = new[] { () =>
 			{
 				int n = random.Next(16);
-				int n2 = random.Next(16);
+				int n2 = random.Next(1, 16);
 				int index = ss.Search(n);
 				if (index < 0)
 					gl.Insert(~index, n2);
@@ -88,7 +100,7 @@ public class SumSetTests
 				Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 			}, () =>
 			{
-				var arr = RedStarLinq.FillArray(5, _ => (CreateVar(random.Next(16), out int key), ss.TryGetValue(key, out int value) ? value : random.Next(16)));
+				var arr = RedStarLinq.FillArray(5, _ => (CreateVar(random.Next(16), out int key), ss.TryGetValue(key, out int value) ? value : random.Next(1, 16)));
 				collectionActions.Random(random)(arr);
 				Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
 				Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));

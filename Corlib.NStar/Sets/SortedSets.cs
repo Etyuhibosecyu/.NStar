@@ -262,7 +262,7 @@ internal enum TreeRotation
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public partial class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
+public class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 {
 	private Node? root;
 	private int version;
@@ -2600,7 +2600,7 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public partial class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
+public class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 {
 	private Node? root;
 	private int version;
@@ -2726,6 +2726,8 @@ public partial class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 			return current.Item.Key;
 		}
 	}
+
+	public virtual long ValuesSum => root?.ValuesSum ?? 0;
 
 	public virtual SumSet<T> Add(T key, int value) => Add((key, value));
 
@@ -4077,6 +4079,8 @@ public partial class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 
 	public virtual bool Update((T Key, int Value) item)
 	{
+		if (item.Value <= 0)
+			return RemoveValue(item.Key);
 		var node = FindNode(item.Key);
 		if (node != null)
 		{

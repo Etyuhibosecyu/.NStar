@@ -1223,7 +1223,7 @@ internal delegate bool SumWalkPredicate(SumList.Node node);
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public partial class SumList : ListBase<int, SumList>
+public class SumList : ListBase<int, SumList>
 {
 	private Node? root;
 	private int version;
@@ -1294,6 +1294,8 @@ public partial class SumList : ListBase<int, SumList>
 	public virtual int Min => MinInternal;
 
 	internal virtual int MinInternal => 0;
+
+	public virtual long ValuesSum => root?.ValuesSum ?? 0;
 
 	public override SumList Add(int value) => Insert(_size, value);
 
@@ -1688,6 +1690,28 @@ public partial class SumList : ListBase<int, SumList>
 
 	private protected override int IndexOfInternal(int value, int index, int count) => throw new NotSupportedException();
 
+	public virtual int IndexOfNotGreaterSum(long sum)
+	{
+		if (sum == ValuesSum)
+			return _size;
+		Node? current = root;
+		int index = 0;
+		while (current != null)
+		{
+			if (sum == (current.Left?.ValuesSum ?? 0))
+				return index + (current.Left?.LeavesCount ?? 0);
+			else if (sum < (current.Left?.ValuesSum ?? 0))
+				current = current.Left;
+			else
+			{
+				index += (current.Left?.LeavesCount ?? 0) + 1;
+				sum -= (current.Left?.ValuesSum ?? 0) + current.Value;
+				current = current.Right;
+			}
+		}
+		return index - 1;
+	}
+
 	/// <summary>
 	/// Does an in-order tree walk and calls the delegate for each node.
 	/// </summary>
@@ -1772,47 +1796,6 @@ public partial class SumList : ListBase<int, SumList>
 				foundMatch = false;
 				continue;
 			}
-			//if (current.Is2Node)
-			//{
-			//	// Fix up 2-node
-			//	if (parent == null)
-			//		current.ColorRed();
-			//	else if (parent.Left != null && parent.Right != null)
-			//	{
-			//		Node sibling = parent.GetSibling(current);
-			//		if (sibling.IsRed)
-			//		{
-			//			// If parent is a 3-node, flip the orientation of the red link.
-			//			// We can achieve this by a single rotation.
-			//			// This case is converted to one of the other cases below.
-			//			Debug.Assert(parent.IsBlack);
-			//			if (parent.Right == sibling)
-			//				parent.RotateLeft();
-			//			else
-			//				parent.RotateRight();
-			//			parent.ColorRed();
-			//			sibling.ColorBlack(); // The red parent can't have black children.
-			//								  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
-			//			ReplaceChildOrRoot(grandParent, parent, sibling);
-			//			// `sibling` will become the grandparent of `current`.
-			//			grandParent = sibling;
-			//			sibling = parent.GetSibling(current);
-			//		}
-			//		Debug.Assert(Node.IsNonNullBlack(sibling));
-			//		if (sibling.Is2Node)
-			//			parent.Merge2Nodes();
-			//		else
-			//		{
-			//			// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
-			//			// We can change the color of `current` to red by some rotation.
-			//			Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
-			//			newGrandParent.Color = parent.Color;
-			//			parent.ColorBlack();
-			//			current.ColorRed();
-			//			ReplaceChildOrRoot(grandParent, parent, newGrandParent);
-			//		}
-			//	}
-			//}
 			greatGrandParent = grandParent;
 			grandParent = parent;
 			parent = current;
@@ -1998,6 +1981,11 @@ public partial class SumList : ListBase<int, SumList>
 
 	public virtual bool Update(int index, int value)
 	{
+		if (value <= 0)
+		{
+			RemoveAt(index);
+			return true;
+		}
 		var node = FindNode(index);
 		if (node != null)
 		{
@@ -2777,7 +2765,7 @@ internal delegate bool BigSumWalkPredicate(BigSumList.Node node);
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public partial class BigSumList : ListBase<mpz_t, BigSumList>
+public class BigSumList : ListBase<mpz_t, BigSumList>
 {
 	private Node? root;
 	private int version;
@@ -2849,6 +2837,8 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 
 	internal virtual int MinInternal => 0;
 
+	public virtual mpz_t ValuesSum => new(root?.ValuesSum ?? 0);
+
 	public override BigSumList Add(mpz_t value) => Insert(_size, value);
 
 	public override Span<mpz_t> AsSpan(int index, int count) => throw new NotSupportedException();
@@ -2916,35 +2906,35 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 			case 0:
 				return null;
 			case 1:
-				root = new Node(arr[startIndex], NodeColor.Black);
+				root = new Node(new(arr[startIndex]), NodeColor.Black);
 				if (redNode != null)
 					root.Left = redNode;
 				break;
 			case 2:
-				root = new Node(arr[startIndex], NodeColor.Black)
+				root = new Node(new(arr[startIndex]), NodeColor.Black)
 				{
-					Right = new Node(arr[endIndex], NodeColor.Black)
+					Right = new Node(new(arr[endIndex]), NodeColor.Black)
 				};
 				root.Right.ColorRed();
 				if (redNode != null)
 					root.Left = redNode;
 				break;
 			case 3:
-				root = new Node(arr[startIndex + 1], NodeColor.Black)
+				root = new Node(new(arr[startIndex + 1]), NodeColor.Black)
 				{
-					Left = new Node(arr[startIndex], NodeColor.Black),
-					Right = new Node(arr[endIndex], NodeColor.Black)
+					Left = new Node(new(arr[startIndex]), NodeColor.Black),
+					Right = new Node(new(arr[endIndex]), NodeColor.Black)
 				};
 				if (redNode != null)
 					root.Left.Left = redNode;
 				break;
 			default:
 				int midpt = (startIndex + endIndex) / 2;
-				root = new Node(arr[midpt], NodeColor.Black)
+				root = new Node(new(arr[midpt]), NodeColor.Black)
 				{
 					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
 					Right = size % 2 == 0 ?
-					ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(arr[midpt + 1], NodeColor.Red)) :
+					ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(new(arr[midpt + 1]), NodeColor.Red)) :
 					ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null)
 				};
 				break;
@@ -3000,7 +2990,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 				return false;
 			if (i++ < index)
 				return true;
-			array[arrayIndex++] = node.Value;
+			array[arrayIndex++] = new(node.Value);
 			return true;
 		});
 	}
@@ -3183,7 +3173,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
-				var value = current.Value;
+				mpz_t value = new(current.Value);
 				if (invoke)
 					Changed();
 				return value;
@@ -3213,7 +3203,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 			int order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
 			if (order == 0)
 			{
-				actualValue = current.Value;
+				actualValue = new(current.Value);
 				return sum + (current.Left?.ValuesSum ?? 0);
 			}
 			else if (order < 0)
@@ -3241,6 +3231,29 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 	public virtual bool Increase(int index) => Update(index, GetInternal(index) + 1);
 
 	private protected override int IndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
+
+	public virtual int IndexOfNotGreaterSum(mpz_t sum)
+	{
+		if (sum == ValuesSum)
+			return _size;
+		sum = new(sum);
+		Node? current = root;
+		int index = 0;
+		while (current != null)
+		{
+			if (sum == (current.Left?.ValuesSum ?? 0))
+				return index + (current.Left?.LeavesCount ?? 0);
+			else if (sum < (current.Left?.ValuesSum ?? 0))
+				current = current.Left;
+			else
+			{
+				index += (current.Left?.LeavesCount ?? 0) + 1;
+				sum -= (current.Left?.ValuesSum ?? 0) + current.Value;
+				current = current.Right;
+			}
+		}
+		return index - 1;
+	}
 
 	/// <summary>
 	/// Does an in-order tree walk and calls the delegate for each node.
@@ -3285,7 +3298,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 		if (root == null)
 		{
 			// The tree is empty and this is the first value.
-			root = new Node(value, NodeColor.Black);
+			root = new Node(new(value), NodeColor.Black);
 			_size = 1;
 			version++;
 			return this;
@@ -3326,47 +3339,6 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 				foundMatch = false;
 				continue;
 			}
-			//if (current.Is2Node)
-			//{
-			//	// Fix up 2-node
-			//	if (parent == null)
-			//		current.ColorRed();
-			//	else if (parent.Left != null && parent.Right != null)
-			//	{
-			//		Node sibling = parent.GetSibling(current);
-			//		if (sibling.IsRed)
-			//		{
-			//			// If parent is a 3-node, flip the orientation of the red link.
-			//			// We can achieve this by a single rotation.
-			//			// This case is converted to one of the other cases below.
-			//			Debug.Assert(parent.IsBlack);
-			//			if (parent.Right == sibling)
-			//				parent.RotateLeft();
-			//			else
-			//				parent.RotateRight();
-			//			parent.ColorRed();
-			//			sibling.ColorBlack(); // The red parent can't have black children.
-			//								  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
-			//			ReplaceChildOrRoot(grandParent, parent, sibling);
-			//			// `sibling` will become the grandparent of `current`.
-			//			grandParent = sibling;
-			//			sibling = parent.GetSibling(current);
-			//		}
-			//		Debug.Assert(Node.IsNonNullBlack(sibling));
-			//		if (sibling.Is2Node)
-			//			parent.Merge2Nodes();
-			//		else
-			//		{
-			//			// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
-			//			// We can change the color of `current` to red by some rotation.
-			//			Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
-			//			newGrandParent.Color = parent.Color;
-			//			parent.ColorBlack();
-			//			current.ColorRed();
-			//			ReplaceChildOrRoot(grandParent, parent, newGrandParent);
-			//		}
-			//	}
-			//}
 			greatGrandParent = grandParent;
 			grandParent = parent;
 			parent = current;
@@ -3384,7 +3356,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 #endif
 		Debug.Assert(parent != null);
 		// We're ready to insert the new node.
-		Node node = new(value, NodeColor.Red);
+		Node node = new(new(value), NodeColor.Red);
 		if (order <= 0)
 			parent.Left = node;
 		else
@@ -3527,7 +3499,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
-				current.Value = value;
+				current.Value = new(value);
 				Changed();
 				return;
 			}
@@ -3552,6 +3524,11 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 
 	public virtual bool Update(int index, mpz_t value)
 	{
+		if (value <= 0)
+		{
+			RemoveAt(index);
+			return true;
+		}
 		var node = FindNode(index);
 		if (node != null)
 		{
@@ -3593,7 +3570,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 			Value = value;
 			Color = color;
 			_leavesCount = 1;
-			_valuesSum = value;
+			_valuesSum = new(value);
 		}
 
 		public mpz_t Value { get; set; }
@@ -3912,7 +3889,7 @@ public partial class BigSumList : ListBase<mpz_t, BigSumList>
 		public void Update(mpz_t value)
 		{
 			ValuesSum += value - Value;
-			Value = value;
+			Value = new(value);
 		}
 
 #if DEBUG
