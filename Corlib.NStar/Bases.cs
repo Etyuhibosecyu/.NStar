@@ -801,21 +801,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain GetRange(Range range)
 	{
-		Index start = range.Start, end = range.End;
-		if (start.IsFromEnd)
-		{
-			if (end.IsFromEnd)
-				return GetRange(_size - start.Value, start.Value - end.Value);
-			else
-				return GetRange(_size - start.Value, end.Value - _size + start.Value);
-		}
-		else
-		{
-			if (end.IsFromEnd)
-				return GetRange(start.Value, _size - end.Value - start.Value);
-			else
-				return GetRange(start.Value, end.Value - start.Value);
-		}
+		int start = range.Start.IsFromEnd ? _size - range.Start.Value : range.Start.Value;
+		int end = range.End.IsFromEnd ? _size - range.End.Value : range.End.Value;
+		return GetRange(start, end - start);
 	}
 
 	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
@@ -1241,7 +1229,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				result.AddRange(newCollection);
 				queue.Clear();
 			}
-			else if (queue.Length == count)
+			else if (queue.IsFull)
 				result.Add(queue.Dequeue());
 		}
 		return result.AddRange(queue);

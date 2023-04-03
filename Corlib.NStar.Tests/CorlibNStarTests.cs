@@ -8,6 +8,7 @@ global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static Corlib.NStar.Tests.Global;
 global using static System.Math;
+using System.Collections.Immutable;
 
 namespace Corlib.NStar.Tests;
 
@@ -16,6 +17,9 @@ internal static class Global
 	internal static readonly Random random = new(1234567890);
 	internal static readonly G.IEnumerable<string> defaultCollection = new List<string>("AAA", "BBB", "AAA", "BBB", "CCC", "BBB", "CCC", "DDD", "CCC");
 	internal static readonly string defaultString = "XXX";
+	internal static readonly ImmutableArray<string> list = ImmutableArray.Create("MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD");
+	internal static readonly G.IEnumerable<string> enumerable = E.Select(list, x => x);
+	internal static readonly G.IEnumerable<string> enumerable2 = E.SkipWhile(list, _ => random.Next(10) == -1);
 }
 
 [TestClass]

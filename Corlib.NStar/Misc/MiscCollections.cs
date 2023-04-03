@@ -808,10 +808,19 @@ public class LimitedQueue<T> : Queue<T>
 
 	public LimitedQueue(IEnumerable<T> col) : base(col) => SetCapacity(Length);
 
+	public virtual bool IsFull => Length == Capacity;
+
 	public override void Enqueue(T obj)
 	{
-		if (Length == Capacity)
+		if (IsFull)
 			base.Dequeue();
+		base.Enqueue(obj);
+	}
+
+	public virtual void Enqueue(T obj, G.ICollection<T> receiver)
+	{
+		if (IsFull)
+			receiver.Add(base.Dequeue());
 		base.Enqueue(obj);
 	}
 }

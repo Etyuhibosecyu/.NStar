@@ -1,4 +1,6 @@
 ﻿
+using System.Reflection;
+
 namespace Corlib.NStar;
 public partial class List<T, TCertain>
 {
@@ -43086,6 +43088,53 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static List<TSource> SkipEnumerable<TSource>(IEnumerable<TSource> source, int count)
+	{
+		if (count <= 0)
+			return new(source);
+		else if (source is List<TSource> list)
+			return list.Skip(count);
+		else
+		{
+			var en = source.GetEnumerator();
+			for (int i = 0; i < count; i++)
+				if (!en.MoveNext())
+					return new();
+			List<TSource> result = new(TryGetCountEasilyEnumerable(source, out int count2) ? Math.Max(count2 - count, 0) : 1024);
+			while (en.MoveNext())
+				result.Add(en.Current);
+			return result;
+		}
+	}
+
+	internal static List<TSource> SkipLastEnumerable<TSource>(IEnumerable<TSource> source, int count)
+	{
+		if (count <= 0)
+			return new(source);
+		else if (source is List<TSource> list)
+			return list.SkipLast(count);
+		else if (TryGetCountEasilyEnumerable(source, out int count2))
+		{
+			int end = Math.Max(count2 - count, 0);
+			List<TSource> result = new(end);
+			var en = source.GetEnumerator();
+			int i = 0;
+			for (; i < end && en.MoveNext(); i++)
+				result._items[i] = en.Current;
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			List<TSource> result = new();
+			LimitedQueue<TSource> queue = new(count);
+			var en = source.GetEnumerator();
+			while (en.MoveNext())
+				queue.Enqueue(en.Current, result);
+			return result;
+		}
+	}
+
 	internal static List<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
 	{
 		if (source is List<TSource> list)
@@ -44217,7 +44266,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, int count)
 	{
-		if (count == 0)
+		if (count <= 0)
 			return new();
 		else if (source is List<TSource> list)
 			return list.Take(count);
@@ -44233,6 +44282,127 @@ public partial class List<T, TCertain>
 			}
 			result._size = i;
 			return result;
+		}
+	}
+
+	internal static List<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, Range range)
+	{
+		if (source is List<TSource> list)
+		{
+			int start = Clamp(range.Start.IsFromEnd ? list.Length - range.Start.Value : range.Start.Value, 0, list.Length);
+			int end = Clamp(range.End.IsFromEnd ? list.Length - range.End.Value : range.End.Value, 0, list.Length);
+			if (start >= end)
+				return new();
+			return list.GetRange(start, end - start);
+		}
+		else if (TryGetCountEasilyEnumerable(source, out int count))
+		{
+			int start = Clamp(range.Start.IsFromEnd ? count - range.Start.Value : range.Start.Value, 0, count);
+			int end = Clamp(range.End.IsFromEnd ? count - range.End.Value : range.End.Value, 0, count);
+			if (start >= end)
+				return new();
+			List<TSource> result = new(end - start);
+			int i = 0;
+			foreach (TSource item in source)
+			{
+				if (i >= start)
+					result._items[i - start] = item;
+				i++;
+				if (i >= end)
+					break;
+			}
+			result._size = end - start;
+			return result;
+		}
+		int index = range.Start.Value, index2 = range.End.Value;
+		var en = source.GetEnumerator();
+		if (!range.Start.IsFromEnd && !range.End.IsFromEnd)
+		{
+			if (index >= index2)
+				return new();
+			int i = 0;
+			for (; i < index; i++)
+				if (!en.MoveNext())
+					return new();
+			List<TSource> result = new(index2 - index);
+			for (; i < index2 && en.MoveNext(); i++)
+				result._items[i - index] = en.Current;
+			result._size = i - index;
+			return result;
+		}
+		else if (!range.Start.IsFromEnd && range.End.IsFromEnd)
+		{
+			int i = 0;
+			for (; i < index; i++)
+				if (!en.MoveNext())
+					return new();
+			List<TSource> result = new();
+			LimitedQueue<TSource> queue = new(index2);
+			while (en.MoveNext())
+				queue.Enqueue(en.Current, result);
+			return result;
+		}
+		else if (range.Start.IsFromEnd && !range.End.IsFromEnd)
+		{
+			LimitedQueue<TSource> queue = new(index);
+			int i = 0;
+			while (en.MoveNext())
+			{
+				queue.Enqueue(en.Current);
+				i++;
+				if (i >= index + index2)
+					return new();
+			}
+			List<TSource> result = new(Math.Min(index + index2 - i, i));
+			for (i = 0; i < result._items.Length; i++)
+				result._items[i] = queue.Dequeue();
+			result._size = result._items.Length;
+			return result;
+		}
+		else if (range.Start.IsFromEnd && range.End.IsFromEnd)
+		{
+			LimitedQueue<TSource> queue = new(index);
+			while (en.MoveNext())
+				queue.Enqueue(en.Current);
+			if (queue.Length <= index2)
+				return new();
+			List<TSource> result = new(queue.Length - index2);
+			for (int i = 0; i < result._items.Length; i++)
+				result._items[i] = queue.Dequeue();
+			result._size = result._items.Length;
+			return result;
+		}
+		else
+			return new();
+	}
+
+	internal static List<TSource> TakeLastEnumerable<TSource>(IEnumerable<TSource> source, int count)
+	{
+		if (count <= 0)
+			return new();
+		else if (source is List<TSource> list)
+			return list.TakeLast(count);
+		else if (TryGetCountEasilyEnumerable(source, out int count2))
+		{
+			int start = Math.Max(count2 - count, 0);
+			var en = source.GetEnumerator();
+			int i = 0;
+			for (; i < start; i++)
+				if (!en.MoveNext())
+					return new();
+			List<TSource> result = new(Math.Min(count, count2));
+			for (i = 0; i < result._items.Length && en.MoveNext(); i++)
+				result._items[i] = en.Current;
+			result._size = result._items.Length;
+			return result;
+		}
+		else
+		{
+			LimitedQueue<TSource> queue = new(count);
+			var en = source.GetEnumerator();
+			while (en.MoveNext())
+				queue.Enqueue(en.Current);
+			return queue.ToList();
 		}
 	}
 
@@ -44419,6 +44589,11 @@ public partial class List<T, TCertain>
 			else if (source is string s)
 			{
 				count = s.Length;
+				return count >= 0;
+			}
+			else if ((CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.IIListProvider`1")?.MakeGenericType(typeof(TSource)), out var targetType)?.IsInstanceOfType(source) ?? throw new InvalidOperationException()) && targetType.GetMethod("GetCount")?.Invoke(source, new object[] { true }) is int n)
+			{
+				count = n;
 				return count >= 0;
 			}
 		}
@@ -60512,8 +60687,8 @@ public static class RedStarLinq
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source) => List<TResult>.SetInnerTypeEnumerable<TResult>(source);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
-	public static IEnumerable<TSource> Skip<TSource>(this IEnumerable<TSource> source, int count) => Enumerable.Skip(source, count);
-	public static IEnumerable<TSource> SkipLast<TSource>(this IEnumerable<TSource> source, int count) => Enumerable.SkipLast(source, count);
+	public static List<TSource> Skip<TSource>(this IEnumerable<TSource> source, int count) => List<TSource>.SkipEnumerable(source, count);
+	public static List<TSource> SkipLast<TSource>(this IEnumerable<TSource> source, int count) => List<TSource>.SkipLastEnumerable(source, count);
 	public static List<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
 	public static List<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
 	public static IEnumerable<TSource> Sort<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => Enumerable.OrderBy(source, function);
@@ -60551,8 +60726,8 @@ public static class RedStarLinq
 	public static long Sum(this IEnumerable<long> source) => List<long>.SumEnumerable(source);
 	public static mpz_t Sum(this IEnumerable<mpz_t> source) => List<mpz_t>.SumEnumerable(source);
 	public static List<TSource> Take<TSource>(this IEnumerable<TSource> source, int count) => List<TSource>.TakeEnumerable(source, count);
-	public static IEnumerable<TSource> Take<TSource>(this IEnumerable<TSource> source, Range range) => Enumerable.Take(source, range);
-	public static IEnumerable<TSource> TakeLast<TSource>(this IEnumerable<TSource> source, int count) => Enumerable.TakeLast(source, count);
+	public static List<TSource> Take<TSource>(this IEnumerable<TSource> source, Range range) => List<TSource>.TakeEnumerable(source, range);
+	public static List<TSource> TakeLast<TSource>(this IEnumerable<TSource> source, int count) => List<TSource>.TakeLastEnumerable(source, count);
 	public static List<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
 	public static List<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
 	public static TResult[] ToArray<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => List<TSource>.ToArrayEnumerable(source, function);

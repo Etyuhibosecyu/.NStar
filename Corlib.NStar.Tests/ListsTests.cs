@@ -1,13 +1,8 @@
-﻿using System.Collections.Immutable;
-using System.Diagnostics;
-
-namespace Corlib.NStar.Tests;
+﻿namespace Corlib.NStar.Tests;
 
 [TestClass]
 public class ListTests
 {
-	private readonly ImmutableArray<string> list = ImmutableArray.Create("MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD");
-
 	[TestMethod]
 	public void TestAdd()
 	{
