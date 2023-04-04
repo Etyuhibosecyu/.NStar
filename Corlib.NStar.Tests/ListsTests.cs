@@ -1221,6 +1221,54 @@ public class ListTests
 			b.Reverse();
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3)).Reverse(2, 4);
+			b = new G.List<string>(list);
+			b.AddRange(defaultCollection.Skip(2).Take(3));
+			b.Reverse(2, 4);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSetAll()
+	{
+		try
+		{
+			var a = new List<string>(list).SetAll(defaultString);
+			var b = new G.List<string>(list);
+			for (int i = 0; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).SetAll(defaultString, 3);
+			b = new G.List<string>(list);
+			for (int i = 3; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).SetAll(defaultString, 2, 4);
+			b = new G.List<string>(list);
+			for (int i = 2; i < 6; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).SetAll(defaultString, ^5);
+			b = new G.List<string>(list);
+			for (int i = b.Count - 5; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = new List<string>(list).SetAll(defaultString, ^6..4);
+			b = new G.List<string>(list);
+			for (int i = b.Count - 6; i < 4; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 		catch (Exception ex)
 		{

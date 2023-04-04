@@ -42968,6 +42968,69 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static G.IList<TSource> SetAllEnumerable<TSource>(G.IList<TSource> source, TSource value)
+	{
+		if (source is List<TSource> list)
+			return list.SetAll(value);
+		else
+		{
+			for (int i = 0; i < source.Count; i++)
+				source[i] = value;
+			return source;
+		}
+	}
+
+	internal static G.IList<TSource> SetAllEnumerable<TSource>(G.IList<TSource> source, TSource value, Index index)
+	{
+		if (source is List<TSource> list)
+			return list.SetAll(value, index);
+		else
+		{
+			for (int i = index.IsFromEnd ? source.Count - index.Value : index.Value; i < source.Count; i++)
+				source[i] = value;
+			return source;
+		}
+	}
+
+	internal static G.IList<TSource> SetAllEnumerable<TSource>(G.IList<TSource> source, TSource value, int index)
+	{
+		if (source is List<TSource> list)
+			return list.SetAll(value, index);
+		else
+		{
+			for (int i = index; i < source.Count; i++)
+				source[i] = value;
+			return source;
+		}
+	}
+
+	internal static G.IList<TSource> SetAllEnumerable<TSource>(G.IList<TSource> source, TSource value, int index, int count)
+	{
+		if (source is List<TSource> list)
+			return list.SetAll(value, index, count);
+		else
+		{
+			int endIndex = index + count;
+			for (int i = index; i < endIndex; i++)
+				source[i] = value;
+			return source;
+		}
+	}
+
+	internal static G.IList<TSource> SetAllEnumerable<TSource>(G.IList<TSource> source, TSource value, Range range)
+	{
+		if (source is List<TSource> list)
+			return list.SetAll(value, range);
+		else
+		{
+			int startIndex = range.Start.IsFromEnd ? source.Count - range.Start.Value : range.Start.Value;
+			int endIndex = range.End.IsFromEnd ? source.Count - range.End.Value : range.End.Value;
+			for (int i = startIndex; i < endIndex; i++)
+				source[i] = value;
+			return source;
+		}
+	}
+
 	internal static List<TResult> SetInnerTypeEnumerable<TResult>(IEnumerable source)
 	{
 		List<TResult> result = new();
@@ -44591,7 +44654,7 @@ public partial class List<T, TCertain>
 				count = s.Length;
 				return count >= 0;
 			}
-			else if ((CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.IIListProvider`1")?.MakeGenericType(typeof(TSource)), out var targetType)?.IsInstanceOfType(source) ?? throw new InvalidOperationException()) && targetType.GetMethod("GetCount")?.Invoke(source, new object[] { true }) is int n)
+			else if (CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.IIListProvider`1")?.MakeGenericType(typeof(TSource)) ?? throw new InvalidOperationException(), out var targetType).IsInstanceOfType(source) && targetType.GetMethod("GetCount")?.Invoke(source, new object[] { true }) is int n)
 			{
 				count = n;
 				return count >= 0;
@@ -56382,6 +56445,13 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static Span<TSource> SetAllEnumerable<TSource>(Span<TSource> source, TSource value)
+	{
+		for (int i = 0; i < source.Length; i++)
+			source[i] = value;
+		return source;
+	}
+
 	internal static bool StartsWithEnumerable<TSource, TSource2>(ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, bool> function)
 	{
 		if (function == null)
@@ -60684,6 +60754,16 @@ public static class RedStarLinq
 	public static List<int> RepresentIntoNumbers<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable(source, equalFunction);
 	public static List<int> RepresentIntoNumbers<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : notnull => List<int>.RepresentIntoNumbersEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<TSource> Reverse<TSource>(this IEnumerable<TSource> source) => List<TSource>.ReverseEnumerable(source);
+	public static G.IList<TSource> SetAll<TSource>(this G.IList<TSource> source, TSource value) => List<TSource>.SetAllEnumerable(source, value);
+	public static G.IList<TSource> SetAll<TSource>(this G.IList<TSource> source, TSource value, Index index) => List<TSource>.SetAllEnumerable(source, value, index);
+	public static G.IList<TSource> SetAll<TSource>(this G.IList<TSource> source, TSource value, int index) => List<TSource>.SetAllEnumerable(source, value, index);
+	public static G.IList<TSource> SetAll<TSource>(this G.IList<TSource> source, TSource value, int index, int count) => List<TSource>.SetAllEnumerable(source, value, index, count);
+	public static G.IList<TSource> SetAll<TSource>(this G.IList<TSource> source, TSource value, Range range) => List<TSource>.SetAllEnumerable(source, value, range);
+	public static TSource[] SetAll<TSource>(this TSource[] source, TSource value) => List<TSource>.SetAllEnumerable((G.IList<TSource>)source, value) as TSource[] ?? throw new InvalidOperationException();
+	public static TSource[] SetAll<TSource>(this TSource[] source, TSource value, Index index) => List<TSource>.SetAllEnumerable(source, value, index) as TSource[] ?? throw new InvalidOperationException();
+	public static TSource[] SetAll<TSource>(this TSource[] source, TSource value, int index) => List<TSource>.SetAllEnumerable(source, value, index) as TSource[] ?? throw new InvalidOperationException();
+	public static TSource[] SetAll<TSource>(this TSource[] source, TSource value, int index, int count) => List<TSource>.SetAllEnumerable(source, value, index, count) as TSource[] ?? throw new InvalidOperationException();
+	public static TSource[] SetAll<TSource>(this TSource[] source, TSource value, Range range) => List<TSource>.SetAllEnumerable(source, value, range) as TSource[] ?? throw new InvalidOperationException();
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source) => List<TResult>.SetInnerTypeEnumerable<TResult>(source);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
@@ -62807,6 +62887,7 @@ public static class RedStarLinq
 	public static List<TSource> Reverse<TSource>(this ReadOnlySpan<TSource> source) => List<TSource>.ReverseEnumerable(source);
 	public static List<TSource> Reverse<TSource>(this Span<TSource> source) => List<TSource>.ReverseEnumerable((ReadOnlySpan<TSource>)source);
 	public static List<TSource> Reverse<TSource>(this TSource[] source) => List<TSource>.ReverseEnumerable((ReadOnlySpan<TSource>)source.AsSpan());
+	public static Span<TSource> SetAll<TSource>(Span<TSource> source, TSource value) => List<TSource>.SetAllEnumerable(source, value);
 	public static bool StartsWith<TSource, TSource2>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<TSource, TSource2>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, int, bool> function) => List<bool>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<TSource, TSource2>(this Span<TSource> source, Span<TSource2> source2, Func<TSource, TSource2, bool> function) => List<bool>.StartsWithEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2, function);

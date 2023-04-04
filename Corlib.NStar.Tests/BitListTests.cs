@@ -97,4 +97,38 @@ public class BitListTests
 			Assert.Fail(ex.ToString());
 		}
 	}
+
+	[TestMethod]
+	public void TestSetAll()
+	{
+		try
+		{
+			byte[] bytes = new byte[40];
+			BitList bitList;
+			G.List<bool> boolList;
+			int count;
+			int index;
+			bool value;
+			int endIndex;
+			for (int i = 0; i < 1000; i++)
+			{
+				random.NextBytes(bytes);
+				count = random.Next(97);
+				index = random.Next(bytes.Length * 8 - count + 1);
+				value = random.Next(2) == 1;
+				bitList = new(bytes);
+				boolList = new(bitList);
+				bitList.SetAll(value, index, count);
+				endIndex = index + count;
+				for (int j = index; j < endIndex; j++)
+					boolList[j] = value;
+				Assert.IsTrue(bitList.Equals(boolList));
+				Assert.IsTrue(E.SequenceEqual(boolList, bitList));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
 }

@@ -1298,6 +1298,30 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract TCertain ReverseInternal(int index, int count);
 
+	public virtual TCertain SetAll(T value) => SetAll(value, 0, _size);
+
+	public virtual TCertain SetAll(T value, Index index) => SetAll(value, index.IsFromEnd ? _size - index.Value : index.Value);
+
+	public virtual TCertain SetAll(T value, int index) => SetAll(value, index, _size - index);
+
+	public virtual TCertain SetAll(T value, int index, int count)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		int endIndex = index + count;
+		for (int i = index; i < endIndex; i++)
+			SetInternal(i, value);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.Start.IsFromEnd ? _size - range.Start.Value : range.Start.Value, out int startIndex), (range.End.IsFromEnd ? _size - range.End.Value : range.End.Value) - startIndex);
+
 	internal abstract void SetInternal(int index, T value);
 
 	public virtual TCertain SetRange(int index, IEnumerable<T> collection)

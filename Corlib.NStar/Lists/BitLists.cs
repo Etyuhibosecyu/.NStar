@@ -229,12 +229,26 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		Changed();
 	}
 
-	public virtual void SetAll(bool value)
+	public override BitList SetAll(bool value, int index, int count)
 	{
-		uint fillValue = value ? 0xffffffff : 0;
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] = fillValue;
+		(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
+		(int endIntIndex, int endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
+		if (intIndex == endIntIndex)
+		{
+			uint mask = ~(count == BitsPerInt ? 0 : ~0u << count) << bitsIndex;
+			_items[intIndex] = value ? _items[intIndex] | mask : _items[intIndex] & ~mask;
+		}
+		else
+		{
+			uint startMask = ~0u << bitsIndex;
+			_items[intIndex] = value ? _items[intIndex] | startMask : _items[intIndex] & ~startMask;
+			uint fillValue = value ? 0xffffffff : 0;
+			for (int i = intIndex + 1; i < endIntIndex; i++)
+				_items[i] = fillValue;
+			uint endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
+			_items[endIntIndex] = value ? _items[endIntIndex] | endMask : _items[endIntIndex] & ~endMask;
+		}
+		return this;
 	}
 
 	public virtual BitList And(BitList value)

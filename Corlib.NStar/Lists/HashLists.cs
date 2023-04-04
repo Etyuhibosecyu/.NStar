@@ -119,8 +119,9 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 
 	private protected override void ClearInternal(int index, int count)
 	{
-		for (int i = 0; i < count; i++)
-			SetNull(index + i);
+		int endIndex = index + count;
+		for (int i = index; i < endIndex; i++)
+			SetNull(i);
 		Changed();
 	}
 
@@ -179,9 +180,10 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
-		for (int i = 0; i < count; i++)
-			if (Comparer.Equals(entries[index + i].item, item))
-				return index + i;
+		int endIndex = index + count;
+		for (int i = index; i < endIndex; i++)
+			if (Comparer.Equals(entries[i].item, item))
+				return i;
 		return -1;
 	}
 
@@ -345,9 +347,10 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
-		for (int i = count - 1; i >= 0; i--)
-			if (Comparer.Equals(entries[index + i].item, item))
-				return index + i;
+		int endIndex = index + count;
+		for (int i = endIndex - 1; i >= index; i--)
+			if (Comparer.Equals(entries[i].item, item))
+				return i;
 		return -1;
 	}
 
@@ -366,9 +369,10 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		if (index + count > _size)
 			throw new ArgumentException(null);
 		List<int> result = new();
-		for (int i = 0; i < count; i++)
-			if (Comparer.Equals(entries[index + i].item, item))
-				result.Add(index + i);
+		int endIndex = index + count;
+		for (int i = index; i < endIndex; i++)
+			if (Comparer.Equals(entries[i].item, item))
+				result.Add(i);
 		return result;
 	}
 
@@ -546,11 +550,12 @@ public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> w
 		for (int i = 0; i < index; i++)
 			if (entries[i].hashCode >= 0)
 				skipped++;
-		for (int i = 0; i < count; i++)
-			if (entries[i].hashCode < 0)
-				array[arrayIndex++] = entries[index + i + skipped].item;
+		int endIndex = index + count;
+		for (int i = index; i < endIndex; i++)
+			if (entries[i + skipped].hashCode < 0)
+				array[arrayIndex++] = entries[i + skipped].item;
 			else
-				count++;
+				endIndex++;
 	}
 
 	public override void Dispose()

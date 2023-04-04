@@ -4,6 +4,48 @@
 public class RedStarLinqTests
 {
 	[TestMethod]
+	public void TestSetAll()
+	{
+		try
+		{
+			var a = E.ToArray(list).SetAll(defaultString);
+			var b = new G.List<string>(list);
+			for (int i = 0; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = E.ToArray(list).SetAll(defaultString, 3);
+			b = new G.List<string>(list);
+			for (int i = 3; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = E.ToArray(list).SetAll(defaultString, 2, 4);
+			b = new G.List<string>(list);
+			for (int i = 2; i < 6; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = E.ToArray(list).SetAll(defaultString, ^5);
+			b = new G.List<string>(list);
+			for (int i = b.Count - 5; i < b.Count; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = E.ToArray(list).SetAll(defaultString, ^6..4);
+			b = new G.List<string>(list);
+			for (int i = b.Count - 6; i < 4; i++)
+				b[i] = defaultString;
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
 	public void TestSkip()
 	{
 		try
