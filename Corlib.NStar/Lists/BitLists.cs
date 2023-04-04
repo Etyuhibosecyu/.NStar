@@ -202,6 +202,20 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		}
 	}
 
+	public virtual bool IsReadOnly => false;
+
+	public virtual bool IsSynchronized => false;
+
+	public virtual object SyncRoot
+	{
+		get
+		{
+			if (_syncRoot == null)
+				Interlocked.CompareExchange<object?>(ref _syncRoot, new(), null);
+			return _syncRoot;
+		}
+	}
+
 	private protected override Func<int, BitList> CapacityCreator => CapacityCreatorStatic;
 
 	private static Func<int, BitList> CapacityCreatorStatic => x => new(x);
@@ -212,45 +226,6 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	private protected override int DefaultCapacity => 256;
 
-	internal override bool GetInternal(int index, bool invoke = true)
-	{
-		bool item = (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
-		if (invoke)
-			Changed();
-		return item;
-	}
-
-	internal override void SetInternal(int index, bool value)
-	{
-		if (value)
-			_items[index / BitsPerInt] |= (uint)1 << index % BitsPerInt;
-		else
-			_items[index / BitsPerInt] &= ~((uint)1 << index % BitsPerInt);
-		Changed();
-	}
-
-	public override BitList SetAll(bool value, int index, int count)
-	{
-		(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
-		(int endIntIndex, int endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
-		if (intIndex == endIntIndex)
-		{
-			uint mask = ~(count == BitsPerInt ? 0 : ~0u << count) << bitsIndex;
-			_items[intIndex] = value ? _items[intIndex] | mask : _items[intIndex] & ~mask;
-		}
-		else
-		{
-			uint startMask = ~0u << bitsIndex;
-			_items[intIndex] = value ? _items[intIndex] | startMask : _items[intIndex] & ~startMask;
-			uint fillValue = value ? 0xffffffff : 0;
-			for (int i = intIndex + 1; i < endIntIndex; i++)
-				_items[i] = fillValue;
-			uint endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
-			_items[endIntIndex] = value ? _items[endIntIndex] | endMask : _items[endIntIndex] & ~endMask;
-		}
-		return this;
-	}
-
 	public virtual BitList And(BitList value)
 	{
 		if (value == null)
@@ -260,38 +235,6 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		int ints = GetArrayLength(_size, BitsPerInt);
 		for (int i = 0; i < ints; i++)
 			_items[i] &= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Or(BitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] |= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Xor(BitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] ^= value._items[i];
-		return this;
-	}
-
-	public virtual BitList Not()
-	{
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
-			_items[i] = ~_items[i];
 		return this;
 	}
 
@@ -575,6 +518,14 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 
 	public override int GetHashCode() => _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[_capacity - 1].GetHashCode();
 
+	internal override bool GetInternal(int index, bool invoke = true)
+	{
+		bool item = (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
+		if (invoke)
+			Changed();
+		return item;
+	}
+
 	public virtual uint GetSmallRange(int index, int count)
 	{
 		if (index < 0)
@@ -693,6 +644,26 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		return -1;
 	}
 
+	public virtual BitList Not()
+	{
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] = ~_items[i];
+		return this;
+	}
+
+	public virtual BitList Or(BitList value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (_size != value._size)
+			throw new ArgumentException(null, nameof(value));
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] |= value._items[i];
+		return this;
+	}
+
 	private protected override BitList ReverseInternal(int index, int count)
 	{
 		for (int i = 0; i < count / 2; i++)
@@ -701,6 +672,45 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		}
 		Changed();
 		return this;
+	}
+
+	public override BitList SetAll(bool value, int index, int count)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
+		(int endIntIndex, int endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
+		if (intIndex == endIntIndex)
+		{
+			uint mask = ~(count == BitsPerInt ? 0 : ~0u << count) << bitsIndex;
+			_items[intIndex] = value ? _items[intIndex] | mask : _items[intIndex] & ~mask;
+		}
+		else
+		{
+			uint startMask = ~0u << bitsIndex;
+			_items[intIndex] = value ? _items[intIndex] | startMask : _items[intIndex] & ~startMask;
+			uint fillValue = value ? 0xffffffff : 0;
+			for (int i = intIndex + 1; i < endIntIndex; i++)
+				_items[i] = fillValue;
+			uint endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
+			_items[endIntIndex] = value ? _items[endIntIndex] | endMask : _items[endIntIndex] & ~endMask;
+		}
+		return this;
+	}
+
+	internal override void SetInternal(int index, bool value)
+	{
+		if (value)
+			_items[index / BitsPerInt] |= (uint)1 << index % BitsPerInt;
+		else
+			_items[index / BitsPerInt] &= ~((uint)1 << index % BitsPerInt);
+		Changed();
 	}
 
 	public virtual void SetRange(int index, IEnumerable collection)
@@ -730,19 +740,17 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		return result;
 	}
 
-	public virtual object SyncRoot
+	public virtual BitList Xor(BitList value)
 	{
-		get
-		{
-			if (_syncRoot == null)
-				Interlocked.CompareExchange<object?>(ref _syncRoot, new(), null);
-			return _syncRoot;
-		}
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (_size != value._size)
+			throw new ArgumentException(null, nameof(value));
+		int ints = GetArrayLength(_size, BitsPerInt);
+		for (int i = 0; i < ints; i++)
+			_items[i] ^= value._items[i];
+		return this;
 	}
-
-	public virtual bool IsReadOnly => false;
-
-	public virtual bool IsSynchronized => false;
 }
 
 [DebuggerDisplay("Length = {Length}")]
