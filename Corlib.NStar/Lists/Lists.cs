@@ -179,7 +179,7 @@ public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TC
 
 	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
-		Array.Copy((source as TCertain ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as TCertain ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
+		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, count);
 		Changed();
 	}
 
@@ -514,6 +514,66 @@ public class List<T> : List<T, List<T>>
 	public static implicit operator List<T>(T x) => new(x);
 
 	public static implicit operator List<T>(T[] x) => new(x);
+
+	public static explicit operator List<T>((T, T) x) => new(x.Item1, x.Item2);
+
+	public static explicit operator List<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+
+	public static explicit operator List<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+
+	public static explicit operator List<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+
+	public static explicit operator List<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+
+	public static explicit operator (T, T)(List<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T)(List<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T)(List<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T)(List<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T)(List<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T)(List<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T)(List<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }
 
 [DebuggerDisplay("{ToString()}")]
@@ -829,7 +889,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		}
 	}
 
-	public NList(T[] array)
+	public NList(params T[] array)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
@@ -838,7 +898,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			_items = ptr;
 	}
 
-	public NList(int capacity, T[] array)
+	public NList(int capacity, params T[] array)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
@@ -937,7 +997,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int count)
 	{
-		CopyMemory((source as NList<T> ?? throw new ArgumentException(null, nameof(source)))._items, sourceIndex, (destination as NList<T> ?? throw new ArgumentException(null, nameof(destination)))._items, destinationIndex, count);
+		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, count);
 		Changed();
 	}
 
@@ -1216,6 +1276,66 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	}
 
 	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
+
+	public static explicit operator NList<T>((T, T) x) => new(x.Item1, x.Item2);
+
+	public static explicit operator NList<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+
+	public static explicit operator NList<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+
+	public static explicit operator NList<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+
+	public static explicit operator (T, T)(NList<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T)(NList<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T)(NList<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T)(NList<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T)(NList<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T)(NList<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }
 
 internal delegate bool SumWalkPredicate(SumList.Node node);
@@ -1409,7 +1529,7 @@ public class SumList : ListBase<int, SumList>
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source as SumList ?? throw new ArgumentException(null, nameof(source)), sourceIndex, sourceIndex + count - 1, true, true);
+		TreeSubSet subset = new(source, sourceIndex, sourceIndex + count - 1, true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
@@ -2951,7 +3071,7 @@ public class BigSumList : ListBase<mpz_t, BigSumList>
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source as BigSumList ?? throw new ArgumentException(null, nameof(source)), sourceIndex, sourceIndex + count - 1, true, true);
+		TreeSubSet subset = new(source, sourceIndex, sourceIndex + count - 1, true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>

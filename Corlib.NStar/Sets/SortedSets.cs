@@ -586,7 +586,7 @@ public class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source as TreeSet<T> ?? throw new ArgumentException(null, nameof(source)), source.GetInternal(sourceIndex), source.GetInternal(sourceIndex + count - 1), true, true);
+		TreeSubSet subset = new(source, source.GetInternal(sourceIndex), source.GetInternal(sourceIndex + count - 1), true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex), destination.GetInternal(Min(destinationIndex + count, destination._size) - 1), true, true).InOrderTreeWalk(node =>
@@ -2932,7 +2932,7 @@ public class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source as SumSet<T> ?? throw new ArgumentException(null, nameof(source)), source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + count - 1).Key, true, true);
+		TreeSubSet subset = new(source, source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + count - 1).Key, true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + count, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
@@ -3260,6 +3260,28 @@ public class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
 			throw new ArgumentNullException(nameof(item));
 		int ret = Search(item);
 		return ret >= index && ret < index + count ? ret : -1;
+	}
+
+	public virtual int IndexOfNotGreaterSum(long sum)
+	{
+		if (sum == ValuesSum)
+			return _size;
+		Node? current = root;
+		int index = 0;
+		while (current != null)
+		{
+			if (sum == (current.Left?.ValuesSum ?? 0))
+				return index + (current.Left?.LeavesCount ?? 0);
+			else if (sum < (current.Left?.ValuesSum ?? 0))
+				current = current.Left;
+			else
+			{
+				index += (current.Left?.LeavesCount ?? 0) + 1;
+				sum -= (current.Left?.ValuesSum ?? 0) + current.Item.Value;
+				current = current.Right;
+			}
+		}
+		return index - 1;
 	}
 
 	public virtual int IndexOfNotLess(T item)

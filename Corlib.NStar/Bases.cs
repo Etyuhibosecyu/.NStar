@@ -5,7 +5,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>*/, IEquatable<ListBase<T, TCertain>> where TCertain : ListBase<T, TCertain>, new()
+public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>*/, IEquatable<TCertain> where TCertain : ListBase<T, TCertain>, new()
 {
 	private protected int _size;
 	public abstract int Capacity { get; set; }
@@ -463,12 +463,13 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return Equals(m);
 	}
 
+	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 
-	public virtual bool Equals(IEnumerable<T>? collection, int index = 0, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
+	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
 
-	public virtual bool Equals(ListBase<T, TCertain>? list) => EqualsInternal(list, 0, true);
+	public virtual bool Equals(TCertain? list) => EqualsInternal(list, 0, true);
 
-	public virtual bool Equals(ListBase<T, TCertain>? list, int index, bool toEnd = false) => EqualsInternal(list, index, toEnd);
+	public virtual bool Equals(TCertain? list, int index, bool toEnd = false) => EqualsInternal(list, index, toEnd);
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
@@ -1365,9 +1366,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual TCertain Skip(int count) => GetRange(Min(count, _size), Max(0, _size - count));
+	public virtual TCertain Skip(int count) => GetRange(Clamp(count, 0, _size), Max(0, _size - Max(count, 0)));
 
-	public virtual TCertain SkipLast(int count) => GetRange(0, Max(0, _size - count));
+	public virtual TCertain SkipLast(int count) => GetRange(0, Max(0, _size - Max(count, 0)));
 
 	public virtual TCertain SkipWhile(Func<T, bool> function)
 	{
@@ -1387,9 +1388,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool StartsWith(TCertain list) => StartsWith((IEnumerable<T>)list);
 
-	public virtual TCertain Take(int count) => GetRange(0, Min(count, _size));
+	public virtual TCertain Take(int count) => GetRange(0, Clamp(count, 0, _size));
 
-	public virtual TCertain TakeLast(int count) => GetRange(Max(0, _size - count), Min(count, _size));
+	public virtual TCertain TakeLast(int count) => GetRange(Max(0, _size - Max(count, 0)), Clamp(count, 0, _size));
 
 	public virtual TCertain TakeWhile(Func<T, bool> function)
 	{

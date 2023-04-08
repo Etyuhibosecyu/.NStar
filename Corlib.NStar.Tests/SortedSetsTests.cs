@@ -13,6 +13,7 @@ public class SumSetTests
 			SumSet<int> ss = new(arr);
 			G.SortedSet<int> gs = new(arr.ToArray(x => x.Item1));
 			G.List<int> gl = new(ss.Convert(x => x.Value));
+			var bytes = new byte[16];
 			var collectionActions = new[] { ((int, int)[] arr) =>
 			{
 				gl = new(E.Where(gl, (x, index) => !Array.Exists(arr, x => x.Item1 == ss[index].Key)));
@@ -111,6 +112,11 @@ public class SumSetTests
 				Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
 				Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 				Assert.AreEqual(ss.GetLeftValuesSum(n, out int value), E.Sum(E.Take(gl, ss.IndexOfNotLess(n))));
+			}, () =>
+			{
+				random.NextBytes(bytes);
+				int index = ss.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (ss.ValuesSum + 1)), out var sum));
+				Assert.IsTrue((index == gl.Count && sum == E.Sum(gl)) || (CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
 			}, () =>
 			{
 				if (ss.Length == 0) return;

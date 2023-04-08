@@ -63132,5 +63132,5 @@ public static class RedStarLinq
 	public static NList<TResult> PNConvert<TSource, TResult>(this G.IList<TSource> source, Func<TSource, int, TResult> function) where TResult : unmanaged => NList<TResult>.PConvertEnumerable(source, function);
 	public static NList<TResult> PNFill<TResult>(TResult elem, int count) where TResult : unmanaged => NList<TResult>.PFillEnumerable(elem, count);
 	public static NList<TResult> PNFill<TResult>(Func<int, TResult> function, int count) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, count);
-	public static NList<TResult> PNFill<TResult>(int count, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, count);
+	public static NList<TResult> PNFill<TResult>(int count, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, count);
 }

@@ -49,9 +49,10 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 	{
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(length, BitsPerInt)));
+		int uints = GetArrayLength(length, BitsPerInt);
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
-		CopyMemory(ptr, _items, length);
+		CopyMemory(ptr, _items, uints);
 	}
 
 	public BitList(uint[] values)
@@ -65,6 +66,17 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		_size = values.Length * BitsPerInt;
 		fixed (uint* values2 = values)
 			CopyMemory(values2, _items, values.Length);
+	}
+
+	public BitList(int length, params uint[] values)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		int uints = GetArrayLength(length, BitsPerInt);
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		_size = length;
+		fixed (uint* ptr = values)
+			CopyMemory(ptr, _items, uints);
 	}
 
 	public BitList(IEnumerable bits)
@@ -147,6 +159,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
 			int arrayLength = _capacity = GetArrayLength(count, BytesPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			FillMemory(_items, arrayLength, 0);
 			int i = 0;
 			using IEnumerator<byte> en = bytes.GetEnumerator();
 			while (en.MoveNext())
@@ -405,7 +418,9 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	public virtual object Clone()
+	public virtual object Clone() => Copy();
+
+	public virtual BitList Copy()
 	{
 		BitList bitList = new(_size, _items);
 		return bitList;

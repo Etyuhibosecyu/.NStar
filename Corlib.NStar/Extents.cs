@@ -1045,4 +1045,16 @@ public static unsafe partial class Extents
 		PrimitiveType.ULongType => (int)(ulong)(object)item,
 		_ => default,
 	};
+
+	public static uint ToUInt<T>(T item, PrimitiveType type) where T : unmanaged => type switch
+	{
+		PrimitiveType.ByteType => (byte)(object)item,
+		PrimitiveType.ShortType => (uint)(short)(object)item,
+		PrimitiveType.UShortType => (ushort)(object)item,
+		PrimitiveType.IntType => (uint)(int)(object)item,
+		PrimitiveType.UIntType => (uint)(object)item,
+		PrimitiveType.LongType => (uint)(long)(object)item,
+		PrimitiveType.ULongType => (uint)(ulong)(object)item,
+		_ => default,
+	};
 }

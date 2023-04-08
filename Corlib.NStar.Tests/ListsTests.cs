@@ -358,8 +358,8 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-			b = a.Filter(x => x.All(y => y is >= 'A' and <= 'Z'));
-			d = E.Where(c, x => E.All(x, y => y is >= 'A' and <= 'Z'));
+			b = a.Filter((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index >= 1);
+			d = E.Where(c, (x, index) => x.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
@@ -388,10 +388,10 @@ public class ListTests
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
-			b = a.FilterInPlace(x => x.All(y => y is >= 'A' and <= 'Z'));
+			b = a.FilterInPlace((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 			c = new G.List<string>(list);
 			c.InsertRange(3, new G.List<string>() { "$", "###" });
-			c = E.ToList(E.Where(c, x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			c = E.ToList(E.Where(c, (x, index) => E.All(x, y => y is >= 'A' and <= 'Z') && index >= 1));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(c));
@@ -1269,6 +1269,511 @@ public class ListTests
 				b[i] = defaultString;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSetRange()
+	{
+		try
+		{
+			var hs = defaultCollection.ToHashSet();
+			var a = new List<string>(list).SetRange(2, hs);
+			var b = new G.List<string>(list);
+			for (int i = 0; i < hs.Length; i++)
+				b[i + 2] = hs[i];
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.ThrowsException<ArgumentException>(() => a = new List<string>(list).SetRange(5, hs));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(-1, hs));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(1000, hs));
+			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).SetRange(4, null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSkip()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.Skip(2);
+			var c = E.Skip(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Skip(0);
+			c = E.Skip(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Skip(1000);
+			c = E.Skip(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Skip(-4);
+			c = E.Skip(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSkipLast()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.SkipLast(2);
+			var c = E.SkipLast(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.SkipLast(0);
+			c = E.SkipLast(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.SkipLast(1000);
+			c = E.SkipLast(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.SkipLast(-4);
+			c = E.SkipLast(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSkipWhile()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.SkipWhile(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = E.ToList(E.SkipWhile(c, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestSort()
+	{
+		try
+		{
+			var toSort = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
+			var a = new List<string>(toSort);
+			var b = new List<string>(a).Sort();
+			var c = new G.List<string>(a);
+			c.Sort();
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
+			c = new G.List<string>(a);
+			c.Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = new List<string>(a).Sort(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
+			c = new G.List<string>(a);
+			c.Sort(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestStartsWith()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.StartsWith("MMM");
+			Assert.IsTrue(b);
+			b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
+			Assert.IsTrue(b);
+			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
+			Assert.IsTrue(!b);
+			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTake()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.Take(2);
+			var c = E.Take(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Take(0);
+			c = E.Take(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Take(1000);
+			c = E.Take(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.Take(-4);
+			c = E.Take(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTakeLast()
+	{
+		try
+		{
+			var a = new List<string>(list);
+			var b = a.TakeLast(2);
+			var c = E.TakeLast(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.TakeLast(0);
+			c = E.TakeLast(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.TakeLast(1000);
+			c = E.TakeLast(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			a = new List<string>(list);
+			b = a.TakeLast(-4);
+			c = E.TakeLast(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTakeWhile()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.TakeWhile(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = E.ToList(E.TakeWhile(c, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestToArray()
+	{
+		try
+		{
+			int length, capacity;
+			List<string> a;
+			G.List<string> b;
+			string[] array;
+			string[] array2;
+			string elem;
+			for (int i = 0; i < 1000; i++)
+			{
+				length = random.Next(51);
+				capacity = length + random.Next(151);
+				a = new(capacity);
+				b = new(capacity);
+				for (int j = 0; j < length; j++)
+				{
+					a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
+					b.Add(elem);
+				}
+				array = a.ToArray();
+				array2 = b.ToArray();
+				Assert.IsTrue(RedStarLinq.Equals(a, b));
+				Assert.IsTrue(E.SequenceEqual(a, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTrimExcess()
+	{
+		try
+		{
+			int length, capacity;
+			List<string> a;
+			G.List<string> b;
+			string elem;
+			for (int i = 0; i < 1000; i++)
+			{
+				length = random.Next(51);
+				capacity = length + random.Next(9951);
+				a = new(capacity);
+				b = new(capacity);
+				for (int j = 0; j < length; j++)
+				{
+					a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
+					b.Add(elem);
+				}
+				a.TrimExcess();
+				Assert.IsTrue(RedStarLinq.Equals(a, b));
+				Assert.IsTrue(E.SequenceEqual(a, b));
+			}
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTrueForAll()
+	{
+		try
+		{
+			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+			var b = a.TrueForAll(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.TrueForAll(x => x.Length == 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.TrueForAll(x => x.Length <= 3);
+			d = c.TrueForAll(x => x.Length <= 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.TrueForAll(x => x.Length > 3);
+			d = c.TrueForAll(x => x.Length > 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
+		catch (Exception ex)
+		{
+			Assert.Fail(ex.ToString());
+		}
+	}
+
+	[TestMethod]
+	public void TestTuples()
+	{
+		try
+		{
+			var a = (List<string>)("AAA", "BBB");
+			var b = new List<string>("AAA", "BBB");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC");
+			b = new List<string>("AAA", "BBB", "CCC");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			a = (List<string>)("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP");
+			b = new List<string>("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP");
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var fullList = b.Copy();
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string))fullList[..1]);
+			Assert.AreEqual(((string, string))fullList[..2], ("AAA", "BBB"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string))fullList[..3]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string))fullList[..2]);
+			Assert.AreEqual(((string, string, string))fullList[..3], ("AAA", "BBB", "CCC"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string))fullList[..4]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string))fullList[..3]);
+			Assert.AreEqual(((string, string, string, string))fullList[..4], ("AAA", "BBB", "CCC", "DDD"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string))fullList[..5]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..4]);
+			Assert.AreEqual(((string, string, string, string, string))fullList[..5], ("AAA", "BBB", "CCC", "DDD", "EEE"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string))fullList[..6]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..5]);
+			Assert.AreEqual(((string, string, string, string, string, string))fullList[..6], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string))fullList[..7]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..6]);
+			Assert.AreEqual(((string, string, string, string, string, string, string))fullList[..7], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string))fullList[..8]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..7]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string))fullList[..8], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string))fullList[..9]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..8]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string))fullList[..9], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string))fullList[..10]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..9]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string))fullList[..10], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string))fullList[..11]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..10]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string))fullList[..11], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..11]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..12], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..12]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..13]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..14]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO"));
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16]);
+			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
+			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP"));
+			Assert.ThrowsException<ArgumentException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..17]);
 		}
 		catch (Exception ex)
 		{
