@@ -729,7 +729,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		else
 		{
-			TCertain toReturn = GetRange(0, foundIndex);
+			TCertain toReturn = GetCopyRange(0, foundIndex);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -756,7 +756,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		else
 		{
-			TCertain toReturn = GetRange(0, foundIndex);
+			TCertain toReturn = GetCopyRange(0, foundIndex);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -767,6 +767,33 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, index + 1);
 
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index, int count) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, count);
+
+	public virtual TCertain GetCopyRange(int index) => GetCopyRange(index, _size - index);
+
+	public virtual TCertain GetCopyRange(int index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > _size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return new();
+		else if (index == 0 && count == _size && this is TCertain thisList)
+			return CollectionCreator(thisList);
+		TCertain list = CapacityCreator(count);
+		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
+		list._size = count;
+		return list;
+	}
+
+	public virtual TCertain GetCopyRange(Range range)
+	{
+		int start = range.Start.IsFromEnd ? _size - range.Start.Value : range.Start.Value;
+		int end = range.End.IsFromEnd ? _size - range.End.Value : range.End.Value;
+		return GetCopyRange(start, end - start);
+	}
 
 	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 

@@ -175,6 +175,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 				count = bools.Count();
 			int arrayLength = _capacity = GetArrayLength(count, BitsPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			FillMemory(_items, arrayLength, 0);
 			int i = 0;
 			using IEnumerator<bool> en = bools.GetEnumerator();
 			while (en.MoveNext())
@@ -520,7 +521,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			if (collection.TryGetCountEasily(out int count))
 			{
 				if (index > _size - count)
-					throw new ArgumentOutOfRangeException(nameof(index));
+					return false;
 				if (toEnd && index < _size - count)
 					return false;
 			}
@@ -574,7 +575,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		if (startIndex == endIndex)
 		{
 			for (int i = startRemainder; i < endRemainder; i++)
-				if ((_items[startIndex] & (1 << i)) != 0)
+				if ((_items[startIndex] & (1 << i)) == 0 ^ item)
 					return startIndex * BitsPerInt + i;
 			return -1;
 		}
@@ -583,7 +584,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		uint first = _items[startIndex] >> startRemainder;
 		if (first != (item ? 0 : mask))
 			for (int i = 0; i < invRemainder; i++)
-				if ((first & (1 << i)) != 0)
+				if ((first & (1 << i)) == 0 ^ item)
 					return index + i;
 		for (int i = startIndex + 1; i < endIndex; i++)
 			if (_items[i] != fillValue)
@@ -592,7 +593,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 						return i * BitsPerInt + j;
 		if (endRemainder != 0)
 			for (int i = 0; i < endRemainder; i++)
-				if ((_items[endIndex] & (1 << i)) != 0)
+				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
 					return endIndex * BitsPerInt + i;
 		return -1;
 	}
@@ -636,13 +637,13 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		if (startIndex == endIndex)
 		{
 			for (int i = endRemainder - 1; i >= startRemainder; i--)
-				if ((_items[startIndex] & (1 << i)) != 0)
+				if ((_items[startIndex] & (1 << i)) == 0 ^ item)
 					return startIndex * BitsPerInt + i;
 			return -1;
 		}
 		if (endRemainder != 0)
 			for (int i = endRemainder - 1; i >= 0; i--)
-				if ((_items[endIndex] & (1 << i)) != 0)
+				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
 					return endIndex * BitsPerInt + i;
 		for (int i = endIndex - 1; i >= startIndex + 1; i--)
 			if (_items[i] != fillValue)
@@ -654,7 +655,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		uint first = _items[startIndex] >> startRemainder;
 		if (first != (item ? 0 : mask))
 			for (int i = invRemainder - 1; i >= 0; i--)
-				if ((first & (1 << i)) != 0)
+				if ((first & (1 << i)) == 0 ^ item)
 					return index + i;
 		return -1;
 	}
@@ -699,6 +700,8 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
+		if (count == 0)
+			return this;
 		(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
 		(int endIntIndex, int endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
 		if (intIndex == endIntIndex)
@@ -728,7 +731,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		Changed();
 	}
 
-	public virtual void SetRange(int index, IEnumerable collection)
+	public virtual BitList SetRange(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -744,6 +747,7 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 		}
 		else
 			SetRange(index, new BitList(collection));
+		return this;
 	}
 
 	public virtual List<uint> ToUIntList()

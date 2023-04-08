@@ -914,6 +914,15 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		}
 	}
 
+	public NList(int capacity, T* ptr)
+	{
+		if (ptr == null)
+			throw new ArgumentNullException(nameof(ptr));
+		_size = capacity;
+		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
+		CopyMemory(ptr, _items, _capacity);
+	}
+
 	public NList(ReadOnlySpan<T> span)
 	{
 		if (span == null)
@@ -970,7 +979,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
 
-	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => InsertRange(_size, span);
+	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
 
 	public override Span<T> AsSpan(int index, int count)
 	{
@@ -994,6 +1003,12 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
+
+	public virtual NList<T> Copy()
+	{
+		NList<T> list = new(_size, _items);
+		return list;
+	}
 
 	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int count)
 	{
@@ -1086,7 +1101,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		return this;
 	}
 
-	public virtual NList<T> InsertRange(int index, ReadOnlySpan<T> span)
+	public virtual NList<T> Insert(int index, ReadOnlySpan<T> span)
 	{
 		int count = span.Length;
 		if (count == 0)
@@ -1241,8 +1256,8 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 
 	private protected override NList<T> ReverseInternal(int index, int count)
 	{
-		for (int i = 0; i < _size / 2; i++)
-			(_items[i], _items[_size - 1 - i]) = (_items[_size - 1 - i], _items[i]);
+		for (int i = 0; i < count / 2; i++)
+			(_items[index + i], _items[index + count - 1 - i]) = (_items[index + count - 1 - i], _items[index + i]);
 		Changed();
 		return this;
 	}

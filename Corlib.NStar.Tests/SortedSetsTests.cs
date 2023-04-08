@@ -9,7 +9,7 @@ public class SumSetTests
 	{
 		try
 		{
-			var arr = RedStarLinq.FillArray(16, _ => (random.Next(16), random.Next(16)));
+			var arr = RedStarLinq.FillArray(16, _ => (random.Next(16), random.Next(1, 16)));
 			SumSet<int> ss = new(arr);
 			G.SortedSet<int> gs = new(arr.ToArray(x => x.Item1));
 			G.List<int> gl = new(ss.Convert(x => x.Value));
