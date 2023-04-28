@@ -5,7 +5,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public unsafe class BitList : ListBase<bool, BitList>, ICloneable
+public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 {
 	private uint* _items;
 	private int _capacity;
@@ -775,95 +775,95 @@ public unsafe class BitList : ListBase<bool, BitList>, ICloneable
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class BigBitList : BigListBase<bool, BigBitList, BitList>
+public class BigBitList : BigList<bool, BigBitList, BitList>
 {
 	// XPerY=n means that n Xs can be stored in 1 Y. 
 	private const int BitsPerInt = sizeof(int) * BitsPerByte;
 	private const int BytesPerInt = sizeof(int);
 	private const int BitsPerByte = 8;
 
-	public BigBitList()
+	public BigBitList() : this(-1)
 	{
-		low = new();
-		high = null;
-		isHigh = false;
 	}
 
-	public BigBitList(mpz_t capacity)
+	public BigBitList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity <= CapacityFirstStep)
-		{
-			low = new((int)capacity);
-			high = null;
-			indexDeleted = new((int)capacity);
-			isHigh = false;
-		}
-		else
-		{
-			low = null;
-			fragment = (mpz_t)1 << (((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-			high = new((int)((capacity + (fragment - 1)) / fragment));
-			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add(new(fragment));
-			if (capacity % fragment != 0)
-				high.Add(new(capacity % fragment));
-			isHigh = true;
-		}
-		_size = 0;
-		_capacity = capacity;
 	}
 
-	public BigBitList(mpz_t length, bool defaultValue)
+	public BigBitList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength)
 	{
+	}
+
+	public BigBitList(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (length <= CapacityFirstStep)
 		{
 			low = new((int)length, defaultValue);
 			high = null;
-			indexDeleted = new((int)length, false);
+			highCapacity = null;
 			isHigh = false;
+
 		}
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << (((length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-			high = new((int)((length + (fragment - 1)) / fragment));
+			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			high = new((int)GetArrayLength(length, fragment));
+			highCapacity = new();
 			for (mpz_t i = 0; i < length / fragment; i++)
-				high.Add(new(fragment, defaultValue));
+			{
+				high.Add(new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
+				highCapacity.Add(fragment);
+			}
 			if (length % fragment != 0)
-				high.Add(new(length % fragment, defaultValue));
+			{
+				high.Add(new(length % fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
+				highCapacity.Add(length % fragment);
+			}
 			isHigh = true;
 		}
-		_size = length;
-		_capacity = _size;
+		Size = length;
+		_capacity = Size;
 	}
 
-	public BigBitList(IEnumerable bits)
+	public BigBitList(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
 		if (bits == null)
 			throw new ArgumentNullException(nameof(bits));
 		else if (bits is BigBitList bigBitList)
 		{
 			if (!bigBitList.isHigh && bigBitList.low != null)
 			{
-				low = BitList.RemoveIndexes(bigBitList.low, bigBitList.deletedIndexes);
+				low = new(bigBitList.low);
 				high = null;
-				_size = bigBitList._size;
+				highCapacity = null;
+				Size = bigBitList.Size;
 				_capacity = bigBitList._capacity;
 				fragment = bigBitList.fragment;
 				isHigh = false;
 			}
 			else if (bigBitList.high != null)
 			{
-				BigBitList list = new(bigBitList._size);
-				for (int i = 0; i < bigBitList.high.Length; i++)
-					list.AddRange(bigBitList.high[i]);
+				BigBitList list = new(bigBitList.Size, CapacityStepBitLength, CapacityFirstStepBitLength);
+				Copy(bigBitList, 0, list, 0, bigBitList.Size);
 				low = list.low;
 				high = list.high;
-				_size = list._size;
+				highCapacity = list.highCapacity;
+				Size = list.Size;
 				_capacity = list._capacity;
 				fragment = list.fragment;
 				isHigh = list.isHigh;
@@ -874,71 +874,87 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			if (bitList.Length <= CapacityFirstStep)
 			{
 				low = new(bitList);
-				indexDeleted = new(bitList.Length, false);
 				high = null;
+				highCapacity = null;
 				fragment = 1;
 				isHigh = false;
 			}
 			else
 			{
 				low = null;
-				int fragment2 = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				fragment = fragment2;
+				fragment = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				int fragment2 = (int)ProperFragment;
 				high = new(GetArrayLength(bitList.Length, fragment2));
+				highCapacity = new();
 				int index = 0;
 				for (; index <= bitList.Length - fragment2; index += fragment2)
-					high.Add(new(bitList.GetRange(index, fragment2)));
+				{
+					high.Add(new(bitList.GetRange(index, fragment2), CapacityStepBitLength, CapacityFirstStepBitLength));
+					highCapacity.Add(fragment2);
+				}
 				if (bitList.Length % fragment2 != 0)
-					high.Add(new(bitList.GetRange(index, bitList.Length - index)));
+				{
+					high.Add(new(bitList.GetRange(index), CapacityStepBitLength, CapacityFirstStepBitLength));
+					highCapacity.Add(bitList.Length - index);
+				}
 				isHigh = true;
 			}
-			_size = bitList.Length;
-			_capacity = _size;
+			Size = bitList.Length;
+			_capacity = Size;
 		}
 		else if (bits is BigList<uint> bigUIntList)
 		{
-			mpz_t count = bigUIntList.Length;
+			var count = bigUIntList.Length;
 			if (count <= CapacityFirstStep / BitsPerInt)
 			{
 				low = new(bigUIntList);
-				indexDeleted = new((int)count * BitsPerInt, false);
 				high = null;
+				highCapacity = null;
 				fragment = 1;
 				isHigh = false;
 			}
 			else
 			{
 				low = null;
-				int fragment2 = 1 << (((count - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + base.CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / base.CapacityStepBitLength - 1) * base.CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((count - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				int fragment2 = (int)ProperFragment;
 				int uintsFragment = fragment2 / BitsPerInt;
-				fragment = fragment2;
 				high = new((int)((count + uintsFragment - 1) / uintsFragment));
+				highCapacity = new();
 				int index = 0;
 				for (; index <= count - uintsFragment; index += uintsFragment)
-					high.Add(new(bigUIntList.GetRange(index, uintsFragment)));
+				{
+					high.Add(new(bigUIntList.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength));
+					highCapacity.Add(fragment2);
+				}
 				if (index != count)
-					high.Add(new(bigUIntList.GetRange(index, count - index)));
+				{
+					high.Add(new(bigUIntList.GetRange(index, count - index), CapacityStepBitLength, CapacityFirstStepBitLength));
+					highCapacity.Add((count - index) * BitsPerInt);
+				}
 				isHigh = true;
 			}
-			_size = count * BitsPerInt;
-			_capacity = _size;
+			Size = count * BitsPerInt;
+			_capacity = Size;
 		}
 		else if (bits is IEnumerable<uint> uints)
 		{
-			BigBitList list = new(new BigList<uint>(uints));
+			BigBitList list = new(new BigList<uint>(uints), CapacityStepBitLength, CapacityFirstStepBitLength);
 			low = list.low;
 			high = list.high;
-			_size = list._size;
+			highCapacity = list.highCapacity;
+			Size = list.Size;
 			_capacity = list._capacity;
 			fragment = list.fragment;
 			isHigh = list.isHigh;
 		}
 		else if (bits is IEnumerable<int> ints)
 		{
-			BigBitList list = new(new BigList<uint>(ints.Select(x => (uint)x)));
+			BigBitList list = new(new BigList<uint>(ints.Select(x => (uint)x)), CapacityStepBitLength, CapacityFirstStepBitLength);
 			low = list.low;
 			high = list.high;
-			_size = list._size;
+			highCapacity = list.highCapacity;
+			Size = list.Size;
 			_capacity = list._capacity;
 			fragment = list.fragment;
 			isHigh = list.isHigh;
@@ -948,11 +964,12 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 			bool b = true;
 			IEnumerator<byte> en = bytes.GetEnumerator();
 			BigList<uint> values = new();
+			int n = 0;
 			while (b)
 			{
 				int i = 0;
 				uint value = 0;
-				for (; i < BytesPerInt; i++)
+				for (; i < BytesPerInt; i++, n++)
 				{
 					if (!(b = en.MoveNext())) break;
 					value |= (uint)en.Current << BitsPerByte * i;
@@ -960,96 +977,108 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 				if (i != 0)
 					values.Add(value);
 			}
-			BigBitList list = new(values);
+			BigBitList list = new(values, CapacityStepBitLength, CapacityFirstStepBitLength);
 			low = list.low;
 			high = list.high;
-			_size = list._size;
+			highCapacity = list.highCapacity;
+			Size = n * 8;
+			_capacity = list._capacity;
+			fragment = list.fragment;
+			isHigh = list.isHigh;
+			for (var target = this; target.high != null && target.highCapacity != null;)
+			{
+				mpz_t newSize = n * BitsPerByte % target.fragment;
+				target.highCapacity[^1] = newSize;
+				target = target.high[^1];
+				target.Size = newSize;
+			}
+		}
+		else if (bits is BitArray or byte[] or bool[])
+		{
+			BigBitList list = new(new BitList(bits), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = list.low;
+			high = list.high;
+			highCapacity = list.highCapacity;
+			Size = list.Size;
 			_capacity = list._capacity;
 			fragment = list.fragment;
 			isHigh = list.isHigh;
 		}
-		else if (bits is BitArray or byte[] or bool[] or IEnumerable<int> or IEnumerable<uint> or IEnumerable<byte> or IEnumerable<bool>)
+		else if (bits is IEnumerable<bool> bools)
 		{
-			BigBitList list = new(new BitList(bits));
-			low = list.low;
-			high = list.high;
-			_size = list._size;
-			_capacity = list._capacity;
-			fragment = list.fragment;
-			isHigh = list.isHigh;
+			var en = bools.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
 		}
 		else
 			throw new ArgumentException(null, nameof(bits));
 	}
 
-	private protected override Func<mpz_t, BigBitList> CapacityCreator => x => new(x);
+	private protected override Func<mpz_t, BigBitList> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
-	private protected override int CapacityFirstStepBitLength => 24;
+	private protected override int CapacityFirstStepBitLength { get; init; } = 20;
 
 	private protected override Func<int, BitList> CapacityLowCreator => x => new(x);
 
-	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x);
-
 	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
+
+	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override int DefaultCapacity => 256;
 
-	public virtual void SetAll(bool value)
+	public virtual void AddRange(IEnumerable bits)
 	{
-		if (!isHigh && low != null)
-		{
-			low.SetAll(value);
-			indexDeleted.SetAll(false);
-		}
-		else if (high != null)
-			high.ForEach(x => x.SetAll(value));
+		if (bits is IEnumerable<bool> bools)
+			base.AddRange(bools);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			AddRange(new BigBitList(bits, CapacityStepBitLength, CapacityFirstStepBitLength));
 	}
 
 	public virtual BigBitList And(BigBitList value)
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
+		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.And(value.low);
 		else if (high != null && value.high != null)
-			high = new(high.Zip(value.high, (x, y) => x.And(y)));
+			high = high.Combine(value.high, (x, y) => x.And(y));
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 
-	public virtual BigBitList Or(BigBitList value)
+	public virtual uint GetSmallRange(mpz_t index, int count)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		if (!isHigh && low != null && !value.isHigh && value.low != null)
-			low.Or(value.low);
-		else if (high != null && value.high != null)
-			high = new(high.Zip(value.high, (x, y) => x.Or(y)));
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return 0;
+		if (count > BitsPerInt)
+			throw new ArgumentException(null, nameof(count));
+		if (!isHigh && low != null)
+			return low.GetSmallRange((int)index, count);
+		else if (high != null)
+		{
+			int quotient = (int)index.Divide(fragment, out var remainder);
+			int quotient2 = (int)(index + count - 1).Divide(fragment, out var remainder2);
+			uint result;
+			if (quotient == quotient2)
+				result = high[quotient].GetSmallRange(remainder, count);
+			else
+			{
+				result = high[quotient].GetSmallRange(remainder, (int)(fragment - remainder));
+				result |= high[quotient + 1].GetSmallRange(0, (int)remainder2) << (int)(BitsPerInt - remainder);
+			}
+			return result;
+		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		return this;
-	}
-
-	public virtual BigBitList Xor(BigBitList value)
-	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
-		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
-		if (!isHigh && low != null && !value.isHigh && value.low != null)
-			low.Xor(value.low);
-		else if (high != null && value.high != null)
-			high = new(high.Zip(value.high, (x, y) => x.Xor(y)));
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		return this;
 	}
 
 	public virtual BigBitList Not()
@@ -1063,29 +1092,55 @@ public class BigBitList : BigListBase<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public virtual void AddRange(IEnumerable bits)
+	public virtual BigBitList Or(BigBitList value)
 	{
-		if (bits is IEnumerable<bool> bools)
-			base.AddRange(bools);
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (Size != value.Size)
+			throw new ArgumentException(null, nameof(value));
+		if (!isHigh && low != null && !value.isHigh && value.low != null)
+			low.Or(value.low);
+		else if (high != null && value.high != null)
+			high = high.Combine(value.high, (x, y) => x.Or(y));
 		else
-			AddRange(new BigBitList(bits));
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
 	}
 
-	protected void AddRangeToEnd(IEnumerable bits)
+	public virtual void SetAll(bool value)
 	{
-		if (bits is IEnumerable<bool> bools)
-			base.AddRangeToEnd(bools);
+		if (!isHigh && low != null)
+		{
+			low.SetAll(value);
+		}
+		else if (high != null)
+			high.ForEach(x => x.SetAll(value));
 		else
-			AddRangeToEnd(new BigBitList(bits));
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
 	public virtual BigList<uint> ToUIntBigList()
 	{
 		if (!isHigh && low != null)
-			return new(BitList.RemoveIndexes(low, deletedIndexes).ToUIntList());
+			return new(low.ToUIntList());
 		else if (high != null)
 			return new(high.SelectMany(x => x.ToUIntBigList()));
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual BigBitList Xor(BigBitList value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (Size != value.Size)
+			throw new ArgumentException(null, nameof(value));
+		if (!isHigh && low != null && !value.isHigh && value.low != null)
+			low.Xor(value.low);
+		else if (high != null && value.high != null)
+			high = high.Combine(value.high, (x, y) => x.Xor(y));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
 	}
 }

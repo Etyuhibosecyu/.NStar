@@ -555,8 +555,8 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
-			high = new((int)((capacity + (fragment - 1)) / fragment));
+			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			high = new((int)GetArrayLength(capacity, fragment));
 			for (mpz_t i = 0; i < capacity / fragment; i++)
 				high.Enqueue(new(fragment));
 			high.Enqueue(new(capacity % fragment));
@@ -822,6 +822,774 @@ public class LimitedQueue<T> : Queue<T>
 		if (IsFull)
 			receiver.Add(base.Dequeue());
 		base.Enqueue(obj);
+	}
+}
+
+public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow> where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+{
+	private protected TLow? low;
+	private protected TCertain[]? high;
+	private protected mpz_t fragment = 1;
+	private protected bool isHigh;
+
+	public BigArray() : this(-1)
+	{
+	}
+
+	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		low = new();
+		high = null;
+		fragment = 1;
+		isHigh = false;
+		Size2 = 0;
+	}
+
+	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (length <= CapacityFirstStep)
+		{
+			low = CapacityLowCreator((int)length);
+			high = null;
+			fragment = 1;
+			isHigh = false;
+		}
+		else
+		{
+			low = default;
+			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			var quotient = (int)length.Divide(fragment, out var remainder);
+			int highCount = (int)GetArrayLength(length, fragment);
+			high = new TCertain[highCount];
+			for (int i = 0; i < quotient; i++)
+				high[i] = CapacityCreator(fragment);
+			if (remainder != 0)
+				high[^1] = CapacityCreator(remainder);
+			isHigh = true;
+		}
+		Size2 = length;
+	}
+
+	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Count(), capacityFirstStepBitLength, capacityStepBitLength)
+	{
+		IEnumerator<T> en = collection.GetEnumerator();
+		mpz_t i = 0;
+		while (en.MoveNext())
+		{
+			SetInternal(i, en.Current);
+			i++;
+		}
+	}
+
+	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
+	{
+		IEnumerator<T> en = collection.GetEnumerator();
+		mpz_t i = 0;
+		while (en.MoveNext())
+		{
+			SetInternal(i, en.Current);
+			i++;
+		}
+	}
+
+	public override mpz_t Capacity
+	{
+		get => Size;
+		set
+		{
+		}
+	}
+
+	private protected virtual int CapacityFirstStepBitLength { get; init; } = 16;
+
+	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
+
+	private protected virtual int CapacityStepBitLength { get; init; } = 16;
+
+	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
+
+	private protected override mpz_t Size { get => Size2; set => throw new NotSupportedException(); }
+
+	private protected virtual mpz_t Size2 { get; init; } = 0;
+
+	public override TCertain Add(T item) => throw new NotSupportedException();
+
+	private protected override void ClearInternal()
+	{
+		if (!isHigh && low != null)
+			low.Clear();
+		else if (high != null)
+			Array.Clear(high);
+	}
+
+	private protected override void ClearInternal(mpz_t index, mpz_t count)
+	{
+		if (!isHigh && low != null)
+			low.Clear((int)index, (int)count);
+		else if (high != null)
+		{
+			int quotient = (int)index.Divide(fragment, out var remainder);
+			int quotient2 = (int)((index + count - 1) / fragment);
+			if (quotient == quotient2)
+			{
+				high[quotient].ClearInternal(remainder, count);
+				return;
+			}
+			var previousPart = fragment - remainder;
+			high[quotient].ClearInternal(remainder, previousPart);
+			for (int i = quotient + 1; i < quotient2; i++)
+			{
+				high[i].ClearInternal(0, fragment);
+				previousPart += fragment;
+			}
+			high[quotient2].ClearInternal(0, count - previousPart);
+		}
+	}
+
+	private protected override void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	{
+		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
+		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
+			return;
+		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
+			return;
+		if (!sourceBits.isHigh && sourceBits.low != null && !destinationBits.isHigh && destinationBits.low != null)
+		{
+			destinationBits.low.SetRangeInternal((int)destinationIndex, (int)length, sourceBits.low.GetRange((int)sourceIndex, (int)length));
+			return;
+		}
+		if (sourceBits.fragment > destinationBits.fragment && sourceBits.isHigh && sourceBits.high != null)
+		{
+			int index = (int)sourceIndex.Divide(sourceBits.fragment, out var remainder), index2 = (int)((sourceIndex + length - 1) / sourceBits.fragment);
+			if (index == index2)
+				Copy(sourceBits.high[index], remainder, destinationBits, destinationIndex, length);
+			else
+			{
+				var firstPart = sourceBits.fragment - remainder;
+				Copy(sourceBits.high[index], remainder, destinationBits, destinationIndex, firstPart);
+				Copy(sourceBits.high[index2], 0, destinationBits, destinationIndex + firstPart, length - firstPart);
+			}
+			return;
+		}
+		if (destinationBits.fragment > sourceBits.fragment && destinationBits.isHigh && destinationBits.high != null)
+		{
+			int index = (int)destinationIndex.Divide(destinationBits.fragment, out var remainder), index2 = (int)((destinationIndex + length - 1) / destinationBits.fragment);
+			if (index == index2)
+				Copy(sourceBits, sourceIndex, destinationBits.high[index], remainder, length);
+			else
+			{
+				var firstPart = destinationBits.fragment - remainder;
+				Copy(sourceBits, sourceIndex, destinationBits.high[index], remainder, firstPart);
+				Copy(sourceBits, sourceIndex + firstPart, destinationBits.high[index2], 0, length - firstPart);
+			}
+			return;
+		}
+		if (!(sourceBits.isHigh && sourceBits.high != null && destinationBits.isHigh && destinationBits.high != null && sourceBits.fragment == destinationBits.fragment))
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Copy(sourceBits.high, sourceIndex, destinationBits.high, destinationIndex, length, sourceBits.fragment);
+		if (!Enumerable.SequenceEqual(Enumerable.Take(Enumerable.Skip(sourceBits, (int)sourceIndex), (int)length), Enumerable.Take(Enumerable.Skip(destinationBits, (int)destinationIndex), (int)length)))
+			;
+		//if (!Enumerable.SequenceEqual(Enumerable.Skip(sourceBits, (int)sourceIndex + (int)length), Enumerable.Skip(destinationBits, (int)destinationIndex + (int)length)))
+		//	;
+	}
+
+	private protected virtual void Copy(TCertain[] sourceBits, mpz_t sourceIndex, TCertain[] destinationBits, mpz_t destinationIndex, mpz_t length, mpz_t fragment)
+	{
+		int sourceIntIndex = (int)sourceIndex.Divide(fragment, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
+		int destinationIntIndex = (int)destinationIndex.Divide(fragment, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
+		int intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
+		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+		int sourceEndIntIndex = (int)sourceEndIndex.Divide(fragment, out var sourceEndBitsIndex);  // Индекс инта последнего бита.
+		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
+		int destinationEndIntIndex = (int)destinationEndIndex.Divide(fragment, out var destinationEndBitsIndex);  // Индекс инта последнего бита.
+		if (destinationEndIntIndex == destinationIntIndex)
+		{
+			int index = (int)sourceIndex.Divide(fragment, out var remainder), index2 = (int)((sourceIndex + length - 1) / fragment);
+			if (index == index2)
+				Copy(sourceBits[index], remainder, destinationBits[destinationIntIndex], destinationIndex, length);
+			else
+			{
+				var firstPart = fragment - remainder;
+				Copy(sourceBits[index], remainder, destinationBits[destinationIntIndex], destinationIndex, firstPart);
+				Copy(sourceBits[index2], 0, destinationBits[destinationIntIndex], destinationIndex + firstPart, length - firstPart);
+			}
+		}
+		else if (sourceIndex >= destinationIndex)
+		{
+			TCertain buff = CapacityCreator(fragment << 1);
+			Copy(destinationBits[destinationIntIndex], 0, buff, 0, destinationBitsIndex);
+			Copy(sourceBits[sourceIntIndex], sourceBitsIndex, buff, destinationBitsIndex, fragment - sourceBitsIndex);
+			var buffBitsIndex = destinationBitsIndex + (fragment - sourceBitsIndex);
+			bool secondPart = buffBitsIndex >= fragment;
+			if (secondPart)
+				buffBitsIndex -= fragment;
+			for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; sourceCurrentIntIndex < sourceEndIntIndex + 1 || destinationCurrentIntIndex < destinationEndIntIndex;)
+			{
+				if (!secondPart)
+				{
+					Copy(sourceBits[sourceCurrentIntIndex], 0, buff, buffBitsIndex, sourceCurrentIntIndex++ == sourceEndIntIndex ? destinationEndBitsIndex + 1 : fragment);
+					secondPart = true;
+				}
+				if (secondPart && destinationCurrentIntIndex < destinationEndIntIndex && buff.high != null)
+				{
+					destinationBits[destinationCurrentIntIndex++] = buff.high[0];
+					(buff.high[0], buff.high[1]) = (buff.high[1], CapacityCreator(fragment));
+					secondPart = false;
+				}
+			}
+			Copy(buff, 0, destinationBits[destinationEndIntIndex], 0, destinationEndBitsIndex + 1);
+		}
+		else
+		{
+			TCertain buff = CapacityCreator(fragment << 1);
+			Copy(sourceBits[sourceEndIntIndex], 0, buff, 0, sourceEndBitsIndex + 1);
+			Copy(destinationBits[destinationEndIntIndex], destinationEndBitsIndex + 1, buff, sourceEndBitsIndex + 1, fragment - (destinationEndBitsIndex + 1));
+			var buffBitsIndex = sourceEndBitsIndex + (fragment - destinationEndBitsIndex);
+			bool secondPart = buffBitsIndex >= fragment;
+			if (buffBitsIndex >= fragment)
+				buffBitsIndex -= fragment;
+			for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; sourceCurrentIntIndex > sourceIntIndex - 1 || destinationCurrentIntIndex > destinationIntIndex;)
+			{
+				if (secondPart && sourceCurrentIntIndex >= 0 && buff.high != null)
+				{
+					(buff.high[1], buff.high[0]) = (buff.high[0], sourceBits[sourceCurrentIntIndex--]);
+					secondPart = false;
+				}
+				if (sourceCurrentIntIndex <= sourceIntIndex - 1)
+					break;
+				if (!secondPart && destinationCurrentIntIndex > destinationIntIndex)
+				{
+					Copy(buff, buffBitsIndex, destinationBits[destinationCurrentIntIndex--], 0, fragment);
+					secondPart = true;
+				}
+			}
+			Copy(buff, fragment, destinationBits[destinationIntIndex], destinationBitsIndex, fragment - destinationBitsIndex);
+		}
+		if (!RedStarLinq.Equals(Enumerable.Take(Enumerable.Skip(Enumerable.SelectMany(sourceBits, x => x), (int)sourceIndex), (int)length), Enumerable.Take(Enumerable.Skip(Enumerable.SelectMany(destinationBits, x => x), (int)destinationIndex), (int)length)))
+			;
+	}
+
+	private static void CheckParams(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	{
+		if (sourceBits == null)
+			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
+		if (sourceBits.Size == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
+		if (destinationBits == null)
+			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
+		if (destinationBits.Size == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
+		if (sourceIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
+		if (destinationIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
+		if (sourceIndex + length > sourceBits.Size)
+			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
+		if (destinationIndex + length > destinationBits.Size)
+			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
+	}
+
+	private protected override void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int count)
+	{
+		if (count == 0)
+			return;
+		if (!isHigh && low != null)
+		{
+			int index2 = (int)index;
+			for (int i = 0; i < count; i++)
+				array[arrayIndex + i] = low[index2 + i];
+		}
+		else if (high != null)
+		{
+			int intIndex = (int)index.Divide(fragment, out var bitsIndex);
+			int endIntIndex = (int)(index + count - 1).Divide(fragment, out var endBitsIndex);
+			if (endIntIndex == intIndex)
+			{
+				high[intIndex].CopyToInternal(bitsIndex, array, arrayIndex, count);
+				return;
+			}
+			high[intIndex].CopyToInternal(bitsIndex, array, arrayIndex, (int)(fragment - bitsIndex));
+			var destIndex = arrayIndex + fragment - bitsIndex;
+			for (int i = intIndex + 1; i < endIntIndex; i++, destIndex += fragment)
+				high[i].CopyToInternal(0, array, (int)destIndex, (int)fragment);
+			high[endIntIndex].CopyToInternal(0, array, (int)destIndex, (int)(endBitsIndex + 1));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	private protected override void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t count)
+	{
+		if (count == 0)
+			return;
+		if (!isHigh && low != null)
+		{
+			int index2 = (int)index, count2 = (int)count;
+			for (int i = 0; i < count2; i++)
+				list[listIndex + i] = low[index2 + i];
+		}
+		else if (high != null)
+		{
+			int intIndex = (int)index.Divide(fragment, out var bitsIndex);
+			int endIntIndex = (int)(index + count - 1).Divide(fragment, out var endBitsIndex);
+			if (endIntIndex == intIndex)
+			{
+				high[intIndex].CopyToInternal(bitsIndex, list, listIndex, count);
+				return;
+			}
+			high[intIndex].CopyToInternal(bitsIndex, list, listIndex, fragment - bitsIndex);
+			var destIndex = listIndex + fragment - bitsIndex;
+			for (int i = intIndex + 1; i < endIntIndex; i++, destIndex += fragment)
+				high[i].CopyToInternal(0, list, destIndex, fragment);
+			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	private protected override T GetInternal(mpz_t index)
+	{
+		if (!isHigh && low != null)
+		{
+			//try
+			//{
+			//	throw new ExperimentalException();
+			//}
+			//catch
+			//{
+			//}
+			return low.GetInternal((int)index);
+		}
+		else if (high != null)
+			return high[(int)(index / fragment)].GetInternal(index % fragment);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public override TCertain GetRange(mpz_t index, mpz_t count, bool alwaysCopy = false)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return CapacityCreator(0);
+		else if (!alwaysCopy && index == 0 && count == Size && this is TCertain thisList)
+			return thisList;
+		TCertain list = CapacityCreator(count);
+		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
+		return list;
+	}
+
+	private protected override void SetInternal(mpz_t index, T value)
+	{
+		if (!isHigh && low != null)
+		{
+			//try
+			//{
+			//	throw new ExperimentalException();
+			//}
+			//catch
+			//{
+			//}
+			low.SetInternal((int)index, value);
+		}
+		else if (high != null)
+			high[(int)(index / fragment)].SetInternal(index % fragment, value);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+}
+
+public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
+{
+	public BigArray()
+	{
+	}
+
+	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	private protected override Func<mpz_t, BigArray<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+
+	private protected override Func<int, List<T>> CapacityLowCreator => RedStarLinq.EmptyList<T>;
+
+	private protected override Func<IEnumerable<T>, BigArray<T>> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+
+	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
+}
+
+public class BigBitArray : BigArray<bool, BigBitArray, BitList>
+{
+	// XPerY=n means that n Xs can be stored in 1 Y. 
+	private const int BitsPerInt = sizeof(int) * BitsPerByte;
+	private const int BytesPerInt = sizeof(int);
+	private const int BitsPerByte = 8;
+
+	public BigBitArray()
+	{
+	}
+
+	public BigBitArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigBitArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigBitArray(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (length <= CapacityFirstStep)
+		{
+			low = new((int)length, defaultValue);
+			high = null;
+			isHigh = false;
+
+		}
+		else
+		{
+			low = null;
+			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			high = new BigBitArray[(int)GetArrayLength(length, fragment)];
+			for (int i = 0; i < length / fragment; i++)
+				high[i] = new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength);
+			if (length % fragment != 0)
+				high[^1] = new(length % fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength);
+			isHigh = true;
+		}
+		Size2 = length;
+	}
+
+	public BigBitArray(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (bits == null)
+			throw new ArgumentNullException(nameof(bits));
+		else if (bits is BigBitArray bigBitArray)
+		{
+			if (!bigBitArray.isHigh && bigBitArray.low != null)
+			{
+				low = new(bigBitArray.low);
+				high = null;
+				Size2 = bigBitArray.Size;
+				fragment = bigBitArray.fragment;
+				isHigh = false;
+			}
+			else if (bigBitArray.high != null)
+			{
+				BigBitArray array = new(bigBitArray.Size, CapacityStepBitLength, CapacityFirstStepBitLength);
+				Copy(bigBitArray, 0, array, 0, bigBitArray.Size);
+				low = array.low;
+				high = array.high;
+				Size2 = array.Size;
+				fragment = array.fragment;
+				isHigh = array.isHigh;
+			}
+		}
+		else if (bits is BitList bitList)
+		{
+			if (bitList.Length <= CapacityFirstStep)
+			{
+				low = new(bitList);
+				high = null;
+				fragment = 1;
+				isHigh = false;
+			}
+			else
+			{
+				low = null;
+				fragment = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				int fragment2 = (int)fragment;
+				high = new BigBitArray[GetArrayLength(bitList.Length, fragment2)];
+				int index = 0, i = 0;
+				for (; index <= bitList.Length - fragment2; index += fragment2)
+					high[i++] = new(bitList.GetRange(index, fragment2), CapacityStepBitLength, CapacityFirstStepBitLength);
+				if (bitList.Length % fragment2 != 0)
+				{
+					high[i] = new(bitList.Length - index, CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i].SetRangeInternal(0, CollectionCreator(bitList.GetRange(index)));
+				}
+				isHigh = true;
+			}
+			Size2 = bitList.Length;
+		}
+		else if (bits is BigList<uint> bigUIntList)
+		{
+			var count = bigUIntList.Length;
+			if (count <= CapacityFirstStep / BitsPerInt)
+			{
+				low = new(bigUIntList);
+				high = null;
+				fragment = 1;
+				isHigh = false;
+			}
+			else
+			{
+				low = null;
+				fragment = 1 << (((count - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				var uintsFragment = fragment / BitsPerInt;
+				high = new BigBitArray[(int)((count + uintsFragment - 1) / uintsFragment)];
+				mpz_t index = 0;
+				int i = 0;
+				for (; index <= count - uintsFragment; index += uintsFragment)
+					high[i++] = new(bigUIntList.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
+				if (index != count)
+					high[i] = new(bigUIntList.GetRange(index, count - index), CapacityStepBitLength, CapacityFirstStepBitLength);
+				isHigh = true;
+			}
+			Size2 = count * BitsPerInt;
+		}
+		else if (bits is BigArray<uint> bigUIntArray)
+		{
+			var count = bigUIntArray.Length;
+			if (count <= CapacityFirstStep / BitsPerInt)
+			{
+				low = new(bigUIntArray);
+				high = null;
+				fragment = 1;
+				isHigh = false;
+			}
+			else
+			{
+				low = null;
+				fragment = 1 << (((count - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				var uintsFragment = fragment / BitsPerInt;
+				high = new BigBitArray[(int)((count + uintsFragment - 1) / uintsFragment)];
+				mpz_t index = 0;
+				int i = 0;
+				for (; index <= count - uintsFragment; index += uintsFragment)
+					high[i++] = new(bigUIntArray.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
+				if (index != count)
+					high[i] = new(bigUIntArray.GetRange(index, count - index), CapacityStepBitLength, CapacityFirstStepBitLength);
+				isHigh = true;
+			}
+			Size2 = count * BitsPerInt;
+		}
+		else if (bits is IEnumerable<uint> uints)
+		{
+			BigBitArray array = new(new BigList<uint>(uints), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			Size2 = array.Size;
+			fragment = array.fragment;
+			isHigh = array.isHigh;
+		}
+		else if (bits is IEnumerable<int> ints)
+		{
+			BigBitArray array = new(new BigList<uint>(ints.Select(x => (uint)x)), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			Size2 = array.Size;
+			fragment = array.fragment;
+			isHigh = array.isHigh;
+		}
+		else if (bits is IEnumerable<byte> bytes)
+		{
+			bool b = true;
+			IEnumerator<byte> en = bytes.GetEnumerator();
+			BigList<uint> values = new();
+			int n = 0;
+			while (b)
+			{
+				int i = 0;
+				uint value = 0;
+				for (; i < BytesPerInt; i++, n++)
+				{
+					if (!(b = en.MoveNext())) break;
+					value |= (uint)en.Current << BitsPerByte * i;
+				}
+				if (i != 0)
+					values.Add(value);
+			}
+			BigBitArray bigBitArray2 = new(values, CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray array = new(n * BitsPerByte, CapacityStepBitLength, CapacityFirstStepBitLength);
+			Copy(bigBitArray2, 0, array, 0, n * BitsPerByte);
+			low = array.low;
+			high = array.high;
+			Size2 = n * BitsPerByte;
+			fragment = array.fragment;
+			isHigh = array.isHigh;
+		}
+		else if (bits is BitArray or byte[] or bool[])
+		{
+			BigBitArray array = new(new BitList(bits), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			Size2 = array.Size;
+			fragment = array.fragment;
+			isHigh = array.isHigh;
+		}
+		else if (bits is IEnumerable<bool> bools)
+		{
+			var en = bools.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+		else
+			throw new ArgumentException(null, nameof(bits));
+	}
+
+	private protected override Func<mpz_t, BigBitArray> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+
+	private protected override Func<int, BitList> CapacityLowCreator => x => new(x, false);
+
+	private protected override Func<IEnumerable<bool>, BigBitArray> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+
+	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
+
+	public virtual BigBitArray And(BigBitArray value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (Size != value.Size)
+			throw new ArgumentException(null, nameof(value));
+		if (!isHigh && low != null && !value.isHigh && value.low != null)
+			low.And(value.low);
+		else if (high != null && value.high != null)
+			high = high.Combine(value.high, (x, y) => x.And(y)).ToArray();
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
+	}
+
+	public virtual uint GetSmallRange(mpz_t index, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		if (count == 0)
+			return 0;
+		if (count > BitsPerInt)
+			throw new ArgumentException(null, nameof(count));
+		if (!isHigh && low != null)
+			return low.GetSmallRange((int)index, count);
+		else if (high != null)
+		{
+			int quotient = (int)index.Divide(fragment, out var remainder);
+			int quotient2 = (int)(index + count - 1).Divide(fragment, out var remainder2);
+			uint result;
+			if (quotient == quotient2)
+				result = high[quotient].GetSmallRange(remainder, count);
+			else
+			{
+				result = high[quotient].GetSmallRange(remainder, (int)(fragment - remainder));
+				result |= high[quotient + 1].GetSmallRange(0, (int)remainder2) << (int)(BitsPerInt - remainder);
+			}
+			return result;
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual BigBitArray Not()
+	{
+		if (!isHigh && low != null)
+			low.Not();
+		else if (high != null)
+			high.ForEach(x => x.Not());
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
+	}
+
+	public virtual BigBitArray Or(BigBitArray value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (Size != value.Size)
+			throw new ArgumentException(null, nameof(value));
+		if (!isHigh && low != null && !value.isHigh && value.low != null)
+			low.Or(value.low);
+		else if (high != null && value.high != null)
+			high = high.Combine(value.high, (x, y) => x.Or(y)).ToArray();
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
+	}
+
+	public virtual void SetAll(bool value)
+	{
+		if (!isHigh && low != null)
+		{
+			low.SetAll(value);
+		}
+		else if (high != null)
+			high.ForEach(x => x.SetAll(value));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual BigList<uint> ToUIntBigList()
+	{
+		if (!isHigh && low != null)
+			return new(low.ToUIntList());
+		else if (high != null)
+			return new(high.SelectMany(x => x.ToUIntBigList()));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual BigBitArray Xor(BigBitArray value)
+	{
+		if (value == null)
+			throw new ArgumentNullException(nameof(value));
+		if (Size != value.Size)
+			throw new ArgumentException(null, nameof(value));
+		if (!isHigh && low != null && !value.isHigh && value.low != null)
+			low.Xor(value.low);
+		else if (high != null && value.high != null)
+			high = high.Combine(value.high, (x, y) => x.Xor(y)).ToArray();
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this;
 	}
 }
 

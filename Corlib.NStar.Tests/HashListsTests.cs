@@ -7,8 +7,6 @@ public class FastDelHashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			FastDelHashList<int> fhs = new();
 			G.List<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -37,11 +35,6 @@ public class FastDelHashListTests
 				int n = random.Next(fhs.Length);
 				Assert.AreEqual(fhs[fhs.IndexOf(fhs[n])], fhs[n]);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -51,8 +44,6 @@ public class HashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			HashList<int> shs = new();
 			G.List<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -94,10 +85,5 @@ public class HashListTests
 				int n = random.Next(shs.Length);
 				Assert.AreEqual(shs[shs.IndexOf(shs[n])], shs[n]);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }

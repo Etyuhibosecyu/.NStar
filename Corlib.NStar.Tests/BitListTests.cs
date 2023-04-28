@@ -7,8 +7,6 @@ public class BitListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			byte[] bytes = new byte[40];
 			random.NextBytes(bytes);
 			BitList bitList = new(bytes);
@@ -47,34 +45,20 @@ public class BitListTests
 				Assert.IsTrue(bitList[(destinationIndex + length)..].Equals(bitList2[(destinationIndex + length)..]));
 				Assert.IsTrue(E.SequenceEqual(bitList[(destinationIndex + length)..], E.Skip(bitList2, destinationIndex + length)));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAdd()
 	{
-		try
-		{
 			var a = new BitList(bitList).Add(defaultBit);
 			var b = new G.List<bool>(bitList) { defaultBit };
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAddRange()
 	{
-		try
-		{
 			var a = new BitList(bitList).AddRange(defaultBitCollection);
 			var b = new G.List<bool>(bitList);
 			b.AddRange(defaultBitCollection);
@@ -85,18 +69,11 @@ public class BitListTests
 			b.AddRange(defaultBitCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAppend()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Append(defaultBit);
 			var c = E.Append(new G.List<bool>(bitList), defaultBit);
@@ -104,18 +81,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.BreakFilter(x => x ^ bitList[25], out var c);
 			var d = new G.List<bool>(bitList);
@@ -137,18 +107,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(e, b));
 			Assert.IsTrue(c.Equals(f));
 			Assert.IsTrue(E.SequenceEqual(f, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.BreakFilterInPlace(x => x ^ bitList[25], out var c);
 			var d = new G.List<bool>(bitList);
@@ -177,18 +140,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			Assert.IsTrue(c.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestClear()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			a.Clear(2, 4);
 			var b = new G.List<bool>(bitList);
@@ -196,18 +152,11 @@ public class BitListTests
 				b[2 + i] = default!;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConcat()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Concat(new(defaultBitCollection));
 			var c = E.Concat(new G.List<bool>(bitList), defaultBitCollection);
@@ -215,18 +164,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContains()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Contains(true);
 			Assert.IsTrue(b);
@@ -237,18 +179,11 @@ public class BitListTests
 			b = a.Contains(new G.List<bool>() { false, true, false }, 3, 3);
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.ContainsAny(new G.List<bool>() { false, true, true });
 			Assert.IsTrue(b);
@@ -256,18 +191,11 @@ public class BitListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAny(new G.List<bool>() { false, false, false }, 65);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.ContainsAnyExcluding(new G.List<bool>() { false, true, true });
 			Assert.IsTrue(!b);
@@ -275,18 +203,11 @@ public class BitListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAnyExcluding(a);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConvert()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Convert((x, index) => (x, index));
 			var c = E.Select(new G.List<bool>(bitList), (x, index) => (x, index));
@@ -298,18 +219,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(d.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = RedStarLinq.FillArray(128, x => random.Next(2) == 1);
 			var c = (bool[])b.Clone();
@@ -323,18 +237,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.EndsWith(new G.List<bool>() { true });
 			Assert.IsTrue(b);
@@ -344,18 +251,11 @@ public class BitListTests
 			Assert.IsTrue(!b);
 			b = a.EndsWith(new G.List<bool>() { false, false, false });
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEquals()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Contains(true);
 			Assert.IsTrue(b);
@@ -367,18 +267,11 @@ public class BitListTests
 			Assert.IsTrue(!b);
 			b = a.Equals(new G.List<bool>() { false, true, true }, 2, true);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilter()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.Filter(x => x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -394,18 +287,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.FilterInPlace(x => x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -428,18 +314,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFind()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.Find(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -456,18 +335,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindAll()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.FindAll(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -484,18 +356,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.FindIndex(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -512,18 +377,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLast()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.FindLast(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -540,18 +398,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.FindLastIndex(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -568,18 +419,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetAfter(new G.List<bool>() { false });
 			var c = new G.List<bool>(a[1..]);
@@ -595,18 +439,11 @@ public class BitListTests
 			c = new G.List<bool>() { true, true, true, true };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetAfterLast(new G.List<bool>() { true }, 65);
 			var c = new G.List<bool>(a[66..]);
@@ -622,18 +459,11 @@ public class BitListTests
 			c = new G.List<bool>() { true, true, true, true, true };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetBefore(new G.List<bool>() { true }, 65);
 			var c = new G.List<bool>(a[..65]);
@@ -649,18 +479,11 @@ public class BitListTests
 			c = new G.List<bool>() { false, false, false };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetBeforeLast(new G.List<bool>() { true }, 65);
 			var c = new G.List<bool>(a[..65]);
@@ -676,18 +499,11 @@ public class BitListTests
 			c = new G.List<bool>() { false, false };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetBeforeSetAfter(new G.List<bool>() { true }, 65);
 			var c = new G.List<bool>(bitList[..65]);
@@ -696,18 +512,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfterLast()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetBeforeSetAfterLast(new G.List<bool>() { true }, 65);
 			var c = new G.List<bool>(bitList[..65]);
@@ -716,69 +525,22 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
-	}
-
-	[TestMethod]
-	public void TestGetCopyRange()
-	{
-		try
-		{
-			var a = new BitList(bitList);
-			var b = a.GetCopyRange(..);
-			var c = new G.List<bool>(bitList);
-			Assert.IsTrue(a.Equals(bitList));
-			Assert.IsTrue(E.SequenceEqual(bitList, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(..^1);
-			c = new G.List<bool>(bitList).GetRange(0, bitList.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..);
-			c = new G.List<bool>(bitList).GetRange(1, bitList.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..^1);
-			c = new G.List<bool>(bitList).GetRange(1, bitList.Length - 2);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..5);
-			c = new G.List<bool>(bitList).GetRange(1, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^5..^1);
-			c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^50..50);
-			c = new G.List<bool>(bitList).GetRange(bitList.Length - 50, 100 - bitList.Length);
-			Assert.IsTrue(a.Equals(bitList));
-			Assert.IsTrue(E.SequenceEqual(bitList, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(-1..5));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(^1..1));
-			Assert.ThrowsException<ArgumentException>(() => b = a.GetCopyRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetRange()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.GetRange(..);
 			var c = new G.List<bool>(bitList);
+			Assert.IsTrue(a.Equals(bitList));
+			Assert.IsTrue(E.SequenceEqual(bitList, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(.., true);
+			b.Add(defaultBit);
+			c = new G.List<bool>(bitList).GetRange(0, bitList.Length);
+			c.Add(defaultBit);
 			Assert.IsTrue(a.Equals(bitList));
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
@@ -812,18 +574,11 @@ public class BitListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 			Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetSmallRange()
 	{
-		try
-		{
 			byte[] bytes;
 			BitList bitList;
 			G.List<bool> bitList2;
@@ -856,18 +611,11 @@ public class BitListTests
 				Assert.IsTrue(new BitList(new[] { range })[..length].Equals(bitList2.GetRange(sourceIndex, length)));
 				Assert.IsTrue(E.SequenceEqual(bitList2.GetRange(sourceIndex, length), new BitList(new[] { range })[..length]));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.IndexOf(false);
 			Assert.AreEqual(b, 0);
@@ -884,18 +632,11 @@ public class BitListTests
 			b = a.IndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 0, 4);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.IndexOfAny(new G.List<bool>() { false, true, true });
 			Assert.AreEqual(b, 0);
@@ -906,18 +647,11 @@ public class BitListTests
 			b = a.IndexOfAny(new G.List<bool>() { false, false, false }, 65);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.IndexOfAnyExcluding(new G.List<bool>() { false, true, true });
 			Assert.AreEqual(b, -1);
@@ -926,18 +660,11 @@ public class BitListTests
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestInsert()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, defaultBit);
 			var b = new G.List<bool>(bitList);
 			b.Insert(3, defaultBit);
@@ -956,18 +683,11 @@ public class BitListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new BitList(bitList).Insert(1000, defaultBit));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).Insert(-1, defaultBitCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.LastIndexOf(true);
 			Assert.AreEqual(b, 70);
@@ -984,18 +704,11 @@ public class BitListTests
 			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] });
 			Assert.AreEqual(b, 56);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.LastIndexOfAny(new G.List<bool>() { false, true, true });
 			Assert.AreEqual(b, 70);
@@ -1006,18 +719,11 @@ public class BitListTests
 			b = a.LastIndexOfAny(new G.List<bool>() { true, true, true }, 3);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.LastIndexOfAnyExcluding(new G.List<bool>() { false, true, true });
 			Assert.AreEqual(b, -1);
@@ -1026,18 +732,11 @@ public class BitListTests
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemove()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = new BitList(a).Remove(70);
 			var c = new G.List<bool>(bitList);
@@ -1078,18 +777,11 @@ public class BitListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1, 6));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(bitList.Length - 1, 2 - bitList.Length));
 			Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1, 1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.RemoveAll(x => !x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -1106,18 +798,11 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			for (int i = 0; i < 1000; i++)
 			{
@@ -1132,18 +817,11 @@ public class BitListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		try
-		{
 			var a = new Chain(15, 10).ToList();
 			for (int i = 0; i < 1000; i++)
 			{
@@ -1157,18 +835,11 @@ public class BitListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplace()
 	{
-		try
-		{
 			var a = new BitList(bitList).Replace(defaultBitCollection);
 			var b = new G.List<bool>(bitList);
 			b.Clear();
@@ -1180,18 +851,11 @@ public class BitListTests
 			b.AddRange(defaultBitCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		try
-		{
 			var a = new BitList(bitList).ReplaceRange(2, 3, defaultBitCollection);
 			var b = new G.List<bool>(bitList);
 			b.RemoveRange(2, 3);
@@ -1207,18 +871,11 @@ public class BitListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(-1, 3, defaultBitCollection));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).ReplaceRange(4, -2, defaultBitCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).ReplaceRange(4, 1, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReverse()
 	{
-		try
-		{
 			var a = new BitList(bitList).Reverse();
 			var b = new G.List<bool>(bitList);
 			b.Reverse();
@@ -1236,18 +893,11 @@ public class BitListTests
 			b.Reverse(2, 4);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetAll()
 	{
-		try
-		{
 			byte[] bytes = new byte[40];
 			BitList bitList;
 			G.List<bool> boolList;
@@ -1270,18 +920,11 @@ public class BitListTests
 				Assert.IsTrue(bitList.Equals(boolList));
 				Assert.IsTrue(E.SequenceEqual(boolList, bitList));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetRange()
 	{
-		try
-		{
 			var newList = E.ToList(defaultBitCollection);
 			var a = new BitList(bitList).SetRange(2, newList);
 			var b = new G.List<bool>(bitList);
@@ -1293,18 +936,11 @@ public class BitListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(-1, newList));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).SetRange(1000, newList));
 			Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).SetRange(4, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Skip(2);
 			var c = E.Skip(new G.List<bool>(bitList), 2);
@@ -1333,18 +969,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.SkipLast(2);
 			var c = E.SkipLast(new G.List<bool>(bitList), 2);
@@ -1373,18 +1002,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.SkipWhile(x => x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -1403,18 +1025,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.StartsWith(new G.List<bool>() { false });
 			Assert.IsTrue(b);
@@ -1423,18 +1038,11 @@ public class BitListTests
 			b = a.StartsWith(new G.List<bool>() { false, false, false, false, true });
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<bool>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTake()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.Take(2);
 			var c = E.Take(new G.List<bool>(bitList), 2);
@@ -1463,18 +1071,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		try
-		{
 			var a = new BitList(bitList);
 			var b = a.TakeLast(2);
 			var c = E.TakeLast(new G.List<bool>(bitList), 2);
@@ -1503,18 +1104,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.TakeWhile(x => x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -1533,18 +1127,11 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestToArray()
 	{
-		try
-		{
 			int length, capacity;
 			List<bool> a;
 			G.List<bool> b;
@@ -1567,18 +1154,11 @@ public class BitListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrimExcess()
 	{
-		try
-		{
 			int length, capacity;
 			List<bool> a;
 			G.List<bool> b;
@@ -1598,18 +1178,11 @@ public class BitListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		try
-		{
 			var a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 			var b = a.TrueForAll(x => x ^ bitList[25]);
 			var c = new G.List<bool>(bitList);
@@ -1628,10 +1201,5 @@ public class BitListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }

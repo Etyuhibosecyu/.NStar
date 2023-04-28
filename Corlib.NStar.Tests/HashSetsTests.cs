@@ -7,8 +7,6 @@ public class FastDelHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			FastDelHashSet<int> fhs = new();
 			G.HashSet<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -44,11 +42,6 @@ public class FastDelHashSetTests
 				} while (fhs[n] == 0);
 				Assert.AreEqual(fhs.IndexOf(fhs[n]), n);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -58,8 +51,6 @@ public class ListHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			ListHashSet<int> shs = new();
 			G.HashSet<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -109,11 +100,6 @@ public class ListHashSetTests
 				} while (shs[n] == 0);
 				Assert.AreEqual(shs.IndexOf(shs[n]), n);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -123,8 +109,6 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			ParallelHashSet<int> phs = new();
 			G.HashSet<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -160,11 +144,6 @@ public class ParallelHashSetTests
 				} while (phs[n] == 0);
 				Assert.AreEqual(phs.IndexOf(phs[n]), n);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -174,8 +153,6 @@ public class TreeHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			TreeHashSet<int> ths = new();
 			G.HashSet<int> gs = new();
 			for (int i = 0; i < 100; i++)
@@ -221,10 +198,5 @@ public class TreeHashSetTests
 				int n = random.Next(ths.Length);
 				Assert.AreEqual(ths.IndexOf(ths[n]), n);
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }

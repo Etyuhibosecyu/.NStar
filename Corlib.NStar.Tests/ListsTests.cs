@@ -6,24 +6,15 @@ public class ListTests
 	[TestMethod]
 	public void TestAdd()
 	{
-		try
-		{
 			var a = new List<string>(list).Add(defaultString);
 			var b = new G.List<string>(list) { defaultString };
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAddRange()
 	{
-		try
-		{
 			var a = new List<string>(list).AddRange(defaultCollection);
 			var b = new G.List<string>(list);
 			b.AddRange(defaultCollection);
@@ -34,18 +25,11 @@ public class ListTests
 			b.AddRange(defaultCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAppend()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Append(defaultString);
 			var c = E.Append(new G.List<string>(list), defaultString);
@@ -53,18 +37,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBinarySearch()
 	{
-		try
-		{
 			var a = new List<string>(list).Sort();
 			var b = a.BinarySearch("MMM");
 			var c = new G.List<string>(list);
@@ -74,18 +51,11 @@ public class ListTests
 			b = a.BinarySearch("NNN");
 			d = c.BinarySearch("NNN");
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.BreakFilter(x => x.Length == 3, out var c);
 			var d = new G.List<string>(list);
@@ -107,18 +77,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(e, b));
 			Assert.IsTrue(c.Equals(f));
 			Assert.IsTrue(E.SequenceEqual(f, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.BreakFilterInPlace(x => x.Length == 3, out var c);
 			var d = new G.List<string>(list);
@@ -147,18 +110,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			Assert.IsTrue(c.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestClear()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			a.Clear(2, 4);
 			var b = new G.List<string>(list);
@@ -166,18 +122,11 @@ public class ListTests
 				b[2 + i] = default!;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConcat()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Concat(new(defaultCollection));
 			var c = E.Concat(new G.List<string>(list), defaultCollection);
@@ -185,18 +134,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContains()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Contains("MMM");
 			Assert.IsTrue(b);
@@ -207,18 +149,11 @@ public class ListTests
 			b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
 			Assert.IsTrue(b);
@@ -226,18 +161,11 @@ public class ListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 			Assert.IsTrue(b);
@@ -245,18 +173,11 @@ public class ListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAnyExcluding(a);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConvert()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Convert((x, index) => (x, index));
 			var c = E.Select(new G.List<string>(list), (x, index) => (x, index));
@@ -268,18 +189,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(d.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 			var c = (string[])b.Clone();
@@ -293,18 +207,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.EndsWith("DDD");
 			Assert.IsTrue(b);
@@ -314,18 +221,11 @@ public class ListTests
 			Assert.IsTrue(!b);
 			b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEquals()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Contains("MMM");
 			Assert.IsTrue(b);
@@ -337,18 +237,11 @@ public class ListTests
 			Assert.IsTrue(!b);
 			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilter()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.Filter(x => x.Length == 3);
 			var c = new G.List<string>(list);
@@ -364,18 +257,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.FilterInPlace(x => x.Length == 3);
 			var c = new G.List<string>(list);
@@ -398,18 +284,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFind()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.Find(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -426,18 +305,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindAll()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.FindAll(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -454,18 +326,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.FindIndex(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -482,18 +347,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLast()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.FindLast(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -510,18 +368,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.FindLastIndex(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -538,18 +389,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetAfter("DDD");
 			var c = new G.List<string>() { "MMM", "EEE", "DDD" };
@@ -565,18 +409,11 @@ public class ListTests
 			c = new G.List<string>() { "EEE", "DDD" };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetAfterLast("MMM");
 			var c = new G.List<string>() { "EEE", "DDD" };
@@ -592,18 +429,11 @@ public class ListTests
 			c = new G.List<string>() { "EEE", "DDD" };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetBefore("DDD");
 			var c = new G.List<string>() { "MMM", "BBB", "PPP" };
@@ -619,18 +449,11 @@ public class ListTests
 			c = new G.List<string>() { "MMM", "BBB", "PPP" };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetBeforeLast("MMM");
 			var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
@@ -646,18 +469,11 @@ public class ListTests
 			c = new G.List<string>() { "MMM", "BBB", "PPP" };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetBeforeSetAfter("DDD");
 			var c = new G.List<string>() { "MMM", "BBB", "PPP" };
@@ -666,18 +482,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfterLast()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetBeforeSetAfterLast("MMM");
 			var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
@@ -686,69 +495,22 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
-	}
-
-	[TestMethod]
-	public void TestGetCopyRange()
-	{
-		try
-		{
-			var a = new List<string>(list);
-			var b = a.GetCopyRange(..);
-			var c = new G.List<string>(list);
-			Assert.IsTrue(a.Equals(list));
-			Assert.IsTrue(E.SequenceEqual(list, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(..^1);
-			c = new G.List<string>(list).GetRange(0, list.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..);
-			c = new G.List<string>(list).GetRange(1, list.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..^1);
-			c = new G.List<string>(list).GetRange(1, list.Length - 2);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..5);
-			c = new G.List<string>(list).GetRange(1, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^5..^1);
-			c = new G.List<string>(list).GetRange(list.Length - 5, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^5..5);
-			c = new G.List<string>(list).GetRange(list.Length - 5, 10 - list.Length);
-			Assert.IsTrue(a.Equals(list));
-			Assert.IsTrue(E.SequenceEqual(list, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(-1..5));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(^1..1));
-			Assert.ThrowsException<ArgumentException>(() => b = a.GetCopyRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetRange()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.GetRange(..);
 			var c = new G.List<string>(list);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(.., true);
+			b.Add(defaultString);
+			c = new G.List<string>(list).GetRange(0, list.Length);
+			c.Add(defaultString);
 			Assert.IsTrue(a.Equals(list));
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
@@ -782,18 +544,11 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 			Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.IndexOf("MMM");
 			Assert.AreEqual(b, 0);
@@ -810,18 +565,11 @@ public class ListTests
 			b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 			Assert.AreEqual(b, 0);
@@ -832,18 +580,11 @@ public class ListTests
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 			Assert.AreEqual(b, 1);
@@ -852,18 +593,11 @@ public class ListTests
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestInsert()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, defaultString);
 			var b = new G.List<string>(list);
 			b.Insert(3, defaultString);
@@ -883,18 +617,11 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).Insert(-1, defaultCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(1, null));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(5, (G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.LastIndexOf("MMM");
 			Assert.AreEqual(b, 4);
@@ -911,18 +638,11 @@ public class ListTests
 			b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
 			Assert.AreEqual(b, 4);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 			Assert.AreEqual(b, 6);
@@ -933,18 +653,11 @@ public class ListTests
 			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 			Assert.AreEqual(b, 5);
@@ -953,36 +666,22 @@ public class ListTests
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestNSort()
 	{
-		try
-		{
 			var c = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 			var a = new List<string>(c);
 			var b = new List<string>(a).NSort(x => x[^1]);
 			c = E.ToList(E.OrderBy(c, x => x[^1]));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemove()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = new List<string>(a).Remove(6);
 			var c = new G.List<string>(list);
@@ -1023,18 +722,11 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1, 6));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(list.Length - 1, 2 - list.Length));
 			Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.RemoveAll(x => x.Length != 3);
 			var c = new G.List<string>(list);
@@ -1051,18 +743,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			for (int i = 0; i < 1000; i++)
 			{
@@ -1077,18 +762,11 @@ public class ListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		try
-		{
 			var a = new Chain(15, 10).ToList();
 			for (int i = 0; i < 1000; i++)
 			{
@@ -1102,18 +780,11 @@ public class ListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplace()
 	{
-		try
-		{
 			var a = new List<string>(list).Replace(defaultCollection);
 			var b = new G.List<string>(list);
 			b.Clear();
@@ -1125,18 +796,11 @@ public class ListTests
 			b.AddRange(defaultCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplace2()
 	{
-		try
-		{
 			for (int i = 0; i < 1000; i++)
 			{
 				var arr = new char[1000];
@@ -1172,18 +836,11 @@ public class ListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplaceInPlace()
 	{
-		try
-		{
 			for (int i = 0; i < 1000; i++)
 			{
 				var arr = new char[1000];
@@ -1219,18 +876,11 @@ public class ListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		try
-		{
 			var a = new List<string>(list).ReplaceRange(2, 3, defaultCollection);
 			var b = new G.List<string>(list);
 			b.RemoveRange(2, 3);
@@ -1246,18 +896,11 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(-1, 3, defaultCollection));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(4, -2, defaultCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).ReplaceRange(4, 1, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReverse()
 	{
-		try
-		{
 			var a = new List<string>(list).Reverse();
 			var b = new G.List<string>(list);
 			b.Reverse();
@@ -1275,18 +918,11 @@ public class ListTests
 			b.Reverse(2, 4);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetAll()
 	{
-		try
-		{
 			var a = new List<string>(list).SetAll(defaultString);
 			var b = new G.List<string>(list);
 			for (int i = 0; i < b.Count; i++)
@@ -1317,18 +953,11 @@ public class ListTests
 				b[i] = defaultString;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetRange()
 	{
-		try
-		{
 			var hs = defaultCollection.ToHashSet();
 			var a = new List<string>(list).SetRange(2, hs);
 			var b = new G.List<string>(list);
@@ -1340,18 +969,11 @@ public class ListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(-1, hs));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(1000, hs));
 			Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).SetRange(4, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Skip(2);
 			var c = E.Skip(new G.List<string>(list), 2);
@@ -1380,18 +1002,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.SkipLast(2);
 			var c = E.SkipLast(new G.List<string>(list), 2);
@@ -1420,18 +1035,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.SkipWhile(x => x.Length == 3);
 			var c = new G.List<string>(list);
@@ -1450,18 +1058,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSort()
 	{
-		try
-		{
 			var toSort = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 			var a = new List<string>(toSort);
 			var b = new List<string>(a).Sort();
@@ -1479,18 +1080,11 @@ public class ListTests
 			c.Sort(2, 4, new Comparer<string>((x, y) => y.CompareTo(x)));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.StartsWith("MMM");
 			Assert.IsTrue(b);
@@ -1499,18 +1093,11 @@ public class ListTests
 			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTake()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.Take(2);
 			var c = E.Take(new G.List<string>(list), 2);
@@ -1539,18 +1126,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		try
-		{
 			var a = new List<string>(list);
 			var b = a.TakeLast(2);
 			var c = E.TakeLast(new G.List<string>(list), 2);
@@ -1579,18 +1159,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(list, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.TakeWhile(x => x.Length == 3);
 			var c = new G.List<string>(list);
@@ -1609,18 +1182,11 @@ public class ListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestToArray()
 	{
-		try
-		{
 			int length, capacity;
 			List<string> a;
 			G.List<string> b;
@@ -1643,18 +1209,11 @@ public class ListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrimExcess()
 	{
-		try
-		{
 			int length, capacity;
 			List<string> a;
 			G.List<string> b;
@@ -1674,18 +1233,11 @@ public class ListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		try
-		{
 			var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 			var b = a.TrueForAll(x => x.Length == 3);
 			var c = new G.List<string>(list);
@@ -1704,18 +1256,11 @@ public class ListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTuples()
 	{
-		try
-		{
 			var a = (List<string>)("AAA", "BBB");
 			var b = new List<string>("AAA", "BBB");
 			Assert.IsTrue(a.Equals(b));
@@ -1822,11 +1367,6 @@ public class ListTests
 			Assert.ThrowsException<InvalidOperationException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..15]);
 			Assert.AreEqual(((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..16], ("AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "KKK", "LLL", "MMM", "NNN", "OOO", "PPP"));
 			Assert.ThrowsException<ArgumentException>(() => ((string, string, string, string, string, string, string, string, string, string, string, string, string, string, string, string))fullList[..17]);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -1836,24 +1376,15 @@ public class NListTests
 	[TestMethod]
 	public void TestAdd()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Add(defaultNString);
 			var b = new G.List<(char, char, char)>(nList) { defaultNString };
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAddRange()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection);
 			var b = new G.List<(char, char, char)>(nList);
 			b.AddRange(defaultNCollection);
@@ -1864,18 +1395,11 @@ public class NListTests
 			b.AddRange(defaultNCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestAppend()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Append(defaultNString);
 			var c = E.Append(new G.List<(char, char, char)>(nList), defaultNString);
@@ -1883,18 +1407,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.BreakFilter(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0', out var c);
 			var d = new G.List<(char, char, char)>(nList);
@@ -1916,18 +1433,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(e, b));
 			Assert.IsTrue(c.Equals(f));
 			Assert.IsTrue(E.SequenceEqual(f, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.BreakFilterInPlace(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0', out var c);
 			var d = new G.List<(char, char, char)>(nList);
@@ -1956,18 +1466,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			Assert.IsTrue(c.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, c));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestClear()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			a.Clear(2, 4);
 			var b = new G.List<(char, char, char)>(nList);
@@ -1975,18 +1478,11 @@ public class NListTests
 				b[2 + i] = default!;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConcat()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Concat(new(defaultNCollection));
 			var c = E.Concat(new G.List<(char, char, char)>(nList), defaultNCollection);
@@ -1994,18 +1490,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContains()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Contains(('M', 'M', 'M'));
 			Assert.IsTrue(b);
@@ -2016,18 +1505,11 @@ public class NListTests
 			b = a.Contains(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('N', 'N', 'N')));
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.ContainsAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.IsTrue(b);
@@ -2035,18 +1517,11 @@ public class NListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.ContainsAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.IsTrue(b);
@@ -2054,18 +1529,11 @@ public class NListTests
 			Assert.IsTrue(b);
 			b = a.ContainsAnyExcluding(a);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestConvert()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Convert((x, index) => (x, index));
 			var c = E.Select(new G.List<(char, char, char)>(nList), (x, index) => (x, index));
@@ -2077,18 +1545,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(d.Equals(e));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestCopy()
 	{
-		try
-		{
 			int length, capacity;
 			NList<(char, char, char)> a;
 			NList<(char, char, char)> b;
@@ -2108,18 +1569,11 @@ public class NListTests
 				Assert.IsTrue(!RedStarLinq.Equals(a, b));
 				Assert.IsTrue(!E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = RedStarLinq.FillArray(16, x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536)));
 			var c = ((char, char, char)[])b.Clone();
@@ -2133,18 +1587,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(E.SequenceEqual(e, d));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.EndsWith(('D', 'D', 'D'));
 			Assert.IsTrue(b);
@@ -2154,18 +1601,11 @@ public class NListTests
 			Assert.IsTrue(!b);
 			b = a.EndsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('E', 'E', 'E'), ('N', 'N', 'N')));
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestEquals()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Contains(('M', 'M', 'M'));
 			Assert.IsTrue(b);
@@ -2177,18 +1617,11 @@ public class NListTests
 			Assert.IsTrue(!b);
 			b = a.Equals(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')), 2, true);
 			Assert.IsTrue(!b);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilter()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.Filter(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2204,18 +1637,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.FilterInPlace(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2238,18 +1664,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFind()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.Find(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2266,18 +1685,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindAll()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.FindAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2294,18 +1706,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.FindIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2322,18 +1727,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.FindLast(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2350,18 +1748,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.FindLastIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2378,18 +1769,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetAfter(('D', 'D', 'D'));
 			var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D') };
@@ -2405,18 +1789,11 @@ public class NListTests
 			c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetAfterLast(('M', 'M', 'M'));
 			var c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
@@ -2432,18 +1809,11 @@ public class NListTests
 			c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetBefore(('D', 'D', 'D'));
 			var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
@@ -2459,18 +1829,11 @@ public class NListTests
 			c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetBeforeLast(('M', 'M', 'M'));
 			var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D') };
@@ -2486,18 +1849,11 @@ public class NListTests
 			c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetBeforeSetAfter(('D', 'D', 'D'));
 			var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
@@ -2506,18 +1862,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeSetAfterLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetBeforeSetAfterLast(('M', 'M', 'M'));
 			var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D') };
@@ -2526,69 +1875,22 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(d, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
-	}
-
-	[TestMethod]
-	public void TestGetCopyRange()
-	{
-		try
-		{
-			var a = new NList<(char, char, char)>(nList);
-			var b = a.GetCopyRange(..);
-			var c = new G.List<(char, char, char)>(nList);
-			Assert.IsTrue(a.Equals(nList));
-			Assert.IsTrue(E.SequenceEqual(nList, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(..^1);
-			c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..);
-			c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..^1);
-			c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 2);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(1..5);
-			c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^5..^1);
-			c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 4);
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			b = a.GetCopyRange(^5..5);
-			c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 10 - nList.Length);
-			Assert.IsTrue(a.Equals(nList));
-			Assert.IsTrue(E.SequenceEqual(nList, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(-1..5));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetCopyRange(^1..1));
-			Assert.ThrowsException<ArgumentException>(() => b = a.GetCopyRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestGetRange()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.GetRange(..);
 			var c = new G.List<(char, char, char)>(nList);
+			Assert.IsTrue(a.Equals(nList));
+			Assert.IsTrue(E.SequenceEqual(nList, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetRange(.., true);
+			b.Add(defaultNString);
+			c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length);
+			c.Add(defaultNString);
 			Assert.IsTrue(a.Equals(nList));
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
@@ -2622,18 +1924,11 @@ public class NListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 			Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.IndexOf(('M', 'M', 'M'));
 			Assert.AreEqual(b, 0);
@@ -2650,18 +1945,11 @@ public class NListTests
 			b = a.IndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 0, 4);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.IndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.AreEqual(b, 0);
@@ -2672,18 +1960,11 @@ public class NListTests
 			b = a.IndexOfAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.IndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.AreEqual(b, 1);
@@ -2692,18 +1973,11 @@ public class NListTests
 			b = a.IndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestInsert()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, defaultNString);
 			var b = new G.List<(char, char, char)>(nList);
 			b.Insert(3, defaultNString);
@@ -2722,18 +1996,11 @@ public class NListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new NList<(char, char, char)>(nList).Insert(1000, defaultNString));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).Insert(-1, defaultNCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).Insert(5, (G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.LastIndexOf(('M', 'M', 'M'));
 			Assert.AreEqual(b, 4);
@@ -2750,18 +2017,11 @@ public class NListTests
 			b = a.LastIndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 5, 4);
 			Assert.AreEqual(b, 4);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.LastIndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.AreEqual(b, 6);
@@ -2772,18 +2032,11 @@ public class NListTests
 			b = a.LastIndexOfAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.LastIndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 			Assert.AreEqual(b, 5);
@@ -2792,18 +2045,11 @@ public class NListTests
 			b = a.LastIndexOfAnyExcluding(a);
 			Assert.AreEqual(b, -1);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemove()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = new NList<(char, char, char)>(a).Remove(6);
 			var c = new G.List<(char, char, char)>(nList);
@@ -2844,18 +2090,11 @@ public class NListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new NList<(char, char, char)>(a).Remove(-1, 6));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new NList<(char, char, char)>(a).Remove(nList.Length - 1, 2 - nList.Length));
 			Assert.ThrowsException<ArgumentException>(() => b = new NList<(char, char, char)>(a).Remove(1, 1000));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.RemoveAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -2872,18 +2111,11 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			for (int i = 0; i < 1000; i++)
 			{
@@ -2898,18 +2130,11 @@ public class NListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		try
-		{
 			var a = new Chain(15, 10).ToList();
 			for (int i = 0; i < 1000; i++)
 			{
@@ -2923,18 +2148,11 @@ public class NListTests
 				Assert.IsTrue(b.Equals(c));
 				Assert.IsTrue(E.SequenceEqual(c, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReplace()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Replace(defaultNCollection);
 			var b = new G.List<(char, char, char)>(nList);
 			b.Clear();
@@ -2946,19 +2164,12 @@ public class NListTests
 			b.AddRange(defaultNCollection.Skip(2).Take(3));
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).ReplaceRange(2, 3, defaultNCollection);
 			var b = new G.List<(char, char, char)>(nList);
 			b.RemoveRange(2, 3);
@@ -2974,18 +2185,11 @@ public class NListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).ReplaceRange(-1, 3, defaultNCollection));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).ReplaceRange(4, -2, defaultNCollection));
 			Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).ReplaceRange(4, 1, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestReverse()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Reverse();
 			var b = new G.List<(char, char, char)>(nList);
 			b.Reverse();
@@ -3003,18 +2207,11 @@ public class NListTests
 			b.Reverse(2, 4);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetAll()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).SetAll(defaultNString);
 			var b = new G.List<(char, char, char)>(nList);
 			for (int i = 0; i < b.Count; i++)
@@ -3045,18 +2242,11 @@ public class NListTests
 				b[i] = defaultNString;
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSetRange()
 	{
-		try
-		{
 			var hs = defaultNCollection.ToHashSet();
 			var a = new NList<(char, char, char)>(nList).SetRange(2, hs);
 			var b = new G.List<(char, char, char)>(nList);
@@ -3068,18 +2258,11 @@ public class NListTests
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).SetRange(-1, hs));
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).SetRange(1000, hs));
 			Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).SetRange(4, null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Skip(2);
 			var c = E.Skip(new G.List<(char, char, char)>(nList), 2);
@@ -3108,18 +2291,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.SkipLast(2);
 			var c = E.SkipLast(new G.List<(char, char, char)>(nList), 2);
@@ -3148,18 +2324,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.SkipWhile(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -3178,36 +2347,22 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestSort()
 	{
-		try
-		{
 			var c = new G.List<(char, char, char)>(new byte[256].ToArray(x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536))));
 			var a = new NList<(char, char, char)>(c);
 			var b = new NList<(char, char, char)>(a).Sort(x => x.Item3);
 			c = E.ToList(E.OrderBy(c, x => x.Item3));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.StartsWith(('M', 'M', 'M'));
 			Assert.IsTrue(b);
@@ -3216,18 +2371,11 @@ public class NListTests
 			b = a.StartsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('B', 'B', 'B'), ('X', 'X', 'X')));
 			Assert.IsTrue(!b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<(char, char, char)>)null!));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTake()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.Take(2);
 			var c = E.Take(new G.List<(char, char, char)>(nList), 2);
@@ -3256,18 +2404,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList);
 			var b = a.TakeLast(2);
 			var c = E.TakeLast(new G.List<(char, char, char)>(nList), 2);
@@ -3296,18 +2437,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(nList, a));
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.TakeWhile(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -3326,18 +2460,11 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.IsTrue(b.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestToArray()
 	{
-		try
-		{
 			int length, capacity;
 			NList<(char, char, char)> a;
 			G.List<(char, char, char)> b;
@@ -3360,18 +2487,11 @@ public class NListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrimExcess()
 	{
-		try
-		{
 			int length, capacity;
 			NList<(char, char, char)> a;
 			G.List<(char, char, char)> b;
@@ -3391,18 +2511,11 @@ public class NListTests
 				Assert.IsTrue(RedStarLinq.Equals(a, b));
 				Assert.IsTrue(E.SequenceEqual(a, b));
 			}
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		try
-		{
 			var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 			var b = a.TrueForAll(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 			var c = new G.List<(char, char, char)>(nList);
@@ -3421,11 +2534,6 @@ public class NListTests
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
 			Assert.AreEqual(b, d);
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 
 	[TestMethod]
@@ -3553,8 +2661,6 @@ public class SumListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
 			SumList sl = new(arr);
 			G.List<int> gl = new(arr);
@@ -3621,11 +2727,6 @@ public class SumListTests
 			} };
 			for (int i = 0; i < 1000; i++)
 				actions.Random(random)();
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }
 
@@ -3635,8 +2736,6 @@ public class BigSumListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		try
-		{
 			var bytes = new byte[20];
 			var bytes2 = new byte[48];
 			var arr = RedStarLinq.FillArray(16, _ =>
@@ -3710,10 +2809,5 @@ public class BigSumListTests
 			} };
 			for (int i = 0; i < 1000; i++)
 				actions.Random(random)();
-		}
-		catch (Exception ex)
-		{
-			Assert.Fail(ex.ToString());
-		}
 	}
 }

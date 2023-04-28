@@ -6,7 +6,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TCertain : HashListBase<T, TCertain>, new()
+public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TCertain : BaseHashList<T, TCertain>, new()
 {
 	private protected struct Entry
 	{
@@ -28,13 +28,13 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
 			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
 
-	public HashListBase() : this(0, (IEqualityComparer<T>?)null) { }
+	public BaseHashList() : this(0, (IEqualityComparer<T>?)null) { }
 
-	public HashListBase(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+	public BaseHashList(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
 
-	public HashListBase(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	public BaseHashList(IEqualityComparer<T>? comparer) : this(0, comparer) { }
 
-	public HashListBase(int capacity, IEqualityComparer<T>? comparer)
+	public BaseHashList(int capacity, IEqualityComparer<T>? comparer)
 	{
 		if (capacity < 0)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
@@ -48,9 +48,9 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 		Comparer = comparer ?? EqualityComparer<T>.Default;
 	}
 
-	public HashListBase(IEnumerable<T> collection) : this(collection, null) { }
+	public BaseHashList(IEnumerable<T> collection) : this(collection, null) { }
 
-	public HashListBase(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetCountEasily(out int count) ? count : 0, comparer)
+	public BaseHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetCountEasily(out int count) ? count : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -58,9 +58,9 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			Add(item);
 	}
 
-	public HashListBase(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public BaseHashList(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public HashListBase(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public BaseHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -68,19 +68,19 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 			Add(item);
 	}
 
-	public HashListBase(params T[] array) : this((IEnumerable<T>)array)
+	public BaseHashList(params T[] array) : this((IEnumerable<T>)array)
 	{
 	}
 
-	public HashListBase(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
+	public BaseHashList(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
 	{
 	}
 
-	public HashListBase(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
+	public BaseHashList(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
 	{
 	}
 
-	public HashListBase(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
+	public BaseHashList(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
 	{
 	}
 
@@ -437,7 +437,7 @@ public abstract class HashListBase<T, TCertain> : ListBase<T, TCertain> where TC
 /// может повести себя непредсказуемым способом. В случае, если вы уже завершили серию удалений и хотите
 /// снова перейти к обращениям по индексу, используйте метод FixUpFakeIndexes() для "починки" индексации.
 /// </summary>
-public abstract class FastDelHashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : FastDelHashList<T, TCertain>, new()
+public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> where TCertain : FastDelHashList<T, TCertain>, new()
 {
 	private protected int freeCount;
 	private protected int freeList;
@@ -913,7 +913,7 @@ public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
 /// серию удалений, используйте FakeIndAftDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
-public abstract class HashList<T, TCertain> : HashListBase<T, TCertain> where TCertain : HashList<T, TCertain>, new()
+public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TCertain : HashList<T, TCertain>, new()
 {
 	protected HashList()
 	{

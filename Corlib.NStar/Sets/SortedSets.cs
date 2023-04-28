@@ -7,7 +7,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class SortedSetBase<T, TCertain> : SetBase<T, TCertain> where TCertain : SortedSetBase<T, TCertain>, new()
+public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseSortedSet<T, TCertain>, new()
 {
 	public override T this[Index index, bool invoke = true]
 	{
@@ -70,7 +70,7 @@ public abstract class SortedSetBase<T, TCertain> : SetBase<T, TCertain> where TC
 [DebuggerDisplay("Length = {Length}")]
 [Serializable()]
 [ComVisible(false)]
-public abstract class SortedSet<T, TCertain> : SortedSetBase<T, TCertain> where TCertain : SortedSet<T, TCertain>, new()
+public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where TCertain : SortedSet<T, TCertain>, new()
 {
 	private protected readonly List<T> items;
 
@@ -262,7 +262,7 @@ internal enum TreeRotation
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class TreeSet<T> : SortedSetBase<T, TreeSet<T>>
+public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 {
 	private Node? root;
 	private int version;
@@ -2600,7 +2600,7 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class SumSet<T> : SortedSetBase<(T Key, int Value), SumSet<T>>
+public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 {
 	private Node? root;
 	private int version;

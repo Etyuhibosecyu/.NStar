@@ -5,7 +5,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable/*, IComparable<ListBase<T, TCertain>>*/, IEquatable<TCertain> where TCertain : ListBase<T, TCertain>, new()
+public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable, IEquatable<TCertain> where TCertain : BaseList<T, TCertain>, new()
 {
 	private protected int _size;
 	public abstract int Capacity { get; set; }
@@ -223,23 +223,6 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
-	//public virtual int CompareTo(ListBase<T, TCertain>? other)
-	//{
-	//	if (other == null || other is not TCertain m)
-	//		return 1;
-	//	else
-	//		return CompareToInternal(m);
-	//}
-
-	//private protected virtual int CompareToInternal(TCertain other)
-	//{
-	//	int c;
-	//	for (int i = 0; i < _size && i < other._size; i++)
-	//		if ((c = ((IComparable<T>?)GetInternal(i) ?? throw new InvalidOperationException()).CompareTo(other.GetInternal(i))) != 0)
-	//			return c;
-	//	return _size.CompareTo(other._size);
-	//}
-
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
 
 	public virtual bool Contains(T? item, int index) => Contains(item, index, _size - index);
@@ -288,7 +271,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return false;
 		}
 		if (collection is not G.IList<T> list)
-			return Contains(CollectionCreator(collection));
+			list = CollectionCreator(collection);
 		int j = 0;
 		for (int i = 0; i - j <= count - list.Count; i++)
 		{
@@ -377,7 +360,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual bool ContainsAnyExcluding(TCertain list, int index, int count) => ContainsAnyExcluding((IEnumerable<T>)list, index, count);
 
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : ListBase<TOutput, TCertainOutput>, new()
+	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
 	{
 		if (converter == null)
 			throw new ArgumentNullException(nameof(converter));
@@ -388,7 +371,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : ListBase<TOutput, TCertainOutput>, new()
+	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
 	{
 		if (converter == null)
 			throw new ArgumentNullException(nameof(converter));
@@ -432,7 +415,12 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	private protected abstract void CopyToInternal(Array array, int arrayIndex);
+	private protected virtual void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is not T[] array2)
+			throw new ArgumentException(null, nameof(array));
+		CopyToInternal(0, array2, arrayIndex, Length);
+	}
 
 	private protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int count);
 
@@ -729,7 +717,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		else
 		{
-			TCertain toReturn = GetCopyRange(0, foundIndex);
+			TCertain toReturn = GetRange(0, foundIndex, true);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -756,7 +744,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		else
 		{
-			TCertain toReturn = GetCopyRange(0, foundIndex);
+			TCertain toReturn = GetRange(0, foundIndex, true);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -767,33 +755,6 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, index + 1);
 
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index, int count) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, count);
-
-	public virtual TCertain GetCopyRange(int index) => GetCopyRange(index, _size - index);
-
-	public virtual TCertain GetCopyRange(int index, int count)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
-			throw new ArgumentException(null);
-		if (count == 0)
-			return new();
-		else if (index == 0 && count == _size && this is TCertain thisList)
-			return CollectionCreator(thisList);
-		TCertain list = CapacityCreator(count);
-		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
-		list._size = count;
-		return list;
-	}
-
-	public virtual TCertain GetCopyRange(Range range)
-	{
-		int start = range.Start.IsFromEnd ? _size - range.Start.Value : range.Start.Value;
-		int end = range.End.IsFromEnd ? _size - range.End.Value : range.End.Value;
-		return GetCopyRange(start, end - start);
-	}
 
 	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
@@ -807,9 +768,9 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	internal abstract T GetInternal(int index, bool invoke = true);
 
-	public virtual TCertain GetRange(int index) => GetRange(index, _size - index);
+	public virtual TCertain GetRange(int index, bool alwaysCopy = false) => GetRange(index, _size - index, alwaysCopy);
 
-	public virtual TCertain GetRange(int index, int count)
+	public virtual TCertain GetRange(int index, int count, bool alwaysCopy = false)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -819,7 +780,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentException(null);
 		if (count == 0)
 			return new();
-		else if (index == 0 && count == _size && this is TCertain thisList)
+		else if (!alwaysCopy && index == 0 && count == _size && this is TCertain thisList)
 			return thisList;
 		TCertain list = CapacityCreator(count);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
@@ -827,11 +788,11 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return list;
 	}
 
-	public virtual TCertain GetRange(Range range)
+	public virtual TCertain GetRange(Range range, bool alwaysCopy = false)
 	{
 		int start = range.Start.IsFromEnd ? _size - range.Start.Value : range.Start.Value;
 		int end = range.End.IsFromEnd ? _size - range.End.Value : range.End.Value;
-		return GetRange(start, end - start);
+		return GetRange(start, end - start, alwaysCopy);
 	}
 
 	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
@@ -991,7 +952,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	private protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is not TCertain list)
-			return InsertInternal(index, CollectionCreator(collection));
+			list = CollectionCreator(collection);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		int count = list._size;
 		if (count > 0)
@@ -1134,6 +1095,8 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	public virtual int LastIndexOfAnyExcluding(TCertain list, int index, int count) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, count);
 
 	private protected abstract int LastIndexOfInternal(T item, int index, int count);
+
+	public virtual T Random() => this[random.Next(_size)];
 
 	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];
 
@@ -1298,7 +1261,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	internal virtual TCertain ReplaceRangeInternal(int index, int count, IEnumerable<T> collection)
 	{
 		if (collection is not TCertain list)
-			return ReplaceRangeInternal(index, count, CollectionCreator(collection));
+			list = CollectionCreator(collection);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (list._size > 0)
 		{
@@ -1359,7 +1322,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is not TCertain list)
-			return SetRange(index, CollectionCreator(collection));
+			list = CollectionCreator(collection);
 		int count = list._size;
 		if (index + count > _size)
 			throw new ArgumentException(null);
@@ -1393,7 +1356,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual TCertain Skip(int count) => GetRange(Clamp(count, 0, _size), Max(0, _size - Max(count, 0)));
+	public virtual TCertain Skip(int count) => GetRange(Clamp(count, 0, _size));
 
 	public virtual TCertain SkipLast(int count) => GetRange(0, Max(0, _size - Max(count, 0)));
 
@@ -1401,14 +1364,14 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		int i = 0;
 		for (; i < _size && function(GetInternal(i)); i++) ;
-		return GetRange(i, _size - i);
+		return GetRange(i);
 	}
 
 	public virtual TCertain SkipWhile(Func<T, int, bool> function)
 	{
 		int i = 0;
 		for (; i < _size && function(GetInternal(i), i); i++) ;
-		return GetRange(i, _size - i);
+		return GetRange(i);
 	}
 
 	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0);
@@ -1417,7 +1380,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Take(int count) => GetRange(0, Clamp(count, 0, _size));
 
-	public virtual TCertain TakeLast(int count) => GetRange(Max(0, _size - Max(count, 0)), Clamp(count, 0, _size));
+	public virtual TCertain TakeLast(int count) => GetRange(Max(0, _size - Max(count, 0)));
 
 	public virtual TCertain TakeWhile(Func<T, bool> function)
 	{
@@ -1476,16 +1439,16 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return true;
 	}
 
-	public static implicit operator ListBase<T, TCertain>(T x) => new TCertain().Add(x);
+	public static implicit operator BaseList<T, TCertain>(T x) => new TCertain().Add(x);
 
 	[Serializable]
 	public struct Enumerator : IEnumerator<T>, IEnumerator
 	{
-		private readonly ListBase<T, TCertain> list;
+		private readonly BaseList<T, TCertain> list;
 		private int index;
 		private T current;
 
-		internal Enumerator(ListBase<T, TCertain> list)
+		internal Enumerator(BaseList<T, TCertain> list)
 		{
 			this.list = list;
 			index = 0;
@@ -1498,7 +1461,7 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 		public bool MoveNext()
 		{
-			ListBase<T, TCertain> localList = list;
+			BaseList<T, TCertain> localList = list;
 			if ((uint)index < (uint)localList._size)
 			{
 				current = localList[index++];
@@ -1534,129 +1497,32 @@ public abstract class ListBase<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertain : BigListBase<T, TCertain, TLow>, new() where TLow : ListBase<T, TLow>, new()
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
 {
-	private protected TLow? low;
-	private protected List<TCertain>? high;
-	private protected Queue<int> deletedIndexes = new();
-	private protected BitList indexDeleted = new();
-	private protected mpz_t _size = 0;
-	private protected mpz_t deletedCount = 0;
-	private protected mpz_t _capacity = 0;
-	private protected mpz_t fragment = 1;
-	private protected bool isHigh;
-
-	public BigListBase()
+	public virtual T this[mpz_t index]
 	{
-		low = new();
-		high = null;
-		fragment = 1;
-		isHigh = false;
-		_size = 0;
-		_capacity = 0;
-	}
-
-	public BigListBase(mpz_t capacity)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity <= CapacityFirstStep)
+		get
 		{
-			low = CapacityLowCreator((int)capacity);
-			high = null;
-			fragment = 1;
-			indexDeleted = new((int)capacity);
-			isHigh = false;
+			if (index >= Size)
+				throw new IndexOutOfRangeException();
+			return GetInternal(index);
 		}
-		else
-		{
-			low = null;
-			fragment = (mpz_t)1 << ((((capacity - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
-			high = new((int)((capacity + (fragment - 1)) / fragment));
-			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Add(CapacityCreator(fragment));
-			if (capacity % fragment != 0)
-				high.Add(CapacityCreator(capacity % fragment));
-			isHigh = true;
-		}
-		_size = 0;
-		_capacity = capacity;
-	}
-
-	public BigListBase(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetCountEasilyEnumerable(col, out int count) ? count : 32)
-	{
-		IEnumerator<T> en = col.GetEnumerator();
-		while (en.MoveNext())
-			Add(en.Current);
-	}
-
-	public virtual mpz_t Capacity
-	{
-		get => _capacity;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
-			if (value == _capacity)
-				return;
-			if (value <= 0)
-			{
-				low = new();
-				high = null;
-				isHigh = false;
-			}
-			else if (value <= CapacityFirstStep)
-			{
-				try
-				{
-					throw new ExperimentalException();
-				}
-				catch
-				{
-				}
-				(low, indexDeleted) = GetFirstLists();
-				int value2 = (int)value;
-				low.Capacity = value2;
-				indexDeleted.Capacity = value2;
-				high = null;
-				isHigh = false;
-			}
-			else if (!isHigh && low != null)
-			{
-				fragment = (mpz_t)1 << ((((value - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength);
-				high = new((int)((value + (fragment - 1)) / fragment));
-				for (mpz_t i = 0; i < value / fragment; i++)
-					high.Add(CapacityCreator(fragment));
-				if (value % fragment != 0)
-					high.Add(CapacityCreator(value % fragment));
-				high[0].AddRange(low);
-				low = null;
-			}
-			else if (high != null)
-			{
-				high.Capacity = (int)((value + fragment - 1) / fragment);
-				high[^1].Capacity = (high.Length < high.Capacity || value % fragment == 0) ? fragment : value % fragment;
-				for (int i = high.Length; i < high.Capacity - 1; i++)
-					high.Add(CapacityCreator(fragment));
-				if (high.Length < high.Capacity)
-					high.Add(CapacityCreator(value % fragment == 0 ? fragment : value % fragment));
-			}
-			_capacity = value;
+			if (index >= Size)
+				throw new IndexOutOfRangeException();
+			SetInternal(index, value);
 		}
 	}
+
+	public abstract mpz_t Capacity { get; set; }
+
+	public virtual mpz_t Length => Size;
 
 	private protected abstract Func<mpz_t, TCertain> CapacityCreator { get; }
 
 	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
-
-	private protected virtual int CapacityStepBitLength => 16;
-
-	private protected virtual int CapacityFirstStepBitLength => 16;
-
-	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
 
 	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
 
@@ -1666,191 +1532,143 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	bool IBigCollection<T>.IsReadOnly => false;
 
-	public virtual mpz_t Length => _size - deletedCount;
+	private protected virtual mpz_t Size { get; set; } = 0;
 
-	public virtual mpz_t Size => _size;
+	public abstract TCertain Add(T item);
 
-	public virtual T this[mpz_t index]
-	{
-		get
-		{
-			if (index >= _size)
-				throw new IndexOutOfRangeException();
-			return GetInternal(index);
-		}
-		set
-		{
-			if (index >= _size)
-				throw new IndexOutOfRangeException();
-			SetInternal(index, value);
-		}
-	}
+	void IBigCollection<T>.Add(T item) => Add(item);
 
-	public virtual void Add(T item)
-	{
-		if (_size == Capacity && deletedCount == 0) EnsureCapacity(_size + 1);
-		if (deletedCount != 0)
-		{
-			mpz_t index = GetDeletedIndex();
-			SetInternal(index, item);
-		}
-		else
-			AddToEnd(item);
-	}
-
-	public virtual void AddRange(IEnumerable<T> collection)
+	public virtual TCertain AddRange(IEnumerable<T> collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is TCertain bigList)
-		{
-		mpz_t count = bigList.Length;
+		if (collection is not TCertain bigList)
+			bigList = CollectionCreator(collection);
+		var count = bigList.Length;
 		if (count == 0)
-				return;
-		mpz_t offset = new(count < deletedCount ? count : deletedCount);
-		for (mpz_t i = 0; i < offset; i++)
-		{
-			mpz_t index = GetDeletedIndex();
-			SetInternal(index, bigList[i]);
-		}
-		mpz_t count2 = count - offset;
-		EnsureCapacity(_size + count2);
-		SetRangeInternal(_size, bigList.GetRange(offset, count2));
-		_size += count2;
-	}
-		else
-			AddRange(CollectionCreator(collection));
-	}
-
-	private protected virtual void AddRangeToEnd(IEnumerable<T> collection)
-	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (collection is TCertain bigList)
-		{
-			mpz_t count = bigList.Length;
-			if (count > 0)
-			{
-				SetRangeInternal(_size, bigList);
-				_size += count;
-			}
-		}
-		else
-			AddRangeToEnd(CollectionCreator(collection));
-	}
-
-	private protected virtual void AddToEnd(T item)
-	{
-		if (!isHigh && low != null)
-		{
-			low.Add(item);
-			indexDeleted.Add(false);
-		}
-		else if (high != null)
-			high[(int)(_size / fragment)].AddToEnd(item);
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		_size++;
+			return this as TCertain ?? throw new InvalidOperationException();
+		return SetRangeAndSizeInternal(Size, Size + count, bigList);
 	}
 
 	public virtual void Clear()
 	{
-		if (!isHigh && low != null)
+		if (Size > 0)
 		{
-			low.Clear();
-			indexDeleted.Clear();
+			ClearInternal();
+			Size = 0;
 		}
-		else
-			high?.Clear();
-		deletedIndexes.Clear();
-		deletedCount = 0;
 	}
 
 	public virtual void Clear(mpz_t index, mpz_t count)
 	{
-		if (!isHigh && low != null)
-			low.Clear((int)index, (int)count);
-		else if (high != null)
-		{
-			int quotient = (int)index.Divide(fragment, out mpz_t remainder);
-			int quotient2 = (int)(index + count).Divide(fragment, out mpz_t remainder2);
-			if (quotient == quotient2)
-			{
-				high[quotient].Clear(remainder, remainder2 - remainder);
-				return;
-			}
-			high[quotient].Clear(remainder, fragment - remainder);
-			for (int i = quotient + 1; i < quotient2; i++)
-				high[i].Clear(0, fragment);
-			high[quotient2].Clear(0, remainder2);
-		}
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		ClearInternal(index, count);
 	}
 
-	public virtual bool Contains(T item)
+	private protected abstract void ClearInternal();
+
+	private protected abstract void ClearInternal(mpz_t index, mpz_t count);
+
+	public virtual bool Contains(T item) => Contains(item, 0, Size);
+
+	public virtual bool Contains(T item, mpz_t index) => Contains(item, index, Size - index);
+
+	public virtual bool Contains(T item, mpz_t index, mpz_t count)
 	{
+		if (index > Size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0 || index > Size - count)
+			throw new ArgumentOutOfRangeException(nameof(count));
 		try
 		{
 			throw new SlowOperationException();
 		}
 		catch
 		{
-			if (!isHigh && low != null)
-				return low.Contains(item);
-			else if (high != null)
-				return high.Any(x => x.Contains(item));
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		}
+		for (mpz_t i = index; i < index + count; i++)
+			if (GetInternal(i)?.Equals(item) ?? false)
+				return true;
+		return false;
+	}
+
+	private protected abstract void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length);
+
+	public virtual void CopyTo(Array array, int arrayIndex)
+	{
+		if ((array != null) && (array.Rank != 1))
+			throw new ArgumentException(null);
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		try
+		{
+			CopyToInternal(array, arrayIndex);
+		}
+		catch (ArrayTypeMismatchException)
+		{
+			throw new ArgumentException(null);
 		}
 	}
 
-	public virtual void CopyTo(T[] array, int index)
+	public virtual void CopyTo(IBigList<T> list) => CopyTo(list, 0);
+
+	public virtual void CopyTo(IBigList<T> list, mpz_t listIndex) => CopyTo(0, list, listIndex, Length);
+
+	public virtual void CopyTo(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t count)
 	{
-		if (!isHigh && low != null)
-			low.CopyTo(array, index);
-		else
-			throw new InvalidOperationException("Слишком большой список для копирования в массив!");
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		CopyToInternal(index, list, listIndex, count);
 	}
+
+	public virtual void CopyTo(mpz_t index, T[] array, int arrayIndex, int count)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (count < 0)
+			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
+		CopyToInternal(index, array, arrayIndex, count);
+	}
+
+	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
+
+	public virtual void CopyTo(T[] array, int arrayIndex)
+	{
+		if (Length > int.MaxValue)
+			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
+		CopyTo(0, array, arrayIndex, (int)Length);
+	}
+
+	private protected virtual void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (array is not T[] array2)
+			throw new ArgumentException(null, nameof(array));
+		CopyToInternal(0, array2, arrayIndex, (int)Length);
+	}
+
+	private protected abstract void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int count);
+
+	private protected abstract void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t count);
 
 	private protected virtual void EnsureCapacity(mpz_t min)
 	{
-		if (_size < min)
+		if (Capacity < min)
 		{
-			mpz_t newCapacity = _size == 0 ? DefaultCapacity : _size * 2;
+			var newCapacity = Size == 0 ? DefaultCapacity : Size * 2;
 			if (newCapacity < min) newCapacity = min;
 			Capacity = newCapacity;
 		}
-	}
-
-	private protected virtual T GetInternal(mpz_t index)
-	{
-		if (!isHigh && low != null)
-		{
-			try
-			{
-				throw new ExperimentalException();
-			}
-			catch
-			{
-			}
-			return low.GetInternal((int)index) ?? throw new InvalidOperationException();
-		}
-		else if (high != null)
-			return high.GetInternal((int)(index / fragment)).GetInternal(index % fragment);
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
-
-	private protected virtual mpz_t GetDeletedIndex()
-	{
-		if (!isHigh)
-			return deletedIndexes.Dequeue();
-		else if (high != null)
-		{
-			int index = deletedIndexes.Dequeue();
-			return fragment * index + high[index].GetDeletedIndex();
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
 	public virtual Enumerator GetEnumerator() => new(this);
@@ -1859,62 +1677,37 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private protected virtual (TLow, BitList) GetFirstLists()
-	{
-		if (!isHigh && low != null)
-			return (low, indexDeleted);
-		else if (high != null)
-			return high[0].GetFirstLists();
-		else
-			return new();
-	}
+	private protected abstract T GetInternal(mpz_t index);
 
-	public virtual TCertain GetRange(mpz_t index, mpz_t count)
+	public virtual TCertain GetRange(mpz_t index, bool alwaysCopy = false) => GetRange(index, Size - index, alwaysCopy);
+
+	public virtual TCertain GetRange(mpz_t index, mpz_t count, bool alwaysCopy = false)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (index + count > Size)
 			throw new ArgumentException(null);
 		if (count == 0)
-			return new();
-		else if (index == 0 && count == _size && this is TCertain thisList)
+			return CapacityCreator(0);
+		else if (!alwaysCopy && index == 0 && count == Size && this is TCertain thisList)
 			return thisList;
-		else if (!isHigh && low != null)
-			return CollectionCreator(ListBase<T, TLow>.RemoveIndexes(low.GetRange((int)index, (int)count), deletedIndexes));
-		else if (high != null)
-		{
-			TCertain list = CapacityCreator(count);
-			if (index / fragment == (index + count - 1) / fragment)
-				list.AddRangeToEnd(high[(int)(index / fragment)].GetRange(index % fragment, count));
-			else
-			{
-				mpz_t offset = index % fragment == 0 ? 0 : fragment - index % fragment;
-				if (offset == 0 && count == fragment)
-					return high[(int)(index / fragment)];
-				if ((int)(index % fragment) != 0)
-					list.AddRangeToEnd(high[(int)(index / fragment)].GetRange(index % fragment, offset));
-				for (int i = (int)((index + fragment - 1) / fragment); i < (index + count) / fragment && offset <= count - fragment; i++, offset += fragment)
-					list.AddRangeToEnd(high[i]);
-				if ((index + count) % fragment != 0)
-					list.AddRangeToEnd(high[(int)((index + count) / fragment)].GetRange(0, (index + count) % fragment));
-			}
-			return list;
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		TCertain list = CapacityCreator(count);
+		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, count);
+		list.Size = count;
+		return list;
 	}
 
-	public virtual mpz_t IndexOf(T item) => IndexOf(item, 0, _size);
+	public virtual mpz_t IndexOf(T item) => IndexOf(item, 0, Size);
 
-	public virtual mpz_t IndexOf(T item, mpz_t index) => IndexOf(item, index, _size - index);
+	public virtual mpz_t IndexOf(T item, mpz_t index) => IndexOf(item, index, Size - index);
 
 	public virtual mpz_t IndexOf(T item, mpz_t index, mpz_t count)
 	{
-		if (index > _size)
+		if (index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > _size - count)
+		if (count < 0 || index > Size - count)
 			throw new ArgumentOutOfRangeException(nameof(count));
 		try
 		{
@@ -1931,191 +1724,139 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	void IBigList<T>.Insert(mpz_t index, T item) => Add(item);
 
-	public virtual bool Remove(T item)
-	{
-		mpz_t index = IndexOf(item);
-		if (index >= 0)
-		{
-			RemoveAt(index);
-			return true;
-	}
-		return false;
-	}
+	public virtual TCertain Remove(mpz_t index) => Remove(index, Size - index);
 
-	public virtual void RemoveAt(mpz_t index)
-	{
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (index == _size - 1)
-		{
-			_size--;
-			if (!isHigh && low != null)
-			{
-				low.RemoveAt((int)index);
-				indexDeleted.RemoveAt((int)index);
-			}
-			else
-				high?.GetInternal((int)(index / fragment)).RemoveAt(index % fragment);
-		}
-		else
-			RemoveNotFromEnd(index);
-	}
-
-	private protected virtual void RemoveNotFromEnd(mpz_t index)
-	{
-		if (!isHigh && low != null)
-		{
-			int index2 = (int)index;
-			low.SetInternal(index2, default!);
-			indexDeleted.SetInternal(index2, true);
-			deletedIndexes.Enqueue(index2);
-		}
-		else if (high != null)
-		{
-			int highIndex = (int)(index / fragment);
-			high.GetInternal(highIndex).RemoveNotFromEnd(index % fragment);
-			deletedIndexes.Enqueue(highIndex);
-		}
-		deletedCount++;
-	}
-
-	public virtual void RemoveRange(mpz_t index, mpz_t count)
+	public virtual TCertain Remove(mpz_t index, mpz_t count)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (index + count > Size)
 			throw new ArgumentException(null);
-		for (mpz_t i = index + count - 1; i >= index; i--)
-			RemoveAt(i);
-	}
-
-	private protected virtual void SetInternal(mpz_t index, T value)
-	{
-		if (!isHigh && low != null)
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (count > 0)
 		{
-			try
-			{
-				throw new ExperimentalException();
-			}
-			catch
-			{
-			}
-			low.SetInternal((int)index, value);
-			indexDeleted.SetInternal((int)index, false);
+			Size -= count;
+			if (index < Size)
+				Copy(this2, index + count, this2, index, Size - index);
+			ClearInternal(Size, count);
 		}
-		else if (high != null)
-			high.GetInternal((int)(index / fragment)).SetInternal(index % fragment, value);
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		return this2;
 	}
 
-	public virtual void SetRange(mpz_t index, IEnumerable<T> collection)
+	public virtual TCertain RemoveAt(mpz_t index)
+	{
+		if ((uint)index >= (uint)Size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		Size--;
+		if (index < Size)
+			Copy(this2, index + 1, this2, index, Size - index);
+		SetInternal(Size, default!);
+		return this2;
+	}
+
+	void IBigList<T>.RemoveAt(mpz_t index) => RemoveAt(index);
+
+	public virtual bool RemoveValue(T item)
+	{
+		var index = IndexOf(item);
+		if (index >= 0)
+		{
+			RemoveAt(index);
+			return true;
+		}
+		return false;
+	}
+
+	public virtual TCertain Replace(IEnumerable<T> collection)
+	{
+		if (collection is IBigCollection<T> col)
+		{
+			col.CopyTo(this, 0);
+			Size = col.Length;
+		}
+		else
+		{
+			mpz_t i = 0;
+			foreach (T item in collection)
+			{
+				SetInternal(i, item);
+				i++;
+			}
+			Size = i;
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	private protected abstract void SetInternal(mpz_t index, T value);
+
+	public virtual TCertain SetRange(mpz_t index, IEnumerable<T> collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (index > _size)
+		if (index < 0 || index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is TCertain bigList)
-		{
-		if (index + bigList.Length > _size)
+		if (collection is not TCertain bigList)
+			bigList = CollectionCreator(collection);
+		if (index + bigList.Length > Size)
 			throw new ArgumentException(null);
-		EnsureCapacity(index + bigList.Length);
-			SetRangeInternal(index, bigList);
-	}
-		else
-			SetRange(index, CollectionLowCreator(collection));
+		return SetRangeInternal(index, bigList);
 	}
 
-	internal virtual void SetRangeAndSizeInternal(mpz_t index, TCertain list)
+	internal virtual TCertain SetRangeAndSizeInternal(mpz_t index, mpz_t count, TCertain list)
 	{
 		SetRangeInternal(index, list);
-		_size = _size >= index + list.Length ? _size : index + list.Length;
+		Size = RedStarLinq.Max(Size, count);
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	private protected virtual void SetRangeInternal(mpz_t index, TCertain bigList)
+	internal virtual TCertain SetRangeAndSizeInternal(mpz_t index, TCertain list)
 	{
-		mpz_t count = bigList.Length;
+		SetRangeInternal(index, list);
+		Size = RedStarLinq.Max(Size, index + list.Length);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	private protected virtual TCertain SetRangeInternal(mpz_t index, TCertain bigList)
+	{
+		var count = bigList.Length;
 		if (count == 0)
-			return;
-		if (!isHigh && low != null)
-		{
-			TLow lowList = CollectionLowCreator(bigList);
-			if (index == 0 && count == fragment && lowList.Length == fragment)
-				low = lowList;
-			else
-				low.SetRangeAndSizeInternal((int)index, lowList.Length, lowList);
-			indexDeleted.SetRangeAndSizeInternal((int)index, lowList.Length, new((int)count, false));
-		}
-		else if (high != null)
-		{
-			if (index % fragment == 0 && count == fragment)
-				high[(int)(index / fragment)] = bigList;
-			else if (index / fragment == (index + count - 1) / fragment)
-				high[(int)(index / fragment)].SetRangeAndSizeInternal(index % fragment, bigList);
-			else
-			{
-				mpz_t offset = index % fragment == 0 ? 0 : fragment - index % fragment;
-				if ((int)(index % fragment) != 0)
-					high[(int)(index / fragment)].SetRangeAndSizeInternal(index % fragment, bigList.GetRange(0, offset));
-				for (int i = (int)((index + fragment - 1) / fragment); i < (index + count) / fragment && offset <= count - fragment; i++, offset += fragment)
-					high[i].SetRangeAndSizeInternal(0, bigList.GetRange(offset, fragment));
-				if ((index + count) % fragment != 0)
-					high[(int)((index + count) / fragment)].SetRangeAndSizeInternal(0, bigList.GetRange(offset, count - offset));
-			}
-		}
+			return this as TCertain ?? throw new InvalidOperationException();
+		EnsureCapacity(index + count);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (count > 0)
+			Copy(bigList, 0, this2, index, count);
+		return this2;
 	}
 
 	public virtual T[] ToArray()
 	{
-		if (!isHigh && low != null)
-			return low.ToArray();
-		else
+		if (Length > int.MaxValue)
 			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
+		int length = (int)Length;
+		T[] array = new T[length];
+		CopyToInternal(0, array, 0, length);
+		return array;
 	}
 
-	public virtual void TrimExcess()
+	public virtual TCertain TrimExcess()
 	{
-		if (_size <= CapacityFirstStep)
-		{
-			(low, indexDeleted) = GetFirstLists();
-			low.TrimExcess();
-		}
-		else if (high != null)
-		{
-			high.TrimExcess();
-			high[^1].TrimExcess();
-		}
-	}
-
-	public virtual bool TryGet(mpz_t index, out T value)
-	{
-		if (index >= _capacity)
-			throw new FormatException();
-		if (!isHigh && low != null)
-		{
-			bool result = !indexDeleted.GetInternal((int)index);
-			value = result ? low.GetInternal((int)index) : default!;
-			return result;
-		}
-		else if (high != null)
-			return high.GetInternal((int)(index / fragment)).TryGet(index % fragment, out value);
-		else
-		{
-			value = default!;
-			return false;
-		}
+		int threshold = (int)(Capacity * 0.9);
+		if (Size < threshold)
+			Capacity = Size;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	[Serializable]
 	public struct Enumerator : IEnumerator<T>, IEnumerator
 	{
-		private readonly BigListBase<T, TCertain, TLow> list;
+		private readonly BaseBigList<T, TCertain, TLow> list;
 		private mpz_t index;
 		private T current;
 
-		internal Enumerator(BigListBase<T, TCertain, TLow> list)
+		internal Enumerator(BaseBigList<T, TCertain, TLow> list)
 		{
 			this.list = list;
 			index = 0;
@@ -2128,12 +1869,11 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 		public bool MoveNext()
 		{
-			if (index >= list._size)
+			if (index >= list.Size)
 				return MoveNextRare();
 			try
 			{
-				while (!list.TryGet(index, out current))
-					index++;
+				current = list.GetInternal(index);
 				index++;
 				return true;
 			}
@@ -2145,7 +1885,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 
 		private bool MoveNextRare()
 		{
-			index = list._size + 1;
+			index = list.Size + 1;
 			current = default!;
 			return false;
 		}
@@ -2156,7 +1896,7 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 		{
 			get
 			{
-				if (index == 0 || index == list._size + 1)
+				if (index == 0 || index == list.Size + 1)
 					throw new InvalidOperationException();
 				return Current!;
 			}
@@ -2173,7 +1913,518 @@ public abstract class BigListBase<T, TCertain, TLow> : IBigList<T> where TCertai
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class SetBase<T, TCertain> : ListBase<T, TCertain>, ISet<T> where TCertain : SetBase<T, TCertain>, new()
+public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow> where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+{
+	private protected TLow? low;
+	private protected List<TCertain>? high;
+	private protected BigSumList? highCapacity;
+	private protected mpz_t _capacity = 0;
+	private protected mpz_t fragment = 1;
+	private protected bool isHigh;
+
+	public BigList() : this(-1)
+	{
+	}
+
+	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		low = new();
+		high = null;
+		highCapacity = null;
+		fragment = 1;
+		isHigh = false;
+		Size = 0;
+		_capacity = 0;
+	}
+
+	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity <= CapacityFirstStep)
+		{
+			low = CapacityLowCreator((int)capacity);
+			high = null;
+			highCapacity = null;
+			fragment = 1;
+			isHigh = false;
+		}
+		else
+		{
+			low = null;
+			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			while (ProperFragment * (CapacityStep * 3 >> 2) < capacity)
+				fragment <<= CapacityStepBitLength;
+			var quotient = capacity.Divide(ProperFragment, out var remainder);
+			int highCount = (int)GetArrayLength(capacity, ProperFragment);
+			high = new(highCount);
+			highCapacity = new();
+			for (mpz_t i = 0; i < quotient; i++)
+			{
+				high.Add(CapacityCreator(ProperFragment));
+				highCapacity.Add(ProperFragment);
+			}
+			if (remainder != 0)
+			{
+				high.Add(CapacityCreator(remainder));
+				highCapacity.Add(remainder);
+			}
+			isHigh = true;
+		}
+		Size = 0;
+		_capacity = capacity;
+	}
+
+	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : List<T>.TryGetCountEasilyEnumerable(collection, out int count) ? count : 0, capacityFirstStepBitLength, capacityStepBitLength)
+	{
+		IEnumerator<T> en = collection.GetEnumerator();
+		while (en.MoveNext())
+			Add(en.Current);
+	}
+
+	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
+	{
+		IEnumerator<T> en = collection.GetEnumerator();
+		while (en.MoveNext())
+			Add(en.Current);
+	}
+
+	public override mpz_t Capacity
+	{
+		get => _capacity;
+		set
+		{
+			if (value < Size)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			if (value == _capacity)
+				return;
+			if (value <= 0)
+			{
+				low = new();
+				high = null;
+				highCapacity = null;
+				isHigh = false;
+			}
+			else if (value <= CapacityFirstStep)
+			{
+				//try
+				//{
+				//	throw new ExperimentalException();
+				//}
+				//catch
+				//{
+				//}
+				low = GetFirstLists();
+				int value2 = (int)value;
+				low.Capacity = value2;
+				high = null;
+				highCapacity = null;
+				isHigh = false;
+			}
+			else if (!isHigh && low != null)
+			{
+				fragment = (mpz_t)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				while (ProperFragment * (CapacityStep * 3 >> 2) < value)
+					fragment <<= CapacityStepBitLength;
+				int highCount = (int)GetArrayLength(value, ProperFragment);
+				high = new(highCount);
+				highCapacity = new();
+				for (mpz_t i = 0; i < value / ProperFragment; i++)
+				{
+					high.Add(CapacityCreator(ProperFragment));
+					highCapacity.Add(ProperFragment);
+				}
+				if (value % ProperFragment != 0)
+				{
+					high.Add(CapacityCreator(value % ProperFragment));
+					highCapacity.Add(value % ProperFragment);
+				}
+				high[0].AddRange(low);
+				low = null;
+				isHigh = true;
+			}
+			else if (high != null && highCapacity != null)
+			{
+				var oldFragment = fragment;
+				fragment = (mpz_t)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				while (ProperFragment * (CapacityStep * 3 >> 2) < value)
+					fragment <<= CapacityStepBitLength;
+				if (fragment > oldFragment)
+					goto l0;
+				if (fragment < oldFragment)
+					goto l1;
+				high.Capacity = (int)GetArrayLength(value, ProperFragment);
+				high[^1].Capacity = (high.Length < high.Capacity || value % ProperFragment == 0) ? ProperFragment : value % ProperFragment;
+				for (int i = high.Length; i < high.Capacity - 1; i++)
+				{
+					high.Add(CapacityCreator(ProperFragment));
+					highCapacity.Add(ProperFragment);
+				}
+				if (high.Length < high.Capacity)
+				{
+					var remainder = value % ProperFragment == 0 ? ProperFragment : value % ProperFragment;
+					high.Add(CapacityCreator(remainder));
+					highCapacity.Add(remainder);
+				}
+				return;
+			l0:
+				do
+				{
+					oldFragment <<= CapacityStepBitLength;
+					int highCount = (int)RedStarLinq.Min(GetArrayLength(value, oldFragment), CapacityStep);
+					high = new(highCount) { this as TCertain ?? throw new InvalidOperationException() };
+					new Chain(1, high.Capacity - 2).ForEach(_ => high.Add(CapacityCreator(oldFragment)));
+					highCapacity = new(RedStarLinq.FillArray(high.Capacity - 1, _ => new mpz_t(oldFragment)));
+					var remainder = (oldFragment < fragment || value % oldFragment == 0) ? oldFragment : value % oldFragment;
+					high.Add(CapacityCreator(remainder));
+					highCapacity.Add(remainder);
+				} while (oldFragment < fragment);
+				return;
+			l1:
+				do
+				{
+					oldFragment >>= CapacityStepBitLength;
+					high = high[0].high!;
+				} while (oldFragment > fragment);
+				high[0].Capacity = value;
+			}
+			_capacity = value;
+		}
+	}
+
+	private protected virtual int CapacityFirstStepBitLength { get; init; } = 16;
+
+	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
+
+	private protected virtual int CapacityStepBitLength { get; init; } = 16;
+
+	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
+
+	private protected virtual mpz_t ProperFragment
+	{
+		get
+		{
+			if (fragment == 1)
+				return 1;
+			int steps = ((fragment - 1).BitLength - CapacityFirstStepBitLength) / CapacityStepBitLength;
+			return ((mpz_t)1 << steps * (CapacityStepBitLength - 2) + (CapacityFirstStepBitLength - 2)) * mpz_t.Power(3, steps + 1);
+		}
+	}
+
+	public override TCertain Add(T item)
+	{
+		EnsureCapacity(Size + 1);
+		if (!isHigh && low != null)
+		{
+			low.Add(item);
+		}
+		else if (high != null)
+			high[(int)(Size / fragment)].Add(item);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Size++;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	private protected override void ClearInternal()
+	{
+		if (!isHigh && low != null)
+			low.Clear();
+		else
+		{
+			high?.Clear();
+			highCapacity?.Clear();
+		}
+	}
+
+	private protected override void ClearInternal(mpz_t index, mpz_t count)
+	{
+		if (!isHigh && low != null)
+			low.Clear((int)index, (int)count);
+		else if (high != null && highCapacity != null)
+		{
+			int quotient = highCapacity.IndexOfNotGreaterSum(index, out var remainder);
+			int quotient2 = highCapacity.IndexOfNotGreaterSum(index + count - 1);
+			if (quotient == quotient2)
+			{
+				high[quotient].ClearInternal(remainder, count);
+				return;
+			}
+			var previousPart = highCapacity[quotient] - remainder;
+			high[quotient].ClearInternal(remainder, previousPart);
+			for (int i = quotient + 1; i < quotient2; i++)
+			{
+				high[i].ClearInternal(0, highCapacity[i]);
+				previousPart += highCapacity[i];
+			}
+			high[quotient2].ClearInternal(0, count - previousPart);
+		}
+	}
+
+	private protected override void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	{
+		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
+		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
+			return;
+		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
+			return;
+		if (!sourceBits.isHigh && sourceBits.low != null && !destinationBits.isHigh && destinationBits.low != null)
+		{
+			destinationBits.low.SetRangeAndSizeInternal((int)destinationIndex, (int)length, sourceBits.low.GetRange((int)sourceIndex, (int)length));
+			destinationBits.Size = RedStarLinq.Max(destinationBits.Size, sourceIndex + length);
+			return;
+		}
+		if (sourceBits.fragment > destinationBits.fragment && sourceBits.isHigh && sourceBits.high != null && sourceBits.highCapacity != null)
+		{
+			int index = sourceBits.highCapacity.IndexOfNotGreaterSum(sourceIndex, out var remainder), index2 = sourceBits.highCapacity.IndexOfNotGreaterSum(sourceIndex + length - 1);
+			if (index == index2)
+				Copy(sourceBits.high[index], remainder, destinationBits, destinationIndex, length);
+			else
+			{
+				var previousPart = sourceBits.highCapacity[index] - remainder;
+				Copy(sourceBits.high[index], remainder, destinationBits, destinationIndex, previousPart);
+				for (int i = index + 1; i < index2; i++)
+				{
+					Copy(sourceBits.high[i], 0, destinationBits, destinationIndex + previousPart, sourceBits.highCapacity[i]);
+					previousPart += sourceBits.highCapacity[i];
+				}
+				Copy(sourceBits.high[index2], 0, destinationBits, destinationIndex + previousPart, length - previousPart);
+			}
+			destinationBits.Size = RedStarLinq.Max(destinationBits.Size, sourceIndex + length);
+			return;
+		}
+		if (destinationBits.fragment > sourceBits.fragment && destinationBits.isHigh && destinationBits.high != null && destinationBits.highCapacity != null)
+		{
+			int index = destinationBits.highCapacity.IndexOfNotGreaterSum(destinationIndex, out var remainder), index2 = destinationBits.highCapacity.IndexOfNotGreaterSum(destinationIndex + length - 1);
+			if (index == index2)
+				Copy(sourceBits, sourceIndex, destinationBits.high[index], remainder, length);
+			else
+			{
+				var previousPart = destinationBits.highCapacity[index] - remainder;
+				Copy(sourceBits, sourceIndex, destinationBits.high[index], remainder, previousPart);
+				for (int i = index + 1; i < index2; i++)
+				{
+					Copy(sourceBits, sourceIndex + previousPart, destinationBits.high[i], 0, destinationBits.highCapacity[i]);
+					previousPart += destinationBits.highCapacity[i];
+				}
+				Copy(sourceBits, sourceIndex + previousPart, destinationBits.high[index2], 0, length - previousPart);
+			}
+			destinationBits.Size = RedStarLinq.Max(destinationBits.Size, sourceIndex + length);
+			return;
+		}
+		if (!(sourceBits.isHigh && sourceBits.high != null && sourceBits.highCapacity != null && destinationBits.isHigh && destinationBits.high != null && destinationBits.highCapacity != null && sourceBits.fragment == destinationBits.fragment))
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Copy(sourceBits.high, sourceBits.highCapacity, sourceIndex, destinationBits.high, destinationBits.highCapacity, destinationIndex, length, sourceBits.fragment);
+		destinationBits.Size = RedStarLinq.Max(destinationBits.Size, sourceIndex + length);
+	}
+
+	private protected virtual void Copy(List<TCertain> sourceBits, BigSumList sourceCount, mpz_t sourceIndex, List<TCertain> destinationBits, BigSumList destinationCount, mpz_t destinationIndex, mpz_t length, mpz_t fragment)
+	{
+		int sourceIntIndex = sourceCount.IndexOfNotGreaterSum(sourceIndex, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
+		int destinationIntIndex = destinationCount.IndexOfNotGreaterSum(destinationIndex, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
+		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+		int sourceEndIntIndex = sourceCount.IndexOfNotGreaterSum(sourceEndIndex, out var sourceEndBitsIndex);  // Индекс инта последнего бита.
+		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
+		int destinationEndIntIndex = destinationCount.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndBitsIndex);  // Индекс инта последнего бита.
+		if (sourceEndIntIndex == sourceIntIndex)
+		{
+			int index = destinationCount.IndexOfNotGreaterSum(destinationIndex, out var remainder), index2 = destinationCount.IndexOfNotGreaterSum(destinationIndex + length - 1);
+			if (index == index2)
+				Copy(sourceBits[sourceIntIndex], sourceIndex, destinationBits[index], remainder, length);
+			else
+			{
+				var previousPart = destinationCount[index] - remainder;
+				Copy(sourceBits[sourceIntIndex], sourceIndex, destinationBits[index], remainder, previousPart);
+				for (int i = index + 1; i < index2; i++)
+				{
+					Copy(sourceBits[sourceIntIndex], sourceIndex + previousPart, destinationBits[i], 0, destinationCount[i]);
+					previousPart += destinationCount[i];
+				}
+				Copy(sourceBits[sourceIntIndex], sourceIndex + previousPart, destinationBits[index2], 0, length - previousPart);
+			}
+		}
+		else if (destinationEndIntIndex == destinationIntIndex)
+		{
+			int index = sourceCount.IndexOfNotGreaterSum(sourceIndex, out var remainder), index2 = sourceCount.IndexOfNotGreaterSum(sourceIndex + length - 1);
+			if (index == index2)
+				Copy(sourceBits[index], remainder, destinationBits[destinationIntIndex], destinationIndex, length);
+			else
+			{
+				var previousPart = sourceCount[index] - remainder;
+				Copy(sourceBits[index], remainder, destinationBits[destinationIntIndex], destinationIndex, previousPart);
+				for (int i = index + 1; i < index2; i++)
+				{
+					Copy(sourceBits[i], 0, destinationBits[destinationIntIndex], destinationIndex + previousPart, sourceCount[i]);
+					previousPart += sourceCount[i];
+				}
+				Copy(sourceBits[index2], 0, destinationBits[destinationIntIndex], destinationIndex + previousPart, length - previousPart);
+			}
+		}
+		else if (sourceIndex >= destinationIndex)
+		{
+			TCertain buff = destinationBits[destinationIntIndex].GetRange(0, destinationBitsIndex);
+			buff.AddRange(sourceBits[sourceIntIndex].GetRange(sourceBitsIndex));
+			for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; sourceCurrentIntIndex < sourceEndIntIndex + 1 || destinationCurrentIntIndex < destinationEndIntIndex;)
+			{
+				var currentLength = destinationCount[destinationCurrentIntIndex];
+				if (buff.Length < currentLength)
+				{
+					TCertain sourceElem = sourceBits[sourceCurrentIntIndex++];
+					buff.AddRange(sourceCurrentIntIndex == sourceEndIntIndex ? sourceElem.GetRange(0, destinationEndBitsIndex + 1) : sourceElem);
+				}
+				if (buff.Length >= currentLength && destinationCurrentIntIndex < destinationEndIntIndex)
+				{
+					destinationBits[destinationCurrentIntIndex++] = buff.GetRange(0, currentLength, true);
+					buff.Remove(0, currentLength);
+				}
+			}
+			destinationBits[destinationEndIntIndex].SetRangeAndSizeInternal(0, buff.GetRange(0, destinationEndBitsIndex + 1));
+		}
+		else
+		{
+			TCertain buff = sourceBits[sourceEndIntIndex].GetRange(0, sourceEndBitsIndex + 1);
+			buff.AddRange(destinationBits[destinationEndIntIndex].GetRange(destinationEndBitsIndex + 1));
+			buff.Capacity = fragment << 1;
+			for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; sourceCurrentIntIndex > sourceIntIndex - 1 || destinationCurrentIntIndex > destinationIntIndex;)
+			{
+				var currentLength = destinationCount[destinationCurrentIntIndex];
+				if (buff.Length < currentLength)
+				{
+					TCertain sourceElem = sourceBits[sourceCurrentIntIndex--];
+					buff.high?.Insert(0, sourceElem);
+				}
+				if (buff.Length >= currentLength && destinationCurrentIntIndex > destinationIntIndex)
+				{
+					destinationBits[destinationCurrentIntIndex--] = buff.GetRange(buff.Size - fragment, true);
+					buff.Remove(buff.Size - fragment);
+				}
+			}
+			destinationBits[destinationIntIndex].SetRangeAndSizeInternal(destinationBitsIndex, buff.GetRange(buff.Size - destinationBitsIndex));
+		}
+	}
+
+	private static void CheckParams(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	{
+		if (sourceBits == null)
+			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
+		if (sourceBits.Capacity == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
+		if (destinationBits == null)
+			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
+		if (destinationBits.Capacity == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
+		if (sourceIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
+		if (destinationIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
+		if (sourceIndex + length > sourceBits.Capacity)
+			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
+		if (destinationIndex + length > destinationBits.Capacity)
+			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
+	}
+
+	private protected override void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t count)
+	{
+		if (count == 0)
+			return;
+		if (!isHigh && low != null)
+		{
+			int index2 = (int)index, count2 = (int)count;
+			for (int i = 0; i < count2; i++)
+				list[listIndex + i] = low[index2 + i];
+		}
+		else if (high != null)
+		{
+			int intIndex = (int)index.Divide(fragment, out var bitsIndex);
+			int endIntIndex = (int)(index + count - 1).Divide(fragment, out var endBitsIndex);
+			if (endIntIndex == intIndex)
+			{
+				high[intIndex].CopyToInternal(bitsIndex, list, listIndex, count);
+				return;
+			}
+			high[intIndex].CopyToInternal(bitsIndex, list, listIndex, fragment - bitsIndex);
+			var destIndex = listIndex + fragment - bitsIndex;
+			for (int i = intIndex + 1; i < endIntIndex; i++, destIndex += fragment)
+				high[i].CopyToInternal(0, list, destIndex, fragment);
+			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	private protected override void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int count)
+	{
+		for (int i = 0; i < count; i++)
+			array[arrayIndex + i] = GetInternal(index + i);
+	}
+
+	private protected virtual TLow GetFirstLists()
+	{
+		if (!isHigh && low != null)
+			return low;
+		else if (high != null)
+			return high[0].GetFirstLists();
+		else
+			return new();
+	}
+
+	private protected override T GetInternal(mpz_t index)
+	{
+		if (!isHigh && low != null)
+		{
+			//try
+			//{
+			//	throw new ExperimentalException();
+			//}
+			//catch
+			//{
+			//}
+			return low.GetInternal((int)index);
+		}
+		else if (high != null)
+			return high.GetInternal((int)(index / fragment)).GetInternal(index % fragment);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	private protected override void SetInternal(mpz_t index, T value)
+	{
+		if (!isHigh && low != null)
+		{
+			//try
+			//{
+			//	throw new ExperimentalException();
+			//}
+			//catch
+			//{
+			//}
+			low.SetInternal((int)index, value);
+		}
+		else if (high != null)
+			high.GetInternal((int)(index / fragment)).SetInternal(index % fragment, value);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> where TCertain : BaseSet<T, TCertain>, new()
 {
 	public override TCertain Add(T item)
 	{

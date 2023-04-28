@@ -60712,6 +60712,7 @@ public static class RedStarLinq
 	public static IEnumerable<TSource> Prepend<TSource>(this IEnumerable<TSource> source, TSource element) => Enumerable.Prepend(source, element);
 	public static TSource? Progression<TSource>(this IEnumerable<TSource> source, Func<TSource, TSource, TSource> function) => List<TSource>.ProgressionEnumerable(source, function);
 	public static TResult? Progression<TSource, TResult>(this IEnumerable<TSource> source, TResult seed, Func<TResult, TSource, TResult> function) => List<TResult>.ProgressionEnumerable(source, seed, function);
+	public static TSource Random<TSource>(this G.IList<TSource> source) => source[random.Next(source.Count)];
 	public static TSource Random<TSource>(this G.IList<TSource> source, Random randomObj) => source[randomObj.Next(source.Count)];
 	public static List<TSource> RemoveDoubles<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => List<TResult>.RemoveDoublesEnumerable(source, function);
 	public static List<TSource> RemoveDoubles<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.RemoveDoublesEnumerable(source, function);
@@ -62845,6 +62846,9 @@ public static class RedStarLinq
 	public static TResult? Progression<TSource, TResult>(this ReadOnlySpan<TSource> source, TResult seed, Func<TResult, TSource, TResult> function) => List<TResult>.ProgressionEnumerable(source, seed, function);
 	public static TResult? Progression<TSource, TResult>(this Span<TSource> source, TResult seed, Func<TResult, TSource, TResult> function) => List<TResult>.ProgressionEnumerable((ReadOnlySpan<TSource>)source, seed, function);
 	public static TResult? Progression<TSource, TResult>(this TSource[] source, TResult seed, Func<TResult, TSource, TResult> function) => List<TResult>.ProgressionEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), seed, function);
+	public static TSource Random<TSource>(this ReadOnlySpan<TSource> source) => source[random.Next(source.Length)];
+	public static TSource Random<TSource>(this Span<TSource> source) => source[random.Next(source.Length)];
+	public static TSource Random<TSource>(this TSource[] source) => source[random.Next(source.Length)];
 	public static TSource Random<TSource>(this ReadOnlySpan<TSource> source, Random randomObj) => source[randomObj.Next(source.Length)];
 	public static TSource Random<TSource>(this Span<TSource> source, Random randomObj) => source[randomObj.Next(source.Length)];
 	public static TSource Random<TSource>(this TSource[] source, Random randomObj) => source[randomObj.Next(source.Length)];

@@ -143,7 +143,8 @@ public interface IBigCollection<T> : IEnumerable<T>
 	void Clear();
 	bool Contains(T item);
 	void CopyTo(T[] array, int arrayIndex);
-	bool Remove(T item);
+	void CopyTo(IBigList<T> list, mpz_t listIndex);
+	bool RemoveValue(T item);
 }
 
 public interface IBigList<T> : IBigCollection<T>
@@ -492,6 +493,8 @@ public static unsafe partial class Extents
 		46103, 46133, 46141, 46147, 46153, 46171, 46181, 46183, 46187, 46199, 46219, 46229, 46237, 46261, 46271, 46273,
 		46279, 46301, 46307, 46309, 46327, 46337 };
 
+	internal static readonly Random random = new();
+
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlCopyMemory", SetLastError = false)]
 	private static partial void CopyMemory(nint destination, nint source, uint length);
 
@@ -551,13 +554,13 @@ public static unsafe partial class Extents
 
 	public static (mpz_t Quotient, int Remainder) DivRem(mpz_t left, int right)
 	{
-		mpz_t quotient = left.Divide(right, out int remainder);
+		var quotient = left.Divide(right, out int remainder);
 		return (quotient, remainder);
 	}
 
 	public static (mpz_t Quotient, mpz_t Remainder) DivRem(mpz_t left, mpz_t right)
 	{
-		mpz_t quotient = left.Divide(right, out mpz_t remainder);
+		var quotient = left.Divide(right, out var remainder);
 		return (quotient, remainder);
 	}
 
@@ -579,6 +582,8 @@ public static unsafe partial class Extents
 	/// how many ints are required to store n bytes</param>
 	/// <returns></returns>
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
+
+	public static mpz_t GetArrayLength(mpz_t n, mpz_t div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
 	public static void Lock(object lockObj, Action function)
 	{
@@ -852,7 +857,7 @@ public static unsafe partial class Extents
 		return array;
 	}
 
-	public static int NthAbsent<TCertain>(this SortedSetBase<int, TCertain> set, int n) where TCertain : SortedSetBase<int, TCertain>, new()
+	public static int NthAbsent<TCertain>(this BaseSortedSet<int, TCertain> set, int n) where TCertain : BaseSortedSet<int, TCertain>, new()
 	{
 		if (set == null)
 			throw new ArgumentNullException(nameof(set));

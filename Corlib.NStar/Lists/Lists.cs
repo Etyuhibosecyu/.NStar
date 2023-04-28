@@ -6,7 +6,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract partial class List<T, TCertain> : ListBase<T, TCertain> where TCertain : List<T, TCertain>, new()
+public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TCertain : List<T, TCertain>, new()
 {
 	private protected T[] _items;
 
@@ -629,199 +629,41 @@ public class String : List<char, String>
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class BigList<T> : BigListBase<T, BigList<T>, List<T>>
+public class BigList<T> : BigList<T, BigList<T>, List<T>>
 {
-	public BigList()
+	public BigList() : this(-1)
 	{
 	}
 
-	public BigList(mpz_t capacity) : base(capacity)
+	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
 	{
 	}
 
-	public BigList(IEnumerable<T> col) : base(col)
+	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength)
 	{
 	}
 
-	private protected override Func<mpz_t, BigList<T>> CapacityCreator => x => new(x);
+	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
 
-	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x);
+	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	private protected override Func<mpz_t, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+
+	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
-
-	public static void CopyBits(BigList<uint> sourceBits, mpz_t sourceIndex, BigList<uint> destinationBits, mpz_t destinationIndex, mpz_t length)
-	{
-		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
-		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
-			return;
-		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
-			return;
-		if (!sourceBits.isHigh && sourceBits.low != null && !destinationBits.isHigh && destinationBits.low != null)
-		{
-			BitList.CopyBits(sourceBits.low, (int)sourceIndex, destinationBits.low, (int)destinationIndex, (int)length);
-			return;
-		}
-		if (sourceBits.fragment > destinationBits.fragment && sourceBits.isHigh && sourceBits.high != null)
-		{
-			int index = (int)(sourceIndex / sourceBits.fragment), index2 = (int)((sourceIndex + length) / sourceBits.fragment);
-			mpz_t remainder = sourceIndex % sourceBits.fragment;
-			if (index == index2)
-				CopyBits(sourceBits.high[index], remainder, destinationBits, destinationIndex, length);
-			else
-			{
-				mpz_t firstPart = sourceBits.fragment - remainder;
-				CopyBits(sourceBits.high[index], remainder, destinationBits, destinationIndex, firstPart);
-				CopyBits(sourceBits.high[index2], 0, destinationBits, destinationIndex + firstPart, length - firstPart);
-			}
-			return;
-		}
-		if (destinationBits.fragment > sourceBits.fragment && destinationBits.isHigh && destinationBits.high != null)
-		{
-			int index = (int)(destinationIndex / destinationBits.fragment), index2 = (int)((destinationIndex + length) / destinationBits.fragment);
-			mpz_t remainder = destinationIndex % destinationBits.fragment;
-			if (index == index2)
-				CopyBits(sourceBits, sourceIndex, destinationBits.high[index], remainder, length);
-			else
-			{
-				mpz_t firstPart = destinationBits.fragment - remainder;
-				CopyBits(sourceBits, sourceIndex, destinationBits.high[index], remainder, firstPart);
-				CopyBits(sourceBits, sourceIndex + firstPart, destinationBits.high[index2], 0, length - firstPart);
-			}
-			return;
-		}
-		if (!(sourceBits.isHigh && sourceBits.high != null && destinationBits.isHigh && destinationBits.high != null && sourceBits.fragment == destinationBits.fragment))
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		mpz_t fragment = sourceBits.fragment;
-		int sourceIntIndex = (int)sourceIndex.Divide(fragment, out mpz_t sourceBitsIndex);               // Целый индех в исходном массиве.
-		int destinationIntIndex = (int)destinationIndex.Divide(fragment, out mpz_t destinationBitsIndex);     // Целый индекс в целевом массиве.
-		mpz_t bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
-		int intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
-		mpz_t destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
-		int destinationEndIntIndex = (int)destinationEndIndex.Divide(fragment, out mpz_t destinationEndBitsIndex);  // Индекс инта последнего бита.
-		if (destinationEndIntIndex == destinationIntIndex)
-		{
-			if (bitsOffset >= 0)
-				CopyBits(sourceBits.high[sourceIntIndex], sourceBitsIndex, destinationBits.high[destinationIntIndex], destinationBitsIndex, length);
-			else
-			{
-				mpz_t firstPart = fragment - sourceBitsIndex;
-				CopyBits(sourceBits.high[sourceIntIndex], sourceBitsIndex, destinationBits.high[destinationIntIndex], destinationBitsIndex, firstPart);
-				CopyBits(sourceBits.high[sourceIntIndex + 1], 0, destinationBits.high[destinationIntIndex], destinationBitsIndex + firstPart, length - firstPart);
-			}
-		}
-		else if (sourceIndex >= destinationIndex)
-		{
-			if (bitsOffset < 0)
-			{
-				BigList<uint> buff = new(fragment * 2);
-				if (!(buff.isHigh && buff.high != null))
-					throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-				buff.AddRangeToEnd(destinationBits.high[destinationIntIndex].GetRange(0, destinationBitsIndex));
-				int sourceEndIntIndex = (int)((sourceIndex + length - 1) / fragment); // Индекс инта "хвоста".
-				for (int sourceCurrentIntIndex = sourceIntIndex + 1; sourceCurrentIntIndex <= sourceEndIntIndex; sourceCurrentIntIndex++)
-				{
-					buff.AddRangeToEnd(sourceBits.high[sourceCurrentIntIndex]);
-					destinationBits.high[sourceCurrentIntIndex + intOffset - 1] = buff.high[0];
-					(buff.high[0], buff.high[1]) = (buff.high[1], new(fragment));
-					buff._size -= fragment;
-				}
-				if (sourceEndIntIndex + intOffset < destinationBits.Length && buff.isHigh && buff.high != null)
-					destinationBits.high[sourceEndIntIndex + intOffset].SetRange(0, buff.high[0].GetRange(0, destinationEndBitsIndex + 1));
-			}
-			//else
-			//{
-			//	ulong buff = destinationBits[destinationIntIndex];
-			//	buff &= ((ulong)1 << destinationBitsIndex) - 1;
-			//	buff |= ((ulong)(sourceBits[sourceIntIndex] & sourceStartMask)) << bitsOffset;
-			//	int sourceEndIntIndex = (sourceIndex + length - 1) / fragment; // Индекс инта "хвоста".
-			//	for (int sourceCurrentIntIndex = sourceIntIndex; sourceCurrentIntIndex < sourceEndIntIndex; sourceCurrentIntIndex++)
-			//	{
-			//		destinationBits[sourceCurrentIntIndex + intOffset] = (uint)buff;
-			//		buff >>= fragment;
-			//		if (sourceCurrentIntIndex + 1 < sourceBits.Length) buff |= ((ulong)sourceBits[sourceCurrentIntIndex + 1]) << bitsOffset;
-			//	}
-			//	if (sourceEndIntIndex + intOffset < destinationBits.Length)
-			//	{
-			//		ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-			//		buff &= destinationMask;
-			//		destinationBits[sourceEndIntIndex + intOffset] &= (uint)~destinationMask;
-			//		destinationBits[sourceEndIntIndex + intOffset] |= (uint)buff;
-			//	}
-			//}
-		}
-		//else
-		//{
-		//	var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
-		//	var sourceEndBitsIndex = sourceEndIndex % fragment; // Индекс последнего бита в инт.
-		//	var sourceEndIntIndex = sourceEndIndex / fragment;  // Индекс инта последнего бита.
-		//	uint sourceEndMask = ~0u >> (fragment - sourceEndBitsIndex - 1); // Маска "хвоста" источника
-		//	if (bitsOffset < 0)
-		//	{
-		//		bitsOffset = -bitsOffset;
-		//		ulong buff = destinationBits[destinationEndIntIndex];
-		//		buff &= ~0ul << (destinationEndBitsIndex + 1);
-		//		buff <<= fragment;
-		//		buff |= ((ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask)) << (fragment - bitsOffset);
-		//		for (int sourceCurrentIntIndex = sourceEndIntIndex; sourceCurrentIntIndex > sourceIntIndex; sourceCurrentIntIndex--)
-		//		{
-		//			destinationBits[sourceCurrentIntIndex + intOffset] = (uint)(buff >> fragment);
-		//			buff <<= fragment;
-		//			buff |= ((ulong)sourceBits[sourceCurrentIntIndex - 1]) << (fragment - bitsOffset);
-		//		}
-		//		ulong destinationMask = ~0ul << (fragment + destinationBitsIndex);
-		//		buff &= destinationMask;
-		//		destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> fragment);
-		//		destinationBits[destinationIntIndex] |= (uint)(buff >> fragment);
-		//	}
-		//	else
-		//	{
-		//		ulong buff = destinationBits[destinationEndIntIndex];
-		//		buff &= ~0ul << (destinationEndBitsIndex + 1);
-		//		buff <<= fragment;
-		//		buff |= (ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask) << (fragment + bitsOffset);
-		//		for (int sourceCurrentIntIndex = sourceEndIntIndex - 1; sourceCurrentIntIndex >= sourceIntIndex; sourceCurrentIntIndex--)
-		//		{
-		//			buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
-		//			destinationBits[sourceCurrentIntIndex + intOffset + 1] = (uint)(buff >> fragment);
-		//			buff <<= fragment;
-		//		}
-		//		ulong destinationMask = ~0ul << (fragment + destinationBitsIndex);
-		//		buff &= destinationMask;
-		//		destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> fragment);
-		//		destinationBits[destinationIntIndex] |= (uint)(buff >> fragment);
-		//	}
-		//}
-	}
-
-	private static void CheckParams(BigList<uint> sourceBits, mpz_t sourceIndex, BigList<uint> destinationBits, mpz_t destinationIndex, mpz_t length)
-	{
-		if (sourceBits == null)
-			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
-		if (sourceBits.Length == 0)
-			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
-		if (destinationBits == null)
-			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
-		if (destinationBits.Length == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
-		if (sourceIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
-		if (destinationIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
-		if (sourceIndex + length > sourceBits.Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
-		if (destinationIndex + length > destinationBits.Length)
-			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
-	}
 }
 
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
+public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 {
 	private T* _items;
 	private int _capacity;
@@ -1016,14 +858,6 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		Changed();
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		fixed (T* ptr = array2)
-			CopyMemory(_items, 0, ptr, arrayIndex, _size);
-	}
-
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
 	{
 		fixed (T* ptr = array)
@@ -1046,7 +880,7 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 		return item;
 	}
 
-	public override NList<T> GetRange(int index, int count)
+	public override NList<T> GetRange(int index, int count, bool alwaysCopy)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1056,10 +890,16 @@ public unsafe partial class NList<T> : ListBase<T, NList<T>> where T : unmanaged
 			throw new ArgumentException(null);
 		if (count == 0)
 			return new();
-		else if (index == 0 && count == _size)
+		else if (!alwaysCopy && index == 0 && count == _size)
 			return this;
-		NList<T> list = new(count) { _items = _items + index, _size = count };
-		return list;
+		if (!alwaysCopy)
+			return new(count) { _items = _items + index, _size = count };
+		else
+		{
+			NList<T> list = new(count) { _size = count };
+			CopyMemory(_items + index, list._items, count);
+			return list;
+		}
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int count)
@@ -1358,7 +1198,7 @@ internal delegate bool SumWalkPredicate(SumList.Node node);
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class SumList : ListBase<int, SumList>
+public class SumList : BaseList<int, SumList>
 {
 	private Node? root;
 	private int version;
@@ -1825,25 +1665,38 @@ public class SumList : ListBase<int, SumList>
 
 	private protected override int IndexOfInternal(int value, int index, int count) => throw new NotSupportedException();
 
-	public virtual int IndexOfNotGreaterSum(long sum)
+	public virtual int IndexOfNotGreaterSum(long sum) => IndexOfNotGreaterSum(sum, out _);
+
+	public virtual int IndexOfNotGreaterSum(long sum, out int sumExceedsBy)
 	{
-		if (sum == ValuesSum)
+		if (sum < 0)
+			throw new ArgumentOutOfRangeException(nameof(sum));
+		if (sum >= ValuesSum)
+		{
+			sumExceedsBy = (int)Min(sum - ValuesSum, int.MaxValue);
 			return _size;
+		}
 		Node? current = root;
+		sumExceedsBy = 0;
 		int index = 0;
 		while (current != null)
 		{
 			if (sum == (current.Left?.ValuesSum ?? 0))
 				return index + (current.Left?.LeavesCount ?? 0);
 			else if (sum < (current.Left?.ValuesSum ?? 0))
+			{
+				sumExceedsBy = current.Value;
 				current = current.Left;
+			}
 			else
 			{
 				index += (current.Left?.LeavesCount ?? 0) + 1;
 				sum -= (current.Left?.ValuesSum ?? 0) + current.Value;
+				sumExceedsBy = current.Value;
 				current = current.Right;
 			}
 		}
+		sumExceedsBy += (-sum >> 32 == 0) ? (int)sum : throw new InvalidOperationException();
 		return index - 1;
 	}
 
@@ -2900,7 +2753,7 @@ internal delegate bool BigSumWalkPredicate(BigSumList.Node node);
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public class BigSumList : ListBase<mpz_t, BigSumList>
+public class BigSumList : BaseList<mpz_t, BigSumList>
 {
 	private Node? root;
 	private int version;
@@ -3367,26 +3220,42 @@ public class BigSumList : ListBase<mpz_t, BigSumList>
 
 	private protected override int IndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
 
-	public virtual int IndexOfNotGreaterSum(mpz_t sum)
+	public virtual int IndexOfNotGreaterSum(mpz_t sum) => IndexOfNotGreaterSum(sum, out _);
+
+	public virtual int IndexOfNotGreaterSum(mpz_t sum, out mpz_t sumExceedsBy)
 	{
-		if (sum == ValuesSum)
+		if (sum < 0)
+			throw new ArgumentOutOfRangeException(nameof(sum));
+		if (sum >= ValuesSum)
+		{
+			sumExceedsBy = sum - ValuesSum;
 			return _size;
+		}
 		sum = new(sum);
 		Node? current = root;
+		sumExceedsBy = 0;
 		int index = 0;
 		while (current != null)
 		{
 			if (sum == (current.Left?.ValuesSum ?? 0))
+			{
+				sumExceedsBy = 0;
 				return index + (current.Left?.LeavesCount ?? 0);
+			}
 			else if (sum < (current.Left?.ValuesSum ?? 0))
+			{
+				sumExceedsBy = new(current.Value);
 				current = current.Left;
+			}
 			else
 			{
 				index += (current.Left?.LeavesCount ?? 0) + 1;
 				sum -= (current.Left?.ValuesSum ?? 0) + current.Value;
+				sumExceedsBy = new(current.Value);
 				current = current.Right;
 			}
 		}
+		sumExceedsBy += sum;
 		return index - 1;
 	}
 

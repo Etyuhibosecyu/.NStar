@@ -5,7 +5,7 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCertain : HashSetBase<T, TCertain>, new()
+public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseHashSet<T, TCertain>, new()
 {
 	private protected struct Entry
 	{
@@ -280,7 +280,7 @@ public abstract class HashSetBase<T, TCertain> : SetBase<T, TCertain> where TCer
 /// может повести себя непредсказуемым способом. В случае, если вы уже завершили серию удалений и хотите
 /// снова перейти к обращениям по индексу, используйте метод FixUpFakeIndexes() для "починки" индексации.
 /// </summary>
-public abstract class FastDelHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : FastDelHashSet<T, TCertain>, new()
+public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : FastDelHashSet<T, TCertain>, new()
 {
 	private protected int freeCount;
 	private protected int freeList;
@@ -779,7 +779,7 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 /// имеет сложность по времени O(n), соответственно, цикл таких действий - O(n²). Если вам нужно произвести
 /// серию удалений, используйте FastDelHashSet<T>, а по завершению серии вызовите FixUpFakeIndexes().
 /// </summary>
-public abstract class ListHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : ListHashSet<T, TCertain>, new()
+public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : ListHashSet<T, TCertain>, new()
 {
 	public ListHashSet() : this(0, (IEqualityComparer<T>?)null) { }
 
@@ -1580,7 +1580,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
-public abstract class TreeHashSet<T, TCertain> : HashSetBase<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
+public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
 {
 	private protected readonly TreeSet<int> deleted = new();
 
