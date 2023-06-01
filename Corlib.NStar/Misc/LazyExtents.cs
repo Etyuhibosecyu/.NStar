@@ -45,9 +45,9 @@ public class LazyEnumerable<TSource, TInternal, TResult> : IEnumerable<TResult>
 
 		public TResult Current { get; private set; } = default!;
 
-		object IEnumerator.Current => Current!;
+		readonly object IEnumerator.Current => Current!;
 
-		public void Dispose()
+		public readonly void Dispose()
 		{
 		}
 

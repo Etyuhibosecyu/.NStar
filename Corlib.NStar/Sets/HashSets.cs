@@ -686,9 +686,9 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 		public T Current { get; private set; }
 
-		object? IEnumerator.Current => Current;
+		readonly object? IEnumerator.Current => Current;
 
-		public void Dispose()
+		public readonly void Dispose()
 		{
 		}
 
@@ -1979,9 +1979,9 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 		public T Current { get; private set; }
 
-		object? IEnumerator.Current => Current;
+		readonly object? IEnumerator.Current => Current;
 
-		public void Dispose()
+		public readonly void Dispose()
 		{
 		}
 

@@ -140,15 +140,17 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		else if (bits is IEnumerable<int> ints)
 		{
 			uint[] uintArray = List<uint>.ToArrayEnumerable(ints, x => (uint)x);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
 			fixed (uint* ptr = uintArray)
-				_items = ptr;
+				CopyMemory(ptr, _items, uintArray.Length);
 			_size = (_capacity = uintArray.Length) * BitsPerInt;
 		}
 		else if (bits is IEnumerable<uint> uints)
 		{
 			uint[] uintArray = List<uint>.ToArrayEnumerable(uints);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
 			fixed (uint* ptr = uintArray)
-				_items = ptr;
+				CopyMemory(ptr, _items, uintArray.Length);
 			_size = (_capacity = uintArray.Length) * BitsPerInt;
 		}
 		else if (bits is IEnumerable<byte> bytes)
@@ -198,10 +200,12 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			if (value < 0)
 				throw new ArgumentOutOfRangeException(nameof(value));
 			int newints = GetArrayLength(value, BitsPerInt);
+			if (newints == _capacity)
+				return;
 			if (newints > _capacity || newints + _shrinkThreshold < _capacity)
 			{
 				uint* newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
-				CopyMemory(_items, newarray, newints > _capacity ? _capacity : newints);
+				CopyMemory(_items, newarray, Min(_capacity, newints));
 				Marshal.FreeHGlobal((nint)_items);
 				_items = newarray;
 				_capacity = newints;
@@ -419,14 +423,6 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	public virtual object Clone() => Copy();
-
-	public virtual BitList Copy()
-	{
-		BitList bitList = new(_size, _items);
-		return bitList;
-	}
-
 	private protected override void Copy(BitList source, int sourceIndex, BitList destination, int destinationIndex, int count)
 	{
 		CopyBits(source._items, source._capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, count);
@@ -598,7 +594,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return -1;
 	}
 
-	public virtual void InsertRange(int index, IEnumerable collection)
+	public virtual BitList Insert(int index, IEnumerable collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -608,25 +604,29 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		{
 			int count = bitList._size;
 			if (count == 0)
-				return;
+				return this;
 			EnsureCapacity(_size + count);
 			CopyBits(_items, _capacity, index, _items, _capacity, index + count, _size - index);
 			CopyBits(bitList._items, bitList._capacity, 0, _items, _capacity, index, count);
 			_size += count;
+			return this;
 		}
+		else if (collection is IEnumerable<bool> bools)
+			return InsertInternal(index, bools);
 		else if (collection is uint[] uintArray)
 		{
 			int count = uintArray.Length * BitsPerInt;
 			if (count == 0)
-				return;
+				return this;
 			EnsureCapacity(_size + count);
 			CopyBits(_items, _capacity, index, _items, _capacity, index + count, _size - index);
 			fixed (uint* uintPtr = uintArray)
 				CopyBits(uintPtr, uintArray.Length, 0, _items, _capacity, index, count);
 			_size += count;
+			return this;
 		}
 		else
-			InsertRange(index, new BitList(collection));
+			return Insert(index, new BitList(collection));
 	}
 
 	private protected override int LastIndexOfInternal(bool item, int index, int count)

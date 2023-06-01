@@ -617,7 +617,15 @@ public class String : List<char, String>
 
 	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
 
+	public override bool Equals(object? obj) => base.Equals(obj);
+
+	public override int GetHashCode() => base.GetHashCode();
+
 	public override string ToString() => new(AsSpan());
+
+	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;
+
+	public static bool operator !=(String? x, String? y) => !(x == y);
 
 	public static implicit operator String(char x) => new(x);
 
@@ -845,12 +853,6 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
-
-	public virtual NList<T> Copy()
-	{
-		NList<T> list = new(_size, _items);
-		return list;
-	}
 
 	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int count)
 	{
@@ -2391,7 +2393,7 @@ public class SumList : BaseList<int, SumList>
 			Initialize();
 		}
 
-		public int Current
+		public readonly int Current
 		{
 			get
 			{
@@ -2403,7 +2405,7 @@ public class SumList : BaseList<int, SumList>
 			}
 		}
 
-		object? IEnumerator.Current
+		readonly object? IEnumerator.Current
 		{
 			get
 			{
@@ -2415,9 +2417,9 @@ public class SumList : BaseList<int, SumList>
 			}
 		}
 
-		internal bool NotStartedOrEnded => _current == null;
+		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public void Dispose() { }
+		public readonly void Dispose() { }
 
 		private void Initialize()
 		{
@@ -3950,7 +3952,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Initialize();
 		}
 
-		public mpz_t Current
+		public readonly mpz_t Current
 		{
 			get
 			{
@@ -3962,7 +3964,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			}
 		}
 
-		object? IEnumerator.Current
+		readonly object? IEnumerator.Current
 		{
 			get
 			{
@@ -3974,9 +3976,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			}
 		}
 
-		internal bool NotStartedOrEnded => _current == null;
+		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public void Dispose() { }
+		public readonly void Dispose() { }
 
 		private void Initialize()
 		{

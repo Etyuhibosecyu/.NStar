@@ -221,6 +221,8 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract void ClearInternal(int index, int count);
 
+	public virtual object Clone() => Copy();
+
 	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
@@ -381,6 +383,8 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		list._size = _size;
 		return list;
 	}
+
+	public virtual TCertain Copy() => CollectionCreator(this);
 
 	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count);
 
@@ -1189,6 +1193,14 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
+	public virtual TCertain Repeat(int count)
+	{
+		TCertain result = CapacityCreator(Length * count);
+		for (int i = 0; i < count; i++)
+			result.AddRange(this);
+		return result;
+	}
+
 	public virtual TCertain Replace(IEnumerable<T> collection) => ReplaceRangeInternal(0, _size, collection);
 
 	public virtual TCertain Replace(T oldItem, T newItem)
@@ -1455,7 +1467,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			current = default!;
 		}
 
-		public void Dispose()
+		public readonly void Dispose()
 		{
 		}
 
@@ -1477,9 +1489,9 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return false;
 		}
 
-		public T Current => current;
+		public readonly T Current => current;
 
-		object IEnumerator.Current
+		readonly object IEnumerator.Current
 		{
 			get
 			{
@@ -1534,6 +1546,10 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	private protected virtual mpz_t Size { get; set; } = 0;
 
+	public delegate void ListChangedHandler(TCertain newList);
+
+	public event ListChangedHandler? ListChanged;
+
 	public abstract TCertain Add(T item);
 
 	void IBigCollection<T>.Add(T item) => Add(item);
@@ -1549,6 +1565,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			return this as TCertain ?? throw new InvalidOperationException();
 		return SetRangeAndSizeInternal(Size, Size + count, bigList);
 	}
+
+	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 
 	public virtual void Clear()
 	{
@@ -1582,8 +1600,10 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 	{
 		if (index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0 || index > Size - count)
+		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
+		if (index + count > Size)
+			throw new ArgumentException(null);
 		try
 		{
 			throw new SlowOperationException();
@@ -1592,7 +1612,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		{
 		}
 		for (mpz_t i = index; i < index + count; i++)
-			if (GetInternal(i)?.Equals(item) ?? false)
+			if (GetInternal(i)?.Equals(item) ?? item == null)
 				return true;
 		return false;
 	}
@@ -1677,7 +1697,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private protected abstract T GetInternal(mpz_t index);
+	private protected abstract T GetInternal(mpz_t index, bool invoke = true);
 
 	public virtual TCertain GetRange(mpz_t index, bool alwaysCopy = false) => GetRange(index, Size - index, alwaysCopy);
 
@@ -1863,9 +1883,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			current = default!;
 		}
 
-		public void Dispose()
-		{
-		}
+		public readonly void Dispose() => GC.SuppressFinalize(this);
 
 		public bool MoveNext()
 		{
@@ -1890,9 +1908,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			return false;
 		}
 
-		public T Current => current;
+		public readonly T Current => current;
 
-		object IEnumerator.Current
+		readonly object IEnumerator.Current
 		{
 			get
 			{
@@ -2382,7 +2400,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return new();
 	}
 
-	private protected override T GetInternal(mpz_t index)
+	private protected override T GetInternal(mpz_t index, bool invoke = true)
 	{
 		if (!isHigh && low != null)
 		{

@@ -480,7 +480,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			value = default!;
 		}
 
-		object IDictionaryEnumerator.Key
+		readonly object IDictionaryEnumerator.Key
 		{
 			get
 			{
@@ -490,7 +490,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			}
 		}
 
-		object IEnumerator.Current
+		readonly object IEnumerator.Current
 		{
 			get
 			{
@@ -503,7 +503,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			}
 		}
 
-		object IDictionaryEnumerator.Value
+		readonly object IDictionaryEnumerator.Value
 		{
 			get
 			{
@@ -535,7 +535,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			return false;
 		}
 
-		DictionaryEntry IDictionaryEnumerator.Entry
+		readonly DictionaryEntry IDictionaryEnumerator.Entry
 		{
 			get
 			{
@@ -545,7 +545,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			}
 		}
 
-		public KeyValuePair<TKey, TValue> Current => new(key, value);
+		public readonly KeyValuePair<TKey, TValue> Current => new(key, value);
 
 		void IEnumerator.Reset()
 		{
@@ -1351,7 +1351,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 			public KeyValuePair<TKey, TValue> Current { get; private set; }
 
-			object IEnumerator.Current => Current;
+			readonly object IEnumerator.Current => Current;
 
 			public void Dispose()
 			{

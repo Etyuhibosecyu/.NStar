@@ -820,9 +820,9 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 		public T Current { get; private set; }
 
-		object? IEnumerator.Current => Current;
+		readonly object? IEnumerator.Current => Current;
 
-		public void Dispose()
+		public readonly void Dispose()
 		{
 		}
 

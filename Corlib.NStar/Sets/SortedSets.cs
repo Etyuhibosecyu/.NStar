@@ -2125,7 +2125,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Initialize();
 		}
 
-		public T Current
+		public readonly T Current
 		{
 			get
 			{
@@ -2137,7 +2137,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			}
 		}
 
-		object? IEnumerator.Current
+		readonly object? IEnumerator.Current
 		{
 			get
 			{
@@ -2149,9 +2149,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			}
 		}
 
-		internal bool NotStartedOrEnded => _current == null;
+		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public void Dispose() { }
+		public readonly void Dispose() { }
 
 		private void Initialize()
 		{
@@ -4521,7 +4521,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Initialize();
 		}
 
-		public (T Key, int Value) Current
+		public readonly (T Key, int Value) Current
 		{
 			get
 			{
@@ -4533,7 +4533,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 		}
 
-		object? IEnumerator.Current
+		readonly object? IEnumerator.Current
 		{
 			get
 			{
@@ -4545,9 +4545,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 		}
 
-		internal bool NotStartedOrEnded => _current == null;
+		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public void Dispose() { }
+		public readonly void Dispose() { }
 
 		private void Initialize()
 		{
@@ -5005,7 +5005,7 @@ internal ref struct BitHelper
 		_span = span;
 	}
 
-	internal bool IsMarked(int bitPosition)
+	internal readonly bool IsMarked(int bitPosition)
 	{
 		Debug.Assert(bitPosition >= 0);
 		uint bitArrayIndex = (uint)bitPosition / IntSize;
@@ -5014,7 +5014,7 @@ internal ref struct BitHelper
 		return bitArrayIndex < (uint)span.Length && (span[(int)bitArrayIndex] & (1 << ((int)((uint)bitPosition % IntSize)))) != 0;
 	}
 
-	internal void MarkBit(int bitPosition)
+	internal readonly void MarkBit(int bitPosition)
 	{
 		Debug.Assert(bitPosition >= 0);
 		uint bitArrayIndex = (uint)bitPosition / IntSize;

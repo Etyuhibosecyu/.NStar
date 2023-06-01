@@ -60814,6 +60814,10 @@ public static class RedStarLinq
 	public static TResult[] ToArray<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => List<TSource>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) => List<TSource>.ToArrayEnumerable(source, function);
 	public static TSource[] ToArray<TSource>(this IEnumerable<TSource> source) => List<TSource>.ToArrayEnumerable(source);
+	public static BitList ToBitList(this IEnumerable<bool> source) => new(source);
+	public static BitList ToBitList(this IEnumerable<byte> source) => new(source);
+	public static BitList ToBitList(this IEnumerable<int> source) => new(source);
+	public static BitList ToBitList(this IEnumerable<uint> source) => new(source);
 	public static Dictionary<TKey, TValue> ToDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source, Func<TSource, TKey> function, Func<TSource, TValue> function2) where TKey : notnull => new(List<TSource>.ConvertEnumerable(source, function), List<TSource>.ConvertEnumerable(source, function2));
 	public static Dictionary<TKey, TValue> ToDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source, Func<TSource, int, TKey> function, Func<TSource, int, TValue> function2) where TKey : notnull => new(List<TSource>.ConvertEnumerable(source, function), List<TSource>.ConvertEnumerable(source, function2));
 	public static Dictionary<TKey, TValue> ToDictionary<TSource, TKey, TValue>(this IEnumerable<TSource> source, Func<TSource, TKey> function, Func<TSource, TValue> function2, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<TSource>.ConvertEnumerable(source, function), List<TSource>.ConvertEnumerable(source, function2), comparer);
