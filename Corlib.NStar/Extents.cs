@@ -7,6 +7,8 @@ global using static Corlib.NStar.Extents;
 global using static System.Math;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices.JavaScript;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace Corlib.NStar;
 
@@ -76,62 +78,52 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
+[Serializable]
 public class ExperimentalException : Exception
 {
-	public ExperimentalException() : this("Внимание! Эта операция является экспериментальной. Используйте на свой страх и риск. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.")
-	{
-	}
+	public ExperimentalException() : this("Внимание! Эта операция является экспериментальной. Используйте на свой страх и риск. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
 
-	public ExperimentalException(string? message) : base(message)
-	{
-	}
+	public ExperimentalException(string? message) : base(message) { }
 
-	public ExperimentalException(string? message, Exception? innerException) : base(message, innerException)
-	{
-	}
+	public ExperimentalException(string? message, Exception? innerException) : base(message, innerException) { }
 
-	protected ExperimentalException(SerializationInfo info, StreamingContext context) : base(info, context)
-	{
-	}
+	protected ExperimentalException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
+[Serializable]
 public class FakeIndexesException : Exception
 {
-	public FakeIndexesException() : this("Внимание! Вы пытаетесь получить или установить элемент по индексу, но он является фейковым. Вы можете получить недействительный элемент, либо же элемент, действительный \"номер\" которого в коллекции существенно отличается от указанного вами индекса. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.")
-	{
-	}
+	public FakeIndexesException() : this("Внимание! Вы пытаетесь получить или установить элемент по индексу, но он является фейковым. Вы можете получить недействительный элемент, либо же элемент, действительный \"номер\" которого в коллекции существенно отличается от указанного вами индекса. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
 
-	public FakeIndexesException(string? message) : base(message)
-	{
-	}
+	public FakeIndexesException(string? message) : base(message) { }
 
-	public FakeIndexesException(string? message, Exception? innerException) : base(message, innerException)
-	{
-	}
+	public FakeIndexesException(string? message, Exception? innerException) : base(message, innerException) { }
 
-	protected FakeIndexesException(SerializationInfo info, StreamingContext context) : base(info, context)
-	{
-	}
+	protected FakeIndexesException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 [Serializable]
 public class SlowOperationException : Exception
 {
-	public SlowOperationException() : this("Внимание! Эта операция будет выполняться очень долго. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.")
-	{
-	}
+	public SlowOperationException() : this("Внимание! Эта операция будет выполняться очень долго. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
 
-	public SlowOperationException(string? message) : base(message)
-	{
-	}
+	public SlowOperationException(string? message) : base(message) { }
 
-	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException)
-	{
-	}
+	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException) { }
 
-	protected SlowOperationException(SerializationInfo info, StreamingContext context) : base(info, context)
-	{
-	}
+	protected SlowOperationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+}
+
+[Serializable]
+public class ValueNotFoundException : SystemException
+{
+	public ValueNotFoundException() : this("The given value was not present in the dictionary.") { }
+
+	public ValueNotFoundException(string? message) : base(message) { }
+
+	public ValueNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
+
+	protected ValueNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 public interface IBigCollection<T> : IEnumerable<T>
@@ -200,9 +192,24 @@ public interface IReadOnlyList<T> : G.IReadOnlyList<T>, IReadOnlyCollection<T>
 {
 }
 
-public static unsafe partial class Extents
+internal static class HashHelpers
 {
-	internal static readonly int[] primesList = { 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
+	public const uint HashCollisionThreshold = 100;
+	// This is the maximum prime smaller than Array.MaxLength.
+	public const int MaxPrimeArrayLength = 0x7FFFFFC3;
+	public const int HashPrime = 101;
+
+	internal static ReadOnlySpan<int> Primes => new int[]
+	{
+		3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
+		1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
+		17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
+		187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
+		1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
+	};
+	internal static ReadOnlySpan<int> PrimesList => new int[]
+	{
+		3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
 		71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
 		191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
 		313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443,
@@ -491,7 +498,76 @@ public static unsafe partial class Extents
 		45751, 45757, 45763, 45767, 45779, 45817, 45821, 45823, 45827, 45833, 45841, 45853, 45863, 45869, 45887, 45893,
 		45943, 45949, 45953, 45959, 45971, 45979, 45989, 46021, 46027, 46049, 46051, 46061, 46073, 46091, 46093, 46099,
 		46103, 46133, 46141, 46147, 46153, 46171, 46181, 46183, 46187, 46199, 46219, 46229, 46237, 46261, 46271, 46273,
-		46279, 46301, 46307, 46309, 46327, 46337 };
+		46279, 46301, 46307, 46309, 46327, 46337
+	};
+
+	/// <summary>Performs a mod operation using the multiplier pre-computed with <see cref="GetFastModMultiplier"/>.</summary>
+	/// <remarks>This should only be used on 64-bit.</remarks>
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static uint FastMod(uint value, uint divisor, ulong multiplier)
+	{
+		// We use modified Daniel Lemire's fastmod algorithm (https://github.com/dotnet/runtime/pull/406),
+		// which allows to avoid the long multiplication if the divisor is less than 2**31.
+		Debug.Assert(divisor <= int.MaxValue);
+
+		// This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
+		// is faster than BigMul currently because we only need the high bits.
+		uint highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
+
+		Debug.Assert(highbits == value % divisor);
+		return highbits;
+	}
+
+	// Returns size of hashtable to grow to.
+	public static int ExpandPrime(int oldSize)
+	{
+		int newSize = 2 * oldSize;
+		// Allow the hashtables to grow to maximum possible size (~2G elements) before encountering capacity overflow.
+		// Note that this check works even when _items.Length overflowed thanks to the (uint) cast
+		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
+		{
+			Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
+			return MaxPrimeArrayLength;
+		}
+		return GetPrime(newSize);
+	}
+
+	/// <summary>Returns approximate reciprocal of the divisor: ceil(2**64 / divisor).</summary>
+	/// <remarks>This should only be used on 64-bit.</remarks>
+	public static ulong GetFastModMultiplier(uint divisor) => ulong.MaxValue / divisor + 1;
+
+	public static int GetPrime(int min)
+	{
+		if (min < 0)
+			throw new ArgumentException(null, nameof(min));
+		foreach (int prime in Primes)
+			if (prime >= min)
+				return prime;
+		// Outside of our predefined table. Compute the hard way.
+		for (int i = (min | 1); i < int.MaxValue; i += 2)
+		{
+			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+				return i;
+		}
+		return min;
+	}
+
+	public static bool IsPrime(int candidate)
+	{
+		if ((candidate & 1) != 0)
+		{
+			int limit = (int)Sqrt(candidate);
+			for (int i = 0, divisor; i < PrimesList.Length && (divisor = PrimesList[i]) <= limit; i++)
+				if ((candidate % divisor) == 0)
+					return false;
+			return true;
+		}
+		return candidate == 2;
+	}
+}
+
+public static unsafe partial class Extents
+{
 
 	internal static readonly Random random = new();
 

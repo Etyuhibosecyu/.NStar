@@ -683,9 +683,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	private protected override BitList ReverseInternal(int index, int count)
 	{
 		for (int i = 0; i < count / 2; i++)
-		{
 			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
-		}
 		Changed();
 		return this;
 	}
@@ -782,17 +780,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	private const int BytesPerInt = sizeof(int);
 	private const int BitsPerByte = 8;
 
-	public BigBitList() : this(-1)
-	{
-	}
+	public BigBitList() : this(-1) { }
 
-	public BigBitList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigBitList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigBitList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	public BigBitList(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
@@ -1110,9 +1102,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	public virtual void SetAll(bool value)
 	{
 		if (!isHigh && low != null)
-		{
 			low.SetAll(value);
-		}
 		else if (high != null)
 			high.ForEach(x => x.SetAll(value));
 		else

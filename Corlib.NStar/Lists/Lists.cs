@@ -475,37 +475,21 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 [Serializable]
 public class List<T> : List<T, List<T>>
 {
-	public List()
-	{
-	}
+	public List() { }
 
-	public List(int capacity) : base(capacity)
-	{
-	}
+	public List(int capacity) : base(capacity) { }
 
-	public List(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	public List(IEnumerable<T> collection) : base(collection) { }
 
-	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public List(params T[] array) : base(array)
-	{
-	}
+	public List(params T[] array) : base(array) { }
 
-	public List(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public List(int capacity, params T[] array) : base(capacity, array) { }
 
-	public List(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public List(ReadOnlySpan<T> span) : base(span) { }
 
-	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	private protected override Func<int, List<T>> CapacityCreator => x => new(x);
 
@@ -581,37 +565,21 @@ public class List<T> : List<T, List<T>>
 [Serializable]
 public class String : List<char, String>
 {
-	public String() : base()
-	{
-	}
+	public String() : base() { }
 
-	public String(int capacity) : base(capacity)
-	{
-	}
+	public String(int capacity) : base(capacity) { }
 
-	public String(IEnumerable<char> collection) : base(collection)
-	{
-	}
+	public String(IEnumerable<char> collection) : base(collection) { }
 
-	public String(params char[] array) : base(array)
-	{
-	}
+	public String(params char[] array) : base(array) { }
 
-	public String(ReadOnlySpan<char> span) : base(span)
-	{
-	}
+	public String(ReadOnlySpan<char> span) : base(span) { }
 
-	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection)
-	{
-	}
+	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
 
-	public String(int capacity, params char[] array) : base(capacity, array)
-	{
-	}
+	public String(int capacity, params char[] array) : base(capacity, array) { }
 
-	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span)
-	{
-	}
+	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span) { }
 
 	private protected override Func<int, String> CapacityCreator => x => new(x);
 
@@ -639,25 +607,15 @@ public class String : List<char, String>
 [Serializable]
 public class BigList<T> : BigList<T, BigList<T>, List<T>>
 {
-	public BigList() : this(-1)
-	{
-	}
+	public BigList() : this(-1) { }
 
-	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	private protected override Func<mpz_t, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
@@ -1205,9 +1163,7 @@ public class SumList : BaseList<int, SumList>
 	private Node? root;
 	private int version;
 
-	public SumList()
-	{
-	}
+	public SumList() { }
 
 	public SumList(IEnumerable<int> collection) : this()
 	{
@@ -1233,13 +1189,9 @@ public class SumList : BaseList<int, SumList>
 		}
 	}
 
-	public SumList(params int[] array) : this((IEnumerable<int>)array)
-	{
-	}
+	public SumList(params int[] array) : this((IEnumerable<int>)array) { }
 
-	public SumList(ReadOnlySpan<int> span) : this((IEnumerable<int>)span.ToArray())
-	{
-	}
+	public SumList(ReadOnlySpan<int> span) : this((IEnumerable<int>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -1577,9 +1529,7 @@ public class SumList : BaseList<int, SumList>
 	{
 		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
-		{
 			return default!;
-		}
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
 		int found = default!;
 		// Move successor to the matching node position and replace links.
@@ -1864,9 +1814,7 @@ public class SumList : BaseList<int, SumList>
 	public override SumList RemoveAt(int index)
 	{
 		if (root == null)
-		{
 			return this;
-		}
 		FindForRemove(index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -1909,7 +1857,7 @@ public class SumList : BaseList<int, SumList>
 		Debug.Assert(match != null);
 		if (successor == match)
 		{
-			// This node has no successor. This can only happen if the right child of the match is null.
+			// This node has no successor. This can only happen if the right child of the match == null.
 			Debug.Assert(match.Right == null);
 			successor = match.Left!;
 		}
@@ -2398,9 +2346,7 @@ public class SumList : BaseList<int, SumList>
 			get
 			{
 				if (_current != null)
-				{
 					return _current.Value;
-				}
 				return default!; // Should only happen when accessing Current is undefined behavior
 			}
 		}
@@ -2410,9 +2356,7 @@ public class SumList : BaseList<int, SumList>
 			get
 			{
 				if (_current == null)
-				{
 					throw new InvalidOperationException();
-				}
 				return _current.Value;
 			}
 		}
@@ -2447,9 +2391,7 @@ public class SumList : BaseList<int, SumList>
 			// Make sure that the underlying subset has not been changed since
 			_tree.VersionCheck();
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -2478,9 +2420,7 @@ public class SumList : BaseList<int, SumList>
 		internal void Reset()
 		{
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			_stack.Clear();
 			Initialize();
 		}
@@ -2533,9 +2473,7 @@ public class SumList : BaseList<int, SumList>
 					{
 						result = current.Left?.LeavesCount ?? 0;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Right;
 					}
 				}
@@ -2559,9 +2497,7 @@ public class SumList : BaseList<int, SumList>
 					{
 						result = current.Left?.LeavesCount ?? 0;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Left;
 					}
 				}
@@ -2573,9 +2509,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			Queue<Node> processQueue = new();
 			processQueue.Enqueue(root);
 			Node current;
@@ -2583,9 +2517,7 @@ public class SumList : BaseList<int, SumList>
 			{
 				current = processQueue.Dequeue();
 				if (IsWithinRange(current.Left?.LeavesCount ?? 0) && !action(current))
-				{
 					return false;
-				}
 				if (current.Left != null && (!_lBoundActive || Comparer.Compare(_min, current.Left.LeavesCount) < 0))
 					processQueue.Enqueue(current.Left);
 				if (current.Right != null && (!_uBoundActive || Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) > 0))
@@ -2597,9 +2529,7 @@ public class SumList : BaseList<int, SumList>
 		public override void Clear()
 		{
 			if (Length == 0)
-			{
 				return;
-			}
 			List<int> toRemove = new();
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
@@ -2615,9 +2545,7 @@ public class SumList : BaseList<int, SumList>
 		internal override Node? FindNode(int index)
 		{
 			if (!IsWithinRange(index))
-			{
 				return null;
-			}
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2631,13 +2559,9 @@ public class SumList : BaseList<int, SumList>
 		public override SumList GetViewBetween(int lowerValue, int upperValue)
 		{
 			if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(lowerValue));
-			}
 			if (_uBoundActive && Comparer.Compare(_max, upperValue) < 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(upperValue));
-			}
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
@@ -2645,9 +2569,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
@@ -2668,9 +2590,7 @@ public class SumList : BaseList<int, SumList>
 			{
 				current = stack.Pop();
 				if (!action(current))
-				{
 					return false;
-				}
 				Node? node = current.Right;
 				while (node != null)
 				{
@@ -2691,9 +2611,7 @@ public class SumList : BaseList<int, SumList>
 		public override SumList Insert(int index, int value)
 		{
 			if (!IsWithinRange(index))
-			{
 				throw new ArgumentOutOfRangeException(nameof(value));
-			}
 			var ret = _underlying.Insert(index, value);
 			VersionCheck();
 #if DEBUG
@@ -2706,9 +2624,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			int comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
 			if (comp > 0)
-			{
 				return false;
-			}
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
 			return comp >= 0;
 		}
@@ -2760,9 +2676,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	private Node? root;
 	private int version;
 
-	public BigSumList()
-	{
-	}
+	public BigSumList() { }
 
 	public BigSumList(IEnumerable<mpz_t> collection) : this()
 	{
@@ -2788,13 +2702,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		}
 	}
 
-	public BigSumList(params mpz_t[] array) : this((IEnumerable<mpz_t>)array)
-	{
-	}
+	public BigSumList(params mpz_t[] array) : this((IEnumerable<mpz_t>)array) { }
 
-	public BigSumList(ReadOnlySpan<mpz_t> span) : this((IEnumerable<mpz_t>)span.ToArray())
-	{
-	}
+	public BigSumList(ReadOnlySpan<mpz_t> span) : this((IEnumerable<mpz_t>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -3132,9 +3042,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	{
 		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
-		{
 			return default!;
-		}
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
 		int found = default!;
 		// Move successor to the matching node position and replace links.
@@ -3423,9 +3331,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	public override BigSumList RemoveAt(int index)
 	{
 		if (root == null)
-		{
 			return this;
-		}
 		FindForRemove(index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -3468,7 +3374,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		Debug.Assert(match != null);
 		if (successor == match)
 		{
-			// This node has no successor. This can only happen if the right child of the match is null.
+			// This node has no successor. This can only happen if the right child of the match == null.
 			Debug.Assert(match.Right == null);
 			successor = match.Left!;
 		}
@@ -3957,9 +3863,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			get
 			{
 				if (_current != null)
-				{
 					return _current.Value;
-				}
 				return default!; // Should only happen when accessing Current is undefined behavior
 			}
 		}
@@ -3969,9 +3873,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			get
 			{
 				if (_current == null)
-				{
 					throw new InvalidOperationException();
-				}
 				return _current.Value;
 			}
 		}
@@ -4006,9 +3908,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			// Make sure that the underlying subset has not been changed since
 			_tree.VersionCheck();
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -4037,9 +3937,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		internal void Reset()
 		{
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			_stack.Clear();
 			Initialize();
 		}
@@ -4092,9 +3990,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 					{
 						result = current.Left?.LeavesCount ?? 0;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Right;
 					}
 				}
@@ -4118,9 +4014,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 					{
 						result = current.Left?.LeavesCount ?? 0;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Left;
 					}
 				}
@@ -4132,9 +4026,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			Queue<Node> processQueue = new();
 			processQueue.Enqueue(root);
 			Node current;
@@ -4142,9 +4034,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			{
 				current = processQueue.Dequeue();
 				if (IsWithinRange(current.Left?.LeavesCount ?? 0) && !action(current))
-				{
 					return false;
-				}
 				if (current.Left != null && (!_lBoundActive || Comparer.Compare(_min, current.Left.LeavesCount) < 0))
 					processQueue.Enqueue(current.Left);
 				if (current.Right != null && (!_uBoundActive || Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) > 0))
@@ -4156,9 +4046,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		public override void Clear()
 		{
 			if (Length == 0)
-			{
 				return;
-			}
 			List<int> toRemove = new();
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
@@ -4174,9 +4062,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		internal override Node? FindNode(int index)
 		{
 			if (!IsWithinRange(index))
-			{
 				return null;
-			}
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -4190,13 +4076,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		public override BigSumList GetViewBetween(int lowerValue, int upperValue)
 		{
 			if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(lowerValue));
-			}
 			if (_uBoundActive && Comparer.Compare(_max, upperValue) < 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(upperValue));
-			}
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
@@ -4204,9 +4086,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
@@ -4227,9 +4107,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			{
 				current = stack.Pop();
 				if (!action(current))
-				{
 					return false;
-				}
 				Node? node = current.Right;
 				while (node != null)
 				{
@@ -4250,9 +4128,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		public override BigSumList Insert(int index, mpz_t value)
 		{
 			if (!IsWithinRange(index))
-			{
 				throw new ArgumentOutOfRangeException(nameof(value));
-			}
 			var ret = _underlying.Insert(index, value);
 			VersionCheck();
 #if DEBUG
@@ -4265,9 +4141,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			int comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
 			if (comp > 0)
-			{
 				return false;
-			}
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
 			return comp >= 0;
 		}

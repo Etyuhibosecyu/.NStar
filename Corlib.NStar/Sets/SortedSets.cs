@@ -74,13 +74,9 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 {
 	private protected readonly List<T> items;
 
-	public SortedSet() : this(G.Comparer<T>.Default)
-	{
-	}
+	public SortedSet() : this(G.Comparer<T>.Default) { }
 
-	public SortedSet(int capacity) : this(capacity, G.Comparer<T>.Default)
-	{
-	}
+	public SortedSet(int capacity) : this(capacity, G.Comparer<T>.Default) { }
 
 	public SortedSet(IComparer<T>? comparer)
 	{
@@ -88,9 +84,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
 
-	public SortedSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction))
-	{
-	}
+	public SortedSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
 	public SortedSet(int capacity, IComparer<T>? comparer)
 	{
@@ -100,9 +94,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
 
-	public SortedSet(int capacity, Func<T, T, int> compareFunction) : this(capacity, new Comparer<T>(compareFunction))
-	{
-	}
+	public SortedSet(int capacity, Func<T, T, int> compareFunction) : this(capacity, new Comparer<T>(compareFunction)) { }
 
 	public SortedSet(IEnumerable<T> collection) : this(collection, null) { }
 
@@ -122,21 +114,13 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		items.AddRange(collection).Sort(Comparer);
 	}
 
-	public SortedSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public SortedSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public SortedSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public SortedSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public SortedSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public SortedSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override int Capacity { get => items.Capacity; set => items.Capacity = value; }
 
@@ -180,61 +164,33 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 [Serializable]
 public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 {
-	public SortedSet()
-	{
-	}
+	public SortedSet() { }
 
-	public SortedSet(int capacity) : base(capacity)
-	{
-	}
+	public SortedSet(int capacity) : base(capacity) { }
 
-	public SortedSet(IComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public SortedSet(IComparer<T>? comparer) : base(comparer) { }
 
-	public SortedSet(Func<T, T, int> compareFunction) : base(compareFunction)
-	{
-	}
+	public SortedSet(Func<T, T, int> compareFunction) : base(compareFunction) { }
 
-	public SortedSet(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	public SortedSet(IEnumerable<T> collection) : base(collection) { }
 
-	public SortedSet(params T[] array) : base(array)
-	{
-	}
+	public SortedSet(params T[] array) : base(array) { }
 
-	public SortedSet(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public SortedSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public SortedSet(int capacity, IComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public SortedSet(int capacity, IComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public SortedSet(int capacity, Func<T, T, int> compareFunction) : base(capacity, compareFunction)
-	{
-	}
+	public SortedSet(int capacity, Func<T, T, int> compareFunction) : base(capacity, compareFunction) { }
 
-	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : base(collection, comparer) { }
 
-	public SortedSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	public SortedSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public SortedSet(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public SortedSet(int capacity, params T[] array) : base(capacity, array) { }
 
-	public SortedSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public SortedSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
 	private protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
 
@@ -278,9 +234,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public TreeSet(IComparer<T>? comparer) => Comparer = comparer ?? G.Comparer<T>.Default;
 
-	public TreeSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction))
-	{
-	}
+	public TreeSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
 	public TreeSet(IEnumerable<T> collection) : this(collection, G.Comparer<T>.Default) { }
 
@@ -304,7 +258,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		count = elements.Length;
 		if (count > 0)
 		{
-			// If `comparer` is null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
+			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			comparer = Comparer;
 			Array.Sort(elements, 0, count, Comparer);
@@ -322,17 +276,11 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	public TreeSet(IEnumerable<T> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction))
-	{
-	}
+	public TreeSet(IEnumerable<T> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
 
-	public TreeSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public TreeSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public TreeSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public TreeSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -806,9 +754,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	{
 		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
-		{
 			return default!;
-		}
 		FindForRemove(index2, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch);
 		T found = default!;
 		// Move successor to the matching node position and replace links.
@@ -879,9 +825,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="TreeSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	private bool HasEqualComparer(TreeSet<T> other) =>
-		// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
-		Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	private bool HasEqualComparer(TreeSet<T> other) => Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
 
 	/// <summary>
 	/// Does an in-order tree walk and calls the delegate for each node.
@@ -1102,9 +1047,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
-		{
 			return true;
-		}
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
 		{
 			if (Length > asSorted.Length)
@@ -1186,9 +1129,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	public override TreeSet<T> RemoveAt(int index)
 	{
 		if (root == null)
-		{
 			return this;
-		}
 		FindForRemove(index, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -1218,9 +1159,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	public override bool RemoveValue(T item)
 	{
 		if (root == null)
-		{
 			return false;
-		}
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
 		// If a node doesn't have a successor, we can replace it with its left child (if not empty),
@@ -1369,7 +1308,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Debug.Assert(match != null);
 		if (successor == match)
 		{
-			// This node has no successor. This can only happen if the right child of the match is null.
+			// This node has no successor. This can only happen if the right child of the match == null.
 			Debug.Assert(match.Right == null);
 			successor = match.Left!;
 		}
@@ -1438,9 +1377,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			while (!mineEnded && !theirsEnded)
 			{
 				if (Comparer.Compare(mine.Current, theirs.Current) != 0)
-				{
 					return false;
-				}
 				mineEnded = !mine.MoveNext();
 				theirsEnded = !theirs.MoveNext();
 			}
@@ -1488,18 +1425,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	internal static bool SortedSetEquals(TreeSet<T>? set1, TreeSet<T>? set2, IComparer<T> comparer)
 	{
 		if (set1 == null)
-		{
 			return set2 == null;
-		}
 		if (set2 == null)
 		{
 			Debug.Assert(set1 != null);
 			return false;
 		}
 		if (set1.HasEqualComparer(set2))
-		{
 			return set1.Length == set2.Length && set1.SetEquals(set2);
-		}
 		bool found;
 		foreach (var x in set1)
 		{
@@ -1513,9 +1446,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				}
 			}
 			if (!found)
-			{
 				return false;
-			}
 		}
 		return true;
 	}
@@ -1560,9 +1491,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Debug.Assert(other != null);
 		Debug.Assert(count >= 0 && count <= other.Length);
 		if (count == 0)
-		{
 			return;
-		}
 		T previous = other[0];
 		for (int i = 0; i < count; i++)
 		{
@@ -2130,9 +2059,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get
 			{
 				if (_current != null)
-				{
 					return _current.Item;
-				}
 				return default!; // Should only happen when accessing Current is undefined behavior
 			}
 		}
@@ -2142,9 +2069,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get
 			{
 				if (_current == null)
-				{
 					throw new InvalidOperationException();
-				}
 				return _current.Item;
 			}
 		}
@@ -2179,9 +2104,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			// Make sure that the underlying subset has not been changed since
 			_tree.VersionCheck();
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -2210,9 +2133,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		internal void Reset()
 		{
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			_stack.Clear();
 			Initialize();
 		}
@@ -2271,9 +2192,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					{
 						result = current.Item;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Right;
 					}
 				}
@@ -2297,9 +2216,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					{
 						result = current.Item;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Left;
 					}
 				}
@@ -2311,9 +2228,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			Queue<Node> processQueue = new();
 			processQueue.Enqueue(root);
 			Node current;
@@ -2321,9 +2236,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			{
 				current = processQueue.Dequeue();
 				if (IsWithinRange(current.Item) && !action(current))
-				{
 					return false;
-				}
 				if (current.Left != null && (!_lBoundActive || Comparer.Compare(_min, current.Item) < 0))
 					processQueue.Enqueue(current.Left);
 				if (current.Right != null && (!_uBoundActive || Comparer.Compare(_max, current.Item) > 0))
@@ -2335,9 +2248,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		public override void Clear()
 		{
 			if (Length == 0)
-			{
 				return;
-			}
 			List<T> toRemove = new();
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Item); return true; });
 			while (toRemove.Length != 0)
@@ -2362,9 +2273,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		internal override Node? FindNode(T item)
 		{
 			if (!IsWithinRange(item))
-			{
 				return null;
-			}
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2378,13 +2287,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		public override TreeSet<T> GetViewBetween(T? lowerValue, T? upperValue)
 		{
 			if (_lBoundActive && Comparer.Compare(_min, lowerValue) > 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(lowerValue));
-			}
 			if (_uBoundActive && Comparer.Compare(_max, upperValue) < 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(upperValue));
-			}
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
@@ -2392,9 +2297,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
@@ -2415,9 +2318,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			{
 				current = stack.Pop();
 				if (!action(current))
-				{
 					return false;
-				}
 				Node? node = current.Right;
 				while (node != null)
 				{
@@ -2464,9 +2365,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			int comp = _lBoundActive ? Comparer.Compare(_min, item) : -1;
 			if (comp > 0)
-			{
 				return false;
-			}
 			comp = _uBoundActive ? Comparer.Compare(_max, item) : 1;
 			return comp >= 0;
 		}
@@ -2474,9 +2373,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		public override bool RemoveValue(T item)
 		{
 			if (!IsWithinRange(item))
-			{
 				return false;
-			}
 			bool ret = _underlying.RemoveValue(item);
 			VersionCheck();
 #if DEBUG
@@ -2497,9 +2394,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		public override bool TryAdd(T item)
 		{
 			if (!IsWithinRange(item))
-			{
 				throw new ArgumentOutOfRangeException(nameof(item));
-			}
 			bool ret = _underlying.TryAdd(item);
 			VersionCheck();
 #if DEBUG
@@ -2575,9 +2470,7 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 	public override bool Equals(object? obj)
 	{
 		if (obj is not TreeSetEqualityComparer<T> comparer)
-		{
 			return false;
-		}
 		return this.comparer == comparer.comparer;
 	}
 
@@ -2616,9 +2509,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public SumSet(IComparer<T>? comparer) => Comparer2 = comparer ?? G.Comparer<T>.Default;
 
-	public SumSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction))
-	{
-	}
+	public SumSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
 	public SumSet(IEnumerable<(T Key, int Value)> collection) : this(collection, G.Comparer<T>.Default) { }
 
@@ -2642,7 +2533,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		count = elements.Length;
 		if (count > 0)
 		{
-			// If `comparer` is null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
+			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			comparer = Comparer2;
 			Array.Sort(elements, 0, count, Comparer);
@@ -2660,17 +2551,11 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	public SumSet(IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction))
-	{
-	}
+	public SumSet(IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
 
-	public SumSet(params (T Key, int Value)[] array) : this((IEnumerable<(T Key, int Value)>)array)
-	{
-	}
+	public SumSet(params (T Key, int Value)[] array) : this((IEnumerable<(T Key, int Value)>)array) { }
 
-	public SumSet(ReadOnlySpan<(T Key, int Value)> span) : this((IEnumerable<(T Key, int Value)>)span.ToArray())
-	{
-	}
+	public SumSet(ReadOnlySpan<(T Key, int Value)> span) : this((IEnumerable<(T Key, int Value)>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -3154,9 +3039,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
-		{
 			return default!;
-		}
 		FindForRemove(index2, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch);
 		T found = default!;
 		// Move successor to the matching node position and replace links.
@@ -3244,9 +3127,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="SumSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	private bool HasEqualComparer(SumSet<T> other) =>
-		// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
-		Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	private bool HasEqualComparer(SumSet<T> other) => Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
 
 	public virtual bool Increase(T key) => TryGetValue(key, out var value) ? Update(key, value + 1) : TryAdd(key, 1);
 
@@ -3502,9 +3384,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
-		{
 			return true;
-		}
 		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted))
 		{
 			if (Length > asSorted.Length)
@@ -3586,9 +3466,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	public override SumSet<T> RemoveAt(int index)
 	{
 		if (root == null)
-		{
 			return this;
-		}
 		FindForRemove(index, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -3609,9 +3487,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	public virtual bool RemoveValue(T item)
 	{
 		if (root == null)
-		{
 			return false;
-		}
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
 		// If a node doesn't have a successor, we can replace it with its left child (if not empty),
@@ -3753,7 +3629,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Debug.Assert(match != null);
 		if (successor == match)
 		{
-			// This node has no successor. This can only happen if the right child of the match is null.
+			// This node has no successor. This can only happen if the right child of the match == null.
 			Debug.Assert(match.Right == null);
 			successor = match.Left!;
 		}
@@ -3815,9 +3691,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			while (!mineEnded && !theirsEnded)
 			{
 				if (Comparer2.Compare(mine.Current.Key, theirs.Current.Key) != 0)
-				{
 					return false;
-				}
 				mineEnded = !mine.MoveNext();
 				theirsEnded = !theirs.MoveNext();
 			}
@@ -3865,18 +3739,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	internal static bool SortedSetEquals(SumSet<T>? set1, SumSet<T>? set2, IComparer<T> comparer)
 	{
 		if (set1 == null)
-		{
 			return set2 == null;
-		}
 		if (set2 == null)
 		{
 			Debug.Assert(set1 != null);
 			return false;
 		}
 		if (set1.HasEqualComparer(set2))
-		{
 			return set1.Length == set2.Length && set1.SetEquals(set2);
-		}
 		bool found;
 		foreach (var (Key, Value) in set1)
 		{
@@ -3890,9 +3760,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				}
 			}
 			if (!found)
-			{
 				return false;
-			}
 		}
 		return true;
 	}
@@ -3937,9 +3805,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Debug.Assert(other != null);
 		Debug.Assert(count >= 0 && count <= other.Length);
 		if (count == 0)
-		{
 			return;
-		}
 		var previous = other[0];
 		for (int i = 0; i < count; i++)
 		{
@@ -4526,9 +4392,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get
 			{
 				if (_current != null)
-				{
 					return _current.Item;
-				}
 				return default!; // Should only happen when accessing Current is undefined behavior
 			}
 		}
@@ -4538,9 +4402,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get
 			{
 				if (_current == null)
-				{
 					throw new InvalidOperationException();
-				}
 				return _current.Item;
 			}
 		}
@@ -4575,9 +4437,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// Make sure that the underlying subset has not been changed since
 			_tree.VersionCheck();
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			if (_stack.Length == 0)
 			{
 				_current = null;
@@ -4606,9 +4466,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal void Reset()
 		{
 			if (_version != _tree.version)
-			{
 				throw new InvalidOperationException();
-			}
 			_stack.Clear();
 			Initialize();
 		}
@@ -4667,9 +4525,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					{
 						result = current.Item.Key;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Right;
 					}
 				}
@@ -4693,9 +4549,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					{
 						result = current.Item.Key;
 						if (comp == 0)
-						{
 							break;
-						}
 						current = current.Left;
 					}
 				}
@@ -4707,9 +4561,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			Queue<Node> processQueue = new();
 			processQueue.Enqueue(root);
 			Node current;
@@ -4717,9 +4569,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				current = processQueue.Dequeue();
 				if (IsWithinRange(current.Item.Key) && !action(current))
-				{
 					return false;
-				}
 				if (current.Left != null && (!_lBoundActive || Comparer2.Compare(_min, current.Item.Key) < 0))
 					processQueue.Enqueue(current.Left);
 				if (current.Right != null && (!_uBoundActive || Comparer2.Compare(_max, current.Item.Key) > 0))
@@ -4731,9 +4581,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		public override void Clear()
 		{
 			if (Length == 0)
-			{
 				return;
-			}
 			List<T> toRemove = new();
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Item.Key); return true; });
 			while (toRemove.Length != 0)
@@ -4758,9 +4606,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal override Node? FindNode(T item)
 		{
 			if (!IsWithinRange(item))
-			{
 				return null;
-			}
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -4774,13 +4620,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		public override SumSet<T> GetViewBetween(T? lowerValue, T? upperValue)
 		{
 			if (_lBoundActive && Comparer2.Compare(_min, lowerValue) > 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(lowerValue));
-			}
 			if (_uBoundActive && Comparer2.Compare(_max, upperValue) < 0)
-			{
 				throw new ArgumentOutOfRangeException(nameof(upperValue));
-			}
 			return (TreeSubSet)_underlying.GetViewBetween(lowerValue, upperValue);
 		}
 
@@ -4788,9 +4630,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			VersionCheck();
 			if (root == null)
-			{
 				return true;
-			}
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
@@ -4811,9 +4651,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				current = stack.Pop();
 				if (!action(current))
-				{
 					return false;
-				}
 				Node? node = current.Right;
 				while (node != null)
 				{
@@ -4860,9 +4698,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			int comp = _lBoundActive ? Comparer2.Compare(_min, item) : -1;
 			if (comp > 0)
-			{
 				return false;
-			}
 			comp = _uBoundActive ? Comparer2.Compare(_max, item) : 1;
 			return comp >= 0;
 		}
@@ -4870,9 +4706,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		public override bool RemoveValue(T item)
 		{
 			if (!IsWithinRange(item))
-			{
 				return false;
-			}
 			bool ret = _underlying.RemoveValue(item);
 			VersionCheck();
 #if DEBUG
@@ -4893,9 +4727,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		public override bool TryAdd((T Key, int Value) item)
 		{
 			if (!IsWithinRange(item.Key))
-			{
 				throw new ArgumentOutOfRangeException(nameof(item));
-			}
 			bool ret = _underlying.TryAdd(item);
 			VersionCheck();
 #if DEBUG
@@ -4971,9 +4803,7 @@ internal class SumSetEqualityComparer<T> : IEqualityComparer<SumSet<T>>
 	public override bool Equals(object? obj)
 	{
 		if (obj is not SumSetEqualityComparer<T> comparer)
-		{
 			return false;
-		}
 		return this.comparer == comparer.comparer;
 	}
 

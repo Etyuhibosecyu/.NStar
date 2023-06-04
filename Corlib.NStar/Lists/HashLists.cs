@@ -68,21 +68,13 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 			Add(item);
 	}
 
-	public BaseHashList(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public BaseHashList(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public BaseHashList(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public BaseHashList(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public BaseHashList(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public BaseHashList(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public BaseHashList(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public BaseHashList(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -146,14 +138,6 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		GC.SuppressFinalize(this);
 	}
 
-	internal static int ExpandPrime(int oldSize)
-	{
-		int newSize = 2 * oldSize;
-		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
-			return MaxPrimeArrayLength;
-		return GetPrime(newSize);
-	}
-
 	public virtual int FirstHashIndexOf(T item) => FirstHashIndexOf(item, _size - 1, _size);
 
 	public virtual int FirstHashIndexOf(T item, int index) => FirstHashIndexOf(item, index, index + 1);
@@ -193,21 +177,6 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (invoke)
 			Changed();
 		return item;
-	}
-
-	internal static int GetPrime(int min)
-	{
-		if (min < 0)
-			throw new ArgumentException(null);
-		for (int i = 0; i < primes.Length; i++)
-		{
-			int prime = primes[i];
-			if (prime >= min) return prime;
-		}
-		for (int i = min | 1; i < int.MaxValue; i += 2)
-			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-				return i;
-		return min;
 	}
 
 	public virtual List<int> HashIndexesOf(T item) => HashIndexesOf(item, _size - 1, _size);
@@ -275,7 +244,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
-		int size = GetPrime(capacity);
+		int size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
 		entries = new Entry[size];
 	}
@@ -311,19 +280,6 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	}
 
 	private protected virtual bool IsHashSearchBetter() => (long)_size * HashSearchMultiplier < (long)uniqueElements.Length * uniqueElements.Length;
-
-	protected static bool IsPrime(int candidate)
-	{
-		if ((candidate & 1) != 0)
-		{
-			int limit = (int)Sqrt(candidate);
-			for (int i = 0, divisor; i < primesList.Length && (divisor = primesList[i]) <= limit; i++)
-				if ((candidate % divisor) == 0)
-					return false;
-			return true;
-		}
-		return candidate == 2;
-	}
 
 	public virtual int LastHashIndexOf(T item) => LastHashIndexOf(item, _size - 1, _size);
 
@@ -382,7 +338,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual int LinearIndexOf(T item, int index, int count) => FirstLinearIndexOf(item, index, count);
 
-	private protected virtual void Resize() => Resize(ExpandPrime(_size), false);
+	private protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
 
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
@@ -442,53 +398,29 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 	private protected int freeCount;
 	private protected int freeList;
 
-	protected FastDelHashList()
-	{
-	}
+	protected FastDelHashList() { }
 
-	protected FastDelHashList(int capacity) : base(capacity)
-	{
-	}
+	protected FastDelHashList(int capacity) : base(capacity) { }
 
-	protected FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	protected FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	protected FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	protected FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	protected FastDelHashList(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	protected FastDelHashList(IEnumerable<T> collection) : base(collection) { }
 
-	protected FastDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	protected FastDelHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
-	protected FastDelHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	protected FastDelHashList(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	protected FastDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	protected FastDelHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
-	protected FastDelHashList(params T[] array) : base(array)
-	{
-	}
+	protected FastDelHashList(params T[] array) : base(array) { }
 
-	protected FastDelHashList(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	protected FastDelHashList(int capacity, params T[] array) : base(capacity, array) { }
 
-	protected FastDelHashList(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	protected FastDelHashList(ReadOnlySpan<T> span) : base(span) { }
 
-	protected FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	protected FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	public override T this[Index index, bool invoke = true]
 	{
@@ -585,7 +517,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -598,7 +530,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -624,7 +556,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	public virtual TCertain FixUpFakeIndexes()
 	{
-		int newSize = GetPrime(_size - freeCount);
+		int newSize = HashHelpers.GetPrime(_size - freeCount);
 		int[] newBuckets = new int[newSize];
 		Entry[] newEntries = new Entry[newSize];
 		int skipped = 0;
@@ -849,53 +781,29 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 /// </summary>
 public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 {
-	public FastDelHashList() : base()
-	{
-	}
+	public FastDelHashList() : base() { }
 
-	public FastDelHashList(int capacity) : base(capacity)
-	{
-	}
+	public FastDelHashList(int capacity) : base(capacity) { }
 
-	public FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public FastDelHashList(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public FastDelHashList(IEnumerable<T> set) : base(set)
-	{
-	}
+	public FastDelHashList(IEnumerable<T> set) : base(set) { }
 
-	public FastDelHashList(params T[] array) : base(array)
-	{
-	}
+	public FastDelHashList(params T[] array) : base(array) { }
 
-	public FastDelHashList(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public FastDelHashList(ReadOnlySpan<T> span) : base(span) { }
 
-	public FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public FastDelHashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public FastDelHashList(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
-	{
-	}
+	public FastDelHashList(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
-	public FastDelHashList(int capacity, IEnumerable<T> set) : base(capacity, set)
-	{
-	}
+	public FastDelHashList(int capacity, IEnumerable<T> set) : base(capacity, set) { }
 
-	public FastDelHashList(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public FastDelHashList(int capacity, params T[] array) : base(capacity, array) { }
 
-	public FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public FastDelHashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public FastDelHashList(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
-	{
-	}
+	public FastDelHashList(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer) { }
 
 	private protected override Func<int, FastDelHashList<T>> CapacityCreator => x => new(x);
 
@@ -915,53 +823,29 @@ public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 /// </summary>
 public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TCertain : HashList<T, TCertain>, new()
 {
-	protected HashList()
-	{
-	}
+	protected HashList() { }
 
-	protected HashList(int capacity) : base(capacity)
-	{
-	}
+	protected HashList(int capacity) : base(capacity) { }
 
-	protected HashList(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	protected HashList(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	protected HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	protected HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	protected HashList(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	protected HashList(IEnumerable<T> collection) : base(collection) { }
 
-	protected HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	protected HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
-	protected HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	protected HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	protected HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	protected HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
-	protected HashList(params T[] array) : base(array)
-	{
-	}
+	protected HashList(params T[] array) : base(array) { }
 
-	protected HashList(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	protected HashList(int capacity, params T[] array) : base(capacity, array) { }
 
-	protected HashList(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	protected HashList(ReadOnlySpan<T> span) : base(span) { }
 
-	protected HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	protected HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
 	{
@@ -1058,53 +942,29 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 
 public class HashList<T> : HashList<T, HashList<T>>
 {
-	public HashList() : base()
-	{
-	}
+	public HashList() : base() { }
 
-	public HashList(int capacity) : base(capacity)
-	{
-	}
+	public HashList(int capacity) : base(capacity) { }
 
-	public HashList(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public HashList(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public HashList(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	public HashList(IEnumerable<T> collection) : base(collection) { }
 
-	public HashList(params T[] array) : base(array)
-	{
-	}
+	public HashList(params T[] array) : base(array) { }
 
-	public HashList(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public HashList(ReadOnlySpan<T> span) : base(span) { }
 
-	public HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public HashList(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	public HashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
-	public HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	public HashList(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public HashList(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public HashList(int capacity, params T[] array) : base(capacity, array) { }
 
-	public HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	public HashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
 	private protected override Func<int, HashList<T>> CapacityCreator => x => new(x);
 

@@ -2010,17 +2010,18 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
+			while (en.MoveNext())
 			{
+				if (!en2.MoveNext())
+					return false;
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
 				if (!function(item, item2))
 					return false;
 			}
-			return !(b || b2);
+			return !en2.MoveNext();
 		}
 	}
 
@@ -2071,19 +2072,20 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
 			int i = 0;
-			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
+			while (en.MoveNext())
 			{
+				if (!en2.MoveNext())
+					return false;
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
 				if (!function(item, item2, i))
 					return false;
 				i++;
 			}
-			return !(b || b2);
+			return !en2.MoveNext();
 		}
 	}
 
@@ -2098,7 +2100,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
@@ -2111,7 +2113,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
@@ -2125,24 +2127,25 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
 		}
 		else
 		{
-			bool b, b2;
 			var en = source.GetEnumerator();
 			var en2 = source2.GetEnumerator();
-			while ((b = en.MoveNext()) & (b2 = en2.MoveNext()))
+			while (en.MoveNext())
 			{
+				if (!en2.MoveNext())
+					return false;
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
-			return !(b || b2);
+			return !en2.MoveNext();
 		}
 	}
 
@@ -43463,7 +43466,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list._items[i];
 				TSource2 item2 = list2._items[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
@@ -43476,7 +43479,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = array[i];
 				TSource2 item2 = array2[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
@@ -43490,7 +43493,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = list2_[i];
 				TSource2 item2 = list2_2[i];
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return true;
@@ -43504,7 +43507,7 @@ public partial class List<T, TCertain>
 			{
 				TSource item = en.Current;
 				TSource2 item2 = en2.Current;
-				if (!(item?.Equals(item2) ?? item2 is null))
+				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
 			return !b2;
@@ -44595,9 +44598,7 @@ public partial class List<T, TCertain>
 	internal static TSource[] ToArrayEnumerable<TSource>(IEnumerable<TSource> source)
 	{
 		if (source is List<TSource> list)
-		{
 			return list.ToArray();
-		}
 		else if (source is TSource[] array)
 		{
 			TSource[] result = new TSource[array.Length];

@@ -301,9 +301,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
-	public Queue() : this(32)
-	{
-	}
+	public Queue() : this(32) { }
 
 	public Queue(int capacity)
 	{
@@ -537,9 +535,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	private const int CapacityStepBitLength = 16, CapacityFirstStepBitLength = 16;
 	private const int CapacityStep = 1 << CapacityStepBitLength, CapacityFirstStep = 1 << CapacityFirstStepBitLength;
 
-	public BigQueue() : this(32)
-	{
-	}
+	public BigQueue() : this(32) { }
 
 	public BigQueue(mpz_t capacity)
 	{
@@ -802,9 +798,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 public class LimitedQueue<T> : Queue<T>
 {
-	public LimitedQueue(int capacity) : base(capacity)
-	{
-	}
+	public LimitedQueue(int capacity) : base(capacity) { }
 
 	public LimitedQueue(IEnumerable<T> col) : base(col) => SetCapacity(Length);
 
@@ -832,9 +826,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 	private protected mpz_t fragment = 1;
 	private protected bool isHigh;
 
-	public BigArray() : this(-1)
-	{
-	}
+	public BigArray() : this(-1) { }
 
 	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
@@ -1270,25 +1262,15 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 {
-	public BigArray()
-	{
-	}
+	public BigArray() { }
 
-	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	private protected override Func<mpz_t, BigArray<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
@@ -1306,17 +1288,11 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 	private const int BytesPerInt = sizeof(int);
 	private const int BitsPerByte = 8;
 
-	public BigBitArray()
-	{
-	}
+	public BigBitArray() { }
 
-	public BigBitArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigBitArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength)
-	{
-	}
+	public BigBitArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	public BigBitArray(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
@@ -1607,9 +1583,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 	public virtual void SetAll(bool value)
 	{
 		if (!isHigh && low != null)
-		{
 			low.SetAll(value);
-		}
 		else if (high != null)
 			high.ForEach(x => x.SetAll(value));
 		else
@@ -1646,9 +1620,7 @@ public class Chain : IReadOnlyCollection<int>
 {
 	private readonly int start;
 
-	public Chain(int count) : this(0, count)
-	{
-	}
+	public Chain(int count) : this(0, count) { }
 
 	public Chain(int start, int count)
 	{

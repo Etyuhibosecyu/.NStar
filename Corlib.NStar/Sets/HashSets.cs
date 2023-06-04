@@ -108,35 +108,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		GC.SuppressFinalize(this);
 	}
 
-	internal static int ExpandPrime(int oldSize)
-	{
-		int newSize = 2 * oldSize;
-		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
-			return MaxPrimeArrayLength;
-		return GetPrime(newSize);
-	}
-
 	internal override T GetInternal(int index, bool invoke = true)
 	{
 		T item = entries[index].item;
 		if (invoke)
 			Changed();
 		return item;
-	}
-
-	internal static int GetPrime(int min)
-	{
-		if (min < 0)
-			throw new ArgumentException(null);
-		for (int i = 0; i < primes.Length; i++)
-		{
-			int prime = primes[i];
-			if (prime >= min) return prime;
-		}
-		for (int i = min | 1; i < int.MaxValue; i += 2)
-			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
-				return i;
-		return min;
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int count)
@@ -161,7 +138,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
-		int size = GetPrime(capacity);
+		int size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
 		entries = new Entry[size];
 	}
@@ -187,20 +164,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return this2;
 	}
 
-	protected static bool IsPrime(int candidate)
-	{
-		if ((candidate & 1) != 0)
-		{
-			int limit = (int)Sqrt(candidate);
-			for (int i = 0, divisor; i < primesList.Length && (divisor = primesList[i]) <= limit; i++)
-				if ((candidate % divisor) == 0)
-					return false;
-			return true;
-		}
-		return candidate == 2;
-	}
-
-	private protected virtual void Resize() => Resize(ExpandPrime(_size), false);
+	private protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
 
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
@@ -325,21 +289,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			TryAdd(item);
 	}
 
-	public FastDelHashSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public FastDelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public FastDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public FastDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true]
 	{
@@ -437,7 +393,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -450,7 +406,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -476,7 +432,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public virtual TCertain FixUpFakeIndexes()
 	{
-		int newSize = GetPrime(_size - freeCount);
+		int newSize = HashHelpers.GetPrime(_size - freeCount);
 		int[] newBuckets = new int[newSize];
 		Entry[] newEntries = new Entry[newSize];
 		int skipped = 0;
@@ -715,53 +671,29 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 /// </summary>
 public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 {
-	public FastDelHashSet() : base()
-	{
-	}
+	public FastDelHashSet() : base() { }
 
-	public FastDelHashSet(int capacity) : base(capacity)
-	{
-	}
+	public FastDelHashSet(int capacity) : base(capacity) { }
 
-	public FastDelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public FastDelHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public FastDelHashSet(IEnumerable<T> set) : base(set)
-	{
-	}
+	public FastDelHashSet(IEnumerable<T> set) : base(set) { }
 
-	public FastDelHashSet(params T[] array) : base(array)
-	{
-	}
+	public FastDelHashSet(params T[] array) : base(array) { }
 
-	public FastDelHashSet(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public FastDelHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer)
-	{
-	}
+	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
-	public FastDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set)
-	{
-	}
+	public FastDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set) { }
 
-	public FastDelHashSet(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public FastDelHashSet(int capacity, params T[] array) : base(capacity, array) { }
 
-	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public FastDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer)
-	{
-	}
+	public FastDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer) { }
 
 	private protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
@@ -821,21 +753,13 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			TryAdd(item);
 	}
 
-	public ListHashSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public ListHashSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public ListHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public ListHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public ListHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public ListHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public ListHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true]
 	{
@@ -964,53 +888,29 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 /// </summary>
 public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 {
-	public ListHashSet() : base()
-	{
-	}
+	public ListHashSet() : base() { }
 
-	public ListHashSet(int capacity) : base(capacity)
-	{
-	}
+	public ListHashSet(int capacity) : base(capacity) { }
 
-	public ListHashSet(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public ListHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public ListHashSet(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	public ListHashSet(IEnumerable<T> collection) : base(collection) { }
 
-	public ListHashSet(params T[] array) : base(array)
-	{
-	}
+	public ListHashSet(params T[] array) : base(array) { }
 
-	public ListHashSet(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public ListHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public ListHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public ListHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
-	public ListHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	public ListHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public ListHashSet(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public ListHashSet(int capacity, params T[] array) : base(capacity, array) { }
 
-	public ListHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public ListHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
 	private protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
 
@@ -1024,21 +924,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 {
 	private protected readonly object lockObj = new();
 
-	public ParallelHashSet() : base()
-	{
-	}
+	public ParallelHashSet() : base() { }
 
-	public ParallelHashSet(int capacity) : base(capacity)
-	{
-	}
+	public ParallelHashSet(int capacity) : base(capacity) { }
 
-	public ParallelHashSet(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public ParallelHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
 	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
@@ -1066,21 +958,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				TryAdd(item);
 	}
 
-	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true]
 	{
@@ -1150,7 +1034,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	private protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
-		int size = GetPrime(capacity);
+		int size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
 		entries = new Entry[size];
 		freeList = 0;
@@ -1539,7 +1423,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return false;
 	}
 
-	private protected virtual void UnsafeResize() => UnsafeResize(ExpandPrime(_size), false);
+	private protected virtual void UnsafeResize() => UnsafeResize(HashHelpers.ExpandPrime(_size), false);
 
 	private protected virtual void UnsafeResize(int newSize, bool forceNewHashCodes)
 	{
@@ -1551,9 +1435,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			{
 				ref Entry t = ref newEntries[i];
 				if (t.hashCode != 0)
-				{
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-				}
 			}
 		for (int i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
@@ -1624,21 +1506,13 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			TryAdd(item);
 	}
 
-	public TreeHashSet(params T[] array) : this((IEnumerable<T>)array)
-	{
-	}
+	public TreeHashSet(params T[] array) : this((IEnumerable<T>)array) { }
 
-	public TreeHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array)
-	{
-	}
+	public TreeHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public TreeHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray())
-	{
-	}
+	public TreeHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray())
-	{
-	}
+	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true]
 	{
@@ -1718,7 +1592,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -1731,7 +1605,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
-				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item is null))
+				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
 					return false;
 			}
 			return !toEnd || index == _size;
@@ -1757,7 +1631,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public virtual TCertain FixUpDeleted()
 	{
-		int newSize = GetPrime(_size - deleted.Length);
+		int newSize = HashHelpers.GetPrime(_size - deleted.Length);
 		int[] newBuckets = new int[newSize];
 		Entry[] newEntries = new Entry[newSize];
 		int skipped = 0;
@@ -1823,9 +1697,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				throw new InvalidOperationException();
 		}
 		if (deleted.Length > 0)
-		{
 			index = deleted.GetAndRemove(^1);
-		}
 		else
 		{
 			if (_size == entries.Length)
@@ -1995,53 +1867,29 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 {
-	public TreeHashSet() : base()
-	{
-	}
+	public TreeHashSet() : base() { }
 
-	public TreeHashSet(int capacity) : base(capacity)
-	{
-	}
+	public TreeHashSet(int capacity) : base(capacity) { }
 
-	public TreeHashSet(IEqualityComparer<T>? comparer) : base(comparer)
-	{
-	}
+	public TreeHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public TreeHashSet(IEnumerable<T> collection) : base(collection)
-	{
-	}
+	public TreeHashSet(IEnumerable<T> collection) : base(collection) { }
 
-	public TreeHashSet(params T[] array) : base(array)
-	{
-	}
+	public TreeHashSet(params T[] array) : base(array) { }
 
-	public TreeHashSet(ReadOnlySpan<T> span) : base(span)
-	{
-	}
+	public TreeHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer)
-	{
-	}
+	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer)
-	{
-	}
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
-	public TreeHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection)
-	{
-	}
+	public TreeHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public TreeHashSet(int capacity, params T[] array) : base(capacity, array)
-	{
-	}
+	public TreeHashSet(int capacity, params T[] array) : base(capacity, array) { }
 
-	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
-	{
-	}
+	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer)
-	{
-	}
+	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
 	private protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
 

@@ -1,4 +1,6 @@
 ﻿
+using System.Linq;
+
 namespace Corlib.NStar.Tests;
 
 [TestClass]
@@ -44,6 +46,45 @@ public class BigArrayTests
 		a.Clear(24, 41);
 		Array.Clear(b, 24, 41);
 		Assert.IsTrue(E.SequenceEqual(a, b));
+	}
+
+	[TestMethod]
+	public void TestContains()
+	{
+		var a = new BigArray<byte>(testBytes, 2, 3);
+		var b = a.Contains(199);
+		Assert.IsTrue(b);
+		b = a.Contains(171, 137);
+		Assert.IsTrue(!b);
+		b = a.Contains(new List<byte>(1, 66, 221));
+		Assert.IsTrue(b);
+		b = a.Contains(new List<byte>(1, 66, 220));
+		Assert.IsTrue(!b);
+		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<byte>)null!));
+	}
+
+	[TestMethod]
+	public void TestContainsAny()
+	{
+		var a = new BigArray<byte>(testBytes, 2, 3);
+		var b = a.ContainsAny(new List<byte>(82, 245, 123));
+		Assert.IsTrue(b);
+		b = a.ContainsAny(new List<byte>(8, 6, 5));
+		Assert.IsTrue(b);
+		b = a.ContainsAny(new List<byte>(8, 6, 2));
+		Assert.IsTrue(!b);
+	}
+
+	[TestMethod]
+	public void TestContainsAnyExcluding()
+	{
+		var a = new BigArray<byte>(testBytes, 2, 3);
+		var b = a.ContainsAnyExcluding(new List<byte>(82, 245, 123));
+		Assert.IsTrue(b);
+		b = a.ContainsAnyExcluding(new List<byte>(8, 6, 2));
+		Assert.IsTrue(b);
+		b = a.ContainsAnyExcluding(a);
+		Assert.IsTrue(!b);
 	}
 }
 
@@ -128,5 +169,20 @@ public class BigBitArrayTests
 		a.Clear(248, 431);
 		Array.Clear(b, 248, 431);
 		Assert.IsTrue(E.SequenceEqual(a, b));
+	}
+
+	[TestMethod]
+	public void TestContains()
+	{
+		var a = new BigBitArray(testBytes, 2, 6);
+		var b = a.Contains(false);
+		Assert.IsTrue(b);
+		b = a.Contains(true, 1193);
+		Assert.IsTrue(!b);
+		b = a.Contains(new BitList(new byte[] { 1, 66, 221 }));
+		Assert.IsTrue(b);
+		b = a.Contains(new BitList(new byte[] { 1, 66, 220 }));
+		Assert.IsTrue(!b);
+		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
 	}
 }
