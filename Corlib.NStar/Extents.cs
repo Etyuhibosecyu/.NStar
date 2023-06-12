@@ -512,7 +512,7 @@ internal static class HashHelpers
 
 		// This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
 		// is faster than BigMul currently because we only need the high bits.
-		uint highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
+		var highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
 
 		Debug.Assert(highbits == value % divisor);
 		return highbits;
@@ -521,7 +521,7 @@ internal static class HashHelpers
 	// Returns size of hashtable to grow to.
 	public static int ExpandPrime(int oldSize)
 	{
-		int newSize = 2 * oldSize;
+		var newSize = 2 * oldSize;
 		// Allow the hashtables to grow to maximum possible size (~2G elements) before encountering capacity overflow.
 		// Note that this check works even when _items.Length overflowed thanks to the (uint) cast
 		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
@@ -540,13 +540,13 @@ internal static class HashHelpers
 	{
 		if (min < 0)
 			throw new ArgumentException(null, nameof(min));
-		foreach (int prime in Primes)
+		foreach (var prime in Primes)
 			if (prime >= min)
 				return prime;
 		// Outside of our predefined table. Compute the hard way.
-		for (int i = (min | 1); i < int.MaxValue; i += 2)
+		for (var i = min | 1; i < int.MaxValue; i += 2)
 		{
-			if (IsPrime(i) && ((i - 1) % HashPrime != 0))
+			if (IsPrime(i) && (i - 1) % HashPrime != 0)
 				return i;
 		}
 		return min;
@@ -556,9 +556,9 @@ internal static class HashHelpers
 	{
 		if ((candidate & 1) != 0)
 		{
-			int limit = (int)Sqrt(candidate);
+			var limit = (int)Sqrt(candidate);
 			for (int i = 0, divisor; i < PrimesList.Length && (divisor = PrimesList[i]) <= limit; i++)
-				if ((candidate % divisor) == 0)
+				if (candidate % divisor == 0)
 					return false;
 			return true;
 		}
@@ -579,8 +579,8 @@ public static unsafe partial class Extents
 
 	public static Comparer<T[]> ArraySequentialComparer<T>() where T : unmanaged, IComparable<T> => new((x, y) =>
 	{
-		int minLength = Min(x.Length, y.Length);
-		for (int i = 0; i < minLength; i++)
+		var minLength = Min(x.Length, y.Length);
+		for (var i = 0; i < minLength; i++)
 		{
 			if (x[i].CompareTo(y[i]) < 0)
 				return -1;
@@ -877,7 +877,7 @@ public static unsafe partial class Extents
 			throw new ArgumentException(null);
 		fixed (uint* items = array)
 		{
-			uint* shiftedItems = items + index;
+			var shiftedItems = items + index;
 			RadixSort(&shiftedItems, count);
 		}
 		return array;
@@ -893,9 +893,9 @@ public static unsafe partial class Extents
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > array.Length)
 			throw new ArgumentException(null);
-		uint* converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
-		int* indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
-		for (int i = 0; i < count; i++)
+		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
+		for (var i = 0; i < count; i++)
 		{
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
@@ -903,7 +903,7 @@ public static unsafe partial class Extents
 		RadixSort(&converted, &indexes, count);
 		Marshal.FreeHGlobal((nint)converted);
 		T[] oldItems = array[index..(index + count)];
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((nint)indexes);
 		return array;
@@ -915,18 +915,18 @@ public static unsafe partial class Extents
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (count < 0)
 			throw new ArgumentOutOfRangeException(nameof(count));
-		uint* converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
-		int* indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
-		for (int i = 0; i < count; i++)
+		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
+		for (var i = 0; i < count; i++)
 		{
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
 		RadixSort(&converted, &indexes, count);
 		Marshal.FreeHGlobal((nint)converted);
-		T* oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
+		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
 		CopyMemory(array + index, oldItems, count);
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((nint)oldItems);
 		Marshal.FreeHGlobal((nint)indexes);
@@ -943,13 +943,13 @@ public static unsafe partial class Extents
 			return n;
 		if (set[0] < 0)
 			throw new ArgumentException("Не допускается множество, содержащее отрицательные значения.", nameof(set));
-		int lo = 0;
-		int hi = set.Length - 1;
+		var lo = 0;
+		var hi = set.Length - 1;
 		var comparer = G.Comparer<int>.Default;
 		while (lo <= hi)
 		{
 			// i might overflow if lo and hi are both large positive numbers. 
-			int i = lo + ((hi - lo) >> 1);
+			var i = lo + ((hi - lo) >> 1);
 			int c;
 			try
 			{
@@ -961,7 +961,7 @@ public static unsafe partial class Extents
 			}
 			if (c == 0)
 			{
-				int result = n + i + 1;
+				var result = n + i + 1;
 				while (++i < set.Length && set[i] == result)
 					result++;
 				return result;
@@ -976,10 +976,10 @@ public static unsafe partial class Extents
 
 	internal static void RadixSort<T>(T** @in, int n) where T : unmanaged
 	{
-		T* @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
+		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
 		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
 		CreateCounters(*@in, counters, n);
-		for (int i = 0; i < sizeof(T); i++)
+		for (var i = 0; i < sizeof(T); i++)
 		{
 			count = counters + 256 * i;
 			if (count[0] == n) continue;
@@ -996,11 +996,11 @@ public static unsafe partial class Extents
 
 	internal static void RadixSort<T, T2>(T** @in, T2** in2, int n) where T : unmanaged where T2 : unmanaged
 	{
-		T* @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
-		T2* @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
+		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
+		var @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
 		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
 		CreateCounters(*@in, counters, n);
-		for (int i = 0; i < sizeof(T); i++)
+		for (var i = 0; i < sizeof(T); i++)
 		{
 			count = counters + 256 * i;
 			if (count[0] == n) continue;
@@ -1025,7 +1025,7 @@ public static unsafe partial class Extents
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		int* cp = count;
+		var cp = count;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
@@ -1049,7 +1049,7 @@ public static unsafe partial class Extents
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		int* cp = count;
+		var cp = count;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
@@ -1071,8 +1071,8 @@ public static unsafe partial class Extents
 	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
 	{
 		FillMemory((nint)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
-		byte* bp = (byte*)data;
-		byte* dataEnd = (byte*)(data + n);
+		var bp = (byte*)data;
+		var dataEnd = (byte*)(data + n);
 		int i;
 		while (bp != dataEnd)
 			for (i = 0; i < sizeof(T); i++)

@@ -16,7 +16,7 @@ using System.Diagnostics;
 Random random = new(1234567890);
 var list = RedStarLinq.Fill(x => random.Next(0, 65536), 10000000);
 
-Stopwatch sw = Stopwatch.StartNew();
+var sw = Stopwatch.StartNew();
 var a = E.ToDictionary(E.Where(E.GroupBy(E.Zip(E.Skip(list, 1), E.Skip(list, 2), (x, y) => ((ulong)(uint)x << 32) + (uint)y), x => x), x => E.Count(x) >= 2), x => x.Key, col => E.ToList(E.OrderBy(col, x => (uint)x)));
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);

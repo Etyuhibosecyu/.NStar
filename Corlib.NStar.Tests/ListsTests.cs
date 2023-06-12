@@ -118,7 +118,7 @@ public class ListTests
 		var a = new List<string>(list);
 		a.Clear(2, 4);
 		var b = new G.List<string>(list);
-		for (int i = 0; i < 4; i++)
+		for (var i = 0; i < 4; i++)
 			b[2 + i] = default!;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -317,7 +317,8 @@ public class ListTests
 		var d = c.FindAll(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
 		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
 		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -325,7 +326,8 @@ public class ListTests
 		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
 	}
 
 	[TestMethod]
@@ -749,9 +751,9 @@ public class ListTests
 	public void TestRemoveAt()
 	{
 		var a = new List<string>(list);
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
-			int index = random.Next(a.Length);
+			var index = random.Next(a.Length);
 			var b = new List<string>(a).RemoveAt(index);
 			var c = new G.List<string>(a);
 			c.RemoveAt(index);
@@ -768,9 +770,9 @@ public class ListTests
 	public void TestRemoveValue()
 	{
 		var a = new Chain(15, 10).ToList();
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
-			int value = a[random.Next(a.Length)];
+			var value = a[random.Next(a.Length)];
 			var b = new List<int>(a);
 			b.RemoveValue(value);
 			var c = new G.List<int>(a);
@@ -785,7 +787,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRepeat()
 	{
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 1001), _ => random.Next());
 			var a = arr.ToList();
@@ -795,7 +797,7 @@ public class ListTests
 			var n = random.Next(11);
 			var c = a.Repeat(n);
 			var d = new G.List<int>();
-			for (int j = 0; j < n; j++)
+			for (var j = 0; j < n; j++)
 				d.AddRange(b);
 			Assert.IsTrue(c.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
@@ -821,15 +823,15 @@ public class ListTests
 	[TestMethod]
 	public void TestReplace2()
 	{
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
-			for (int j = 0; j < 1000; j++)
+			for (var j = 0; j < 1000; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
-			char oldItem = (char)random.Next(33, 127);
-			char newItem = (char)random.Next(33, 127);
+			var oldItem = (char)random.Next(33, 127);
+			var newItem = (char)random.Next(33, 127);
 			var b = a.Replace(oldItem, newItem);
 			var c = s.Replace(oldItem, newItem);
 			Assert.IsTrue(a.Equals(s));
@@ -837,16 +839,16 @@ public class ListTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
-		for (int i = 0; i < 100; i++)
+		for (var i = 0; i < 100; i++)
 		{
 			var arr = new char[1000];
-			for (int j = 0; j < 1000; j++)
+			for (var j = 0; j < 1000; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
 			var oldCollection = a.GetRange(random.Next(991), random.Next(1, 10)).ToString();
 			var newArray = new char[random.Next(10)];
-			for (int j = 0; j < newArray.Length; j++)
+			for (var j = 0; j < newArray.Length; j++)
 				newArray[j] = (char)random.Next(33, 127);
 			string newCollection = new(newArray);
 			var b = a.Replace(oldCollection, newArray);
@@ -861,15 +863,15 @@ public class ListTests
 	[TestMethod]
 	public void TestReplaceInPlace()
 	{
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
-			for (int j = 0; j < 1000; j++)
+			for (var j = 0; j < 1000; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
-			char oldItem = (char)random.Next(33, 127);
-			char newItem = (char)random.Next(33, 127);
+			var oldItem = (char)random.Next(33, 127);
+			var newItem = (char)random.Next(33, 127);
 			var b = a.ReplaceInPlace(oldItem, newItem);
 			var c = s.Replace(oldItem, newItem);
 			Assert.IsTrue(a.Equals(b));
@@ -877,16 +879,16 @@ public class ListTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
-		for (int i = 0; i < 100; i++)
+		for (var i = 0; i < 100; i++)
 		{
 			var arr = new char[1000];
-			for (int j = 0; j < 1000; j++)
+			for (var j = 0; j < 1000; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
 			var oldCollection = a.GetRange(random.Next(991), random.Next(1, 10)).ToString();
 			var newArray = new char[random.Next(10)];
-			for (int j = 0; j < newArray.Length; j++)
+			for (var j = 0; j < newArray.Length; j++)
 				newArray[j] = (char)random.Next(33, 127);
 			string newCollection = new(newArray);
 			var b = a.ReplaceInPlace(oldCollection, newArray);
@@ -945,31 +947,31 @@ public class ListTests
 	{
 		var a = new List<string>(list).SetAll(defaultString);
 		var b = new G.List<string>(list);
-		for (int i = 0; i < b.Count; i++)
+		for (var i = 0; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new List<string>(list).SetAll(defaultString, 3);
 		b = new G.List<string>(list);
-		for (int i = 3; i < b.Count; i++)
+		for (var i = 3; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new List<string>(list).SetAll(defaultString, 2, 4);
 		b = new G.List<string>(list);
-		for (int i = 2; i < 6; i++)
+		for (var i = 2; i < 6; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new List<string>(list).SetAll(defaultString, ^5);
 		b = new G.List<string>(list);
-		for (int i = b.Count - 5; i < b.Count; i++)
+		for (var i = b.Count - 5; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new List<string>(list).SetAll(defaultString, ^6..4);
 		b = new G.List<string>(list);
-		for (int i = b.Count - 6; i < 4; i++)
+		for (var i = b.Count - 6; i < 4; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -981,7 +983,7 @@ public class ListTests
 		var hs = defaultCollection.ToHashSet();
 		var a = new List<string>(list).SetRange(2, hs);
 		var b = new G.List<string>(list);
-		for (int i = 0; i < hs.Length; i++)
+		for (var i = 0; i < hs.Length; i++)
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -1213,13 +1215,13 @@ public class ListTests
 		string[] array;
 		string[] array2;
 		string elem;
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(151);
 			a = new(capacity);
 			b = new(capacity);
-			for (int j = 0; j < length; j++)
+			for (var j = 0; j < length; j++)
 			{
 				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
 				b.Add(elem);
@@ -1238,13 +1240,13 @@ public class ListTests
 		List<string> a;
 		G.List<string> b;
 		string elem;
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(9951);
 			a = new(capacity);
 			b = new(capacity);
-			for (int j = 0; j < length; j++)
+			for (var j = 0; j < length; j++)
 			{
 				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
 				b.Add(elem);
@@ -1494,7 +1496,7 @@ public class NListTests
 		var a = new NList<(char, char, char)>(nList);
 		a.Clear(2, 4);
 		var b = new G.List<(char, char, char)>(nList);
-		for (int i = 0; i < 4; i++)
+		for (var i = 0; i < 4; i++)
 			b[2 + i] = default!;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -1574,12 +1576,12 @@ public class NListTests
 		NList<(char, char, char)> a;
 		NList<(char, char, char)> b;
 		int index;
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(1, 51);
 			capacity = length + random.Next(9951);
 			a = new(capacity);
-			for (int j = 0; j < length; j++)
+			for (var j = 0; j < length; j++)
 				a.Add(((char)random.Next(33, 126), (char)random.Next(33, 126), (char)random.Next(33, 126)));
 			b = a.Copy();
 			Assert.IsTrue(RedStarLinq.Equals(a, b));
@@ -1717,7 +1719,8 @@ public class NListTests
 		var d = c.FindAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
 		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -1725,7 +1728,8 @@ public class NListTests
 		d = c.FindAll(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
 	}
 
 	[TestMethod]
@@ -2137,9 +2141,9 @@ public class NListTests
 	public void TestRemoveAt()
 	{
 		var a = new NList<(char, char, char)>(nList);
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
-			int index = random.Next(a.Length);
+			var index = random.Next(a.Length);
 			var b = new NList<(char, char, char)>(a).RemoveAt(index);
 			var c = new G.List<(char, char, char)>(a);
 			c.RemoveAt(index);
@@ -2156,9 +2160,9 @@ public class NListTests
 	public void TestRemoveValue()
 	{
 		var a = new Chain(15, 10).ToList();
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
-			int value = a[random.Next(a.Length)];
+			var value = a[random.Next(a.Length)];
 			var b = new NList<int>(a);
 			b.RemoveValue(value);
 			var c = new G.List<int>(a);
@@ -2173,7 +2177,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRepeat()
 	{
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 1001), _ => random.Next());
 			var a = arr.ToNList();
@@ -2183,7 +2187,7 @@ public class NListTests
 			var n = random.Next(11);
 			var c = a.Repeat(n);
 			var d = new G.List<int>();
-			for (int j = 0; j < n; j++)
+			for (var j = 0; j < n; j++)
 				d.AddRange(b);
 			Assert.IsTrue(c.Equals(d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
@@ -2205,7 +2209,6 @@ public class NListTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
-
 
 	[TestMethod]
 	public void TestReplaceRange()
@@ -2254,31 +2257,31 @@ public class NListTests
 	{
 		var a = new NList<(char, char, char)>(nList).SetAll(defaultNString);
 		var b = new G.List<(char, char, char)>(nList);
-		for (int i = 0; i < b.Count; i++)
+		for (var i = 0; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, 3);
 		b = new G.List<(char, char, char)>(nList);
-		for (int i = 3; i < b.Count; i++)
+		for (var i = 3; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, 2, 4);
 		b = new G.List<(char, char, char)>(nList);
-		for (int i = 2; i < 6; i++)
+		for (var i = 2; i < 6; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, ^5);
 		b = new G.List<(char, char, char)>(nList);
-		for (int i = b.Count - 5; i < b.Count; i++)
+		for (var i = b.Count - 5; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, ^6..4);
 		b = new G.List<(char, char, char)>(nList);
-		for (int i = b.Count - 6; i < 4; i++)
+		for (var i = b.Count - 6; i < 4; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -2290,7 +2293,7 @@ public class NListTests
 		var hs = defaultNCollection.ToHashSet();
 		var a = new NList<(char, char, char)>(nList).SetRange(2, hs);
 		var b = new G.List<(char, char, char)>(nList);
-		for (int i = 0; i < hs.Length; i++)
+		for (var i = 0; i < hs.Length; i++)
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -2511,21 +2514,21 @@ public class NListTests
 		(char, char, char)[] array;
 		(char, char, char)[] array2;
 		(char, char, char) elem;
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(151);
 			a = new(capacity);
 			b = new(capacity);
-			for (int j = 0; j < length; j++)
+			for (var j = 0; j < length; j++)
 			{
 				a.Add(elem = ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
 				b.Add(elem);
 			}
 			array = a.ToArray();
 			array2 = b.ToArray();
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(a, b));
+			Assert.IsTrue(RedStarLinq.Equals(array, array2));
+			Assert.IsTrue(E.SequenceEqual(array, array2));
 		}
 	}
 
@@ -2536,13 +2539,13 @@ public class NListTests
 		NList<(char, char, char)> a;
 		G.List<(char, char, char)> b;
 		(char, char, char) elem;
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(9951);
 			a = new(capacity);
 			b = new(capacity);
-			for (int j = 0; j < length; j++)
+			for (var j = 0; j < length; j++)
 			{
 				a.Add(elem = ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
 				b.Add(elem);
@@ -2700,7 +2703,7 @@ public class SumListTests
 		var bytes = new byte[16];
 		var updateActions = new[] { (int key) =>
 		{
-			int newValue = random.Next(16);
+			var newValue = random.Next(16);
 			sl.Update(key, newValue);
 			if (newValue <= 0)
 				gl.RemoveAt(key);
@@ -2720,7 +2723,7 @@ public class SumListTests
 		} };
 		var actions = new[] { () =>
 		{
-			int n = random.Next(1, 16);
+			var n = random.Next(1, 16);
 			if (random.Next(2) == 0)
 			{
 				sl.Add(n);
@@ -2728,7 +2731,7 @@ public class SumListTests
 			}
 			else
 			{
-				int index = random.Next(sl.Length + 1);
+				var index = random.Next(sl.Length + 1);
 				sl.Insert(index, n);
 				gl.Insert(index, n);
 			}
@@ -2736,29 +2739,29 @@ public class SumListTests
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			gl.RemoveAt(index);
 			sl.RemoveAt(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			updateActions.Random(random)(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-			Assert.AreEqual(sl.GetLeftValuesSum(index, out int value), E.Sum(E.Take(gl, index)));
+			Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index)));
 		}, () =>
 		{
 			random.NextBytes(bytes);
-			int index = sl.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
-			Assert.IsTrue((index == gl.Count && sum == E.Sum(gl)) || (CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
+			var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
+			Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			Assert.AreEqual(sl[index], gl[index]);
 		} };
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
 	}
 }
@@ -2810,7 +2813,7 @@ public class BigSumListTests
 			}
 			else
 			{
-				int index = random.Next(sl.Length + 1);
+				var index = random.Next(sl.Length + 1);
 				sl.Insert(index, n);
 				gl.Insert(index, n);
 			}
@@ -2818,29 +2821,29 @@ public class BigSumListTests
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			gl.RemoveAt(index);
 			sl.RemoveAt(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			updateActions.Random(random)(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
 			Assert.AreEqual(sl.GetLeftValuesSum(index, out mpz_t value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y));
 		}, () =>
 		{
 			random.NextBytes(bytes2);
-			int index = sl.IndexOfNotGreaterSum(CreateVar(new mpz_t(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
-			Assert.IsTrue((index == 0 && (gl.Count == 0 || sum < gl[0])) || (index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y)) || (CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
+			var index = sl.IndexOfNotGreaterSum(CreateVar(new mpz_t(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
+			Assert.IsTrue(index == 0 && (gl.Count == 0 || sum < gl[0]) || index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y) || CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
-			int index = random.Next(sl.Length);
+			var index = random.Next(sl.Length);
 			Assert.AreEqual(sl[index], gl[index]);
 		} };
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
 	}
 }

@@ -35,8 +35,8 @@ public class SumSetTests
 		} };
 		var updateActions = new[] { (int key) =>
 		{
-			int newValue = random.Next(16);
-			int index = ss.IndexOf(key);
+			var newValue = random.Next(16);
+			var index = ss.IndexOf(key);
 			if (index != -1 && newValue <= 0)
 			{
 				gs.Remove(key);
@@ -47,7 +47,7 @@ public class SumSetTests
 			ss.Update(key, newValue);
 		}, key =>
 		{
-			int index = ss.Search(key);
+			var index = ss.Search(key);
 			if (index >= 0)
 				gl[index]++;
 			else
@@ -56,8 +56,8 @@ public class SumSetTests
 			gs.Add(key);
 		}, key =>
 		{
-			int index = ss.IndexOf(key);
-			if (ss.TryGetValue(key, out int value) && value == 1)
+			var index = ss.IndexOf(key);
+			if (ss.TryGetValue(key, out var value) && value == 1)
 			{
 				gs.Remove(key);
 				gl.RemoveAt(index);
@@ -68,9 +68,9 @@ public class SumSetTests
 		} };
 		var actions = new[] { () =>
 		{
-			int n = random.Next(16);
-			int n2 = random.Next(1, 16);
-			int index = ss.Search(n);
+			var n = random.Next(16);
+			var n2 = random.Next(1, 16);
+			var index = ss.Search(n);
 			if (index < 0)
 				gl.Insert(~index, n2);
 			ss.Add(n, n2);
@@ -82,15 +82,15 @@ public class SumSetTests
 			if (ss.Length == 0) return;
 			if (random.Next(2) == 0)
 			{
-				int n = random.Next(ss.Length);
+				var n = random.Next(ss.Length);
 				gs.Remove(ss[n].Key);
 				ss.RemoveAt(n);
 				gl.RemoveAt(n);
 			}
 			else
 			{
-				int n = random.Next(16);
-				int index = ss.IndexOf(n);
+				var n = random.Next(16);
+				var index = ss.IndexOf(n);
 				if (index != -1) gl.RemoveAt(index);
 				ss.RemoveValue(n);
 				gs.Remove(n);
@@ -99,30 +99,30 @@ public class SumSetTests
 			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		}, () =>
 		{
-			var arr = RedStarLinq.FillArray(5, _ => (CreateVar(random.Next(16), out int key), ss.TryGetValue(key, out int value) ? value : random.Next(1, 16)));
+			var arr = RedStarLinq.FillArray(5, _ => (CreateVar(random.Next(16), out var key), ss.TryGetValue(key, out var value) ? value : random.Next(1, 16)));
 			collectionActions.Random(random)(arr);
 			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
 			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		}, () =>
 		{
-			int n = random.Next(16);
+			var n = random.Next(16);
 			updateActions.Random(random)(n);
 			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
 			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
-			Assert.AreEqual(ss.GetLeftValuesSum(n, out int value), E.Sum(E.Take(gl, ss.IndexOfNotLess(n))));
+			Assert.AreEqual(ss.GetLeftValuesSum(n, out var value), E.Sum(E.Take(gl, ss.IndexOfNotLess(n))));
 		}, () =>
 		{
 			random.NextBytes(bytes);
-			int index = ss.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (ss.ValuesSum + 1)), out var sum));
-			Assert.IsTrue((index == gl.Count && sum == E.Sum(gl)) || (CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum)));
+			var index = ss.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (ss.ValuesSum + 1)), out var sum));
+			Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{
 			if (ss.Length == 0) return;
-			int n = random.Next(ss.Length);
+			var n = random.Next(ss.Length);
 			Assert.AreEqual(ss.IndexOf(ss[n]), n);
 			Assert.AreEqual(ss[n].Value, gl[n]);
 		} };
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
 	}
 }
@@ -155,7 +155,7 @@ public class TreeSetTests
 		} };
 		var actions = new[] { () =>
 		{
-			int n = random.Next(16);
+			var n = random.Next(16);
 			ts.Add(n);
 			gs.Add(n);
 			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
@@ -164,13 +164,13 @@ public class TreeSetTests
 			if (ts.Length == 0) return;
 			if (random.Next(2) == 0)
 			{
-				int n = random.Next(ts.Length);
+				var n = random.Next(ts.Length);
 				gs.Remove(ts[n]);
 				ts.RemoveAt(n);
 			}
 			else
 			{
-				int n = random.Next(16);
+				var n = random.Next(16);
 				ts.RemoveValue(n);
 				gs.Remove(n);
 			}
@@ -183,10 +183,10 @@ public class TreeSetTests
 		}, () =>
 		{
 			if (ts.Length == 0) return;
-			int n = random.Next(ts.Length);
+			var n = random.Next(ts.Length);
 			Assert.AreEqual(ts.IndexOf(ts[n]), n);
 		} };
-		for (int i = 0; i < 1000; i++)
+		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
 	}
 }

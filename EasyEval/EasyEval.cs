@@ -1,0 +1,114 @@
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Text;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.Loader;
+
+namespace EasyEvalLib;
+
+public static class EasyEval
+{
+	public static void CompileAndExecute(string sourceCode, IEnumerable<string> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
+
+	public static Assembly? CompileAndGetAssembly(string sourceCode, IEnumerable<string> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
+
+	public static dynamic? Eval(string sourceCode, IEnumerable<string>? extraAssemblies = null, IEnumerable<string>? extraNamespaces = null, params dynamic?[] args)
+	{
+		var assembly = CompileAndGetAssembly(@"using System;
+using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+" + string.Join(Environment.NewLine, extraNamespaces?.Select(x => "using " + x + ";") ?? Array.Empty<string>()) + @"
+namespace MyProject;
+public static class Program
+{
+public static dynamic? F(params dynamic?[] args)
+{
+" + sourceCode + @"
+return null;
+}
+
+public static void Main()
+{
+}
+}
+", new[] { "System.Linq.Expressions", "Microsoft.CSharp", "netstandard", "System.Runtime" }.Union(extraAssemblies ?? Array.Empty<string>()));
+		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, new[] { args }) ?? null;
+	}
+
+	public static byte[]? Compile(string sourceCode, IEnumerable<string> extraAssemblies, TextWriter? errors = null)
+	{
+		using var peStream = new MemoryStream();
+		var result = GenerateCode(sourceCode, extraAssemblies).Emit(peStream);
+		if (!result.Success)
+		{
+			errors?.WriteLine("Compilation done with error.");
+			var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+			foreach (var diagnostic in failures)
+			{
+				errors?.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
+			}
+			return null;
+		}
+		errors?.WriteLine("Compilation done without any error.");
+		peStream.Seek(0, SeekOrigin.Begin);
+		return peStream.ToArray();
+	}
+
+	private static CSharpCompilation GenerateCode(string sourceCode, IEnumerable<string> extraAssemblies)
+	{
+		var codeString = SourceText.From(sourceCode);
+		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
+		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
+		var references = new[]
+		{
+			"System.Private.CoreLib", "mscorlib", "System", "System.Core",
+		}.Union(extraAssemblies).Select(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "")).Location));
+		return CSharpCompilation.Create("MyProject.dll",
+			new[] { parsedSyntaxTree },
+			references: references,
+			options: new(OutputKind.ConsoleApplication,
+				optimizationLevel: OptimizationLevel.Release,
+				assemblyIdentityComparer: DesktopAssemblyIdentityComparer.Default));
+	}
+
+	public static void Execute(byte[]? compiledAssembly, string[] args)
+	{
+		if (compiledAssembly == null)
+		{
+			return;
+		}
+		LoadAndExecute(compiledAssembly, args);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static void LoadAndExecute(byte[]? compiledAssembly, string[] args)
+	{
+		var assembly = GetAssembly(compiledAssembly);
+		var entry = assembly?.EntryPoint;
+		_ = entry != null && entry.GetParameters().Length > 0 ? entry.Invoke(null, new object[] { args }) : entry?.Invoke(null, null);
+	}
+
+	public static Assembly? GetAssembly(byte[]? compiledAssembly)
+	{
+		if (compiledAssembly == null)
+		{
+			return null;
+		}
+		using var asm = new MemoryStream(compiledAssembly);
+		var assemblyLoadContext = new SimpleUnloadableAssemblyLoadContext();
+		return assemblyLoadContext.LoadFromStream(asm);
+	}
+}
+
+internal class SimpleUnloadableAssemblyLoadContext : AssemblyLoadContext
+{
+	public SimpleUnloadableAssemblyLoadContext() : base()
+	{
+	}
+
+	protected override Assembly? Load(AssemblyName assemblyName) => null;
+}

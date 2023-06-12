@@ -2,7 +2,6 @@
 
 namespace Corlib.NStar;
 
-
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
@@ -50,7 +49,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public BaseHashList(IEnumerable<T> collection) : this(collection, null) { }
 
-	public BaseHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetCountEasily(out int count) ? count : 0, comparer)
+	public BaseHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetCountEasily(out var count) ? count : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -100,7 +99,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (_size > 0)
 		{
-			for (int i = 0; i < buckets.Length; i++)
+			for (var i = 0; i < buckets.Length; i++)
 			{
 				buckets[i] = 0;
 				entries[i] = new();
@@ -111,8 +110,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected override void ClearInternal(int index, int count)
 	{
-		int endIndex = index + count;
-		for (int i = index; i < endIndex; i++)
+		var endIndex = index + count;
+		for (var i = index; i < endIndex; i++)
 			SetNull(i);
 		Changed();
 	}
@@ -122,10 +121,10 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
 	{
 		if (source != destination || sourceIndex >= destinationIndex)
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
 		else
-			for (int i = count - 1; i >= 0; i--)
+			for (var i = count - 1; i >= 0; i--)
 				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
 		destination.Changed();
 	}
@@ -164,8 +163,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
-		int endIndex = index + count;
-		for (int i = index; i < endIndex; i++)
+		var endIndex = index + count;
+		for (var i = index; i < endIndex; i++)
 			if (Comparer.Equals(entries[i].item, item))
 				return i;
 		return -1;
@@ -191,8 +190,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
-			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
 					result.Add(i);
@@ -221,8 +220,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
-			int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-			for (int i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
+			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
 					return i;
@@ -244,7 +243,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
-		int size = HashHelpers.GetPrime(capacity);
+		var size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
 		entries = new Entry[size];
 	}
@@ -268,7 +267,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		TCertain list = CollectionCreator(collection);
-		int count = list._size;
+		var count = list._size;
 		if (count > 0)
 		{
 			EnsureCapacity(_size + count);
@@ -303,8 +302,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(count));
 		if (index + count > _size)
 			throw new ArgumentException(null);
-		int endIndex = index + count;
-		for (int i = endIndex - 1; i >= index; i--)
+		var endIndex = index + count;
+		for (var i = endIndex - 1; i >= index; i--)
 			if (Comparer.Equals(entries[i].item, item))
 				return i;
 		return -1;
@@ -325,8 +324,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (index + count > _size)
 			throw new ArgumentException(null);
 		List<int> result = new();
-		int endIndex = index + count;
-		for (int i = index; i < endIndex; i++)
+		var endIndex = index + count;
+		for (var i = index; i < endIndex; i++)
 			if (Comparer.Equals(entries[i].item, item))
 				result.Add(i);
 		return result;
@@ -342,20 +341,20 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
-		Entry[] newEntries = new Entry[newSize];
+		var newEntries = new Entry[newSize];
 		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
-			for (int i = 0; i < _size; i++)
+			for (var i = 0; i < _size; i++)
 			{
 				ref Entry t = ref newEntries[i];
 				if (t.hashCode != 0)
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
 			}
 		buckets = new int[newSize];
-		for (int i = 0; i < _size; i++)
+		for (var i = 0; i < _size; i++)
 			if (newEntries[i].hashCode < 0)
 			{
-				int bucket = ~newEntries[i].hashCode % newSize;
+				var bucket = ~newEntries[i].hashCode % newSize;
 				ref Entry t = ref newEntries[i];
 				t.next = buckets[bucket];
 				buckets[bucket] = ~i;
@@ -370,7 +369,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		ref Entry t = ref entries[index];
 		if (t.hashCode >= 0)
 			return;
-		int bucket = ~t.hashCode % buckets.Length;
+		var bucket = ~t.hashCode % buckets.Length;
 		t.hashCode = 0;
 		t.next = 0;
 		t.item = default!;
@@ -434,10 +433,8 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 				catch
 				{
 				}
-			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
-			if ((uint)index2 >= (uint)entries.Length)
-				throw new IndexOutOfRangeException();
-			return GetInternal(index2, invoke);
+			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			return (uint)index2 >= (uint)entries.Length ? throw new IndexOutOfRangeException() : GetInternal(index2, invoke);
 		}
 		set
 		{
@@ -449,7 +446,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 				catch
 				{
 				}
-			int index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
 			if (entries[index2].item?.Equals(value) ?? false)
@@ -478,12 +475,12 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
 	{
-		int skipped = 0;
-		for (int i = 0; i < index; i++)
+		var skipped = 0;
+		for (var i = 0; i < index; i++)
 			if (entries[i].hashCode >= 0)
 				skipped++;
-		int endIndex = index + count;
-		for (int i = index; i < endIndex; i++)
+		var endIndex = index + count;
+		for (var i = index; i < endIndex; i++)
 			if (entries[i + skipped].hashCode < 0)
 				array[arrayIndex++] = entries[i + skipped].item;
 			else
@@ -513,7 +510,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		{
 			if (index > _size - list.Count)
 				throw new ArgumentOutOfRangeException(nameof(index));
-			for (int i = 0; i < list.Count; i++)
+			for (var i = 0; i < list.Count; i++)
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
@@ -524,7 +521,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		}
 		else
 		{
-			if (collection.TryGetCountEasily(out int count) && index > _size - count)
+			if (collection.TryGetCountEasily(out var count) && index > _size - count)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			foreach (T item in collection)
 			{
@@ -547,7 +544,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
-		int i = 0;
+		var i = 0;
 		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item, i++))
 				RemoveValue(item);
@@ -556,19 +553,19 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	public virtual TCertain FixUpFakeIndexes()
 	{
-		int newSize = HashHelpers.GetPrime(_size - freeCount);
-		int[] newBuckets = new int[newSize];
-		Entry[] newEntries = new Entry[newSize];
-		int skipped = 0;
-		for (int i = 0; i < entries.Length; i++)
+		var newSize = HashHelpers.GetPrime(_size - freeCount);
+		var newBuckets = new int[newSize];
+		var newEntries = new Entry[newSize];
+		var skipped = 0;
+		for (var i = 0; i < entries.Length; i++)
 			if (entries[i].hashCode < 0)
 				newEntries[i - skipped] = entries[i];
 			else
 				skipped++;
-		for (int i = 0; i < newSize; i++)
+		for (var i = 0; i < newSize; i++)
 			if (newEntries[i].hashCode < 0)
 			{
-				int bucket = ~newEntries[i].hashCode % newSize;
+				var bucket = ~newEntries[i].hashCode % newSize;
 				ref Entry t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
@@ -594,8 +591,8 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
+		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var targetBucket = hashCode % buckets.Length;
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -629,8 +626,8 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		T? item = entries[index].item;
 		if (item == null)
 			return this as TCertain ?? throw new InvalidOperationException();
-		int hashCode = base.Comparer.GetHashCode(item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
+		var hashCode = base.Comparer.GetHashCode(item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
+		var bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
 			ref Entry t = ref entries[bucket];
@@ -655,10 +652,10 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		if (buckets == null)
 			return false;
 		uint collisionCount = 0;
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
-		int last = -1;
-		for (int i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
+		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var bucket = hashCode % buckets.Length;
+		var last = -1;
+		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
@@ -693,8 +690,8 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			RemoveAt(index);
 		if (item == null)
 			return;
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
+		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var targetBucket = hashCode % buckets.Length;
 		if (freeCount > 0 && freeList == ~index)
 		{
 			freeList = entries[index].next;
@@ -856,7 +853,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
 	{
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 			array[arrayIndex++] = entries[index++].item;
 	}
 
@@ -868,8 +865,8 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
-		int hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int targetBucket = hashCode % buckets.Length;
+		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var targetBucket = hashCode % buckets.Length;
 		if (_size == entries.Length)
 		{
 			Resize();
@@ -905,13 +902,13 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 
 	internal override void SetInternal(int index, T item)
 	{
-		int hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
-		int bucket = hashCode % buckets.Length;
+		var hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		var bucket = hashCode % buckets.Length;
 		ref Entry t = ref entries[index];
 		uint collisionCount = 0;
-		int oldBucket = ~t.hashCode % buckets.Length;
-		int last = -1;
-		for (int i = ~buckets[oldBucket]; i >= 0; last = i, i = ~entries[i].next)
+		var oldBucket = ~t.hashCode % buckets.Length;
+		var last = -1;
+		for (var i = ~buckets[oldBucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (i == index)
 			{

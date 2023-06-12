@@ -17,10 +17,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	public List(int capacity)
 	{
 		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity == 0)
-			_items = _emptyArray;
-		else
-			_items = new T[capacity];
+		_items = capacity == 0 ? _emptyArray : (new T[capacity]);
 	}
 
 	public List(IEnumerable<T> collection)
@@ -29,7 +26,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			int count = c.Count;
+			var count = c.Count;
 			if (count == 0)
 				_items = _emptyArray;
 			else
@@ -55,7 +52,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			int count = c.Count;
+			var count = c.Count;
 			if (count == 0)
 				return;
 			if (count > capacity)
@@ -126,7 +123,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				return;
 			if (value > 0)
 			{
-				T[] newItems = new T[value];
+				var newItems = new T[value];
 				if (_size > 0)
 					Array.Copy(_items, 0, newItems, 0, _size);
 				_items = newItems;
@@ -210,11 +207,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity)
 		{
-			int min = _size + 1;
-			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
-			T[] newItems = new T[newCapacity];
+			var min = _size + 1;
+			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < min)
+				newCapacity = min;
+			var newItems = new T[newCapacity];
 			if (index > 0)
 				Array.Copy(_items, 0, newItems, 0, index);
 			if (index < _size)
@@ -239,16 +238,18 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (span == null)
 			throw new ArgumentNullException(nameof(span));
-		int count = span.Length;
+		var count = span.Length;
 		if (count == 0)
 			return this as TCertain ?? throw new InvalidOperationException();
 		if (Capacity < _size + count)
 		{
-			int min = _size + count;
-			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
-			T[] newItems = new T[newCapacity];
+			var min = _size + count;
+			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < min)
+				newCapacity = min;
+			var newItems = new T[newCapacity];
 			if (index > 0)
 				Array.Copy(_items, 0, newItems, 0, index);
 			if (index < _size)
@@ -271,16 +272,16 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection is List<T, TCertain> list)
 		{
-			int count = list._size;
+			var count = list._size;
 			if (count == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T[] newItems = new T[newCapacity];
+				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -311,16 +312,16 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		else if (collection is T[] array)
 		{
-			int count = array.Length;
+			var count = array.Length;
 			if (count == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T[] newItems = new T[newCapacity];
+				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -339,16 +340,16 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		else if (collection is G.ICollection<T> list2)
 		{
-			int count = list2.Count;
+			var count = list2.Count;
 			if (count == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T[] newItems = new T[newCapacity];
+				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -641,10 +642,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	public NList(int capacity)
 	{
 		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity == 0)
-			_items = _emptyArray;
-		else
-			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
+		_items = capacity == 0 ? _emptyArray : (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
 	}
 
 	public NList(IEnumerable<T> collection)
@@ -653,7 +651,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			int count = c.Count;
+			var count = c.Count;
 			if (count == 0)
 				_items = _emptyArray;
 			else
@@ -680,7 +678,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			int count = c.Count;
+			var count = c.Count;
 			if (count == 0)
 				return;
 			if (count > capacity)
@@ -767,7 +765,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 				return;
 			if (value > 0)
 			{
-				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
+				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
 				if (_size > 0)
 					CopyMemory(_items, newItems, _size);
 				Marshal.FreeHGlobal((nint)_items);
@@ -865,7 +863,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	private protected override int IndexOfInternal(T item, int index, int count)
 	{
 		T* ptr = _items + index;
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 			if (ptr[i].Equals(item))
 				return index + i;
 		return -1;
@@ -877,11 +875,11 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity)
 		{
-			int min = _size + 1;
-			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			var min = _size + 1;
+			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 			if (newCapacity < min) newCapacity = min;
-			T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 			if (index > 0)
 				CopyMemory(_items, 0, newItems, 0, index);
 			if (index < _size)
@@ -903,16 +901,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Insert(int index, ReadOnlySpan<T> span)
 	{
-		int count = span.Length;
+		var count = span.Length;
 		if (count == 0)
 			return this;
 		if (Capacity < _size + count)
 		{
-			int min = _size + count;
-			int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			var min = _size + count;
+			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 			if (newCapacity < min) newCapacity = min;
-			T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 			if (index > 0)
 				CopyMemory(_items, 0, newItems, 0, index);
 			if (index < _size)
@@ -936,16 +934,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (collection is NList<T> list)
 		{
-			int count = list._size;
+			var count = list._size;
 			if (count == 0)
 				return this;
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -978,16 +976,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		}
 		else if (collection is T[] array)
 		{
-			int count = array.Length;
+			var count = array.Length;
 			if (count == 0)
 				return this;
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -1009,16 +1007,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		}
 		else if (collection is ICollection<T> list2)
 		{
-			int count = list2.Count;
+			var count = list2.Count;
 			if (count == 0)
 				return this;
 			if (Capacity < _size + count)
 			{
-				int min = _size + count;
-				int newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+				var min = _size + count;
+				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
-				T* newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
+				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
@@ -1045,8 +1043,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	private protected override int LastIndexOfInternal(T item, int index, int count)
 	{
-		int endIndex = index - count + 1;
-		for (int i = index; i >= endIndex; i--)
+		var endIndex = index - count + 1;
+		for (var i = index; i >= endIndex; i--)
 			if (_items[i].Equals(item))
 				return i;
 		return -1;
@@ -1056,7 +1054,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	private protected override NList<T> ReverseInternal(int index, int count)
 	{
-		for (int i = 0; i < count / 2; i++)
+		for (var i = 0; i < count / 2; i++)
 			(_items[index + i], _items[index + count - 1 - i]) = (_items[index + count - 1 - i], _items[index + i]);
 		Changed();
 		return this;
@@ -1074,7 +1072,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (this is NList<uint> uintList)
 		{
-			uint* shiftedItems = uintList._items + index;
+			var shiftedItems = uintList._items + index;
 			RadixSort(&shiftedItems, count);
 			return this;
 		}
@@ -1181,7 +1179,7 @@ public class SumList : BaseList<int, SumList>
 			return;
 		}
 		var elements = collection.ToArray();
-		int count = elements.Length;
+		var count = elements.Length;
 		if (count > 0)
 		{
 			root = ConstructRootFromSortedArray(elements, 0, count - 1, null);
@@ -1286,7 +1284,7 @@ public class SumList : BaseList<int, SumList>
 
 		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
-		int size = endIndex - startIndex + 1;
+		var size = endIndex - startIndex + 1;
 		Node root;
 		switch (size)
 		{
@@ -1316,7 +1314,7 @@ public class SumList : BaseList<int, SumList>
 					root.Left.Left = redNode;
 				break;
 			default:
-				int midpt = (startIndex + endIndex) / 2;
+				var midpt = (startIndex + endIndex) / 2;
 				root = new Node(arr[midpt], NodeColor.Black)
 				{
 					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
@@ -1343,7 +1341,7 @@ public class SumList : BaseList<int, SumList>
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
 			{
-				bool b = en.MoveNext();
+				var b = en.MoveNext();
 				if (b)
 					node.Value = en.Current;
 				return b;
@@ -1370,7 +1368,7 @@ public class SumList : BaseList<int, SumList>
 		if (count > array.Length - index)
 			throw new ArgumentException(null);
 		count += index; // Make `count` the upper bound.
-		int i = 0;
+		var i = 0;
 		InOrderTreeWalk(node =>
 		{
 			if (i >= count)
@@ -1410,7 +1408,7 @@ public class SumList : BaseList<int, SumList>
 		grandParent = null;
 		match = null;
 		parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -1527,7 +1525,7 @@ public class SumList : BaseList<int, SumList>
 
 	public virtual int GetAndRemove(Index index)
 	{
-		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
@@ -1585,16 +1583,14 @@ public class SumList : BaseList<int, SumList>
 		long sum = 0;
 		while (current != null)
 		{
-			int order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
+			var order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
 			if (order == 0)
 			{
 				actualValue = current.Value;
 				return sum + (current.Left?.ValuesSum ?? 0);
 			}
 			else if (order < 0)
-			{
 				current = current.Left;
-			}
 			else
 			{
 				index -= (current.Left?.LeavesCount ?? 0) + 1;
@@ -1630,7 +1626,7 @@ public class SumList : BaseList<int, SumList>
 		}
 		Node? current = root;
 		sumExceedsBy = 0;
-		int index = 0;
+		var index = 0;
 		while (current != null)
 		{
 			if (sum == (current.Left?.ValuesSum ?? 0))
@@ -1710,9 +1706,9 @@ public class SumList : BaseList<int, SumList>
 		// Even if we don't actually add to the list, we may be altering its structure (by doing rotations and such).
 		// So update `_version` to disable any instances of Enumerator/TreeSubSet from working on it.
 		version++;
-		int oldIndex = index;
-		int order = 0;
-		bool foundMatch = false;
+		var oldIndex = index;
+		var order = 0;
+		var foundMatch = false;
 		while (current != null)
 		{
 			order = foundMatch ? 1 : Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
@@ -1781,8 +1777,8 @@ public class SumList : BaseList<int, SumList>
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
-		bool parentIsOnRight = grandParent.Right == parent;
-		bool currentIsOnRight = parent.Right == current;
+		var parentIsOnRight = grandParent.Right == parent;
+		var currentIsOnRight = parent.Right == current;
 		Node newChildOfGreatGrandParent;
 		if (parentIsOnRight == currentIsOnRight)
 			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeft() : grandParent.RotateRight();
@@ -1865,7 +1861,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert((successor.Right == null && successor.IsRed) || (successor.Right!.IsRed && successor.IsBlack));
+			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -2097,7 +2093,7 @@ public class SumList : BaseList<int, SumList>
 			Debug.Assert(HasChildren(current, sibling));
 #endif
 
-			bool currentIsLeftChild = Left == current;
+			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
 				(currentIsLeftChild ? TreeRotation.Left : TreeRotation.LeftRight);
@@ -2191,7 +2187,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			Node child = Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -2212,7 +2208,7 @@ public class SumList : BaseList<int, SumList>
 			Node child = Left!;
 			Node grandChild = child.Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -2234,7 +2230,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			Node child = Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -2255,7 +2251,7 @@ public class SumList : BaseList<int, SumList>
 			Node child = Right!;
 			Node grandChild = child.Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -2295,8 +2291,8 @@ public class SumList : BaseList<int, SumList>
 		private bool HasChildren(Node child1, Node child2)
 		{
 			Debug.Assert(child1 != child2);
-			return (Left == child1 && Right == child2)
-				|| (Left == child2 && Right == child1);
+			return Left == child1 && Right == child2
+				|| Left == child2 && Right == child1;
 		}
 
 		internal void Verify()
@@ -2466,7 +2462,7 @@ public class SumList : BaseList<int, SumList>
 				int result = default;
 				while (current != null)
 				{
-					int comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
+					var comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
 					if (comp < 0)
 						current = current.Left;
 					else
@@ -2490,7 +2486,7 @@ public class SumList : BaseList<int, SumList>
 				int result = default;
 				while (current != null)
 				{
-					int comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
+					var comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
 					if (comp > 0)
 						current = current.Right;
 					else
@@ -2622,7 +2618,7 @@ public class SumList : BaseList<int, SumList>
 
 		internal override bool IsWithinRange(int index)
 		{
-			int comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
+			var comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
 			if (comp > 0)
 				return false;
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
@@ -2694,7 +2690,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			return;
 		}
 		var elements = collection.ToArray();
-		int count = elements.Length;
+		var count = elements.Length;
 		if (count > 0)
 		{
 			root = ConstructRootFromSortedArray(elements, 0, count - 1, null);
@@ -2799,7 +2795,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
-		int size = endIndex - startIndex + 1;
+		var size = endIndex - startIndex + 1;
 		Node root;
 		switch (size)
 		{
@@ -2829,7 +2825,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 					root.Left.Left = redNode;
 				break;
 			default:
-				int midpt = (startIndex + endIndex) / 2;
+				var midpt = (startIndex + endIndex) / 2;
 				root = new Node(new(arr[midpt]), NodeColor.Black)
 				{
 					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
@@ -2856,7 +2852,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
 			{
-				bool b = en.MoveNext();
+				var b = en.MoveNext();
 				if (b)
 					node.Value = en.Current;
 				return b;
@@ -2883,7 +2879,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		if (count > array.Length - index)
 			throw new ArgumentException(null);
 		count += index; // Make `count` the upper bound.
-		int i = 0;
+		var i = 0;
 		InOrderTreeWalk(node =>
 		{
 			if (i >= count)
@@ -2923,7 +2919,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		grandParent = null;
 		match = null;
 		parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -3040,7 +3036,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public virtual int GetAndRemove(Index index)
 	{
-		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
@@ -3098,16 +3094,14 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		mpz_t sum = 0;
 		while (current != null)
 		{
-			int order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
+			var order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
 			if (order == 0)
 			{
 				actualValue = new(current.Value);
 				return sum + (current.Left?.ValuesSum ?? 0);
 			}
 			else if (order < 0)
-			{
 				current = current.Left;
-			}
 			else
 			{
 				index -= (current.Left?.LeavesCount ?? 0) + 1;
@@ -3144,7 +3138,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		sum = new(sum);
 		Node? current = root;
 		sumExceedsBy = 0;
-		int index = 0;
+		var index = 0;
 		while (current != null)
 		{
 			if (sum == (current.Left?.ValuesSum ?? 0))
@@ -3227,9 +3221,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		// Even if we don't actually add to the list, we may be altering its structure (by doing rotations and such).
 		// So update `_version` to disable any instances of Enumerator/TreeSubSet from working on it.
 		version++;
-		int oldIndex = index;
-		int order = 0;
-		bool foundMatch = false;
+		var oldIndex = index;
+		var order = 0;
+		var foundMatch = false;
 		while (current != null)
 		{
 			order = foundMatch ? 1 : Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
@@ -3298,8 +3292,8 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
-		bool parentIsOnRight = grandParent.Right == parent;
-		bool currentIsOnRight = parent.Right == current;
+		var parentIsOnRight = grandParent.Right == parent;
+		var currentIsOnRight = parent.Right == current;
 		Node newChildOfGreatGrandParent;
 		if (parentIsOnRight == currentIsOnRight)
 			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeft() : grandParent.RotateRight();
@@ -3382,7 +3376,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert((successor.Right == null && successor.IsRed) || (successor.Right!.IsRed && successor.IsBlack));
+			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -3614,7 +3608,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Debug.Assert(HasChildren(current, sibling));
 #endif
 
-			bool currentIsLeftChild = Left == current;
+			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
 				(currentIsLeftChild ? TreeRotation.Left : TreeRotation.LeftRight);
@@ -3708,7 +3702,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			Node child = Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -3729,7 +3723,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Node child = Left!;
 			Node grandChild = child.Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -3751,7 +3745,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		{
 			Node child = Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -3772,7 +3766,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Node child = Right!;
 			Node grandChild = child.Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -3812,8 +3806,8 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		private bool HasChildren(Node child1, Node child2)
 		{
 			Debug.Assert(child1 != child2);
-			return (Left == child1 && Right == child2)
-				|| (Left == child2 && Right == child1);
+			return Left == child1 && Right == child2
+				|| Left == child2 && Right == child1;
 		}
 
 		internal void Verify()
@@ -3983,7 +3977,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 				int result = default;
 				while (current != null)
 				{
-					int comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
+					var comp = _uBoundActive ? Comparer.Compare(_max, current.Left?.LeavesCount ?? 0) : 1;
 					if (comp < 0)
 						current = current.Left;
 					else
@@ -4007,7 +4001,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 				int result = default;
 				while (current != null)
 				{
-					int comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
+					var comp = _lBoundActive ? Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) : -1;
 					if (comp > 0)
 						current = current.Right;
 					else
@@ -4139,7 +4133,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 		internal override bool IsWithinRange(int index)
 		{
-			int comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
+			var comp = _lBoundActive ? Comparer.Compare(_min, index) : -1;
 			if (comp > 0)
 				return false;
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;

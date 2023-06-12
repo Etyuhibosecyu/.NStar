@@ -28,10 +28,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	public BitList(int capacity)
 	{
 		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity == 0)
-			_items = _emptyPointer;
-		else
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(capacity, BitsPerInt)));
+		_items = capacity == 0 ? _emptyPointer : (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(capacity, BitsPerInt)));
 	}
 
 	public BitList(int length, bool defaultValue)
@@ -40,8 +37,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentOutOfRangeException(nameof(length));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(length, BitsPerInt)));
 		_size = length;
-		uint fillValue = defaultValue ? 0xffffffff : 0;
-		for (int i = 0; i < _capacity; i++)
+		var fillValue = defaultValue ? 0xffffffff : 0;
+		for (var i = 0; i < _capacity; i++)
 			_items[i] = fillValue;
 	}
 
@@ -49,7 +46,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		int uints = GetArrayLength(length, BitsPerInt);
+		var uints = GetArrayLength(length, BitsPerInt);
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
 		CopyMemory(ptr, _items, uints);
@@ -72,7 +69,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		int uints = GetArrayLength(length, BitsPerInt);
+		var uints = GetArrayLength(length, BitsPerInt);
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
 		fixed (uint* ptr = values)
@@ -85,15 +82,15 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentNullException(nameof(bits));
 		else if (bits is BitList bitList)
 		{
-			int arrayLength = _capacity = GetArrayLength(bitList._size, BitsPerInt);
+			var arrayLength = _capacity = GetArrayLength(bitList._size, BitsPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			_size = bitList._size;
 			CopyMemory(bitList._items, _items, arrayLength);
 		}
 		else if (bits is BitArray bitArray)
 		{
-			int arrayLength = _capacity = GetArrayLength(bitArray.Length, BitsPerInt);
-			int[] array = new int[arrayLength];
+			var arrayLength = _capacity = GetArrayLength(bitArray.Length, BitsPerInt);
+			var array = new int[arrayLength];
 			bitArray.CopyTo(array, 0);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			fixed (int* array2 = array)
@@ -106,8 +103,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(byteArray.Length, BytesPerInt)));
 			_size = byteArray.Length * BitsPerByte;
-			int i = 0;
-			int j = 0;
+			var i = 0;
+			var j = 0;
 			while (byteArray.Length - j >= 4)
 			{
 				_items[i++] = (uint)((byteArray[j] & 0xff) |
@@ -133,13 +130,13 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		{
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(boolArray.Length, BitsPerInt)));
 			_size = boolArray.Length;
-			for (int i = 0; i < boolArray.Length; i++)
+			for (var i = 0; i < boolArray.Length; i++)
 				if (boolArray[i])
 					_items[i / BitsPerInt] |= (uint)1 << i % BitsPerInt;
 		}
 		else if (bits is IEnumerable<int> ints)
 		{
-			uint[] uintArray = List<uint>.ToArrayEnumerable(ints, x => (uint)x);
+			var uintArray = List<uint>.ToArrayEnumerable(ints, x => (uint)x);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
 			fixed (uint* ptr = uintArray)
 				CopyMemory(ptr, _items, uintArray.Length);
@@ -147,7 +144,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<uint> uints)
 		{
-			uint[] uintArray = List<uint>.ToArrayEnumerable(uints);
+			var uintArray = List<uint>.ToArrayEnumerable(uints);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
 			fixed (uint* ptr = uintArray)
 				CopyMemory(ptr, _items, uintArray.Length);
@@ -155,34 +152,34 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<byte> bytes)
 		{
-			if (!List<byte>.TryGetCountEasilyEnumerable(bytes, out int count))
+			if (!List<byte>.TryGetCountEasilyEnumerable(bytes, out var count))
 				count = bytes.Count();
 			if (count > int.MaxValue / BitsPerByte)
 				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
-			int arrayLength = _capacity = GetArrayLength(count, BytesPerInt);
+			var arrayLength = _capacity = GetArrayLength(count, BytesPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);
-			int i = 0;
+			var i = 0;
 			using IEnumerator<byte> en = bytes.GetEnumerator();
 			while (en.MoveNext())
 			{
-				(int index, int remainder) = DivRem(i++, BytesPerInt);
+				(var index, var remainder) = DivRem(i++, BytesPerInt);
 				_items[index] |= (uint)en.Current << remainder * BitsPerByte;
 			}
 			_size = count * BitsPerByte;
 		}
 		else if (bits is IEnumerable<bool> bools)
 		{
-			if (!List<bool>.TryGetCountEasilyEnumerable(bools, out int count))
+			if (!List<bool>.TryGetCountEasilyEnumerable(bools, out var count))
 				count = bools.Count();
-			int arrayLength = _capacity = GetArrayLength(count, BitsPerInt);
+			var arrayLength = _capacity = GetArrayLength(count, BitsPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);
-			int i = 0;
+			var i = 0;
 			using IEnumerator<bool> en = bools.GetEnumerator();
 			while (en.MoveNext())
 			{
-				(int index, int remainder) = DivRem(i++, BitsPerInt);
+				(var index, var remainder) = DivRem(i++, BitsPerInt);
 				if (en.Current)
 					_items[index] |= (uint)1 << remainder;
 			}
@@ -199,12 +196,12 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		{
 			if (value < 0)
 				throw new ArgumentOutOfRangeException(nameof(value));
-			int newints = GetArrayLength(value, BitsPerInt);
+			var newints = GetArrayLength(value, BitsPerInt);
 			if (newints == _capacity)
 				return;
 			if (newints > _capacity || newints + _shrinkThreshold < _capacity)
 			{
-				uint* newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
+				var newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
 				CopyMemory(_items, newarray, Min(_capacity, newints));
 				Marshal.FreeHGlobal((nint)_items);
 				_items = newarray;
@@ -212,7 +209,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			}
 			if (value > _size)
 			{
-				(int last, int remainder) = DivRem(_size, BitsPerInt);
+				(var last, var remainder) = DivRem(_size, BitsPerInt);
 				_items[last] &= ((uint)1 << remainder) - 1;
 				FillMemory(_items + (last + 1), newints - last - 1, 0);
 			}
@@ -250,8 +247,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentNullException(nameof(value));
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
+		var ints = GetArrayLength(_size, BitsPerInt);
+		for (var i = 0; i < ints; i++)
 			_items[i] &= value._items[i];
 		return this;
 	}
@@ -260,16 +257,16 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override void ClearInternal(int index, int count)
 	{
-		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
-		uint startMask = ((uint)1 << startRemainder) - 1;
-		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
-		uint endMask = ~0u << endRemainder;
+		(var startIndex, var startRemainder) = DivRem(index, BitsPerInt);
+		var startMask = ((uint)1 << startRemainder) - 1;
+		(var endIndex, var endRemainder) = DivRem(index + count, BitsPerInt);
+		var endMask = ~0u << endRemainder;
 		if (startIndex == endIndex)
 			_items[startIndex] &= startMask | endMask;
 		else
 		{
 			_items[startIndex] &= startMask;
-			for (int i = startIndex + 1; i < endIndex; i++)
+			for (var i = startIndex + 1; i < endIndex; i++)
 				_items[i] = 0;
 			_items[endIndex] &= endMask;
 		}
@@ -291,19 +288,19 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return;
 		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
 			return;
-		(int sourceIntIndex, int sourceBitsIndex) = DivRem(sourceIndex, BitsPerInt);               // Целый индекс в исходном массиве.
-		(int destinationIntIndex, int destinationBitsIndex) = DivRem(destinationIndex, BitsPerInt);     // Целый индекс в целевом массиве.
-		int bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
-		int intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
-		uint sourceStartMask = ~0u << sourceBitsIndex; // Маска "головы" источника
-		int sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
-		(int sourceEndIntIndex, int sourceEndBitsIndex) = DivRem(sourceEndIndex, BitsPerInt);  // Индекс инта последнего бита.
-		int destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
-		(int destinationEndIntIndex, int destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);  // Индекс инта последнего бита.
+		(var sourceIntIndex, var sourceBitsIndex) = DivRem(sourceIndex, BitsPerInt);               // Целый индекс в исходном массиве.
+		(var destinationIntIndex, var destinationBitsIndex) = DivRem(destinationIndex, BitsPerInt);     // Целый индекс в целевом массиве.
+		var bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
+		var intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
+		var sourceStartMask = ~0u << sourceBitsIndex; // Маска "головы" источника
+		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+		(var sourceEndIntIndex, var sourceEndBitsIndex) = DivRem(sourceEndIndex, BitsPerInt);  // Индекс инта последнего бита.
+		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
+		(var destinationEndIntIndex, var destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);  // Индекс инта последнего бита.
 		if (destinationEndIntIndex == destinationIntIndex)
 		{
-			uint buff = sourceBits[sourceIntIndex] & sourceStartMask;
-			uint destinationMask = ~(length == BitsPerInt ? 0 : ~0u << length) << destinationBitsIndex;
+			var buff = sourceBits[sourceIntIndex] & sourceStartMask;
+			var destinationMask = ~(length == BitsPerInt ? 0 : ~0u << length) << destinationBitsIndex;
 			if (bitsOffset >= 0)
 				buff <<= bitsOffset;
 			else
@@ -332,7 +329,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				}
 				if (sourceEndIntIndex + intOffset != destinationEndIntIndex)
 					buff |= (ulong)sourceBits[sourceEndIntIndex] << BitsPerInt - bitsOffset;
-				ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
 				buff &= destinationMask;
 				destinationBits[destinationEndIntIndex] &= (uint)~destinationMask;
 				destinationBits[destinationEndIntIndex] |= (uint)buff;
@@ -348,7 +345,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					buff >>= BitsPerInt;
 					if (sourceCurrentIntIndex < sourceBound) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << bitsOffset;
 				}
-				ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
 				buff &= destinationMask;
 				destinationBits[destinationEndIntIndex] &= (uint)~destinationMask;
 				destinationBits[destinationEndIntIndex] |= (uint)buff;
@@ -356,7 +353,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else
 		{
-			uint sourceEndMask = (uint)(((ulong)1 << sourceEndBitsIndex + 1) - 1); // Маска "хвоста" источника
+			var sourceEndMask = (uint)(((ulong)1 << sourceEndBitsIndex + 1) - 1); // Маска "хвоста" источника
 			if (bitsOffset < 0)
 			{
 				bitsOffset = -bitsOffset;
@@ -373,7 +370,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				}
 				if (sourceEndIntIndex + intOffset != destinationEndIntIndex)
 					buff |= (ulong)sourceBits[sourceIntIndex] << BitsPerInt - bitsOffset;
-				ulong destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
+				var destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
 				buff &= destinationMask;
 				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
 				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
@@ -391,7 +388,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					buff <<= BitsPerInt;
 					if (sourceEndIntIndex + intOffset != destinationEndIntIndex && sourceCurrentIntIndex >= 0) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
 				}
-				ulong destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
+				var destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
 				buff &= destinationMask;
 				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
 				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
@@ -409,8 +406,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
 		if (destinationBound == 0)
 			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
-		int sourceLengthBits = sourceBound * BitsPerInt; // Длина массивов в битах.
-		int destinationLengthBits = destinationBound * BitsPerInt; // Длина массивов в битах.
+		var sourceLengthBits = sourceBound * BitsPerInt; // Длина массивов в битах.
+		var destinationLengthBits = destinationBound * BitsPerInt; // Длина массивов в битах.
 		if (sourceIndex < 0)
 			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
 		if (destinationIndex < 0)
@@ -457,7 +454,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override void CopyToInternal(int index, bool[] array, int arrayIndex, int count)
 	{
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 			array[arrayIndex + i] = ((_items[(index + i) / BitsPerInt] >> ((index + i) % BitsPerInt)) & 0x00000001) != 0;
 	}
 
@@ -481,14 +478,14 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				return false;
 			if (bitList._size == 0)
 				return !toEnd || index == _size;
-			(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
-			uint startMask = ~0u << bitsIndex;
-			int destinationEndIndex = bitList._size - 1;
-			(int destinationEndIntIndex, int destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);
+			(var intIndex, var bitsIndex) = DivRem(index, BitsPerInt);
+			var startMask = ~0u << bitsIndex;
+			var destinationEndIndex = bitList._size - 1;
+			(var destinationEndIntIndex, var destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);
 			if (destinationEndIntIndex == 0)
 			{
-				uint buff = _items[intIndex] & startMask;
-				uint destinationMask = ~(bitList._size == BitsPerInt ? 0 : ~0u << bitList._size);
+				var buff = _items[intIndex] & startMask;
+				var destinationMask = ~(bitList._size == BitsPerInt ? 0 : ~0u << bitList._size);
 				buff >>= bitsIndex;
 				if (bitList._size + bitsIndex > BitsPerInt)
 					buff |= _items[intIndex + 1] << BitsPerInt - bitsIndex;
@@ -497,8 +494,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			}
 			else
 			{
-				ulong buff = (ulong)(_items[intIndex] & startMask) >> bitsIndex;
-				int sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
+				var buff = (ulong)(_items[intIndex] & startMask) >> bitsIndex;
+				var sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
 				for (int sourceCurrentIntIndex = intIndex + 1, destinationCurrentIntIndex = 0; destinationCurrentIntIndex < destinationEndIntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
 				{
 					buff |= ((ulong)_items[sourceCurrentIntIndex]) << BitsPerInt - bitsIndex;
@@ -507,21 +504,21 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				}
 				if (sourceEndIntIndex - intIndex != destinationEndIntIndex)
 					buff |= (ulong)_items[sourceEndIntIndex] << BitsPerInt - bitsIndex;
-				ulong destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
+				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
 				buff &= destinationMask;
 				return (bitList._items[destinationEndIntIndex] & destinationMask) == buff;
 			}
 		}
 		else
 		{
-			if (collection.TryGetCountEasily(out int count))
+			if (collection.TryGetCountEasily(out var count))
 			{
 				if (index > _size - count)
 					return false;
 				if (toEnd && index < _size - count)
 					return false;
 			}
-			foreach (bool item in collection)
+			foreach (var item in collection)
 				if (index >= _size || !GetInternal(index++).Equals(item))
 					return false;
 			return !toEnd || index == _size;
@@ -532,7 +529,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	internal override bool GetInternal(int index, bool invoke = true)
 	{
-		bool item = (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
+		var item = (_items[index / BitsPerInt] & (1 << index % BitsPerInt)) != 0;
 		if (invoke)
 			Changed();
 		return item;
@@ -550,8 +547,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return new();
 		if (count > BitsPerInt)
 			throw new ArgumentException(null, nameof(count));
-		(int quotient, int remainder) = DivRem(index, BitsPerInt);
-		(int quotient2, int remainder2) = DivRem(index + count - 1, BitsPerInt);
+		(var quotient, var remainder) = DivRem(index, BitsPerInt);
+		(var quotient2, var remainder2) = DivRem(index + count - 1, BitsPerInt);
 		uint result;
 		if (quotient == quotient2)
 			result = (_items[quotient] >> remainder) & ~(count == BitsPerInt ? 0 : ~0u << count);
@@ -565,30 +562,30 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override int IndexOfInternal(bool item, int index, int count)
 	{
-		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		(int startIndex, int startRemainder) = DivRem(index, BitsPerInt);
-		(int endIndex, int endRemainder) = DivRem(index + count, BitsPerInt);
+		var fillValue = item ? 0 : unchecked((int)0xffffffff);
+		(var startIndex, var startRemainder) = DivRem(index, BitsPerInt);
+		(var endIndex, var endRemainder) = DivRem(index + count, BitsPerInt);
 		if (startIndex == endIndex)
 		{
-			for (int i = startRemainder; i < endRemainder; i++)
+			for (var i = startRemainder; i < endRemainder; i++)
 				if ((_items[startIndex] & (1 << i)) == 0 ^ item)
 					return startIndex * BitsPerInt + i;
 			return -1;
 		}
-		int invRemainder = BitsPerInt - startRemainder;
-		int mask = (1 << invRemainder) - 1;
-		uint first = _items[startIndex] >> startRemainder;
+		var invRemainder = BitsPerInt - startRemainder;
+		var mask = (1 << invRemainder) - 1;
+		var first = _items[startIndex] >> startRemainder;
 		if (first != (item ? 0 : mask))
-			for (int i = 0; i < invRemainder; i++)
+			for (var i = 0; i < invRemainder; i++)
 				if ((first & (1 << i)) == 0 ^ item)
 					return index + i;
-		for (int i = startIndex + 1; i < endIndex; i++)
+		for (var i = startIndex + 1; i < endIndex; i++)
 			if (_items[i] != fillValue)
-				for (int j = 0; j < BitsPerInt; j++)
+				for (var j = 0; j < BitsPerInt; j++)
 					if ((_items[i] & (1 << j)) != 0)
 						return i * BitsPerInt + j;
 		if (endRemainder != 0)
-			for (int i = 0; i < endRemainder; i++)
+			for (var i = 0; i < endRemainder; i++)
 				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
 					return endIndex * BitsPerInt + i;
 		return -1;
@@ -602,7 +599,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is BitList bitList)
 		{
-			int count = bitList._size;
+			var count = bitList._size;
 			if (count == 0)
 				return this;
 			EnsureCapacity(_size + count);
@@ -615,7 +612,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return InsertInternal(index, bools);
 		else if (collection is uint[] uintArray)
 		{
-			int count = uintArray.Length * BitsPerInt;
+			var count = uintArray.Length * BitsPerInt;
 			if (count == 0)
 				return this;
 			EnsureCapacity(_size + count);
@@ -631,30 +628,30 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override int LastIndexOfInternal(bool item, int index, int count)
 	{
-		int fillValue = item ? 0 : unchecked((int)0xffffffff);
-		(int startIndex, int startRemainder) = DivRem(index + 1 - count, BitsPerInt);
-		(int endIndex, int endRemainder) = DivRem(index + 1, BitsPerInt);
+		var fillValue = item ? 0 : unchecked((int)0xffffffff);
+		(var startIndex, var startRemainder) = DivRem(index + 1 - count, BitsPerInt);
+		(var endIndex, var endRemainder) = DivRem(index + 1, BitsPerInt);
 		if (startIndex == endIndex)
 		{
-			for (int i = endRemainder - 1; i >= startRemainder; i--)
+			for (var i = endRemainder - 1; i >= startRemainder; i--)
 				if ((_items[startIndex] & (1 << i)) == 0 ^ item)
 					return startIndex * BitsPerInt + i;
 			return -1;
 		}
 		if (endRemainder != 0)
-			for (int i = endRemainder - 1; i >= 0; i--)
+			for (var i = endRemainder - 1; i >= 0; i--)
 				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
 					return endIndex * BitsPerInt + i;
-		for (int i = endIndex - 1; i >= startIndex + 1; i--)
+		for (var i = endIndex - 1; i >= startIndex + 1; i--)
 			if (_items[i] != fillValue)
-				for (int j = BitsPerInt; j >= 0; j--)
+				for (var j = BitsPerInt; j >= 0; j--)
 					if ((_items[i] & (1 << j)) != 0)
 						return i * BitsPerInt + j;
-		int invRemainder = BitsPerInt - startRemainder;
-		int mask = (1 << invRemainder) - 1;
-		uint first = _items[startIndex] >> startRemainder;
+		var invRemainder = BitsPerInt - startRemainder;
+		var mask = (1 << invRemainder) - 1;
+		var first = _items[startIndex] >> startRemainder;
 		if (first != (item ? 0 : mask))
-			for (int i = invRemainder - 1; i >= 0; i--)
+			for (var i = invRemainder - 1; i >= 0; i--)
 				if ((first & (1 << i)) == 0 ^ item)
 					return index + i;
 		return -1;
@@ -662,8 +659,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList Not()
 	{
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
+		var ints = GetArrayLength(_size, BitsPerInt);
+		for (var i = 0; i < ints; i++)
 			_items[i] = ~_items[i];
 		return this;
 	}
@@ -674,15 +671,15 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentNullException(nameof(value));
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
+		var ints = GetArrayLength(_size, BitsPerInt);
+		for (var i = 0; i < ints; i++)
 			_items[i] |= value._items[i];
 		return this;
 	}
 
 	private protected override BitList ReverseInternal(int index, int count)
 	{
-		for (int i = 0; i < count / 2; i++)
+		for (var i = 0; i < count / 2; i++)
 			(this[index + i], this[index + count - i - 1]) = (this[index + count - i - 1], this[index + i]);
 		Changed();
 		return this;
@@ -700,21 +697,21 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException(null);
 		if (count == 0)
 			return this;
-		(int intIndex, int bitsIndex) = DivRem(index, BitsPerInt);
-		(int endIntIndex, int endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
+		(var intIndex, var bitsIndex) = DivRem(index, BitsPerInt);
+		(var endIntIndex, var endBitsIndex) = DivRem(index + count - 1, BitsPerInt);
 		if (intIndex == endIntIndex)
 		{
-			uint mask = ~(count == BitsPerInt ? 0 : ~0u << count) << bitsIndex;
+			var mask = ~(count == BitsPerInt ? 0 : ~0u << count) << bitsIndex;
 			_items[intIndex] = value ? _items[intIndex] | mask : _items[intIndex] & ~mask;
 		}
 		else
 		{
-			uint startMask = ~0u << bitsIndex;
+			var startMask = ~0u << bitsIndex;
 			_items[intIndex] = value ? _items[intIndex] | startMask : _items[intIndex] & ~startMask;
-			uint fillValue = value ? 0xffffffff : 0;
-			for (int i = intIndex + 1; i < endIntIndex; i++)
+			var fillValue = value ? 0xffffffff : 0;
+			for (var i = intIndex + 1; i < endIntIndex; i++)
 				_items[i] = fillValue;
-			uint endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
+			var endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
 			_items[endIntIndex] = value ? _items[endIntIndex] | endMask : _items[endIntIndex] & ~endMask;
 		}
 		return this;
@@ -737,7 +734,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is BitList bitList)
 		{
-			int count = bitList._size;
+			var count = bitList._size;
 			if (index + count > _size)
 				throw new ArgumentException(null);
 			if (count > 0)
@@ -750,9 +747,9 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual List<uint> ToUIntList()
 	{
-		int length = GetArrayLength(_size, BitsPerInt);
+		var length = GetArrayLength(_size, BitsPerInt);
 		List<uint> result = new(length);
-		for (int i = 0; i < length; i++)
+		for (var i = 0; i < length; i++)
 			result.Add(_items[i]);
 		return result;
 	}
@@ -763,8 +760,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentNullException(nameof(value));
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
-		int ints = GetArrayLength(_size, BitsPerInt);
-		for (int i = 0; i < ints; i++)
+		var ints = GetArrayLength(_size, BitsPerInt);
+		for (var i = 0; i < ints; i++)
 			_items[i] ^= value._items[i];
 		return this;
 	}
@@ -875,10 +872,10 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			{
 				low = null;
 				fragment = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				int fragment2 = (int)ProperFragment;
+				var fragment2 = (int)ProperFragment;
 				high = new(GetArrayLength(bitList.Length, fragment2));
 				highCapacity = new();
-				int index = 0;
+				var index = 0;
 				for (; index <= bitList.Length - fragment2; index += fragment2)
 				{
 					high.Add(new(bitList.GetRange(index, fragment2), CapacityStepBitLength, CapacityFirstStepBitLength));
@@ -909,11 +906,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			{
 				low = null;
 				fragment = 1 << (((count - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				int fragment2 = (int)ProperFragment;
-				int uintsFragment = fragment2 / BitsPerInt;
+				var fragment2 = (int)ProperFragment;
+				var uintsFragment = fragment2 / BitsPerInt;
 				high = new((int)((count + uintsFragment - 1) / uintsFragment));
 				highCapacity = new();
-				int index = 0;
+				var index = 0;
 				for (; index <= count - uintsFragment; index += uintsFragment)
 				{
 					high.Add(new(bigUIntList.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength));
@@ -953,13 +950,13 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else if (bits is IEnumerable<byte> bytes)
 		{
-			bool b = true;
+			var b = true;
 			IEnumerator<byte> en = bytes.GetEnumerator();
 			BigList<uint> values = new();
-			int n = 0;
+			var n = 0;
 			while (b)
 			{
-				int i = 0;
+				var i = 0;
 				uint value = 0;
 				for (; i < BytesPerInt; i++, n++)
 				{
@@ -1034,10 +1031,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.And(value.low);
-		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.And(y));
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		else high = high != null && value.high != null
+			? high.Combine(value.high, (x, y) => x.And(y))
+			:            throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 
@@ -1057,8 +1053,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			return low.GetSmallRange((int)index, count);
 		else if (high != null)
 		{
-			int quotient = (int)index.Divide(fragment, out var remainder);
-			int quotient2 = (int)(index + count - 1).Divide(fragment, out var remainder2);
+			var quotient = (int)index.Divide(fragment, out var remainder);
+			var quotient2 = (int)(index + count - 1).Divide(fragment, out var remainder2);
 			uint result;
 			if (quotient == quotient2)
 				result = high[quotient].GetSmallRange(remainder, count);
@@ -1092,10 +1088,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Or(value.low);
-		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.Or(y));
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		else high = high != null && value.high != null
+			? high.Combine(value.high, (x, y) => x.Or(y))
+			:         throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 
@@ -1109,15 +1104,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual BigList<uint> ToUIntBigList()
-	{
-		if (!isHigh && low != null)
-			return new(low.ToUIntList());
-		else if (high != null)
-			return new(high.SelectMany(x => x.ToUIntBigList()));
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
+	public virtual BigList<uint> ToUIntBigList() => !isHigh && low != null
+			? new(low.ToUIntList())
+			: high != null
+			? new(high.SelectMany(x => x.ToUIntBigList()))
+			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 
 	public virtual BigBitList Xor(BigBitList value)
 	{
@@ -1127,10 +1118,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Xor(value.low);
-		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.Xor(y));
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		else high = high != null && value.high != null
+			? high.Combine(value.high, (x, y) => x.Xor(y))
+			:            throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 }

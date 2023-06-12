@@ -29,7 +29,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		int ret = Search(item);
+		var ret = Search(item);
 		return ret >= index && ret < index + count ? ret : -1;
 	}
 
@@ -37,7 +37,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		int ret = Search(item);
+		var ret = Search(item);
 		return ret >= 0 ? ret : ~ret;
 	}
 
@@ -98,7 +98,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out int count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out var count) ? (int)(Sqrt(count) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -264,8 +264,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Array.Sort(elements, 0, count, Comparer);
 			// Overwrite duplicates while shifting the distinct elements towards
 			// the front of the array.
-			int index = 1;
-			for (int i = 1; i < count; i++)
+			var index = 1;
+			for (var i = 1; i < count; i++)
 			{
 				if (comparer.Compare(elements[i], elements[i - 1]) != 0)
 					elements[index++] = elements[i];
@@ -401,7 +401,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// need special case in case this has no elements.
 		if (Length == 0)
 		{
-			int numElementsInOther = 0;
+			var numElementsInOther = 0;
 			foreach (var x in other)
 			{
 				numElementsInOther++;
@@ -412,19 +412,19 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			result.UnfoundCount = numElementsInOther;
 			return result;
 		}
-		int originalLastIndex = Length;
-		int intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
+		var originalLastIndex = Length;
+		var intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
 		Span<int> span = stackalloc int[StackAllocThreshold];
 		BitHelper bitHelper = intArrayLength <= StackAllocThreshold ?
 			new BitHelper(span[..intArrayLength], clear: true) :
 			new BitHelper(new int[intArrayLength], clear: false);
 		// count of items in other not found in this
-		int UnfoundCount = 0;
+		var UnfoundCount = 0;
 		// count of unique items in other found in this
-		int uniqueFoundCount = 0;
+		var uniqueFoundCount = 0;
 		foreach (var x in other)
 		{
-			int index = InternalIndexOf(x);
+			var index = InternalIndexOf(x);
 			if (index >= 0)
 			{
 				if (!bitHelper.IsMarked(index))
@@ -472,7 +472,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
-		int size = endIndex - startIndex + 1;
+		var size = endIndex - startIndex + 1;
 		Node root;
 		switch (size)
 		{
@@ -502,7 +502,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					root.Left.Left = redNode;
 				break;
 			default:
-				int midpt = (startIndex + endIndex) / 2;
+				var midpt = (startIndex + endIndex) / 2;
 				root = new Node(arr[midpt], NodeColor.Black)
 				{
 					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
@@ -539,7 +539,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex), destination.GetInternal(Min(destinationIndex + count, destination._size) - 1), true, true).InOrderTreeWalk(node =>
 			{
-				bool b = en.MoveNext();
+				var b = en.MoveNext();
 				if (b)
 					node.Item = en.Current;
 				return b;
@@ -566,7 +566,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		if (count > array.Length - index)
 			throw new ArgumentException(null);
 		count += index; // Make `count` the upper bound.
-		int i = 0;
+		var i = 0;
 		InOrderTreeWalk(node =>
 		{
 			if (i >= count)
@@ -645,7 +645,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		grandParent = null;
 		match = null;
 		parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -725,7 +725,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Node? current = root;
 		while (current != null)
 		{
-			int order = Comparer.Compare(item, current.Item);
+			var order = Comparer.Compare(item, current.Item);
 			if (order == 0)
 				return current;
 			current = order < 0 ? current.Left : current.Right;
@@ -752,7 +752,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public virtual T GetAndRemove(Index index)
 	{
-		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch);
@@ -876,8 +876,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
-		bool parentIsOnRight = grandParent.Right == parent;
-		bool currentIsOnRight = parent.Right == current;
+		var parentIsOnRight = grandParent.Right == parent;
+		var currentIsOnRight = parent.Right == current;
 		Node newChildOfGreatGrandParent;
 		if (parentIsOnRight == currentIsOnRight)
 			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeft() : grandParent.RotateRight();
@@ -924,10 +924,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	internal virtual int InternalIndexOf(T item)
 	{
 		Node? current = root;
-		int count = 0;
+		var count = 0;
 		while (current != null)
 		{
-			int order = Comparer.Compare(item, current.Item);
+			var order = Comparer.Compare(item, current.Item);
 			if (order == 0)
 				return count;
 			current = order < 0 ? current.Left : current.Right;
@@ -945,21 +945,21 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return;
 		// HashSet<T> optimizations can't be done until equality comparers and comparers are related
 		// Technically, this would work as well with an ISorted<T>
-		TreeSubSet? treeSubset = this as TreeSubSet;
+		var treeSubset = this as TreeSubSet;
 		if (treeSubset != null)
 			VersionCheck();
 		if (other is TreeSet<T> asSorted && treeSubset == null && HasEqualComparer(asSorted))
 		{
 			// First do a merge sort to an array.
-			T[] merged = new T[Length];
-			int c = 0;
+			var merged = new T[Length];
+			var c = 0;
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			T? max = Max;
 			while (!mineEnded && !theirsEnded && Comparer.Compare(theirs.Current, max) <= 0)
 			{
-				int comp = Comparer.Compare(mine.Current, theirs.Current);
+				var comp = Comparer.Compare(mine.Current, theirs.Current);
 				if (comp < 0)
 					mineEnded = !mine.MoveNext();
 				else if (comp == 0)
@@ -1007,9 +1007,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// another for sorted sets with the same comparer
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
 		{
-			if (Length >= asSorted.Length)
-				return false;
-			return IsSubsetOfSortedSetWithSameComparer(asSorted);
+			return Length < asSorted.Length && IsSubsetOfSortedSetWithSameComparer(asSorted);
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
 		ElementCount result = CheckUniqueAndUnfoundElements(other, false);
@@ -1050,9 +1048,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return true;
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
 		{
-			if (Length > asSorted.Length)
-				return false;
-			return IsSubsetOfSortedSetWithSameComparer(asSorted);
+			return Length <= asSorted.Length && IsSubsetOfSortedSetWithSameComparer(asSorted);
 		}
 		else
 		{
@@ -1176,7 +1172,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Node? grandParent = null;
 		Node? match = null;
 		Node? parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -1225,7 +1221,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				}
 			}
 			// We don't need to compare after we find the match.
-			int order = foundMatch ? -1 : Comparer.Compare(item, current.Item);
+			var order = foundMatch ? -1 : Comparer.Compare(item, current.Item);
 			if (order == 0)
 			{
 				// Save the matching node.
@@ -1274,8 +1270,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return true;
 		});
 		// Enumerate the results of the breadth-first walk in reverse in an attempt to lower cost.
-		int actuallyRemoved = 0;
-		for (int i = matches.Length - 1; i >= 0; i--)
+		var actuallyRemoved = 0;
+		for (var i = matches.Length - 1; i >= 0; i--)
 		{
 			if (RemoveValue(matches[i]))
 				actuallyRemoved++;
@@ -1316,7 +1312,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert((successor.Right == null && successor.IsRed) || (successor.Right!.IsRed && successor.IsBlack));
+			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -1348,10 +1344,10 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	public override int Search(T item)
 	{
 		Node? current = root;
-		int n = 0;
+		var n = 0;
 		while (current != null)
 		{
-			int order = Comparer.Compare(item, current.Item);
+			var order = Comparer.Compare(item, current.Item);
 			if (order == 0)
 				return (current.Left?.LeavesCount ?? 0) + n;
 			else if (order < 0)
@@ -1372,8 +1368,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
-			bool mineEnded = !mine.MoveNext();
-			bool theirsEnded = !theirs.MoveNext();
+			var mineEnded = !mine.MoveNext();
+			var theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
 			{
 				if (Comparer.Compare(mine.Current, theirs.Current) != 0)
@@ -1469,7 +1465,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		else
 		{
 			T[] elements = other.ToArray();
-			int length = elements.Length;
+			var length = elements.Length;
 			Array.Sort(elements, 0, length, Comparer);
 			SymmetricExceptWithSameComparer(elements, length);
 		}
@@ -1481,7 +1477,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Debug.Assert(HasEqualComparer(other));
 		foreach (var item in other)
 		{
-			bool result = Contains(item) ? RemoveValue(item) : TryAdd(item);
+			var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
 			Debug.Assert(result);
 		}
 	}
@@ -1493,14 +1489,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		if (count == 0)
 			return;
 		T previous = other[0];
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 		{
 			while (i < count && i != 0 && Comparer.Compare(other[i], previous) == 0)
 				i++;
 			if (i >= count)
 				break;
 			T current = other[i];
-			bool result = Contains(current) ? RemoveValue(current) : TryAdd(current);
+			var result = Contains(current) ? RemoveValue(current) : TryAdd(current);
 			Debug.Assert(result);
 			previous = current;
 		}
@@ -1529,7 +1525,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Even if we don't actually add to the set, we may be altering its structure (by doing rotations and such).
 		// So update `_version` to disable any instances of Enumerator/TreeSubSet from working on it.
 		version++;
-		int order = 0;
+		var order = 0;
 		while (current != null)
 		{
 			order = Comparer.Compare(item, current.Item);
@@ -1611,8 +1607,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	public override void UnionWith(IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
-		TreeSet<T>? asSorted = other as TreeSet<T>;
-		TreeSubSet? treeSubset = this as TreeSubSet;
+		var asSorted = other as TreeSet<T>;
+		var treeSubset = this as TreeSubSet;
 		if (treeSubset != null)
 			VersionCheck();
 		if (asSorted != null && treeSubset == null && Length == 0)
@@ -1624,17 +1620,17 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return;
 		}
 		// This actually hurts if N is much greater than M. The / 2 is arbitrary.
-		if (asSorted != null && treeSubset == null && HasEqualComparer(asSorted) && (asSorted.Length > Length / 2))
+		if (asSorted != null && treeSubset == null && HasEqualComparer(asSorted) && asSorted.Length > Length / 2)
 		{
 			// First do a merge sort to an array.
-			T[] merged = new T[asSorted.Length + Length];
-			int c = 0;
+			var merged = new T[asSorted.Length + Length];
+			var c = 0;
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
 			{
-				int comp = Comparer.Compare(mine.Current, theirs.Current);
+				var comp = Comparer.Compare(mine.Current, theirs.Current);
 				if (comp < 0)
 				{
 					merged[c++] = mine.Current;
@@ -1830,7 +1826,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Debug.Assert(HasChildren(current, sibling));
 #endif
 
-			bool currentIsLeftChild = Left == current;
+			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
 				(currentIsLeftChild ? TreeRotation.Left : TreeRotation.LeftRight);
@@ -1924,7 +1920,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			Node child = Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -1945,7 +1941,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Node child = Left!;
 			Node grandChild = child.Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -1967,7 +1963,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			Node child = Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -1988,7 +1984,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Node child = Right!;
 			Node grandChild = child.Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -2022,8 +2018,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		private bool HasChildren(Node child1, Node child2)
 		{
 			Debug.Assert(child1 != child2);
-			return (Left == child1 && Right == child2)
-				|| (Left == child2 && Right == child1);
+			return Left == child1 && Right == child2
+				|| Left == child2 && Right == child1;
 		}
 #endif
 	}
@@ -2185,7 +2181,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				T? result = default;
 				while (current != null)
 				{
-					int comp = _uBoundActive ? Comparer.Compare(_max, current.Item) : 1;
+					var comp = _uBoundActive ? Comparer.Compare(_max, current.Item) : 1;
 					if (comp < 0)
 						current = current.Left;
 					else
@@ -2209,7 +2205,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				T? result = default;
 				while (current != null)
 				{
-					int comp = _lBoundActive ? Comparer.Compare(_min, current.Item) : -1;
+					var comp = _lBoundActive ? Comparer.Compare(_min, current.Item) : -1;
 					if (comp > 0)
 						current = current.Right;
 					else
@@ -2340,7 +2336,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// lot of space
 		internal override int InternalIndexOf(T item)
 		{
-			int count = -1;
+			var count = -1;
 			foreach (var x in this)
 			{
 				count++;
@@ -2363,7 +2359,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		internal override bool IsWithinRange(T item)
 		{
-			int comp = _lBoundActive ? Comparer.Compare(_min, item) : -1;
+			var comp = _lBoundActive ? Comparer.Compare(_min, item) : -1;
 			if (comp > 0)
 				return false;
 			comp = _uBoundActive ? Comparer.Compare(_max, item) : 1;
@@ -2374,7 +2370,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (!IsWithinRange(item))
 				return false;
-			bool ret = _underlying.RemoveValue(item);
+			var ret = _underlying.RemoveValue(item);
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2395,7 +2391,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (!IsWithinRange(item))
 				throw new ArgumentOutOfRangeException(nameof(item));
-			bool ret = _underlying.TryAdd(item);
+			var ret = _underlying.TryAdd(item);
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2478,7 +2474,7 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 	//the set
 	public virtual int GetHashCode(TreeSet<T>? obj)
 	{
-		int hashCode = 0;
+		var hashCode = 0;
 		if (obj != null)
 		{
 			foreach (var x in obj)
@@ -2539,8 +2535,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Array.Sort(elements, 0, count, Comparer);
 			// Overwrite duplicates while shifting the distinct elements towards
 			// the front of the array.
-			int index = 1;
-			for (int i = 1; i < count; i++)
+			var index = 1;
+			for (var i = 1; i < count; i++)
 			{
 				if (comparer.Compare(elements[i].Key, elements[i - 1].Key) != 0)
 					elements[index++] = elements[i];
@@ -2682,7 +2678,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// need special case in case this has no elements.
 		if (Length == 0)
 		{
-			int numElementsInOther = 0;
+			var numElementsInOther = 0;
 			foreach (var (Key, Value) in other)
 			{
 				numElementsInOther++;
@@ -2693,19 +2689,19 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			result.UnfoundCount = numElementsInOther;
 			return result;
 		}
-		int originalLastIndex = Length;
-		int intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
+		var originalLastIndex = Length;
+		var intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
 		Span<int> span = stackalloc int[StackAllocThreshold];
 		BitHelper bitHelper = intArrayLength <= StackAllocThreshold ?
 			new BitHelper(span[..intArrayLength], clear: true) :
 			new BitHelper(new int[intArrayLength], clear: false);
 		// count of items in other not found in this
-		int UnfoundCount = 0;
+		var UnfoundCount = 0;
 		// count of unique items in other found in this
-		int uniqueFoundCount = 0;
+		var uniqueFoundCount = 0;
 		foreach (var (Key, Value) in other)
 		{
-			int index = InternalIndexOf(Key);
+			var index = InternalIndexOf(Key);
 			if (index >= 0)
 			{
 				if (!bitHelper.IsMarked(index))
@@ -2753,7 +2749,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 		// This is done recursively because the iterative way to do this ends up wasting more space than it saves in stack frames
 		// Only some base cases are handled below.
-		int size = endIndex - startIndex + 1;
+		var size = endIndex - startIndex + 1;
 		Node root;
 		switch (size)
 		{
@@ -2783,7 +2779,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					root.Left.Left = redNode;
 				break;
 			default:
-				int midpt = (startIndex + endIndex) / 2;
+				var midpt = (startIndex + endIndex) / 2;
 				root = new Node(arr[midpt], NodeColor.Black)
 				{
 					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
@@ -2796,7 +2792,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return root;
 	}
 
-	public virtual bool Contains(T? item) => item != null && TryGetValue(item, out int _);
+	public virtual bool Contains(T? item) => item != null && TryGetValue(item, out var _);
 
 	private bool ContainsAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
@@ -2822,7 +2818,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + count, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
 			{
-				bool b = en.MoveNext();
+				var b = en.MoveNext();
 				if (b)
 					node.Item = en.Current;
 				return b;
@@ -2849,7 +2845,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (count > array.Length - index)
 			throw new ArgumentException(null);
 		count += index; // Make `count` the upper bound.
-		int i = 0;
+		var i = 0;
 		InOrderTreeWalk(node =>
 		{
 			if (i >= count)
@@ -2930,7 +2926,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		grandParent = null;
 		match = null;
 		parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -3010,7 +3006,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Node? current = root;
 		while (current != null)
 		{
-			int order = Comparer2.Compare(item, current.Item.Key);
+			var order = Comparer2.Compare(item, current.Item.Key);
 			if (order == 0)
 				return current;
 			current = order < 0 ? current.Left : current.Right;
@@ -3037,7 +3033,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual T GetAndRemove(Index index)
 	{
-		int index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch);
@@ -3095,16 +3091,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		long sum = 0;
 		while (current != null)
 		{
-			int order = Comparer2.Compare(item, current.Item.Key);
+			var order = Comparer2.Compare(item, current.Item.Key);
 			if (order == 0)
 			{
 				actualValue = current.Item.Value;
 				return sum + (current.Left?.ValuesSum ?? 0);
 			}
 			else if (order < 0)
-			{
 				current = current.Left;
-			}
 			else
 			{
 				sum += (current.Left?.ValuesSum ?? 0) + current.Item.Value;
@@ -3140,7 +3134,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		int ret = Search(item);
+		var ret = Search(item);
 		return ret >= index && ret < index + count ? ret : -1;
 	}
 
@@ -3149,7 +3143,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (sum == ValuesSum)
 			return _size;
 		Node? current = root;
-		int index = 0;
+		var index = 0;
 		while (current != null)
 		{
 			if (sum == (current.Left?.ValuesSum ?? 0))
@@ -3170,7 +3164,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		int ret = Search(item);
+		var ret = Search(item);
 		return ret >= 0 ? ret : ~ret;
 	}
 
@@ -3222,8 +3216,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
-		bool parentIsOnRight = grandParent.Right == parent;
-		bool currentIsOnRight = parent.Right == current;
+		var parentIsOnRight = grandParent.Right == parent;
+		var currentIsOnRight = parent.Right == current;
 		Node newChildOfGreatGrandParent;
 		if (parentIsOnRight == currentIsOnRight)
 			newChildOfGreatGrandParent = currentIsOnRight ? grandParent.RotateLeft() : grandParent.RotateRight();
@@ -3261,10 +3255,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	internal virtual int InternalIndexOf(T item)
 	{
 		Node? current = root;
-		int count = 0;
+		var count = 0;
 		while (current != null)
 		{
-			int order = Comparer2.Compare(item, current.Item.Key);
+			var order = Comparer2.Compare(item, current.Item.Key);
 			if (order == 0)
 				return count;
 			current = order < 0 ? current.Left : current.Right;
@@ -3282,21 +3276,21 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return;
 		// HashSet<T> optimizations can't be done until equality comparers and comparers are related
 		// Technically, this would work as well with an ISorted<T>
-		TreeSubSet? treeSubset = this as TreeSubSet;
+		var treeSubset = this as TreeSubSet;
 		if (treeSubset != null)
 			VersionCheck();
 		if (other is SumSet<T> asSorted && treeSubset == null && HasEqualComparer(asSorted))
 		{
 			// First do a merge sort to an array.
 			var merged = new (T Key, int Value)[Length];
-			int c = 0;
+			var c = 0;
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			T? max = Max;
 			while (!mineEnded && !theirsEnded && Comparer2.Compare(theirs.Current.Key, max) <= 0)
 			{
-				int comp = Comparer.Compare(mine.Current, theirs.Current);
+				var comp = Comparer.Compare(mine.Current, theirs.Current);
 				if (comp < 0)
 					mineEnded = !mine.MoveNext();
 				else if (comp == 0)
@@ -3504,7 +3498,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Node? grandParent = null;
 		Node? match = null;
 		Node? parentOfMatch = null;
-		bool foundMatch = false;
+		var foundMatch = false;
 		while (current != null)
 		{
 			if (current.Is2Node)
@@ -3553,7 +3547,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				}
 			}
 			// We don't need to compare after we find the match.
-			int order = foundMatch ? -1 : Comparer2.Compare(item, current.Item.Key);
+			var order = foundMatch ? -1 : Comparer2.Compare(item, current.Item.Key);
 			if (order == 0)
 			{
 				// Save the matching node.
@@ -3595,8 +3589,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return true;
 		});
 		// Enumerate the results of the breadth-first walk in reverse in an attempt to lower cost.
-		int actuallyRemoved = 0;
-		for (int i = matches.Length - 1; i >= 0; i--)
+		var actuallyRemoved = 0;
+		for (var i = matches.Length - 1; i >= 0; i--)
 		{
 			if (RemoveValue(matches[i]))
 				actuallyRemoved++;
@@ -3637,7 +3631,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert((successor.Right == null && successor.IsRed) || (successor.Right!.IsRed && successor.IsBlack));
+			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -3660,10 +3654,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	public virtual int Search(T item)
 	{
 		Node? current = root;
-		int n = 0;
+		var n = 0;
 		while (current != null)
 		{
-			int order = Comparer2.Compare(item, current.Item.Key);
+			var order = Comparer2.Compare(item, current.Item.Key);
 			if (order == 0)
 				return (current.Left?.LeavesCount ?? 0) + n;
 			else if (order < 0)
@@ -3686,8 +3680,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
-			bool mineEnded = !mine.MoveNext();
-			bool theirsEnded = !theirs.MoveNext();
+			var mineEnded = !mine.MoveNext();
+			var theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
 			{
 				if (Comparer2.Compare(mine.Current.Key, theirs.Current.Key) != 0)
@@ -3783,7 +3777,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		else
 		{
 			var elements = other.ToArray();
-			int length = elements.Length;
+			var length = elements.Length;
 			Array.Sort(elements, 0, length, Comparer);
 			SymmetricExceptWithSameComparer(elements, length);
 		}
@@ -3795,7 +3789,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		Debug.Assert(HasEqualComparer(other));
 		foreach (var item in other)
 		{
-			bool result = Contains(item) ? RemoveValue(item) : TryAdd(item);
+			var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
 			Debug.Assert(result);
 		}
 	}
@@ -3807,14 +3801,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (count == 0)
 			return;
 		var previous = other[0];
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 		{
 			while (i < count && i != 0 && Comparer2.Compare(other[i].Key, previous.Key) == 0)
 				i++;
 			if (i >= count)
 				break;
 			var current = other[i];
-			bool result = Contains(current) ? RemoveValue(current) : TryAdd(current);
+			var result = Contains(current) ? RemoveValue(current) : TryAdd(current);
 			Debug.Assert(result);
 			previous = current;
 		}
@@ -3843,7 +3837,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Even if we don't actually add to the set, we may be altering its structure (by doing rotations and such).
 		// So update `_version` to disable any instances of Enumerator/TreeSubSet from working on it.
 		version++;
-		int order = 0;
+		var order = 0;
 		while (current != null)
 		{
 			order = Comparer2.Compare(item.Key, current.Item.Key);
@@ -3906,8 +3900,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	public override void UnionWith(IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
-		SumSet<T>? asSorted = other as SumSet<T>;
-		TreeSubSet? treeSubset = this as TreeSubSet;
+		var asSorted = other as SumSet<T>;
+		var treeSubset = this as TreeSubSet;
 		if (treeSubset != null)
 			VersionCheck();
 		if (asSorted != null && treeSubset == null && Length == 0)
@@ -3919,17 +3913,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return;
 		}
 		// This actually hurts if N is much greater than M. The / 2 is arbitrary.
-		if (asSorted != null && treeSubset == null && HasEqualComparer(asSorted) && (asSorted.Length > Length / 2))
+		if (asSorted != null && treeSubset == null && HasEqualComparer(asSorted) && asSorted.Length > Length / 2)
 		{
 			// First do a merge sort to an array.
 			var merged = new (T Key, int Value)[asSorted.Length + Length];
-			int c = 0;
+			var c = 0;
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
 			{
-				int comp = Comparer2.Compare(mine.Current.Key, theirs.Current.Key);
+				var comp = Comparer2.Compare(mine.Current.Key, theirs.Current.Key);
 				if (comp < 0)
 				{
 					merged[c++] = mine.Current;
@@ -4143,7 +4137,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 #if DEBUG
 			Debug.Assert(HasChildren(current, sibling));
 #endif
-			bool currentIsLeftChild = Left == current;
+			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
 				(currentIsLeftChild ? TreeRotation.Left : TreeRotation.LeftRight);
@@ -4237,7 +4231,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			Node child = Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
 			child.Left = this;
 			if (parent != null)
@@ -4258,7 +4252,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Node child = Left!;
 			Node grandChild = child.Right!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
 			grandChild.Right = this;
 			child.Right = grandChild.Left;
@@ -4280,7 +4274,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			Node child = Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
 			child.Right = this;
 			if (parent != null)
@@ -4301,7 +4295,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Node child = Right!;
 			Node grandChild = child.Left!;
 			var parent = Parent;
-			bool isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
+			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
 			grandChild.Left = this;
 			child.Left = grandChild.Right;
@@ -4341,8 +4335,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		private bool HasChildren(Node child1, Node child2)
 		{
 			Debug.Assert(child1 != child2);
-			return (Left == child1 && Right == child2)
-				|| (Left == child2 && Right == child1);
+			return Left == child1 && Right == child2
+				|| Left == child2 && Right == child1;
 		}
 
 		internal void Verify()
@@ -4518,7 +4512,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				T? result = default;
 				while (current != null)
 				{
-					int comp = _uBoundActive ? Comparer2.Compare(_max, current.Item.Key) : 1;
+					var comp = _uBoundActive ? Comparer2.Compare(_max, current.Item.Key) : 1;
 					if (comp < 0)
 						current = current.Left;
 					else
@@ -4542,7 +4536,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				T? result = default;
 				while (current != null)
 				{
-					int comp = _lBoundActive ? Comparer2.Compare(_min, current.Item.Key) : -1;
+					var comp = _lBoundActive ? Comparer2.Compare(_min, current.Item.Key) : -1;
 					if (comp > 0)
 						current = current.Right;
 					else
@@ -4673,7 +4667,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// lot of space
 		internal override int InternalIndexOf(T item)
 		{
-			int count = -1;
+			var count = -1;
 			foreach (var (Key, Value) in this)
 			{
 				count++;
@@ -4696,7 +4690,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 		internal override bool IsWithinRange(T item)
 		{
-			int comp = _lBoundActive ? Comparer2.Compare(_min, item) : -1;
+			var comp = _lBoundActive ? Comparer2.Compare(_min, item) : -1;
 			if (comp > 0)
 				return false;
 			comp = _uBoundActive ? Comparer2.Compare(_max, item) : 1;
@@ -4707,7 +4701,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (!IsWithinRange(item))
 				return false;
-			bool ret = _underlying.RemoveValue(item);
+			var ret = _underlying.RemoveValue(item);
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -4728,7 +4722,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (!IsWithinRange(item.Key))
 				throw new ArgumentOutOfRangeException(nameof(item));
-			bool ret = _underlying.TryAdd(item);
+			var ret = _underlying.TryAdd(item);
 			VersionCheck();
 #if DEBUG
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -4811,7 +4805,7 @@ internal class SumSetEqualityComparer<T> : IEqualityComparer<SumSet<T>>
 	//the set
 	public virtual int GetHashCode(SumSet<T>? obj)
 	{
-		int hashCode = 0;
+		var hashCode = 0;
 		if (obj != null)
 		{
 			foreach (var (Key, Value) in obj)
@@ -4838,7 +4832,7 @@ internal ref struct BitHelper
 	internal readonly bool IsMarked(int bitPosition)
 	{
 		Debug.Assert(bitPosition >= 0);
-		uint bitArrayIndex = (uint)bitPosition / IntSize;
+		var bitArrayIndex = (uint)bitPosition / IntSize;
 		// Workaround for https://github.com/dotnet/runtime/issues/72004
 		Span<int> span = _span;
 		return bitArrayIndex < (uint)span.Length && (span[(int)bitArrayIndex] & (1 << ((int)((uint)bitPosition % IntSize)))) != 0;
@@ -4847,7 +4841,7 @@ internal ref struct BitHelper
 	internal readonly void MarkBit(int bitPosition)
 	{
 		Debug.Assert(bitPosition >= 0);
-		uint bitArrayIndex = (uint)bitPosition / IntSize;
+		var bitArrayIndex = (uint)bitPosition / IntSize;
 		// Workaround for https://github.com/dotnet/runtime/issues/72004
 		Span<int> span = _span;
 		if (bitArrayIndex < (uint)span.Length)
