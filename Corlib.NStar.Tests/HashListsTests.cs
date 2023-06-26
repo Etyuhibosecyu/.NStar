@@ -44,46 +44,52 @@ public class HashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		HashList<int> shs = new();
-		G.List<int> gs = new();
-		for (var i = 0; i < 100; i++)
+		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
+		HashList<int> hl = new(arr);
+		G.List<int> gl = new(arr);
+		var actions = new[] { () =>
 		{
 			var n = random.Next(16);
-			shs.Add(n);
-			gs.Add(n);
-		}
-		Assert.IsTrue(RedStarLinq.Equals(gs, shs));
-		for (var i = 0; i < 10; i++)
+			hl.Add(n);
+			gl.Add(n);
+			Assert.IsTrue(hl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, hl));
+		}, () =>
 		{
-			var n = random.Next(16);
-			shs.RemoveValue(n);
-			gs.Remove(n);
-		}
-		Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
-		for (var i = 0; i < 10; i++)
-		{
-			var n = random.Next(16);
-			shs.Add(n);
-			gs.Add(n);
-		}
-		Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
-		G.List<int> list = new(shs);
-		for (var i = 0; i < 10; i++)
-		{
-			var n = random.Next(shs.Length);
-			var n2 = random.Next(16);
-			if (CreateVar(shs.IndexOf(n2), out var foundIndex) == n || foundIndex == -1)
+			if (hl.Length == 0) return;
+			if (random.Next(2) == 0)
 			{
-				shs[n] = n2;
-				list[n] = n2;
+				var n = random.Next(hl.Length);
+				hl.RemoveAt(n);
+				gl.RemoveAt(n);
 			}
-		}
-		gs = new(list);
-		Assert.IsTrue(RedStarLinq.Equals(gs.Sort(x => x).ToList(), shs.Sort(x => x).ToList()));
-		for (var i = 0; i < 100; i++)
+			else
+			{
+				var n = random.Next(16);
+				hl.RemoveValue(n);
+				gl.Remove(n);
+			}
+			Assert.IsTrue(hl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, hl));
+		}, () =>
 		{
-			var n = random.Next(shs.Length);
-			Assert.AreEqual(shs[shs.IndexOf(shs[n])], shs[n]);
-		}
+			if (hl.Length == 0)
+				return;
+			var n = random.Next(hl.Length);
+			var n2 = random.Next(16);
+			if (hl[n] == n2)
+				return;
+			hl[n] = n2;
+			gl[n] = n2;
+			Assert.IsTrue(hl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, hl));
+		}, () =>
+		{
+			if (hl.Length == 0) return;
+			var n = random.Next(hl.Length);
+			Assert.AreEqual(hl[hl.IndexOf(hl[n])], hl[n]);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
 	}
 }

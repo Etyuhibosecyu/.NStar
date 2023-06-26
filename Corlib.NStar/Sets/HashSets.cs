@@ -130,6 +130,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
+				if (~entries[i].next == i)
+					throw new InvalidOperationException();
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
 					return i;
 				collisionCount++;
@@ -204,6 +206,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (i == index)
 			{
 				if (last < 0)
@@ -480,6 +484,8 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
+			if (~entries[i].next == i)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -529,6 +535,8 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (i == index)
 			{
 				if (last < 0)
@@ -564,6 +572,8 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (last < 0)
@@ -810,6 +820,8 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
+			if (~entries[i].next == i)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -859,6 +871,8 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var last = -1;
 		for (var i = oldBucket >= 0 ? ~buckets[oldBucket] : -1; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (i == index)
 			{
 				if (last < 0)
@@ -1065,6 +1079,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
+			if (~entries[i].next == i)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1081,10 +1097,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			collisionCount = 0;
 			for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 			{
+				if (~entries[i].next == i)
+					throw new InvalidOperationException();
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 				{
-					if (add)
-						throw new ArgumentException(null);
+					if (add) throw new ArgumentException(null);
 					index = i;
 					return this;
 				}
@@ -1188,6 +1205,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 				return Lock(lockObj, UnsafeRemoveValue, item);
 			collisionCount++;
@@ -1319,6 +1338,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
 					return i;
+				if (~entries[i].next == i)
+					throw new InvalidOperationException();
 				collisionCount++;
 				if (collisionCount > entries.Length)
 					throw new InvalidOperationException();
@@ -1340,6 +1361,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
+			if (~entries[i].next == i)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1409,6 +1432,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (last < 0)
@@ -1710,6 +1735,8 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
+			if (~entries[i].next == i)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (add)
@@ -1755,6 +1782,8 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (i == index)
 			{
 				if (last < 0)
@@ -1792,6 +1821,8 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var last = -1;
 		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
 		{
+			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
+				throw new InvalidOperationException();
 			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
 			{
 				if (last < 0)
