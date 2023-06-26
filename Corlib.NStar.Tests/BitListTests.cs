@@ -779,6 +779,47 @@ public class BitListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1, 6));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(bitList.Length - 1, 2 - bitList.Length));
 		Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1, 1000));
+		b = new BitList(a).Remove(..);
+		c = new G.List<bool>();
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(..^1);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(0, bitList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(1..);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(1, bitList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(1..^1);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(1, bitList.Length - 2);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(1..5);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(^5..^1);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(bitList.Length - 5, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = new BitList(a).Remove(^50..50);
+		c = new G.List<bool>(bitList);
+		c.RemoveRange(bitList.Length - 50, 100 - bitList.Length);
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(-1..5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(^1..1));
+		Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1..1000));
 	}
 
 	[TestMethod]
@@ -941,6 +982,23 @@ public class BitListTests
 				boolList[j] = value;
 			Assert.IsTrue(bitList.Equals(boolList));
 			Assert.IsTrue(E.SequenceEqual(boolList, bitList));
+		}
+	}
+
+	[TestMethod]
+	public void TestSetOrAdd()
+	{
+		var a = new BitList(bitList);
+		var b = new G.List<bool>(bitList);
+		for (var i = 0; i < 1000; i++)
+		{
+			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			var n2 = random.Next(2) == 1;
+			a.SetOrAdd(n, n2);
+			if (n < b.Count)
+				b[n] = n2;
+			else
+				b.Add(n2);
 		}
 	}
 

@@ -26,14 +26,14 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			var count = c.Count;
-			if (count == 0)
+			var length = c.Count;
+			if (length == 0)
 				_items = _emptyArray;
 			else
 			{
-				_items = new T[count];
+				_items = new T[length];
 				c.CopyTo(_items, 0);
-				_size = count;
+				_size = length;
 			}
 		}
 		else
@@ -52,13 +52,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			var count = c.Count;
-			if (count == 0)
+			var length = c.Count;
+			if (length == 0)
 				return;
-			if (count > capacity)
-				_items = new T[count];
+			if (length > capacity)
+				_items = new T[length];
 			c.CopyTo(_items, 0);
-			_size = count;
+			_size = length;
 		}
 		else
 		{
@@ -136,37 +136,37 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
 
-	public override Span<T> AsSpan(int index, int count)
+	public override Span<T> AsSpan(int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (count == 0)
+		if (length == 0)
 			return new();
-		return MemoryExtensions.AsSpan(_items, index, count);
+		return MemoryExtensions.AsSpan(_items, index, length);
 	}
 
 	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
 
 	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
-	public virtual int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+	public virtual int BinarySearch(int index, int length, T item, IComparer<T> comparer)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		return Array.BinarySearch(_items, index, count, item, comparer);
+		return Array.BinarySearch(_items, index, length, item, comparer);
 	}
 
-	private protected override void ClearInternal(int index, int count)
+	private protected override void ClearInternal(int index, int length)
 	{
-		Array.Clear(_items, index, count);
+		Array.Clear(_items, index, length);
 		Changed();
 	}
 
@@ -174,15 +174,15 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, count);
+		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, length);
 		Changed();
 	}
 
 	private protected override void CopyToInternal(Array array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count) => Array.Copy(_items, index, array, arrayIndex, count);
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => Array.Copy(_items, index, array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -199,7 +199,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int count) => Array.IndexOf(_items, item, index, count);
+	private protected override int IndexOfInternal(T item, int index, int length) => Array.IndexOf(_items, item, index, length);
 
 	public override TCertain Insert(int index, T item)
 	{
@@ -238,12 +238,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (span == null)
 			throw new ArgumentNullException(nameof(span));
-		var count = span.Length;
-		if (count == 0)
+		var length = span.Length;
+		if (length == 0)
 			return this as TCertain ?? throw new InvalidOperationException();
-		if (Capacity < _size + count)
+		if (Capacity < _size + length)
 		{
-			var min = _size + count;
+			var min = _size + length;
 			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue)
 				newCapacity = int.MaxValue;
@@ -253,17 +253,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (index > 0)
 				Array.Copy(_items, 0, newItems, 0, index);
 			if (index < _size)
-				Array.Copy(_items, index, newItems, index + count, _size - index);
+				Array.Copy(_items, index, newItems, index + length, _size - index);
 			span.CopyTo(MemoryExtensions.AsSpan(newItems, index));
 			_items = newItems;
 		}
 		else
 		{
 			if (index < _size)
-				Array.Copy(_items, index, _items, index + count, _size - index);
+				Array.Copy(_items, index, _items, index + length, _size - index);
 			span.CopyTo(MemoryExtensions.AsSpan(_items, index));
 		}
-		_size += count;
+		_size += length;
 		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -272,12 +272,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection is List<T, TCertain> list)
 		{
-			var count = list._size;
-			if (count == 0)
+			var length = list._size;
+			if (length == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -285,39 +285,39 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
-					Array.Copy(_items, index, newItems, index + count, _size - index);
+					Array.Copy(_items, index, newItems, index + length, _size - index);
 				if (this == list)
 				{
 					Array.Copy(_items, 0, newItems, index, index);
-					Array.Copy(_items, index + count, newItems, index * 2, _size - index);
+					Array.Copy(_items, index + length, newItems, index * 2, _size - index);
 				}
 				else
-					Array.Copy(list._items, 0, newItems, index, count);
+					Array.Copy(list._items, 0, newItems, index, length);
 				_items = newItems;
 			}
 			else
 			{
 				if (index < _size)
-					Array.Copy(_items, index, _items, index + count, _size - index);
+					Array.Copy(_items, index, _items, index + length, _size - index);
 				if (this == list)
 				{
 					Array.Copy(_items, 0, _items, index, index);
-					Array.Copy(_items, index + count, _items, index * 2, _size - index);
+					Array.Copy(_items, index + length, _items, index * 2, _size - index);
 				}
 				else
-					Array.Copy(list._items, 0, _items, index, count);
+					Array.Copy(list._items, 0, _items, index, length);
 			}
-			_size += count;
+			_size += length;
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else if (collection is T[] array)
 		{
-			var count = array.Length;
-			if (count == 0)
+			var length = array.Length;
+			if (length == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -325,27 +325,27 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
-					Array.Copy(_items, index, newItems, index + count, _size - index);
-				Array.Copy(array, 0, newItems, index, count);
+					Array.Copy(_items, index, newItems, index + length, _size - index);
+				Array.Copy(array, 0, newItems, index, length);
 				_items = newItems;
 			}
 			else
 			{
 				if (index < _size)
-					Array.Copy(_items, index, _items, index + count, _size - index);
-				Array.Copy(array, 0, _items, index, count);
+					Array.Copy(_items, index, _items, index + length, _size - index);
+				Array.Copy(array, 0, _items, index, length);
 			}
-			_size += count;
+			_size += length;
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else if (collection is G.ICollection<T> list2)
 		{
-			var count = list2.Count;
-			if (count == 0)
+			var length = list2.Count;
+			if (length == 0)
 				return this as TCertain ?? throw new InvalidOperationException();
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -353,17 +353,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
-					Array.Copy(_items, index, newItems, index + count, _size - index);
+					Array.Copy(_items, index, newItems, index + length, _size - index);
 				list2.CopyTo(newItems, index);
 				_items = newItems;
 			}
 			else
 			{
 				if (index < _size)
-					Array.Copy(_items, index, _items, index + count, _size - index);
+					Array.Copy(_items, index, _items, index + length, _size - index);
 				list2.CopyTo(_items, index);
 			}
-			_size += count;
+			_size += length;
 			Changed();
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
@@ -371,46 +371,46 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return InsertInternal(index, CollectionCreator(collection));
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int count) => Array.LastIndexOf(_items, item, index, count);
+	private protected override int LastIndexOfInternal(T item, int index, int length) => Array.LastIndexOf(_items, item, index, length);
 
 	public virtual TCertain NSort() => NSort(0, _size);
 
-	public unsafe virtual TCertain NSort(int index, int count)
+	public unsafe virtual TCertain NSort(int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (this is List<uint> uintList)
 		{
-			uintList._items.NSort(index, count);
+			uintList._items.NSort(index, length);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
-			return Sort(index, count, G.Comparer<T>.Default);
+			return Sort(index, length, G.Comparer<T>.Default);
 	}
 
 	public virtual TCertain NSort(Func<T, uint> function) => NSort(function, 0, _size);
 
-	public unsafe virtual TCertain NSort(Func<T, uint> function, int index, int count)
+	public unsafe virtual TCertain NSort(Func<T, uint> function, int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		_items.NSort(function, index, count);
+		_items.NSort(function, index, length);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
 
-	private protected override TCertain ReverseInternal(int index, int count)
+	private protected override TCertain ReverseInternal(int index, int length)
 	{
-		Array.Reverse(_items, index, count);
+		Array.Reverse(_items, index, length);
 		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -425,48 +425,48 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain Sort(IComparer<T> comparer) => Sort(0, _size, comparer);
 
-	public virtual TCertain Sort(int index, int count, IComparer<T> comparer)
+	public virtual TCertain Sort(int index, int length, IComparer<T> comparer)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		Array.Sort(_items, index, count, comparer);
+		Array.Sort(_items, index, length, comparer);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(0, _size, function, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(int index, int count, Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(index, count, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
+	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(index, length, function, G.Comparer<TValue>.Default, fasterButMoreMemory);
 
-	public virtual TCertain Sort<TValue>(int index, int count, Func<T, TValue> function, IComparer<TValue> comparer, bool fasterButMoreMemory = true)
+	public virtual TCertain Sort<TValue>(int index, int length, Func<T, TValue> function, IComparer<TValue> comparer, bool fasterButMoreMemory = true)
 	{
 		if (fasterButMoreMemory)
 		{
-			Convert(function).Sort(this, index, count, comparer);
+			Convert(function).Sort(this, index, length, comparer);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
-			return Sort(index, count, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
+			return Sort(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
 	}
 
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, G.Comparer<T>.Default);
 
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new() => Sort(values, 0, _size, comparer);
 
-	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int count, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new()
+	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int length, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new()
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (index + count > values._size)
+		if (index + length > values._size)
 			throw new ArgumentException(null);
-		Array.Sort(_items, values._items, index, count, comparer);
+		Array.Sort(_items, values._items, index, length, comparer);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 }
@@ -651,15 +651,15 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			var count = c.Count;
-			if (count == 0)
+			var length = c.Count;
+			if (length == 0)
 				_items = _emptyArray;
 			else
 			{
-				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = count));
+				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length));
 				fixed (T* ptr = c.AsSpan())
 					CopyMemory(ptr, _items, c.Count);
-				_size = count;
+				_size = length;
 			}
 		}
 		else
@@ -678,14 +678,14 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is ICollection<T> c)
 		{
-			var count = c.Count;
-			if (count == 0)
+			var length = c.Count;
+			if (length == 0)
 				return;
-			if (count > capacity)
-				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = count));
+			if (length > capacity)
+				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length));
 			fixed (T* ptr = c.AsSpan())
 				CopyMemory(ptr, _items, c.Count);
-			_size = count;
+			_size = length;
 		}
 		else
 		{
@@ -787,22 +787,22 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
 
-	public override Span<T> AsSpan(int index, int count)
+	public override Span<T> AsSpan(int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (count == 0)
+		if (length == 0)
 			return new();
-		return new(_items + index, count);
+		return new(_items + index, length);
 	}
 
-	private protected override void ClearInternal(int index, int count)
+	private protected override void ClearInternal(int index, int length)
 	{
-		FillMemory(_items + index, count, 0);
+		FillMemory(_items + index, length, 0);
 		Changed();
 	}
 
@@ -810,16 +810,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
-	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int count)
+	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int length)
 	{
-		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, count);
+		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, length);
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		fixed (T* ptr = array)
-			CopyMemory(_items, index, ptr, arrayIndex, count);
+			CopyMemory(_items, index, ptr, arrayIndex, length);
 	}
 
 	public override void Dispose()
@@ -838,32 +838,32 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		return item;
 	}
 
-	public override NList<T> GetRange(int index, int count, bool alwaysCopy)
+	public override NList<T> GetRange(int index, int length, bool alwaysCopy = false)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > _size)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (count == 0)
+		if (length == 0)
 			return new();
-		else if (!alwaysCopy && index == 0 && count == _size)
+		else if (!alwaysCopy && index == 0 && length == _size)
 			return this;
 		if (!alwaysCopy)
-			return new(count) { _items = _items + index, _size = count };
+			return new(length) { _items = _items + index, _size = length };
 		else
 		{
-			NList<T> list = new(count) { _size = count };
-			CopyMemory(_items + index, list._items, count);
+			NList<T> list = new(length) { _size = length };
+			CopyMemory(_items + index, list._items, length);
 			return list;
 		}
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int count)
+	private protected override int IndexOfInternal(T item, int index, int length)
 	{
 		T* ptr = _items + index;
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			if (ptr[i].Equals(item))
 				return index + i;
 		return -1;
@@ -901,12 +901,12 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Insert(int index, ReadOnlySpan<T> span)
 	{
-		var count = span.Length;
-		if (count == 0)
+		var length = span.Length;
+		if (length == 0)
 			return this;
-		if (Capacity < _size + count)
+		if (Capacity < _size + length)
 		{
-			var min = _size + count;
+			var min = _size + length;
 			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 			if (newCapacity < min) newCapacity = min;
@@ -914,7 +914,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			if (index > 0)
 				CopyMemory(_items, 0, newItems, 0, index);
 			if (index < _size)
-				CopyMemory(_items, index, newItems, index + count, _size - index);
+				CopyMemory(_items, index, newItems, index + length, _size - index);
 			span.CopyTo(new(newItems + index, newCapacity - index));
 			Marshal.FreeHGlobal((nint)_items);
 			_items = newItems;
@@ -922,10 +922,10 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		else
 		{
 			if (index < _size)
-				CopyMemory(_items, index, _items, index + count, _size - index);
+				CopyMemory(_items, index, _items, index + length, _size - index);
 			span.CopyTo(new(_items + index, Capacity - index));
 		}
-		_size += count;
+		_size += length;
 		Changed();
 		return this;
 	}
@@ -934,12 +934,12 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (collection is NList<T> list)
 		{
-			var count = list._size;
-			if (count == 0)
+			var length = list._size;
+			if (length == 0)
 				return this;
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -947,14 +947,14 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
-					CopyMemory(_items, index, newItems, index + count, _size - index);
+					CopyMemory(_items, index, newItems, index + length, _size - index);
 				if (this == list)
 				{
 					CopyMemory(_items, 0, newItems, index, index);
-					CopyMemory(_items, index + count, newItems, index * 2, _size - index);
+					CopyMemory(_items, index + length, newItems, index * 2, _size - index);
 				}
 				else
-					CopyMemory(list._items, 0, newItems, index, count);
+					CopyMemory(list._items, 0, newItems, index, length);
 				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 				_capacity = newCapacity;
@@ -962,26 +962,26 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			else
 			{
 				if (index < _size)
-					CopyMemory(_items, index, _items, index + count, _size - index);
+					CopyMemory(_items, index, _items, index + length, _size - index);
 				if (this == list)
 				{
 					CopyMemory(_items, 0, _items, index, index);
-					CopyMemory(_items, index + count, _items, index * 2, _size - index);
+					CopyMemory(_items, index + length, _items, index * 2, _size - index);
 				}
 				else
-					CopyMemory(list._items, 0, _items, index, count);
+					CopyMemory(list._items, 0, _items, index, length);
 			}
-			_size += count;
+			_size += length;
 			return this;
 		}
 		else if (collection is T[] array)
 		{
-			var count = array.Length;
-			if (count == 0)
+			var length = array.Length;
+			if (length == 0)
 				return this;
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -989,30 +989,30 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
-					CopyMemory(_items, index, newItems, index + count, _size - index);
+					CopyMemory(_items, index, newItems, index + length, _size - index);
 				fixed (T* ptr = array)
-					CopyMemory(ptr, 0, newItems, index, count);
+					CopyMemory(ptr, 0, newItems, index, length);
 				Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 			}
 			else
 			{
 				if (index < _size)
-					CopyMemory(_items, index, _items, index + count, _size - index);
+					CopyMemory(_items, index, _items, index + length, _size - index);
 				fixed (T* ptr = array)
-					CopyMemory(ptr, 0, _items, index, count);
+					CopyMemory(ptr, 0, _items, index, length);
 			}
-			_size += count;
+			_size += length;
 			return this;
 		}
 		else if (collection is ICollection<T> list2)
 		{
-			var count = list2.Count;
-			if (count == 0)
+			var length = list2.Count;
+			if (length == 0)
 				return this;
-			if (Capacity < _size + count)
+			if (Capacity < _size + length)
 			{
-				var min = _size + count;
+				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
 				if (newCapacity < min) newCapacity = min;
@@ -1020,7 +1020,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
 				if (index < _size)
-					CopyMemory(_items, index, newItems, index + count, _size - index);
+					CopyMemory(_items, index, newItems, index + length, _size - index);
 				fixed (T* ptr = list2.AsSpan())
 					CopyMemory(ptr, 0, newItems, index, list2.Count);
 				Marshal.FreeHGlobal((nint)_items);
@@ -1029,11 +1029,11 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			else
 			{
 				if (index < _size)
-					CopyMemory(_items, index, _items, index + count, _size - index);
+					CopyMemory(_items, index, _items, index + length, _size - index);
 				fixed (T* ptr = list2.AsSpan())
 					CopyMemory(ptr, 0, _items, index, list2.Count);
 			}
-			_size += count;
+			_size += length;
 			Changed();
 			return this;
 		}
@@ -1041,9 +1041,9 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			return InsertInternal(index, new NList<T>(collection));
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int count)
+	private protected override int LastIndexOfInternal(T item, int index, int length)
 	{
-		var endIndex = index - count + 1;
+		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
 			if (_items[i].Equals(item))
 				return i;
@@ -1052,10 +1052,10 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : new(collection);
 
-	private protected override NList<T> ReverseInternal(int index, int count)
+	private protected override NList<T> ReverseInternal(int index, int length)
 	{
-		for (var i = 0; i < count / 2; i++)
-			(_items[index + i], _items[index + count - 1 - i]) = (_items[index + count - 1 - i], _items[index + i]);
+		for (var i = 0; i < length / 2; i++)
+			(_items[index + i], _items[index + length - 1 - i]) = (_items[index + length - 1 - i], _items[index + i]);
 		Changed();
 		return this;
 	}
@@ -1068,12 +1068,12 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Sort() => Sort(0, _size);
 
-	public virtual NList<T> Sort(int index, int count)
+	public virtual NList<T> Sort(int index, int length)
 	{
 		if (this is NList<uint> uintList)
 		{
 			var shiftedItems = uintList._items + index;
-			RadixSort(&shiftedItems, count);
+			RadixSort(&shiftedItems, length);
 			return this;
 		}
 		else
@@ -1082,9 +1082,9 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
-	public virtual NList<T> Sort(Func<T, uint> function, int index, int count)
+	public virtual NList<T> Sort(Func<T, uint> function, int index, int length)
 	{
-		NSort(_items, function, index, count);
+		NSort(_items, function, index, length);
 		return this;
 	}
 
@@ -1179,11 +1179,11 @@ public class SumList : BaseList<int, SumList>
 			return;
 		}
 		var elements = collection.ToArray();
-		var count = elements.Length;
-		if (count > 0)
+		var length = elements.Length;
+		if (length > 0)
 		{
-			root = ConstructRootFromSortedArray(elements, 0, count - 1, null);
-			_size = count;
+			root = ConstructRootFromSortedArray(elements, 0, length - 1, null);
+			_size = length;
 		}
 	}
 
@@ -1226,7 +1226,7 @@ public class SumList : BaseList<int, SumList>
 
 	public override SumList Add(int value) => Insert(_size, value);
 
-	public override Span<int> AsSpan(int index, int count) => throw new NotSupportedException();
+	public override Span<int> AsSpan(int index, int length) => throw new NotSupportedException();
 
 	/// <summary>
 	/// Does a left-to-right breadth-first tree walk and calls the delegate for each node.
@@ -1263,7 +1263,7 @@ public class SumList : BaseList<int, SumList>
 		++version;
 	}
 
-	private protected override void ClearInternal(int index, int count) => new TreeSubSet(this, index, index + count - 1, true, true).Clear();
+	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
 
 	private static Node? ConstructRootFromSortedArray(int[] arr, int startIndex, int endIndex, Node? redNode)
 	{
@@ -1327,19 +1327,19 @@ public class SumList : BaseList<int, SumList>
 		return root;
 	}
 
-	private protected override void Copy(SumList source, int sourceIndex, SumList destination, int destinationIndex, int count)
+	private protected override void Copy(SumList source, int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
-		if (count == 0)
+		if (length == 0)
 			return;
-		if (count == 1)
+		if (length == 1)
 		{
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, sourceIndex, sourceIndex + count - 1, true, true);
+		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
-			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
+			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true).InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
 				if (b)
@@ -1358,20 +1358,20 @@ public class SumList : BaseList<int, SumList>
 			throw new ArgumentException(null, nameof(array));
 	}
 
-	private protected override void CopyToInternal(int index, int[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, int[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (count > array.Length - index)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (length > array.Length - index)
 			throw new ArgumentException(null);
-		count += index; // Make `count` the upper bound.
+		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
 		{
-			if (i >= count)
+			if (i >= length)
 				return false;
 			if (i++ < index)
 				return true;
@@ -1525,7 +1525,7 @@ public class SumList : BaseList<int, SumList>
 
 	public virtual int GetAndRemove(Index index)
 	{
-		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
@@ -1611,7 +1611,7 @@ public class SumList : BaseList<int, SumList>
 
 	public virtual bool Increase(int index) => Update(index, GetInternal(index) + 1);
 
-	private protected override int IndexOfInternal(int value, int index, int count) => throw new NotSupportedException();
+	private protected override int IndexOfInternal(int value, int index, int length) => throw new NotSupportedException();
 
 	public virtual int IndexOfNotGreaterSum(long sum) => IndexOfNotGreaterSum(sum, out _);
 
@@ -1802,7 +1802,7 @@ public class SumList : BaseList<int, SumList>
 	// Virtual function for TreeSubSet, which may need to do range checks.
 	internal virtual bool IsWithinRange(int index) => true;
 
-	private protected override int LastIndexOfInternal(int value, int index, int count) => throw new NotSupportedException();
+	private protected override int LastIndexOfInternal(int value, int index, int length) => throw new NotSupportedException();
 
 	// Used for set checking operations (using enumerables) that rely on counting
 	private static int Log2(int value) => BitOperations.Log2((uint)value);
@@ -1881,7 +1881,7 @@ public class SumList : BaseList<int, SumList>
 #endif
 	}
 
-	private protected override SumList ReverseInternal(int index, int count) => throw new NotSupportedException();
+	private protected override SumList ReverseInternal(int index, int length) => throw new NotSupportedException();
 
 	internal override void SetInternal(int index, int value)
 	{
@@ -1910,7 +1910,7 @@ public class SumList : BaseList<int, SumList>
 		throw new ArgumentOutOfRangeException(nameof(index));
 	}
 
-	// Virtual function for TreeSubSet, which may need the count variable of the parent list.
+	// Virtual function for TreeSubSet, which may need the length variable of the parent list.
 	internal virtual int TotalCount() => Length;
 
 	public virtual bool Update(int index, int value)
@@ -1936,7 +1936,7 @@ public class SumList : BaseList<int, SumList>
 
 	internal void UpdateVersion() => ++version;
 
-	// Virtual function for TreeSubSet, which may need to update its count.
+	// Virtual function for TreeSubSet, which may need to update its length.
 	internal virtual void VersionCheck(bool updateCount = false) { }
 
 #if DEBUG
@@ -2048,13 +2048,13 @@ public class SumList : BaseList<int, SumList>
 
 		public void ColorRed() => Color = NodeColor.Red;
 
-		public Node DeepClone(int count)
+		public Node DeepClone(int length)
 		{
 #if DEBUG
-			Debug.Assert(count == GetCount());
+			Debug.Assert(length == GetCount());
 #endif
 			Node newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(count) + 2);
+			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -2313,7 +2313,7 @@ public class SumList : BaseList<int, SumList>
 
 	public new struct Enumerator : IEnumerator<int>
 	{
-		private readonly SumList _tree;
+		private readonly SumList _list;
 		private readonly int _version;
 
 		private readonly Stack<Node> _stack;
@@ -2327,7 +2327,7 @@ public class SumList : BaseList<int, SumList>
 
 		internal Enumerator(SumList list, bool reverse)
 		{
-			_tree = list;
+			_list = list;
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
@@ -2364,18 +2364,18 @@ public class SumList : BaseList<int, SumList>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _tree.root;
+			Node? node = _list.root;
 			Node? next, other;
 			while (node != null)
 			{
 				next = _reverse ? node.Right : node.Left;
 				other = _reverse ? node.Left : node.Right;
-				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
 					_stack.Push(node);
 					node = next;
 				}
-				else if (next == null || !_tree.IsWithinRange(next.Left?.LeavesCount ?? 0))
+				else if (next == null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
 					node = other;
 				else
 					node = next;
@@ -2385,8 +2385,8 @@ public class SumList : BaseList<int, SumList>
 		public bool MoveNext()
 		{
 			// Make sure that the underlying subset has not been changed since
-			_tree.VersionCheck();
-			if (_version != _tree.version)
+			_list.VersionCheck();
+			if (_version != _list.version)
 				throw new InvalidOperationException();
 			if (_stack.Length == 0)
 			{
@@ -2400,12 +2400,12 @@ public class SumList : BaseList<int, SumList>
 			{
 				next = _reverse ? node.Right : node.Left;
 				other = _reverse ? node.Left : node.Right;
-				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
 					_stack.Push(node);
 					node = next;
 				}
-				else if (other == null || !_tree.IsWithinRange(other.Left?.LeavesCount ?? 0))
+				else if (other == null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
 					node = next;
 				else
 					node = other;
@@ -2415,7 +2415,7 @@ public class SumList : BaseList<int, SumList>
 
 		internal void Reset()
 		{
-			if (_version != _tree.version)
+			if (_version != _list.version)
 				throw new InvalidOperationException();
 			_stack.Clear();
 			Initialize();
@@ -2429,7 +2429,7 @@ public class SumList : BaseList<int, SumList>
 		private readonly SumList _underlying;
 		private readonly int _min;
 		private readonly int _max;
-		// keeps track of whether the count variable is up to date
+		// keeps track of whether the length variable is up to date
 		// up to date -> _countVersion = _underlying.version
 		// not up to date -> _countVersion < _underlying.version
 		private int _countVersion;
@@ -2438,7 +2438,7 @@ public class SumList : BaseList<int, SumList>
 		// anything <= 10 is added, but there is no upper bound. These features Head(), Tail(), were punted
 		// in the spec, and are not available, but the framework is there to make them available at some point.
 		private readonly bool _lBoundActive, _uBoundActive;
-		// used to see if the count is out of date
+		// used to see if the length is out of date
 
 		public TreeSubSet(SumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
@@ -2531,7 +2531,7 @@ public class SumList : BaseList<int, SumList>
 			while (toRemove.Length != 0)
 			{
 				_underlying.RemoveAt(toRemove[^1]);
-				toRemove.RemoveAt(toRemove.Length - 1);
+				toRemove.RemoveAt(^1);
 			}
 			root = null;
 			_size = 0;
@@ -2568,7 +2568,7 @@ public class SumList : BaseList<int, SumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
+			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			Node? current = root;
 			while (current != null)
 			{
@@ -2626,7 +2626,7 @@ public class SumList : BaseList<int, SumList>
 		}
 
 		/// <summary>
-		/// Returns the number of elements <c>count</c> of the parent list.
+		/// Returns the number of elements <c>length</c> of the parent list.
 		/// </summary>
 		internal override int TotalCount()
 		{
@@ -2637,7 +2637,7 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Checks whether this subset is out of date, and updates it if necessary.
 		/// </summary>
-		/// <param name="updateCount">Updates the count variable if necessary.</param>
+		/// <param name="updateCount">Updates the length variable if necessary.</param>
 		internal override void VersionCheck(bool updateCount = false) => VersionCheckImpl(updateCount);
 
 		private void VersionCheckImpl(bool updateCount)
@@ -2690,11 +2690,11 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			return;
 		}
 		var elements = collection.ToArray();
-		var count = elements.Length;
-		if (count > 0)
+		var length = elements.Length;
+		if (length > 0)
 		{
-			root = ConstructRootFromSortedArray(elements, 0, count - 1, null);
-			_size = count;
+			root = ConstructRootFromSortedArray(elements, 0, length - 1, null);
+			_size = length;
 		}
 	}
 
@@ -2737,7 +2737,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public override BigSumList Add(mpz_t value) => Insert(_size, value);
 
-	public override Span<mpz_t> AsSpan(int index, int count) => throw new NotSupportedException();
+	public override Span<mpz_t> AsSpan(int index, int length) => throw new NotSupportedException();
 
 	/// <summary>
 	/// Does a left-to-right breadth-first tree walk and calls the delegate for each node.
@@ -2774,7 +2774,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		++version;
 	}
 
-	private protected override void ClearInternal(int index, int count) => new TreeSubSet(this, index, index + count - 1, true, true).Clear();
+	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
 
 	private static Node? ConstructRootFromSortedArray(mpz_t[] arr, int startIndex, int endIndex, Node? redNode)
 	{
@@ -2838,19 +2838,19 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		return root;
 	}
 
-	private protected override void Copy(BigSumList source, int sourceIndex, BigSumList destination, int destinationIndex, int count)
+	private protected override void Copy(BigSumList source, int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
-		if (count == 0)
+		if (length == 0)
 			return;
-		if (count == 1)
+		if (length == 1)
 		{
 			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, sourceIndex, sourceIndex + count - 1, true, true);
+		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
-			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + count, destination._size) - 1, true, true).InOrderTreeWalk(node =>
+			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true).InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
 				if (b)
@@ -2869,20 +2869,20 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			throw new ArgumentException(null, nameof(array));
 	}
 
-	private protected override void CopyToInternal(int index, mpz_t[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, mpz_t[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (count > array.Length - index)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (length > array.Length - index)
 			throw new ArgumentException(null);
-		count += index; // Make `count` the upper bound.
+		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
 		{
-			if (i >= count)
+			if (i >= length)
 				return false;
 			if (i++ < index)
 				return true;
@@ -3036,7 +3036,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public virtual int GetAndRemove(Index index)
 	{
-		var index2 = index.IsFromEnd ? _size - index.Value : index.Value;
+		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
@@ -3122,7 +3122,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public virtual bool Increase(int index) => Update(index, GetInternal(index) + 1);
 
-	private protected override int IndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
+	private protected override int IndexOfInternal(mpz_t value, int index, int length) => throw new NotSupportedException();
 
 	public virtual int IndexOfNotGreaterSum(mpz_t sum) => IndexOfNotGreaterSum(sum, out _);
 
@@ -3317,7 +3317,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	// Virtual function for TreeSubSet, which may need to do range checks.
 	internal virtual bool IsWithinRange(int index) => true;
 
-	private protected override int LastIndexOfInternal(mpz_t value, int index, int count) => throw new NotSupportedException();
+	private protected override int LastIndexOfInternal(mpz_t value, int index, int length) => throw new NotSupportedException();
 
 	// Used for set checking operations (using enumerables) that rely on counting
 	private static int Log2(int value) => BitOperations.Log2((uint)value);
@@ -3396,7 +3396,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 #endif
 	}
 
-	private protected override BigSumList ReverseInternal(int index, int count) => throw new NotSupportedException();
+	private protected override BigSumList ReverseInternal(int index, int length) => throw new NotSupportedException();
 
 	internal override void SetInternal(int index, mpz_t value)
 	{
@@ -3425,7 +3425,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		throw new ArgumentOutOfRangeException(nameof(index));
 	}
 
-	// Virtual function for TreeSubSet, which may need the count variable of the parent list.
+	// Virtual function for TreeSubSet, which may need the length variable of the parent list.
 	internal virtual int TotalCount() => Length;
 
 	public virtual bool Update(int index, mpz_t value)
@@ -3451,7 +3451,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal void UpdateVersion() => ++version;
 
-	// Virtual function for TreeSubSet, which may need to update its count.
+	// Virtual function for TreeSubSet, which may need to update its length.
 	internal virtual void VersionCheck(bool updateCount = false) { }
 
 #if DEBUG
@@ -3563,13 +3563,13 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 		public void ColorRed() => Color = NodeColor.Red;
 
-		public Node DeepClone(int count)
+		public Node DeepClone(int length)
 		{
 #if DEBUG
-			Debug.Assert(count == GetCount());
+			Debug.Assert(length == GetCount());
 #endif
 			Node newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(count) + 2);
+			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -3828,7 +3828,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public new struct Enumerator : IEnumerator<mpz_t>
 	{
-		private readonly BigSumList _tree;
+		private readonly BigSumList _list;
 		private readonly int _version;
 
 		private readonly Stack<Node> _stack;
@@ -3842,7 +3842,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 		internal Enumerator(BigSumList list, bool reverse)
 		{
-			_tree = list;
+			_list = list;
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
@@ -3879,18 +3879,18 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _tree.root;
+			Node? node = _list.root;
 			Node? next, other;
 			while (node != null)
 			{
 				next = _reverse ? node.Right : node.Left;
 				other = _reverse ? node.Left : node.Right;
-				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
 					_stack.Push(node);
 					node = next;
 				}
-				else if (next == null || !_tree.IsWithinRange(next.Left?.LeavesCount ?? 0))
+				else if (next == null || !_list.IsWithinRange(next.Left?.LeavesCount ?? 0))
 					node = other;
 				else
 					node = next;
@@ -3900,8 +3900,8 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		public bool MoveNext()
 		{
 			// Make sure that the underlying subset has not been changed since
-			_tree.VersionCheck();
-			if (_version != _tree.version)
+			_list.VersionCheck();
+			if (_version != _list.version)
 				throw new InvalidOperationException();
 			if (_stack.Length == 0)
 			{
@@ -3915,12 +3915,12 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			{
 				next = _reverse ? node.Right : node.Left;
 				other = _reverse ? node.Left : node.Right;
-				if (_tree.IsWithinRange(node.Left?.LeavesCount ?? 0))
+				if (_list.IsWithinRange(node.Left?.LeavesCount ?? 0))
 				{
 					_stack.Push(node);
 					node = next;
 				}
-				else if (other == null || !_tree.IsWithinRange(other.Left?.LeavesCount ?? 0))
+				else if (other == null || !_list.IsWithinRange(other.Left?.LeavesCount ?? 0))
 					node = next;
 				else
 					node = other;
@@ -3930,7 +3930,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 		internal void Reset()
 		{
-			if (_version != _tree.version)
+			if (_version != _list.version)
 				throw new InvalidOperationException();
 			_stack.Clear();
 			Initialize();
@@ -3944,7 +3944,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		private readonly BigSumList _underlying;
 		private readonly int _min;
 		private readonly int _max;
-		// keeps track of whether the count variable is up to date
+		// keeps track of whether the length variable is up to date
 		// up to date -> _countVersion = _underlying.version
 		// not up to date -> _countVersion < _underlying.version
 		private int _countVersion;
@@ -3953,7 +3953,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		// anything <= 10 is added, but there is no upper bound. These features Head(), Tail(), were punted
 		// in the spec, and are not available, but the framework is there to make them available at some point.
 		private readonly bool _lBoundActive, _uBoundActive;
-		// used to see if the count is out of date
+		// used to see if the length is out of date
 
 		public TreeSubSet(BigSumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
@@ -4046,7 +4046,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			while (toRemove.Length != 0)
 			{
 				_underlying.RemoveAt(toRemove[^1]);
-				toRemove.RemoveAt(toRemove.Length - 1);
+				toRemove.RemoveAt(^1);
 			}
 			root = null;
 			_size = 0;
@@ -4083,7 +4083,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if count is out of date, but the stack can grow
+			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			Node? current = root;
 			while (current != null)
 			{
@@ -4141,7 +4141,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		}
 
 		/// <summary>
-		/// Returns the number of elements <c>count</c> of the parent list.
+		/// Returns the number of elements <c>length</c> of the parent list.
 		/// </summary>
 		internal override int TotalCount()
 		{
@@ -4152,7 +4152,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		/// <summary>
 		/// Checks whether this subset is out of date, and updates it if necessary.
 		/// </summary>
-		/// <param name="updateCount">Updates the count variable if necessary.</param>
+		/// <param name="updateCount">Updates the length variable if necessary.</param>
 		internal override void VersionCheck(bool updateCount = false) => VersionCheckImpl(updateCount);
 
 		private void VersionCheckImpl(bool updateCount)

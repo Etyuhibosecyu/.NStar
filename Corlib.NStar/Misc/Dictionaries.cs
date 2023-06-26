@@ -94,7 +94,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? List<TKey>.TryGetCountEasilyEnumerable(keyCollection, out var count) && List<TValue>.TryGetCountEasilyEnumerable(valueCollection, out var count2) ? Min(count, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
+	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? List<TKey>.TryGetLengthEasilyEnumerable(keyCollection, out var length) && List<TValue>.TryGetLengthEasilyEnumerable(valueCollection, out var count2) ? Min(length, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
 	{
 		(keys, values) = (keyCollection, valueCollection).RemoveDoubles();
 		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
@@ -105,7 +105,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetCountEasilyEnumerable(collection, out var count) ? count : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
+	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break();
 		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
@@ -116,7 +116,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : this(collection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetCountEasilyEnumerable(collection, out var count) ? count : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
+	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
 		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
@@ -132,7 +132,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			var i = IndexOfKey(key);
 			if (i >= 0)
 				return values[i];
-			throw new ValueNotFoundException();
+			throw new KeyNotFoundException();
 		}
 		set
 		{
@@ -1442,7 +1442,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public Mirror(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Mirror(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer) : this(collection != null && collection.TryGetCountEasily(out var count) ? count : 0, keyComparer, valueComparer)
+	public Mirror(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer) : this(collection != null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -1617,8 +1617,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				return;
 			}
 			// Comparers differ need to rehash all the entries via Add
-			var count = source._count;
-			for (var i = 0; i < count; i++)
+			var length = source._count;
+			for (var i = 0; i < length; i++)
 				if (oldEntries[i].next >= -1 && oldEntries[i].nextM >= -1)
 					TryAdd(oldEntries[i].key, oldEntries[i].value);
 			return;
@@ -1647,8 +1647,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual void Clear()
 	{
-		var count = _count;
-		if (count > 0)
+		var length = _count;
+		if (length > 0)
 		{
 			Debug.Assert(_buckets != null, "_buckets should be non-null");
 			Debug.Assert(_bucketsM != null, "_buckets should be non-null");
@@ -1659,7 +1659,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			_freeList = -1;
 			_freeListM = -1;
 			_freeCount = 0;
-			Array.Clear(_entries, 0, count);
+			Array.Clear(_entries, 0, length);
 		}
 	}
 
@@ -1686,12 +1686,12 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool ContainsValue(TValue value) => !Unsafe.IsNullRef(ref FindKey(value));
 
-	private protected virtual void CopyEntries(Entry[] entries, int count)
+	private protected virtual void CopyEntries(Entry[] entries, int length)
 	{
 		Debug.Assert(_entries != null);
 		Entry[] newEntries = _entries;
 		var newCount = 0;
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 		{
 			uint hashCode = entries[i].hashCode, hashCodeM = entries[i].hashCodeM;
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
@@ -1720,10 +1720,10 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		if (array.Length - index < Length)
 			throw new ArgumentException(null, nameof(index));
 		Debug.Assert(_entries != null);
-		var count = _count;
+		var length = _count;
 		Debug.Assert(_entries != null);
 		Entry[] entries = _entries;
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
 				array[index++] = new KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
 	}
@@ -1756,9 +1756,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		{
 			if (array is not object[] objects)
 				throw new ArrayTypeMismatchException();
-			var count = _count;
+			var length = _count;
 			Entry[] entries = _entries;
-			for (var i = 0; i < count; i++)
+			for (var i = 0; i < length; i++)
 				if (entries[i].next >= -1 && entries[i].nextM >= -1)
 					objects[index++] = new KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
 		}
@@ -2255,13 +2255,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		Debug.Assert(_entries != null, "_entries should be non-null");
 		Debug.Assert(newSize >= _entries.Length);
 		var entries = new Entry[newSize];
-		var count = _count;
-		Array.Copy(_entries, entries, count);
+		var length = _count;
+		Array.Copy(_entries, entries, length);
 		if (!typeof(TKey).IsValueType && forceNewHashCodes)
 		{
 			IEqualityComparer<TKey> comparer = _comparer = EqualityComparer<TKey>.Default;
 			IEqualityComparer<TValue> comparerM = _comparerM = EqualityComparer<TValue>.Default;
-			for (var i = 0; i < count; i++)
+			for (var i = 0; i < length; i++)
 				if (entries[i].next >= -1 && entries[i].nextM >= -1)
 				{
 					entries[i].hashCode = (uint)comparer.GetHashCode(entries[i].key);
@@ -2271,7 +2271,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		// Assign member variables after both arrays allocated to guard against corruption from OOM if second fails
 		_buckets = new int[newSize];
 		_bucketsM = new int[newSize];
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
 			{
 				ref var bucket = ref GetBucket(entries[i].hashCode);
@@ -2460,15 +2460,15 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 		else
 		{
-			var count = _count;
-			if (count == entries.Length)
+			var length = _count;
+			if (length == entries.Length)
 			{
 				Resize();
 				bucket = ref GetBucket(hashCode);
 				bucketM = ref GetBucketM(hashCodeM);
 			}
-			indexM = index = count;
-			_count = count + 1;
+			indexM = index = length;
+			_count = length + 1;
 			entries = _entries;
 		}
 		ref Entry entry = ref entries![index];
@@ -2611,8 +2611,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		{
 			if (_version != _dictionary._version)
 				throw new InvalidOperationException();
-			// Use unsigned comparison since we set index to dictionary.count+1 when the enumeration ends.
-			// dictionary.count+1 could be negative if dictionary.count is int.MaxValue
+			// Use unsigned comparison since we set index to dictionary.length+1 when the enumeration ends.
+			// dictionary.length+1 could be negative if dictionary.length is int.MaxValue
 			while ((uint)_index < (uint)_dictionary._count)
 			{
 				ref Entry entry = ref _dictionary._entries![_index++];
@@ -2665,9 +2665,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
 				throw new ArgumentException(null);
-			var count = _dictionary._count;
+			var length = _dictionary._count;
 			Entry[]? entries = _dictionary._entries;
-			for (var i = 0; i < count; i++)
+			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
 					array[index++] = entries[i].key;
 		}
@@ -2690,9 +2690,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			{
 				if (array is not object[] objects)
 					throw new ArrayTypeMismatchException();
-				var count = _dictionary._count;
+				var length = _dictionary._count;
 				Entry[]? entries = _dictionary._entries;
-				for (var i = 0; i < count; i++)
+				for (var i = 0; i < length; i++)
 					if (entries![i].next >= -1 && entries![i].nextM >= -1) objects[index++] = entries[i].key;
 			}
 		}
@@ -2789,9 +2789,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
 				throw new ArgumentException(null);
-			var count = _dictionary._count;
+			var length = _dictionary._count;
 			Entry[]? entries = _dictionary._entries;
-			for (var i = 0; i < count; i++)
+			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
 					array[index++] = entries[i].value;
 		}
@@ -2814,9 +2814,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			{
 				if (array is not object[] objects)
 					throw new ArrayTypeMismatchException();
-				var count = _dictionary._count;
+				var length = _dictionary._count;
 				Entry[]? entries = _dictionary._entries;
-				for (var i = 0; i < count; i++)
+				for (var i = 0; i < length; i++)
 					if (entries![i].next >= -1 && entries![i].nextM >= -1) objects[index++] = entries[i].value;
 			}
 		}

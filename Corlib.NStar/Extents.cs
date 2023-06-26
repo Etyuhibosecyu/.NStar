@@ -78,6 +78,144 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
+public class ArrayEComparer<T> : IEqualityComparer<T[]>
+{
+	private readonly Func<T, T, bool> equals;
+	private readonly Func<T, int> hashCode;
+
+	public ArrayEComparer()
+	{
+		equals = EqualityComparer<T>.Default.Equals;
+		hashCode = x => x?.GetHashCode() ?? 0;
+	}
+
+	public ArrayEComparer(Func<T, T, bool> equals)
+	{
+		this.equals = equals;
+		hashCode = x => x?.GetHashCode() ?? 0;
+	}
+
+	public ArrayEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	{
+		this.equals = equals;
+		this.hashCode = hashCode;
+	}
+
+	public bool Equals(T[]? x, T[]? y)
+	{
+		if (x == null && y == null)
+			return true;
+		else if (x == null || y == null)
+			return false;
+		if (x.Length != y.Length)
+			return false;
+		for (var i = 0; i < x.Length; i++)
+			if (!equals(x[i], y[i]))
+				return false;
+		return true;
+	}
+
+	public int GetHashCode(T[] x) => x.Length switch
+	{
+		0 => 1234567890,
+		1 => hashCode(x[0]),
+		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+	};
+}
+
+public class ListEComparer<T> : IEqualityComparer<List<T>>
+{
+	private readonly Func<T, T, bool> equals;
+	private readonly Func<T, int> hashCode;
+
+	public ListEComparer()
+	{
+		equals = EqualityComparer<T>.Default.Equals;
+		hashCode = x => x?.GetHashCode() ?? 0;
+	}
+
+	public ListEComparer(Func<T, T, bool> equals)
+	{
+		this.equals = equals;
+		hashCode = x => x?.GetHashCode() ?? 0;
+	}
+
+	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	{
+		this.equals = equals;
+		this.hashCode = hashCode;
+	}
+
+	public bool Equals(List<T>? x, List<T>? y)
+	{
+		if (x == null && y == null)
+			return true;
+		else if (x == null || y == null)
+			return false;
+		if (x.Length != y.Length)
+			return false;
+		for (var i = 0; i < x.Length; i++)
+			if (!equals(x[i], y[i]))
+				return false;
+		return true;
+	}
+
+	public int GetHashCode(List<T> x) => x.Length switch
+	{
+		0 => 1234567890,
+		1 => hashCode(x[0]),
+		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+	};
+}
+
+public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
+{
+	private readonly Func<T, T, bool> equals;
+	private readonly Func<T, int> hashCode;
+
+	public NListEComparer()
+	{
+		equals = EqualityComparer<T>.Default.Equals;
+		hashCode = x => x.GetHashCode();
+	}
+
+	public NListEComparer(Func<T, T, bool> equals)
+	{
+		this.equals = equals;
+		hashCode = x => x.GetHashCode();
+	}
+
+	public NListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	{
+		this.equals = equals;
+		this.hashCode = hashCode;
+	}
+
+	public bool Equals(NList<T>? x, NList<T>? y)
+	{
+		if (x == null && y == null)
+			return true;
+		else if (x == null || y == null)
+			return false;
+		if (x.Length != y.Length)
+			return false;
+		for (var i = 0; i < x.Length; i++)
+			if (!equals(x[i], y[i]))
+				return false;
+		return true;
+	}
+
+	public int GetHashCode(NList<T> x) => x.Length switch
+	{
+		0 => 1234567890,
+		1 => hashCode(x[0]),
+		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+	};
+}
+
 [Serializable]
 public class ExperimentalException : Exception
 {
@@ -596,7 +734,7 @@ public static unsafe partial class Extents
 
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source) => MemoryExtensions.AsSpan(source);
 	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index) => MemoryExtensions.AsSpan(source, index);
-	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int count) => MemoryExtensions.AsSpan(source, index, count);
+	internal static Span<TSource> AsSpan<TSource>(this TSource[] source, int index, int length) => MemoryExtensions.AsSpan(source, index, length);
 
 	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
 	/// <param name="x">Исходное число.</param>
@@ -867,66 +1005,66 @@ public static unsafe partial class Extents
 
 	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
 
-	public static uint[] NSort(this uint[] array, int index, int count)
+	public static uint[] NSort(this uint[] array, int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > array.Length)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
 			throw new ArgumentException(null);
 		fixed (uint* items = array)
 		{
 			var shiftedItems = items + index;
-			RadixSort(&shiftedItems, count);
+			RadixSort(&shiftedItems, length);
 		}
 		return array;
 	}
 
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int count)
+	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		if (index + count > array.Length)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
 			throw new ArgumentException(null);
-		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
-		for (var i = 0; i < count; i++)
+		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
 		{
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
-		RadixSort(&converted, &indexes, count);
+		RadixSort(&converted, &indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
-		T[] oldItems = array[index..(index + count)];
-		for (var i = 0; i < count; i++)
+		T[] oldItems = array[index..(index + length)];
+		for (var i = 0; i < length; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((nint)indexes);
 		return array;
 	}
 
-	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int count) where T : unmanaged
+	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (count < 0)
-			throw new ArgumentOutOfRangeException(nameof(count));
-		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * count);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * count);
-		for (var i = 0; i < count; i++)
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
 		{
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
-		RadixSort(&converted, &indexes, count);
+		RadixSort(&converted, &indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
-		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * count);
-		CopyMemory(array + index, oldItems, count);
-		for (var i = 0; i < count; i++)
+		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
+		CopyMemory(array + index, oldItems, length);
+		for (var i = 0; i < length; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((nint)oldItems);
 		Marshal.FreeHGlobal((nint)indexes);
@@ -977,18 +1115,16 @@ public static unsafe partial class Extents
 	internal static void RadixSort<T>(T** @in, int n) where T : unmanaged
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), length;
 		CreateCounters(*@in, counters, n);
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			count = counters + 256 * i;
-			if (count[0] == n) continue;
-			RadixPass(i, n, *@in, @out, count);
-#pragma warning disable IDE0180 // Использовать кортеж для переключения значений
+			length = counters + 256 * i;
+			if (length[0] == n) continue;
+			RadixPass(i, n, *@in, @out, length);
 			var temp = *@in;
 			*@in = @out;
 			@out = temp;
-#pragma warning restore IDE0180 // Использовать кортеж для переключения значений
 		}
 		Marshal.FreeHGlobal((nint)@out);
 		Marshal.FreeHGlobal((nint)counters);
@@ -998,34 +1134,32 @@ public static unsafe partial class Extents
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
 		var @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), length;
 		CreateCounters(*@in, counters, n);
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			count = counters + 256 * i;
-			if (count[0] == n) continue;
-			RadixPass(i, n, *@in, *in2, @out, out2, count);
-#pragma warning disable IDE0180 // Использовать кортеж для переключения значений
+			length = counters + 256 * i;
+			if (length[0] == n) continue;
+			RadixPass(i, n, *@in, *in2, @out, out2, length);
 			var temp = *@in;
 			*@in = @out;
 			@out = temp;
 			var temp2 = *@in2;
 			*@in2 = @out2;
 			@out2 = temp2;
-#pragma warning restore IDE0180 // Использовать кортеж для переключения значений
 		}
 		Marshal.FreeHGlobal((nint)@out);
 		Marshal.FreeHGlobal((nint)out2);
 		Marshal.FreeHGlobal((nint)counters);
 	}
 
-	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* count) where T : unmanaged
+	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* length) where T : unmanaged
 	{
 		T* sp;
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		var cp = count;
+		var cp = length;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
@@ -1036,20 +1170,20 @@ public static unsafe partial class Extents
 		sp = @in;
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
 		{
-			cp = count + *bp;
+			cp = length + *bp;
 			@out[*cp] = *sp;
 			++*cp;
 		}
 	}
 
-	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
+	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* length) where T : unmanaged where T2 : unmanaged
 	{
 		T* sp;
 		T2* sp2;
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		var cp = count;
+		var cp = length;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
@@ -1061,7 +1195,7 @@ public static unsafe partial class Extents
 		sp2 = in2;
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
 		{
-			cp = count + *bp;
+			cp = length + *bp;
 			@out[*cp] = *sp;
 			out2[*cp] = *sp2;
 			++*cp;

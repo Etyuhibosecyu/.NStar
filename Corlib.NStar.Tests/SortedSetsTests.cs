@@ -17,21 +17,29 @@ public class SumSetTests
 			gl = new(E.Where(gl, (x, index) => !Array.Exists(arr, x => x.Item1 == ss[index].Key)));
 			ss.ExceptWith(arr);
 			gs.ExceptWith(arr.ToArray(x => x.Item1));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		}, arr =>
 		{
 			gl = new(E.Where(gl, (x, index) => Array.Exists(arr, x => x.Item1 == ss[index].Key)));
 			ss.IntersectWith(arr);
 			gs.IntersectWith(arr.ToArray(x => x.Item1));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		}, arr =>
 		{
 			ss.SymmetricExceptWith(arr);
 			gs.SymmetricExceptWith(arr.ToArray(x => x.Item1));
 			gl = new(ss.Convert(x => x.Value));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		}, arr =>
 		{
 			ss.UnionWith(arr);
 			gs.UnionWith(arr.ToArray(x => x.Item1));
 			gl = new(ss.Convert(x => x.Value));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs, (x, y) => x.Key == y));
+			Assert.IsTrue(RedStarLinq.Equals(ss, gl, (x, y) => x.Value == y));
 		} };
 		var updateActions = new[] { (int key) =>
 		{
@@ -140,18 +148,22 @@ public class TreeSetTests
 		{
 			ts.ExceptWith(arr);
 			gs.ExceptWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
 			ts.IntersectWith(arr);
 			gs.IntersectWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
 			ts.SymmetricExceptWith(arr);
 			gs.SymmetricExceptWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		}, arr =>
 		{
 			ts.UnionWith(arr);
 			gs.UnionWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ts, gs));
 		} };
 		var actions = new[] { () =>
 		{

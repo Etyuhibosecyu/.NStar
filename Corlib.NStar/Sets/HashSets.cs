@@ -51,53 +51,58 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		}
 	}
 
-	private protected override void ClearInternal(int index, int count)
+	private protected override void ClearInternal(int index, int length)
 	{
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			SetNull(index + i);
 		Changed();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int count)
-	{
-		if (source != destination || sourceIndex >= destinationIndex)
-			for (var i = 0; i < count; i++)
-				CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
-		else
-			for (var i = count - 1; i >= 0; i--)
-				CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
-		destination.Changed();
-	}
+	//private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	//{
+	//	if (source != destination || sourceIndex >= destinationIndex)
+	//		for (var i = 0; i < length; i++)
+	//			CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
+	//	else
+	//		for (var i = length - 1; i >= 0; i--)
+	//			CopyOne(sourceIndex + i, destinationIndex + i, source, destination);
+	//	destination.Changed();
+	//}
 
-	private static void CopyOne(int sourceIndex, int destinationIndex, TCertain source2, TCertain destination)
-	{
-		var hashCode = ~source2.entries[sourceIndex].hashCode;
-		var bucket = hashCode % destination.buckets.Length;
-		ref Entry t = ref destination.entries[destinationIndex];
-		uint collisionCount = 0;
-		var oldBucket = ~t.hashCode % destination.buckets.Length;
-		var last = -1;
-		for (var i = ~destination.buckets[oldBucket]; i >= 0; last = i, i = ~destination.entries[i].next)
-		{
-			if (i == destinationIndex)
-			{
-				if (last < 0)
-					destination.buckets[oldBucket] = destination.entries[i].next;
-				else
-				{
-					ref Entry t2 = ref destination.entries[last];
-					t2.next = destination.entries[i].next;
-				}
-				break;
-			}
-			collisionCount++;
-			if (collisionCount > destination.entries.Length)
-				throw new InvalidOperationException();
-		}
-		t = source2.entries[sourceIndex];
-		t.next = destination.buckets[bucket];
-		destination.buckets[bucket] = ~destinationIndex;
-	}
+	//private static void CopyOne(int sourceIndex, int destinationIndex, TCertain source2, TCertain destination)
+	//{
+	//	var hashCode = ~source2.entries[sourceIndex].hashCode;
+	//	if (hashCode < 0)
+	//	{
+	//		destination.SetNull(destinationIndex);
+	//		return;
+	//	}
+	//	var bucket = hashCode % destination.buckets.Length;
+	//	ref Entry t = ref destination.entries[destinationIndex];
+	//	uint collisionCount = 0;
+	//	var oldBucket = ~t.hashCode % destination.buckets.Length;
+	//	var last = -1;
+	//	for (var i = ~destination.buckets[oldBucket]; i >= 0; last = i, i = ~destination.entries[i].next)
+	//	{
+	//		if (i == destinationIndex)
+	//		{
+	//			if (last < 0)
+	//				destination.buckets[oldBucket] = destination.entries[i].next;
+	//			else
+	//			{
+	//				ref Entry t2 = ref destination.entries[last];
+	//				t2.next = destination.entries[i].next;
+	//			}
+	//			break;
+	//		}
+	//		collisionCount++;
+	//		if (collisionCount > destination.entries.Length)
+	//			throw new InvalidOperationException();
+	//	}
+	//	t = source2.entries[sourceIndex];
+	//	t.next = destination.buckets[bucket];
+	//	destination.buckets[bucket] = ~destinationIndex;
+	//}
 
 	public override void Dispose()
 	{
@@ -115,7 +120,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int count)
+	private protected override int IndexOfInternal(T item, int index, int length)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -125,7 +130,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
+				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
 					return i;
 				collisionCount++;
 				if (collisionCount > entries.Length)
@@ -149,16 +154,16 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		TCertain set = CollectionCreator(collection);
 		set.ExceptWith(this);
-		var count = set._size;
-		if (count > 0)
+		var length = set._size;
+		if (length > 0)
 		{
-			EnsureCapacity(_size + count);
-			if (index < entries.Length - count)
-				Copy(this2, index, this2, index + count, entries.Length - index - count);
+			EnsureCapacity(_size + length);
+			if (index < _size)
+				Copy(this2, index, this2, index + length, entries.Length - index - length);
 			if (this == collection)
 				return this as TCertain ?? throw new InvalidOperationException();
 			else
-				Copy(set, 0, this2, index, count);
+				Copy(set, 0, this2, index, length);
 		}
 		return this2;
 	}
@@ -221,8 +226,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	public override bool TryAdd(T item, out int index)
 	{
-		index = IndexOf(item);
-		if (index >= 0)
+		if (TryGetIndexOf(item, out index))
 			return false;
 		Insert(item, true, out index);
 		return true;
@@ -270,7 +274,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public FastDelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public FastDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out var count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public FastDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -296,11 +300,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = true] { get => this[index, invoke, false]; set => this[index, invoke, false] = value; }
+
+	public virtual T this[Index index, bool invoke = true, bool suppressException = false]
 	{
 		get
 		{
-			if (freeCount != 0)
+			if (!suppressException && freeCount != 0)
 				try
 				{
 					throw new FakeIndexesException();
@@ -308,14 +314,14 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 				catch
 				{
 				}
-			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.GetOffset(entries.Length);
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
 			return GetInternal(index2, invoke);
 		}
 		set
 		{
-			if (freeCount != 0)
+			if (!suppressException && freeCount != 0)
 				try
 				{
 					throw new FakeIndexesException();
@@ -323,10 +329,10 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 				catch
 				{
 				}
-			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.GetOffset(entries.Length);
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
-			if (entries[index2].item?.Equals(value) ?? value == null)
+			if (entries[index2].hashCode < 0 && (entries[index2].item?.Equals(value) ?? value == null))
 				return;
 			if (Contains(value))
 				throw new ArgumentException(null, nameof(value));
@@ -352,17 +358,17 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		var skipped = 0;
 		for (var i = 0; i < index; i++)
 			if (entries[i].hashCode >= 0)
 				skipped++;
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			if (entries[i].hashCode < 0)
 				array[arrayIndex++] = entries[index + i + skipped].item;
 			else
-				count++;
+				length++;
 	}
 
 	public override void Dispose()
@@ -399,7 +405,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		}
 		else
 		{
-			if (collection.TryGetCountEasily(out var count) && index > _size - count)
+			if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			foreach (T item in collection)
 			{
@@ -509,11 +515,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	public virtual bool IsValidIndex(int index) => entries[index].hashCode < 0;
+
 	public override TCertain RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
 			return this as TCertain ?? throw new InvalidOperationException();
-		if (entries[index].item == null)
+		if (entries[index].hashCode >= 0)
 			return this as TCertain ?? throw new InvalidOperationException();
 		ref Entry t = ref entries[index];
 		uint collisionCount = 0;
@@ -582,7 +590,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	internal override void SetInternal(int index, T item)
 	{
-		if (entries[index].item != null)
+		if (entries[index].hashCode < 0)
 			RemoveAt(index);
 		if (item == null)
 			return;
@@ -612,29 +620,29 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly FastDelHashSet<T, TCertain> dictionary;
+		private readonly FastDelHashSet<T, TCertain> hashSet;
 		private int index;
 
-		internal Enumerator(FastDelHashSet<T, TCertain> dictionary)
+		internal Enumerator(FastDelHashSet<T, TCertain> hashSet)
 		{
-			this.dictionary = dictionary;
+			this.hashSet = hashSet;
 			index = 0;
 			Current = default!;
 		}
 
 		public bool MoveNext()
 		{
-			while ((uint)index < (uint)dictionary.entries.Length)
+			while ((uint)index < (uint)hashSet.Size)
 			{
-				if (dictionary.entries[index].hashCode < 0)
+				if (hashSet.entries[index].hashCode < 0)
 				{
-					Current = dictionary.entries[index].item;
+					Current = hashSet.entries[index].item;
 					index++;
 					return true;
 				}
 				index++;
 			}
-			index = dictionary._size + 1;
+			index = hashSet._size + 1;
 			Current = default!;
 			return false;
 		}
@@ -734,7 +742,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out var count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -765,7 +773,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		get => base[index, invoke];
 		set
 		{
-			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.GetOffset(entries.Length);
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
 			if (entries[index2].item?.Equals(value) ?? value == null)
@@ -783,9 +791,9 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			array[arrayIndex++] = entries[index++].item;
 	}
 
@@ -849,7 +857,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		uint collisionCount = 0;
 		var oldBucket = ~t.hashCode % buckets.Length;
 		var last = -1;
-		for (var i = ~buckets[oldBucket]; i >= 0; last = i, i = ~entries[i].next)
+		for (var i = oldBucket >= 0 ? ~buckets[oldBucket] : -1; i >= 0; last = i, i = ~entries[i].next)
 		{
 			if (i == index)
 			{
@@ -933,7 +941,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out var count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -965,13 +973,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
 
-	public override T this[Index index, bool invoke = true]
+	public override T this[Index index, bool invoke = true, bool suppressException = false]
 	{
-		get => base[index, invoke];
+		get => base[index, invoke, suppressException];
 		set
 		{
 			lock (lockObj)
-				base[index, invoke] = value;
+				base[index, invoke, suppressException] = value;
 		}
 	}
 
@@ -994,41 +1002,42 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	private protected override void ClearInternal(int index, int count)
+	private protected override void ClearInternal(int index, int length)
 	{
-		Parallel.For(0, count, i => RemoveValue(GetInternal(index + i)));
+		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
 		Changed();
 	}
 
-	public override bool Contains(T? item, int index, int count) => UnsafeContains(item, index, count) || Lock(lockObj, UnsafeContains, item, index, count);
+	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, UnsafeContains, item, index, length);
 
-	public override bool Contains(IEnumerable<T> collection, int index, int count) => Lock(lockObj, base.Contains, collection, index, count);
+	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void Copy(ParallelHashSet<T> source, int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int count) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, count);
+	private protected override void Copy(ParallelHashSet<T> source, int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, length);
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
-	public override void ExceptWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> ExceptWith(IEnumerable<T> other)
 	{
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
 			foreach (T item in other)
 				RemoveValue(item);
+		return this;
 	}
 
 	public override ParallelHashSet<T> FixUpFakeIndexes() => Lock(lockObj, base.FixUpFakeIndexes);
 
-	public override int IndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
+	public override int IndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
 	{
 		lock (lockObj)
-			return base.IndexOf(collection, index, count, out otherCount);
+			return base.IndexOf(collection, index, length, out otherCount);
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int count)
+	private protected override int IndexOfInternal(T item, int index, int length)
 	{
-		var foundIndex = UnsafeIndexOf(item, index, count);
-		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, count);
+		var foundIndex = UnsafeIndexOf(item, index, length);
+		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length);
 	}
 
 	private protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
@@ -1108,7 +1117,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	public override void IntersectWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> IntersectWith(IEnumerable<T> other)
 	{
 		if (other is not ISet<T> set)
 			set = new ParallelHashSet<T>(other);
@@ -1118,6 +1127,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			if (!set.Contains(item))
 				RemoveValue(item);
 		});
+		return this;
 	}
 
 	public override bool IsSupersetOf(IEnumerable<T> other)
@@ -1139,10 +1149,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return result;
 	}
 
-	public override int LastIndexOf(IEnumerable<T> collection, int index, int count, out int otherCount)
+	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
 	{
 		lock (lockObj)
-			return base.LastIndexOf(collection, index, count, out otherCount);
+			return base.LastIndexOf(collection, index, length, out otherCount);
 	}
 
 	public override bool Overlaps(IEnumerable<T> other)
@@ -1206,9 +1216,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			});
 			return result;
 		}
-		else if (other.TryGetCountEasily(out var count))
+		else if (other.TryGetLengthEasily(out var length))
 		{
-			if (Length != count)
+			if (Length != length)
 				return false;
 			foreach (T item in other)
 				if (!Contains(item))
@@ -1241,13 +1251,14 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return UnsafeTryAdd(item, out index);
 	}
 
-	public override void UnionWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> UnionWith(IEnumerable<T> other)
 	{
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
 			foreach (T item in other)
 				TryAdd(item);
+		return this;
 	}
 
 	/// <summary>
@@ -1272,7 +1283,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
 	/// в хэш-множество.
 	/// </summary>
-	public virtual bool UnsafeContains(T? item, int index, int count) => item != null && UnsafeIndexOf(item, index, count) >= 0;
+	public virtual bool UnsafeContains(T? item, int index, int length) => item != null && UnsafeIndexOf(item, index, length) >= 0;
 
 	/// <summary>
 	/// Внимание! Этот метод не является потокобезопасным! При чтении такими методами одновременно с записью
@@ -1296,7 +1307,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
 	/// в хэш-множество.
 	/// </summary>
-	public virtual int UnsafeIndexOf(T item, int index, int count)
+	public virtual int UnsafeIndexOf(T item, int index, int length)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -1306,7 +1317,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
-				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + count)
+				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
 					return i;
 				collisionCount++;
 				if (collisionCount > entries.Length)
@@ -1368,7 +1379,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	{
 		if (buckets == null || entries == null)
 			return this;
-		if (entries[index].item == null)
+		if (entries[index].hashCode >= 0)
 			return this;
 		var hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
@@ -1464,6 +1475,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
 {
 	private protected readonly TreeSet<int> deleted = new();
+	private protected byte fixes = 0;
 
 	public TreeHashSet() : this(0, (IEqualityComparer<T>?)null) { }
 
@@ -1487,7 +1499,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetCountEasily(out var count) ? (int)(Sqrt(count) * 10) : 0, comparer)
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -1517,14 +1529,14 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		get
 		{
-			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.GetOffset(entries.Length);
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
 			return GetInternal(index2, invoke);
 		}
 		set
 		{
-			var index2 = index.IsFromEnd ? entries.Length - index.Value : index.Value;
+			var index2 = index.GetOffset(entries.Length);
 			if ((uint)index2 >= (uint)entries.Length)
 				throw new IndexOutOfRangeException();
 			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value == null)
@@ -1545,6 +1557,20 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		deleted.Clear();
 	}
 
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	{
+		int sourceIndex2 = IndexGetActual(sourceIndex), destinationIndex2 = IndexGetActual(destinationIndex);
+		if (source != destination || sourceIndex2 >= destinationIndex2)
+			for (var i = 0; i < length; i++)
+				destination.SetInternal(destinationIndex2 + i, source.GetInternal(sourceIndex2 + i));
+		else
+			for (var i = length - 1; i >= 0; i--)
+				destination.SetInternal(destinationIndex2 + i, source.GetInternal(sourceIndex2 + i));
+		if (destination._size < destinationIndex2 + length + deleted.Length)
+			destination._size = destinationIndex2 + length + deleted.Length;
+		destination.Changed();
+	}
+
 	private protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
@@ -1552,17 +1578,17 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int count)
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		var skipped = 0;
 		for (var i = 0; i < index; i++)
 			if (entries[i].hashCode >= 0)
 				skipped++;
-		for (var i = 0; i < count; i++)
+		for (var i = 0; i < length; i++)
 			if (entries[i].hashCode < 0)
 				array[arrayIndex++] = entries[index + i + skipped].item;
 			else
-				count++;
+				length++;
 	}
 
 	public override void Dispose()
@@ -1598,7 +1624,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 		else
 		{
-			if (collection.TryGetCountEasily(out var count) && index > _size - count)
+			if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			foreach (T item in collection)
 			{
@@ -1613,23 +1639,23 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
-			if (!match(item))
-				RemoveValue(item);
+		for (var i = 0; i < Length; i++)
+			if (!match(GetInternal(i)))
+				RemoveAt(i--);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
-		var i = 0;
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
-			if (!match(item, i++))
-				RemoveValue(item);
+		for (var i = 0; i < Length; i++)
+			if (!match(GetInternal(i), i))
+				RemoveAt(i--);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public virtual TCertain FixUpDeleted()
 	{
+		fixes++;
 		var newSize = HashHelpers.GetPrime(_size - deleted.Length);
 		var newBuckets = new int[newSize];
 		var newEntries = new Entry[newSize];
@@ -1647,7 +1673,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
-		_size = newSize;
+		_size -= deleted.Length;
 		buckets = newBuckets;
 		entries = newEntries;
 		deleted.Clear();
@@ -1667,9 +1693,9 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	private protected virtual int IndexGetDirect(int actual) => deleted.NthAbsent(actual);
 
-	private protected override int IndexOfInternal(T item, int index, int count) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + count) - index2));
+	private protected override int IndexOfInternal(T item, int index, int length) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + length) - index2));
 
-	private protected virtual int IndexOfDirect(T item, int index, int count) => base.IndexOfInternal(item, index, count);
+	private protected virtual int IndexOfDirect(T item, int index, int length) => base.IndexOfInternal(item, index, length);
 
 	private protected override TCertain Insert(T? item, bool add, out int index)
 	{
@@ -1715,11 +1741,13 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public override TCertain RemoveAt(int index)
+	public override TCertain RemoveAt(int index) => RemoveAtDirect(IndexGetDirect(index));
+
+	private protected virtual TCertain RemoveAtDirect(int index)
 	{
 		if (buckets == null || entries == null)
 			return this as TCertain ?? throw new InvalidOperationException();
-		if (entries[index].item == null)
+		if (entries[index].hashCode >= 0)
 			return this as TCertain ?? throw new InvalidOperationException();
 		var hashCode = Comparer.GetHashCode(entries[index].item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
 		uint collisionCount = 0;
@@ -1789,12 +1817,21 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return false;
 	}
 
-	internal override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item);
+	internal override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item, index);
 
-	internal virtual void SetDirect(int index, T item)
+	internal virtual void SetDirect(int index, T item, int actualIndex)
 	{
-		if (entries[index].item != null)
-			RemoveAt(index);
+		var deletedLength = deleted.Length;
+		if (entries[index].hashCode < 0)
+		{
+			RemoveAtDirect(index);
+			deletedLength++;
+		}
+		if (deletedLength != deleted.Length)
+		{
+			Insert(actualIndex, item);
+			return;
+		}
 		if (item == null)
 			return;
 		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
@@ -1821,29 +1858,33 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public new struct Enumerator : IEnumerator<T>
 	{
-		private readonly TreeHashSet<T, TCertain> dictionary;
+		private readonly TreeHashSet<T, TCertain> hashSet;
 		private int index;
+		private readonly byte fixes;
 
-		internal Enumerator(TreeHashSet<T, TCertain> dictionary)
+		internal Enumerator(TreeHashSet<T, TCertain> hashSet)
 		{
-			this.dictionary = dictionary;
+			this.hashSet = hashSet;
 			index = 0;
+			fixes = hashSet.fixes;
 			Current = default!;
 		}
 
 		public bool MoveNext()
 		{
-			while ((uint)index < (uint)dictionary.entries.Length)
+			if (fixes != hashSet.fixes)
+				throw new InvalidOperationException();
+			while ((uint)index < (uint)hashSet.entries.Length)
 			{
-				if (dictionary.entries[index].hashCode < 0)
+				if (hashSet.entries[index].hashCode < 0)
 				{
-					Current = dictionary.entries[index].item;
+					Current = hashSet.entries[index].item;
 					index++;
 					return true;
 				}
 				index++;
 			}
-			index = dictionary._size + 1;
+			index = hashSet._size + 1;
 			Current = default!;
 			return false;
 		}
