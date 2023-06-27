@@ -603,6 +603,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		if (function2 == null)
 			throw new ArgumentNullException(nameof(function2));
+		if (function3 == null)
+			throw new ArgumentNullException(nameof(function3));
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
