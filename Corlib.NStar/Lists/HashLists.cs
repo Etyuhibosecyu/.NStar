@@ -53,7 +53,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			Add(item);
 	}
 
@@ -63,7 +63,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			Add(item);
 	}
 
@@ -174,7 +174,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		T item = entries[index].item;
+		var item = entries[index].item;
 		if (invoke)
 			Changed();
 		return item;
@@ -272,7 +272,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
-		TCertain list = CollectionCreator(collection);
+		var list = CollectionCreator(collection);
 		var length = list._size;
 		if (length > 0)
 		{
@@ -352,7 +352,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
 			{
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				if (t.hashCode != 0)
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
 			}
@@ -361,7 +361,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = buckets[bucket];
 				buckets[bucket] = ~i;
 			}
@@ -372,7 +372,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected virtual void SetNull(int index)
 	{
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		if (t.hashCode >= 0)
 			return;
 		uint collisionCount = 0;
@@ -388,7 +388,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t2 = ref entries[last];
+					ref var t2 = ref entries[last];
 					t2.next = entries[i].next;
 				}
 				break;
@@ -548,7 +548,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		{
 			if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 				throw new ArgumentOutOfRangeException(nameof(index));
-			foreach (T item in collection)
+			foreach (var item in collection)
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
@@ -561,7 +561,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item))
 				RemoveValue(item);
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -570,7 +570,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		var i = 0;
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item, i++))
 				RemoveValue(item);
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -591,7 +591,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
@@ -634,7 +634,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			index = _size;
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -648,17 +648,17 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 	{
 		if (buckets == null || entries == null)
 			return this as TCertain ?? throw new InvalidOperationException();
-		T? item = entries[index].item;
+		var item = entries[index].item;
 		if (item == null)
 			return this as TCertain ?? throw new InvalidOperationException();
 		var hashCode = base.Comparer.GetHashCode(item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
-			ref Entry t = ref entries[bucket];
+			ref var t = ref entries[bucket];
 			t.next = entries[index].next;
 		}
-		ref Entry t2 = ref entries[index];
+		ref var t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = freeList;
 		t2.item = default!;
@@ -690,10 +690,10 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref var t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				ref Entry t2 = ref entries[i];
+				ref var t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
@@ -733,8 +733,8 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 			}
 			_size++;
 		}
-		ref Entry t2 = ref entries[index];
-		T? oldItem = t2.item;
+		ref var t2 = ref entries[index];
+		var oldItem = t2.item;
 		t2.hashCode = ~hashCode;
 		t2.next = buckets[targetBucket];
 		t2.item = item;
@@ -898,7 +898,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 		var targetBucket = hashCode % buckets.Length;
 		index = _size;
 		_size++;
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -913,7 +913,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
-		T? item = entries[index].item;
+		var item = entries[index].item;
 		_size--;
 		if (index < _size)
 			Copy(this2, index + 1, this2, index, _size - index);
@@ -928,7 +928,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 	{
 		var hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		uint collisionCount = 0;
 		var oldBucket = ~t.hashCode % buckets.Length;
 		var last = -1;
@@ -942,7 +942,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 					buckets[oldBucket] = entries[i].next;
 				else
 				{
-					ref Entry t2 = ref entries[last];
+					ref var t2 = ref entries[last];
 					t2.next = entries[i].next;
 				}
 				break;
@@ -951,7 +951,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 			if (collisionCount > entries.Length)
 				throw new InvalidOperationException();
 		}
-		T? oldItem = t.item;
+		var oldItem = t.item;
 		t.hashCode = ~hashCode;
 		t.next = buckets[bucket];
 		t.item = item;

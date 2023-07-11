@@ -76,6 +76,30 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			CopyMemory(ptr, _items, uints);
 	}
 
+	public BitList(ReadOnlySpan<uint> values)
+	{
+		if (values == null)
+			throw new ArgumentNullException(nameof(values));
+		// this value is chosen to prevent overflow when computing m_length
+		if (values.Length > int.MaxValue / BitsPerInt)
+			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = values.Length));
+		_size = values.Length * BitsPerInt;
+		fixed (uint* values2 = values)
+			CopyMemory(values2, _items, values.Length);
+	}
+
+	public BitList(int length, ReadOnlySpan<uint> values)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var uints = GetArrayLength(length, BitsPerInt);
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		_size = length;
+		fixed (uint* ptr = values)
+			CopyMemory(ptr, _items, uints);
+	}
+
 	public BitList(IEnumerable bits)
 	{
 		if (bits == null)
@@ -160,7 +184,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);
 			var i = 0;
-			using IEnumerator<byte> en = bytes.GetEnumerator();
+			using var en = bytes.GetEnumerator();
 			while (en.MoveNext())
 			{
 				(var index, var remainder) = DivRem(i++, BytesPerInt);
@@ -176,7 +200,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);
 			var i = 0;
-			using IEnumerator<bool> en = bools.GetEnumerator();
+			using var en = bools.GetEnumerator();
 			while (en.MoveNext())
 			{
 				(var index, var remainder) = DivRem(i++, BitsPerInt);
@@ -473,7 +497,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		if (collection is BitList bitList)
 		{
 			if (index > _size - bitList._size)
-				throw new ArgumentOutOfRangeException(nameof(index));
+				return false;
 			if (toEnd && index < _size - bitList._size)
 				return false;
 			if (bitList._size == 0)
@@ -951,7 +975,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (bits is IEnumerable<byte> bytes)
 		{
 			var b = true;
-			IEnumerator<byte> en = bytes.GetEnumerator();
+			var en = bytes.GetEnumerator();
 			BigList<uint> values = new();
 			var n = 0;
 			while (b)
@@ -976,7 +1000,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			isHigh = list.isHigh;
 			for (var target = this; target.high != null && target.highCapacity != null;)
 			{
-				mpz_t newSize = n * BitsPerByte % target.fragment;
+				var newSize = n * BitsPerByte % target.fragment;
 				target.highCapacity[^1] = newSize;
 				target = target.high[^1];
 				target.Size = newSize;

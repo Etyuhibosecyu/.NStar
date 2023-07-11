@@ -140,7 +140,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		T item = items.GetInternal(index, invoke);
+		var item = items.GetInternal(index, invoke);
 		if (invoke)
 			Changed();
 		return item;
@@ -252,7 +252,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return;
 		}
 		int length;
-		T[] elements = collection.ToArray();
+		var elements = collection.ToArray();
 		length = elements.Length;
 		if (length > 0)
 		{
@@ -311,7 +311,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (root == null)
 				return default;
-			Node current = root;
+			var current = root;
 			while (current.Right != null)
 				current = current.Right;
 			return current.Item;
@@ -326,7 +326,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (root == null)
 				return default;
-			Node current = root;
+			var current = root;
 			while (current.Left != null)
 				current = current.Left;
 			return current.Item;
@@ -413,7 +413,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var originalLastIndex = Length;
 		var intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
 		Span<int> span = stackalloc int[StackAllocThreshold];
-		BitHelper bitHelper = intArrayLength <= StackAllocThreshold ?
+		var bitHelper = intArrayLength <= StackAllocThreshold ?
 			new BitHelper(span[..intArrayLength], clear: true) :
 			new BitHelper(new int[intArrayLength], clear: false);
 		// length of items in other not found in this
@@ -609,8 +609,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			// Outside range, no point in doing anything
 			if (Comparer.Compare(asSorted.Max, Min) >= 0 && Comparer.Compare(asSorted.Min, Max) <= 0)
 			{
-				T? min = Min;
-				T? max = Max;
+				var min = Min;
+				var max = Max;
 				foreach (var item in other)
 				{
 					if (Comparer.Compare(item, min) < 0)
@@ -639,7 +639,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Even if we don't actually remove from the set, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		parent = null;
 		grandParent = null;
 		match = null;
@@ -654,7 +654,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					current.ColorRed();
 				else
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -682,7 +682,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -721,7 +721,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	internal virtual Node? FindNode(T item)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			var order = Comparer.Compare(item, current.Item);
@@ -736,7 +736,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	internal Node? FindRange(T? from, T? to, bool lowerBoundActive, bool upperBoundActive)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if (lowerBoundActive && Comparer.Compare(from, current.Item) > 0)
@@ -754,7 +754,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
-		FindForRemove(index2, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch);
+		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		T found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -786,7 +786,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -844,7 +844,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
 		var stack = new Stack<Node>(2 * Log2(Length + 1));
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			stack.Push(current);
@@ -855,7 +855,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			current = stack.Pop();
 			if (!action(current))
 				return false;
-			Node? node = current.Right;
+			var node = current.Right;
 			while (node != null)
 			{
 				stack.Push(node);
@@ -922,7 +922,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// </remarks>
 	internal virtual int InternalIndexOf(T item)
 	{
-		Node? current = root;
+		var current = root;
 		var length = 0;
 		while (current != null)
 		{
@@ -955,7 +955,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
-			T? max = Max;
+			var max = Max;
 			while (!mineEnded && !theirsEnded && Comparer.Compare(theirs.Current, max) <= 0)
 			{
 				var comp = Comparer.Compare(mine.Current, theirs.Current);
@@ -1010,7 +1010,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return Length < asSorted.Length && IsSubsetOfSortedSetWithSameComparer(asSorted);
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
-		ElementCount result = CheckUniqueAndUnfoundElements(other, false);
+		var result = CheckUniqueAndUnfoundElements(other, false);
 		return result.UniqueCount == Length && result.UnfoundCount > 0;
 	}
 
@@ -1026,7 +1026,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (asSorted.Length >= Length)
 				return false;
-			TreeSet<T> pruned = GetViewBetween(asSorted.Min, asSorted.Max);
+			var pruned = GetViewBetween(asSorted.Min, asSorted.Max);
 			foreach (var item in asSorted)
 			{
 				if (!pruned.Contains(item))
@@ -1037,7 +1037,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
 		// slight optimization, put it into a HashSet and then check can do it in O(N+M)
 		// but slower in better cases + wastes space
-		ElementCount result = CheckUniqueAndUnfoundElements(other, true);
+		var result = CheckUniqueAndUnfoundElements(other, true);
 		return result.UniqueCount < Length && result.UnfoundCount == 0;
 	}
 
@@ -1053,14 +1053,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		else
 		{
 			// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
-			ElementCount result = CheckUniqueAndUnfoundElements(other, false);
+			var result = CheckUniqueAndUnfoundElements(other, false);
 			return result.UniqueCount == Length && result.UnfoundCount >= 0;
 		}
 	}
 
 	private bool IsSubsetOfSortedSetWithSameComparer(TreeSet<T> asSorted)
 	{
-		TreeSet<T> prunedOther = asSorted.GetViewBetween(Min, Max);
+		var prunedOther = asSorted.GetViewBetween(Min, Max);
 		foreach (var item in this)
 		{
 			if (!prunedOther.Contains(item))
@@ -1080,7 +1080,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (Length < asSorted.Length)
 				return false;
-			TreeSet<T> pruned = GetViewBetween(asSorted.Min, asSorted.Max);
+			var pruned = GetViewBetween(asSorted.Min, asSorted.Max);
 			foreach (var item in asSorted)
 				if (!pruned.Contains(item))
 					return false;
@@ -1113,8 +1113,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	private void RemoveAllElements(IEnumerable<T> collection)
 	{
-		T? min = Min;
-		T? max = Max;
+		var min = Min;
+		var max = Max;
 		foreach (var item in collection)
 		{
 			if (!(Comparer.Compare(item, min) < 0 || Comparer.Compare(item, max) > 0) && Contains(item))
@@ -1126,7 +1126,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	{
 		if (root == null)
 			return this;
-		FindForRemove(index, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch);
+		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
@@ -1167,7 +1167,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Even if we don't actually remove from the set, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? match = null;
@@ -1182,7 +1182,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					current.ColorRed();
 				else
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -1210,7 +1210,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -1343,7 +1343,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public override int Search(T item)
 	{
-		Node? current = root;
+		var current = root;
 		var n = 0;
 		while (current != null)
 		{
@@ -1380,13 +1380,13 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return mineEnded && theirsEnded;
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(size of the other collection).
-		ElementCount result = CheckUniqueAndUnfoundElements(other, true);
+		var result = CheckUniqueAndUnfoundElements(other, true);
 		return result.UniqueCount == Length && result.UnfoundCount == 0;
 	}
 
 	internal override void SetInternal(int index, T value)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -1464,7 +1464,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return SymmetricExceptWithSameComparer(asSorted);
 		else
 		{
-			T[] elements = other.ToArray();
+			var elements = other.ToArray();
 			var length = elements.Length;
 			Array.Sort(elements, 0, length, Comparer);
 			return SymmetricExceptWithSameComparer(elements, length);
@@ -1489,14 +1489,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		Debug.Assert(length >= 0 && length <= other.Length);
 		if (length == 0)
 			return this;
-		T previous = other[0];
+		var previous = other[0];
 		for (var i = 0; i < length; i++)
 		{
 			while (i < length && i != 0 && Comparer.Compare(other[i], previous) == 0)
 				i++;
 			if (i >= length)
 				break;
-			T current = other[i];
+			var current = other[i];
 			var result = Contains(current) ? RemoveValue(current) : TryAdd(current);
 			Debug.Assert(result);
 			previous = current;
@@ -1520,7 +1520,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// Search for a node at bottom to insert the new node.
 		// If we can guarantee the node we found is not a 4-node, it would be easy to do insertion.
 		// We split 4-nodes along the search path.
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? greatGrandParent = null;
@@ -1596,7 +1596,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// </remarks>
 	public virtual bool TryGetValue(T equalValue, [MaybeNullWhen(false)] out T actualValue)
 	{
-		Node? node = FindNode(equalValue);
+		var node = FindNode(equalValue);
 		if (node != null)
 		{
 			actualValue = node.Item;
@@ -1789,7 +1789,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 #if DEBUG
 			Debug.Assert(length == GetCount());
 #endif
-			Node newRoot = ShallowClone();
+			var newRoot = ShallowClone();
 			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
@@ -1921,7 +1921,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		/// </summary>
 		public Node RotateLeft()
 		{
-			Node child = Right!;
+			var child = Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
@@ -1941,8 +1941,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		/// </summary>
 		public Node RotateLeftRight()
 		{
-			Node child = Left!;
-			Node grandChild = child.Right!;
+			var child = Left!;
+			var grandChild = child.Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
@@ -1964,7 +1964,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		/// </summary>
 		public Node RotateRight()
 		{
-			Node child = Left!;
+			var child = Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
@@ -1984,8 +1984,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		/// </summary>
 		public Node RotateRightLeft()
 		{
-			Node child = Right!;
-			Node grandChild = child.Left!;
+			var child = Right!;
+			var grandChild = child.Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
@@ -2080,7 +2080,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _set.root;
+			var node = _set.root;
 			Node? next, other;
 			while (node != null)
 			{
@@ -2110,7 +2110,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				return false;
 			}
 			_current = _stack.Pop();
-			Node? node = _reverse ? _current.Left : _current.Right;
+			var node = _reverse ? _current.Left : _current.Right;
 			Node? next, other;
 			while (node != null)
 			{
@@ -2180,7 +2180,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				T? result = default;
 				while (current != null)
 				{
@@ -2204,7 +2204,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				T? result = default;
 				while (current != null)
 				{
@@ -2300,7 +2300,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
-			Node? current = root;
+			var current = root;
 			while (current != null)
 			{
 				if (IsWithinRange(current.Item))
@@ -2318,7 +2318,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				current = stack.Pop();
 				if (!action(current))
 					return false;
-				Node? node = current.Right;
+				var node = current.Right;
 				while (node != null)
 				{
 					if (IsWithinRange(node.Item))
@@ -2589,7 +2589,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (root == null)
 				return default;
-			Node current = root;
+			var current = root;
 			while (current.Right != null)
 				current = current.Right;
 			return current.Item.Key;
@@ -2604,7 +2604,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (root == null)
 				return default;
-			Node current = root;
+			var current = root;
 			while (current.Left != null)
 				current = current.Left;
 			return current.Item.Key;
@@ -2695,7 +2695,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		var originalLastIndex = Length;
 		var intArrayLength = BitHelper.ToIntArrayLength(originalLastIndex);
 		Span<int> span = stackalloc int[StackAllocThreshold];
-		BitHelper bitHelper = intArrayLength <= StackAllocThreshold ?
+		var bitHelper = intArrayLength <= StackAllocThreshold ?
 			new BitHelper(span[..intArrayLength], clear: true) :
 			new BitHelper(new int[intArrayLength], clear: false);
 		// length of items in other not found in this
@@ -2895,8 +2895,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// Outside range, no point in doing anything
 			if (Comparer2.Compare(asSorted.Max, Min) >= 0 && Comparer2.Compare(asSorted.Min, Max) <= 0)
 			{
-				T? min = Min;
-				T? max = Max;
+				var min = Min;
+				var max = Max;
 				foreach (var item in other)
 				{
 					if (Comparer2.Compare(item.Key, min) < 0)
@@ -2925,7 +2925,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Even if we don't actually remove from the set, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		parent = null;
 		grandParent = null;
 		match = null;
@@ -2940,7 +2940,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					current.ColorRed();
 				else
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -2968,7 +2968,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -3007,7 +3007,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	internal virtual Node? FindNode(T item)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			var order = Comparer2.Compare(item, current.Item.Key);
@@ -3022,7 +3022,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	internal Node? FindRange(T? from, T? to, bool lowerBoundActive, bool upperBoundActive)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if (lowerBoundActive && Comparer2.Compare(from, current.Item.Key) > 0)
@@ -3040,7 +3040,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
-		FindForRemove(index2, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch);
+		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		T found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -3063,7 +3063,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	internal override (T Key, int Value) GetInternal(int index, bool invoke = true)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -3091,7 +3091,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual long GetLeftValuesSum(T item, out int actualValue)
 	{
-		Node? current = root;
+		var current = root;
 		long sum = 0;
 		while (current != null)
 		{
@@ -3146,7 +3146,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		if (sum == ValuesSum)
 			return _size;
-		Node? current = root;
+		var current = root;
 		var index = 0;
 		while (current != null)
 		{
@@ -3189,7 +3189,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
 		var stack = new Stack<Node>(2 * Log2(Length + 1));
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			stack.Push(current);
@@ -3200,7 +3200,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			current = stack.Pop();
 			if (!action(current))
 				return false;
-			Node? node = current.Right;
+			var node = current.Right;
 			while (node != null)
 			{
 				stack.Push(node);
@@ -3258,7 +3258,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// </remarks>
 	internal virtual int InternalIndexOf(T item)
 	{
-		Node? current = root;
+		var current = root;
 		var length = 0;
 		while (current != null)
 		{
@@ -3291,7 +3291,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			var mine = GetEnumerator();
 			var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
-			T? max = Max;
+			var max = Max;
 			while (!mineEnded && !theirsEnded && Comparer2.Compare(theirs.Current.Key, max) <= 0)
 			{
 				var comp = Comparer.Compare(mine.Current, theirs.Current);
@@ -3348,7 +3348,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return IsSubsetOfSortedSetWithSameComparer(asSorted);
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
-		ElementCount result = CheckUniqueAndUnfoundElements(other, false);
+		var result = CheckUniqueAndUnfoundElements(other, false);
 		return result.UniqueCount == Length && result.UnfoundCount > 0;
 	}
 
@@ -3364,7 +3364,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (asSorted.Length >= Length)
 				return false;
-			SumSet<T> pruned = GetViewBetween(asSorted.Min, asSorted.Max);
+			var pruned = GetViewBetween(asSorted.Min, asSorted.Max);
 			foreach (var item in asSorted)
 			{
 				if (!pruned.Contains(item))
@@ -3375,7 +3375,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
 		// slight optimization, put it into a HashSet and then check can do it in O(N+M)
 		// but slower in better cases + wastes space
-		ElementCount result = CheckUniqueAndUnfoundElements(other, true);
+		var result = CheckUniqueAndUnfoundElements(other, true);
 		return result.UniqueCount < Length && result.UnfoundCount == 0;
 	}
 
@@ -3393,14 +3393,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		else
 		{
 			// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
-			ElementCount result = CheckUniqueAndUnfoundElements(other, false);
+			var result = CheckUniqueAndUnfoundElements(other, false);
 			return result.UniqueCount == Length && result.UnfoundCount >= 0;
 		}
 	}
 
 	private bool IsSubsetOfSortedSetWithSameComparer(SumSet<T> asSorted)
 	{
-		SumSet<T> prunedOther = asSorted.GetViewBetween(Min, Max);
+		var prunedOther = asSorted.GetViewBetween(Min, Max);
 		foreach (var item in this)
 		{
 			if (!prunedOther.Contains(item))
@@ -3420,7 +3420,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (Length < asSorted.Length)
 				return false;
-			SumSet<T> pruned = GetViewBetween(asSorted.Min, asSorted.Max);
+			var pruned = GetViewBetween(asSorted.Min, asSorted.Max);
 			foreach (var item in asSorted)
 				if (!pruned.Contains(item))
 					return false;
@@ -3453,8 +3453,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	private void RemoveAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
-		T? min = Min;
-		T? max = Max;
+		var min = Min;
+		var max = Max;
 		foreach (var item in collection)
 		{
 			if (!(Comparer2.Compare(item.Key, min) < 0 || Comparer2.Compare(item.Key, max) > 0) && Contains(item))
@@ -3466,7 +3466,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		if (root == null)
 			return this;
-		FindForRemove(index, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch);
+		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
@@ -3498,7 +3498,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Even if we don't actually remove from the set, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? match = null;
@@ -3513,7 +3513,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					current.ColorRed();
 				else
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -3541,7 +3541,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -3658,7 +3658,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual int Search(T item)
 	{
-		Node? current = root;
+		var current = root;
 		var n = 0;
 		while (current != null)
 		{
@@ -3697,13 +3697,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return mineEnded && theirsEnded;
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(size of the other collection).
-		ElementCount result = CheckUniqueAndUnfoundElements(other, true);
+		var result = CheckUniqueAndUnfoundElements(other, true);
 		return result.UniqueCount == Length && result.UnfoundCount == 0;
 	}
 
 	internal override void SetInternal(int index, (T Key, int Value) value)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -3837,7 +3837,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// Search for a node at bottom to insert the new node.
 		// If we can guarantee the node we found is not a 4-node, it would be easy to do insertion.
 		// We split 4-nodes along the search path.
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? greatGrandParent = null;
@@ -3894,7 +3894,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual bool TryGetValue(T key, out int value)
 	{
-		Node? node = FindNode(key);
+		var node = FindNode(key);
 		if (node != null)
 		{
 			value = node.Item.Value;
@@ -4106,7 +4106,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 #if DEBUG
 			Debug.Assert(length == GetCount());
 #endif
-			Node newRoot = ShallowClone();
+			var newRoot = ShallowClone();
 			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
@@ -4237,7 +4237,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// </summary>
 		public Node RotateLeft()
 		{
-			Node child = Right!;
+			var child = Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
@@ -4257,8 +4257,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// </summary>
 		public Node RotateLeftRight()
 		{
-			Node child = Left!;
-			Node grandChild = child.Right!;
+			var child = Left!;
+			var grandChild = child.Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
@@ -4280,7 +4280,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// </summary>
 		public Node RotateRight()
 		{
-			Node child = Left!;
+			var child = Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
@@ -4300,8 +4300,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// </summary>
 		public Node RotateRightLeft()
 		{
-			Node child = Right!;
-			Node grandChild = child.Left!;
+			var child = Right!;
+			var grandChild = child.Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
@@ -4416,7 +4416,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _tree.root;
+			var node = _tree.root;
 			Node? next, other;
 			while (node != null)
 			{
@@ -4446,7 +4446,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				return false;
 			}
 			_current = _stack.Pop();
-			Node? node = _reverse ? _current.Left : _current.Right;
+			var node = _reverse ? _current.Left : _current.Right;
 			Node? next, other;
 			while (node != null)
 			{
@@ -4516,7 +4516,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				T? result = default;
 				while (current != null)
 				{
@@ -4540,7 +4540,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				T? result = default;
 				while (current != null)
 				{
@@ -4636,7 +4636,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
-			Node? current = root;
+			var current = root;
 			while (current != null)
 			{
 				if (IsWithinRange(current.Item.Key))
@@ -4654,7 +4654,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				current = stack.Pop();
 				if (!action(current))
 					return false;
-				Node? node = current.Right;
+				var node = current.Right;
 				while (node != null)
 				{
 					if (IsWithinRange(node.Item.Key))
@@ -4842,7 +4842,7 @@ internal ref struct BitHelper
 		Debug.Assert(bitPosition >= 0);
 		var bitArrayIndex = (uint)bitPosition / IntSize;
 		// Workaround for https://github.com/dotnet/runtime/issues/72004
-		Span<int> span = _span;
+		var span = _span;
 		return bitArrayIndex < (uint)span.Length && (span[(int)bitArrayIndex] & (1 << ((int)((uint)bitPosition % IntSize)))) != 0;
 	}
 
@@ -4851,7 +4851,7 @@ internal ref struct BitHelper
 		Debug.Assert(bitPosition >= 0);
 		var bitArrayIndex = (uint)bitPosition / IntSize;
 		// Workaround for https://github.com/dotnet/runtime/issues/72004
-		Span<int> span = _span;
+		var span = _span;
 		if (bitArrayIndex < (uint)span.Length)
 			span[(int)bitArrayIndex] |= 1 << (int)((uint)bitPosition % IntSize);
 	}

@@ -1,6 +1,105 @@
 ﻿namespace Corlib.NStar.Tests;
 
 [TestClass]
+public class BufferTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
+		var toInsert = Array.Empty<int>();
+		Buffer<int> buf = new(16, arr);
+		G.List<int> gl = new(arr[^16..]);
+		var collectionActions = new[] { () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			buf.AddRange(toInsert);
+			gl.AddRange(toInsert);
+			gl.RemoveRange(0, Max(gl.Count - 16, 0));
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			var n = random.Next(buf.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			buf.Insert(n, toInsert);
+			gl.InsertRange(n, toInsert);
+			gl.RemoveRange(0, Max(gl.Count - 16, 0));
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			var length = Min(random.Next(9), buf.Length);
+			if (buf.Length < length)
+				return;
+			var start = random.Next(buf.Length - length + 1);
+			buf.Remove(start, length);
+			gl.RemoveRange(start, length);
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		} };
+		var actions = new[] { () =>
+		{
+			var n = random.Next(16);
+			if (random.Next(2) == 0)
+			{
+				var index = random.Next(buf.Length);
+				buf.Insert(index, n);
+				gl.Insert(index, n);
+			}
+			else
+			{
+				buf.Add(n);
+				gl.Add(n);
+			}
+			if (gl.Count > 16)
+				gl.RemoveAt(0);
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0) return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(buf.Length);
+				buf.RemoveAt(n);
+				gl.RemoveAt(n);
+			}
+			else
+			{
+				var n = random.Next(16);
+				buf.RemoveValue(n);
+				gl.Remove(n);
+			}
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			//collectionActions.Random(random)();
+			//Assert.IsTrue(buf.Equals(gl));
+			//Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0)
+				return;
+			var n = random.Next(buf.Length);
+			var n2 = random.Next(16);
+			buf[n] = n2;
+			gl[n] = n2;
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
+		}, () =>
+		{
+			if (buf.Length == 0) return;
+			var n = random.Next(buf.Length);
+			Assert.AreEqual(buf[buf.IndexOf(buf[n])], buf[n]);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+	}
+}
+
+[TestClass]
 public class ListTests
 {
 	[TestMethod]

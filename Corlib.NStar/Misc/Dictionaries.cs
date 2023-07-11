@@ -1069,7 +1069,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
 	{
-		if (TryGetValue(keyValuePair.Key, out TValue value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
+		if (TryGetValue(keyValuePair.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
 			return true;
 		return false;
 	}
@@ -1511,13 +1511,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		{
 			if (IsCompatibleKey(key))
 			{
-				ref TValue value = ref FindValue((TKey)key);
+				ref var value = ref FindValue((TKey)key);
 				if (!Unsafe.IsNullRef(ref value))
 					return value;
 			}
 			else if (IsCompatibleValue(key))
 			{
-				ref TKey value = ref FindKey((TValue)key);
+				ref var value = ref FindKey((TValue)key);
 				if (!Unsafe.IsNullRef(ref value))
 					return value;
 			}
@@ -1609,7 +1609,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			Debug.Assert(_entries != null);
 			Debug.Assert(_entries.Length >= source.Length);
 			Debug.Assert(_count == 0);
-			Entry[] oldEntries = source._entries;
+			var oldEntries = source._entries;
 			if (source._comparer == _comparer && source._comparerM == _comparerM)
 			{
 				// If comparers are the same, we can copy _entries without rehashing.
@@ -1634,13 +1634,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		else
 		{
 			// Fallback path for all other enumerables
-			foreach (KeyValuePair<TKey, TValue> pair in enumerable)
+			foreach (var pair in enumerable)
 				TryAdd(pair.Key, pair.Value);
 
 			return;
 		}
 		// We got a span. Add the elements to the dictionary.
-		foreach (KeyValuePair<TKey, TValue> pair in span)
+		foreach (var pair in span)
 			TryAdd(pair.Key, pair.Value);
 
 	}
@@ -1667,7 +1667,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool Contains(TKey key, TValue value)
 	{
-		ref TValue value2 = ref FindValue(key);
+		ref var value2 = ref FindValue(key);
 		if (!Unsafe.IsNullRef(ref value2) && EqualityComparer<TValue>.Default.Equals(value2, value))
 			return true;
 		return false;
@@ -1689,14 +1689,14 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	private protected virtual void CopyEntries(Entry[] entries, int length)
 	{
 		Debug.Assert(_entries != null);
-		Entry[] newEntries = _entries;
+		var newEntries = _entries;
 		var newCount = 0;
 		for (var i = 0; i < length; i++)
 		{
 			uint hashCode = entries[i].hashCode, hashCodeM = entries[i].hashCodeM;
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
 			{
-				ref Entry entry = ref newEntries[newCount];
+				ref var entry = ref newEntries[newCount];
 				entry = entries[i];
 				ref var bucket = ref GetBucket(hashCode);
 				entry.next = bucket - 1; // Value in _buckets is 1-based
@@ -1722,7 +1722,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		Debug.Assert(_entries != null);
 		var length = _count;
 		Debug.Assert(_entries != null);
-		Entry[] entries = _entries;
+		var entries = _entries;
 		for (var i = 0; i < length; i++)
 			if (entries[i].next >= -1 && entries[i].nextM >= -1)
 				array[index++] = new KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
@@ -1747,7 +1747,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			CopyTo(pairs, index);
 		else if (array is DictionaryEntry[] dictEntryArray)
 		{
-			Entry[] entries = _entries;
+			var entries = _entries;
 			for (var i = 0; i < _count; i++)
 				if (entries[i].next >= -1 && entries[i].nextM >= -1)
 					dictEntryArray[index++] = new DictionaryEntry(entries[i].key, entries[i].value);
@@ -1757,7 +1757,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (array is not object[] objects)
 				throw new ArrayTypeMismatchException();
 			var length = _count;
-			Entry[] entries = _entries;
+			var entries = _entries;
 			for (var i = 0; i < length; i++)
 				if (entries[i].next >= -1 && entries[i].nextM >= -1)
 					objects[index++] = new KeyValuePair<TKey, TValue>(entries[i].key, entries[i].value);
@@ -1804,16 +1804,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	{
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
-		ref Entry entry = ref Unsafe.NullRef<Entry>();
+		ref var entry = ref Unsafe.NullRef<Entry>();
 		if (_buckets == null || _bucketsM == null)
 			goto ReturnNotFound;
 		Debug.Assert(_entries != null, "expected entries to be != null");
-		IEqualityComparer<TValue> comparerM = _comparerM;
+		var comparerM = _comparerM;
 		if (typeof(TValue).IsValueType && comparerM == null) // comparer can only be null for key types; enable JIT to eliminate entire if block for ref types
 		{
 			var hashCodeM = (uint)value.GetHashCode();
 			var currentM = GetBucketM(hashCodeM);
-			Entry[] entries = _entries;
+			var entries = _entries;
 			uint collisionCountM = 0;
 			// KeyType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
 			currentM--; // Key in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
@@ -1838,7 +1838,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			Debug.Assert(comparerM != null);
 			var hashCodeM = (uint)comparerM.GetHashCode(value);
 			var currentM = GetBucketM(hashCodeM);
-			Entry[] entries = _entries;
+			var entries = _entries;
 			uint collisionCountM = 0;
 			currentM--; // Key in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
 			do
@@ -1860,11 +1860,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	ConcurrentOperation:
 		throw new InvalidOperationException();
 	ReturnFound:
-		ref TKey key = ref entry.key;
+		ref var key = ref entry.key;
 	Return:
-		return ref key;
+		return ref key!;
 	ReturnNotFound:
-		key = ref Unsafe.NullRef<TKey>();
+		key = ref Unsafe.NullRef<TKey>()!;
 		goto Return;
 	}
 
@@ -1872,16 +1872,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
-		ref Entry entry = ref Unsafe.NullRef<Entry>();
+		ref var entry = ref Unsafe.NullRef<Entry>();
 		if (_buckets == null || _bucketsM == null)
 			goto ReturnNotFound;
 		Debug.Assert(_entries != null, "expected entries to be != null");
-		IEqualityComparer<TKey> comparer = _comparer;
+		var comparer = _comparer;
 		if (typeof(TKey).IsValueType && comparer == null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
 		{
 			var hashCode = (uint)key.GetHashCode();
 			var current = GetBucket(hashCode);
-			Entry[] entries = _entries;
+			var entries = _entries;
 			uint collisionCount = 0;
 			// ValueType: Devirtualize with EqualityComparer<TKey>.Default intrinsic
 			current--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
@@ -1906,7 +1906,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			Debug.Assert(comparer != null);
 			var hashCode = (uint)comparer.GetHashCode(key);
 			var current = GetBucket(hashCode);
-			Entry[] entries = _entries;
+			var entries = _entries;
 			uint collisionCount = 0;
 			current--; // Value in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
 			do
@@ -1928,11 +1928,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	ConcurrentOperation:
 		throw new InvalidOperationException();
 	ReturnFound:
-		ref TValue value = ref entry.value;
+		ref var value = ref entry.value;
 	Return:
-		return ref value;
+		return ref value!;
 	ReturnNotFound:
-		value = ref Unsafe.NullRef<TValue>();
+		value = ref Unsafe.NullRef<TValue>()!;
 		goto Return;
 	}
 
@@ -1962,7 +1962,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual TKey GetKey(TValue value)
 	{
-		ref TKey key = ref FindKey(value);
+		ref var key = ref FindKey(value);
 		if (!Unsafe.IsNullRef(ref key))
 			return key;
 		throw new ValueNotFoundException();
@@ -1970,7 +1970,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual TValue GetValue(TKey key)
 	{
-		ref TValue value = ref FindValue(key);
+		ref var value = ref FindValue(key);
 		if (!Unsafe.IsNullRef(ref value))
 			return value;
 		throw new KeyNotFoundException();
@@ -2036,16 +2036,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			return false;
 		Debug.Assert(_entries != null, "entries should be non-null");
 		uint collisionCount = 0;
-		IEqualityComparer<TKey> comparer = _comparer;
+		var comparer = _comparer;
 		Debug.Assert(typeof(TKey).IsValueType || comparer != null);
 		var hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
 		ref var bucket = ref GetBucket(hashCode);
-		Entry[] entries = _entries;
+		var entries = _entries;
 		var last = -1;
 		var current = bucket - 1; // Value in buckets is 1-based
 		while (current >= 0)
 		{
-			ref Entry entry = ref entries[current];
+			ref var entry = ref entries[current];
 			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType && comparer == null ? EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer!.Equals(entry.key, key)))
 			{
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
@@ -2089,16 +2089,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 		Debug.Assert(_entries != null, "entries should be non-null");
 		uint collisionCount = 0;
-		IEqualityComparer<TKey> comparer = _comparer;
+		var comparer = _comparer;
 		Debug.Assert(typeof(TKey).IsValueType || comparer != null);
 		var hashCode = (uint)(typeof(TKey).IsValueType && comparer == null ? key.GetHashCode() : comparer.GetHashCode(key));
 		ref var bucket = ref GetBucket(hashCode);
-		Entry[] entries = _entries;
+		var entries = _entries;
 		var last = -1;
 		var current = bucket - 1; // Value in buckets is 1-based
 		while (current >= 0)
 		{
-			ref Entry entry = ref entries[current];
+			ref var entry = ref entries[current];
 			if (entry.hashCode == hashCode && (typeof(TKey).IsValueType || comparer == null ? EqualityComparer<TKey>.Default.Equals(entry.key, key) : comparer.Equals(entry.key, key)))
 			{
 				ref var bucketM = ref GetBucketM(entry.hashCodeM);
@@ -2141,16 +2141,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			return false;
 		Debug.Assert(_entries != null, "entries should be non-null");
 		uint collisionCountM = 0;
-		IEqualityComparer<TValue> comparerM = _comparerM;
+		var comparerM = _comparerM;
 		Debug.Assert(typeof(TValue).IsValueType || comparerM != null);
 		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM == null ? value.GetHashCode() : comparerM.GetHashCode(value));
 		ref var bucketM = ref GetBucketM(hashCodeM);
-		Entry[] entries = _entries;
+		var entries = _entries;
 		var lastM = -1;
 		var currentM = bucketM - 1; // Key in buckets is 1-based
 		while (currentM >= 0)
 		{
-			ref Entry entry = ref entries[currentM];
+			ref var entry = ref entries[currentM];
 			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM == null ? EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
 			{
 				ref var bucket = ref GetBucket(entry.hashCode);
@@ -2194,16 +2194,16 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 		Debug.Assert(_entries != null, "entries should be non-null");
 		uint collisionCountM = 0;
-		IEqualityComparer<TValue> comparerM = _comparerM;
+		var comparerM = _comparerM;
 		Debug.Assert(typeof(TValue).IsValueType || comparerM != null);
 		var hashCodeM = (uint)(typeof(TValue).IsValueType && comparerM == null ? value.GetHashCode() : comparerM.GetHashCode(value));
 		ref var bucketM = ref GetBucketM(hashCodeM);
-		Entry[] entries = _entries;
+		var entries = _entries;
 		var lastM = -1;
 		var currentM = bucketM - 1; // Key in buckets is 1-based
 		while (currentM >= 0)
 		{
-			ref Entry entry = ref entries[currentM];
+			ref var entry = ref entries[currentM];
 			if (entry.hashCodeM == hashCodeM && (typeof(TValue).IsValueType && comparerM == null ? EqualityComparer<TValue>.Default.Equals(entry.value, value) : comparerM!.Equals(entry.value, value)))
 			{
 				ref var bucket = ref GetBucket(entry.hashCode);
@@ -2237,7 +2237,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	bool ICollection<KeyValuePair<TKey, TValue>>.RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
-		ref TValue value = ref FindValue(keyValuePair.Key);
+		ref var value = ref FindValue(keyValuePair.Key);
 		if (!Unsafe.IsNullRef(ref value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
 		{
 			RemoveKey(keyValuePair.Key);
@@ -2259,8 +2259,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		Array.Copy(_entries, entries, length);
 		if (!typeof(TKey).IsValueType && forceNewHashCodes)
 		{
-			IEqualityComparer<TKey> comparer = _comparer = EqualityComparer<TKey>.Default;
-			IEqualityComparer<TValue> comparerM = _comparerM = EqualityComparer<TValue>.Default;
+			var comparer = _comparer = EqualityComparer<TKey>.Default;
+			var comparerM = _comparerM = EqualityComparer<TValue>.Default;
 			for (var i = 0; i < length; i++)
 				if (entries[i].next >= -1 && entries[i].nextM >= -1)
 				{
@@ -2324,7 +2324,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		if (capacity < Length)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
 		var newSize = HashHelpers.GetPrime(capacity);
-		Entry[]? oldEntries = _entries;
+		var oldEntries = _entries;
 		var currentCapacity = oldEntries == null ? 0 : oldEntries.Length;
 		if (newSize >= currentCapacity)
 			return;
@@ -2339,7 +2339,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool TryGetKey(TValue value, [MaybeNullWhen(false)] out TKey key)
 	{
-		ref TKey keyRef = ref FindKey(value);
+		ref var keyRef = ref FindKey(value);
 		if (!Unsafe.IsNullRef(ref keyRef))
 		{
 			key = keyRef;
@@ -2351,7 +2351,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool TryGetValue(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
-		ref TValue valRef = ref FindValue(key);
+		ref var valRef = ref FindValue(key);
 		if (!Unsafe.IsNullRef(ref valRef))
 		{
 			value = valRef;
@@ -2373,10 +2373,10 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			Initialize(0);
 		Debug.Assert(_buckets != null);
 		Debug.Assert(_bucketsM != null);
-		Entry[]? entries = _entries;
+		var entries = _entries;
 		Debug.Assert(entries != null, "expected entries to be non-null");
-		IEqualityComparer<TKey> comparer = _comparer;
-		IEqualityComparer<TValue> comparerM = _comparerM;
+		var comparer = _comparer;
+		var comparerM = _comparerM;
 		var hashCode = (uint)((typeof(TKey).IsValueType && comparer == null) ? key.GetHashCode() : comparer.GetHashCode(key));
 		uint collisionCount = 0;
 		ref var bucket = ref GetBucket(hashCode);
@@ -2471,7 +2471,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			_count = length + 1;
 			entries = _entries;
 		}
-		ref Entry entry = ref entries![index];
+		ref var entry = ref entries![index];
 		entry.hashCode = hashCode;
 		entry.hashCodeM = hashCodeM;
 		entry.next = bucket - 1; // Value in _buckets is 1-based
@@ -2508,7 +2508,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				if (mirrored)
 				{
 					RemoveKey(key);
-					ref Entry entry = ref entries[current];
+					ref var entry = ref entries[current];
 					ref var bucket = ref GetBucket(entry.hashCode);
 					var last = Find(entries, current, bucket, true);
 					ProcessLast(entries, entry, ref bucket, last);
@@ -2521,7 +2521,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				else
 				{
 					RemoveValue(value);
-					ref Entry entry = ref entries[current];
+					ref var entry = ref entries[current];
 					ref var bucketM = ref GetBucketM(entry.hashCodeM);
 					var lastM = Find(entries, current, bucketM);
 					ProcessLast(entries, entry, ref bucketM, lastM, true);
@@ -2615,7 +2615,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			// dictionary.length+1 could be negative if dictionary.length is int.MaxValue
 			while ((uint)_index < (uint)_dictionary._count)
 			{
-				ref Entry entry = ref _dictionary._entries![_index++];
+				ref var entry = ref _dictionary._entries![_index++];
 				if (entry.next >= -1 && entry.nextM >= -1)
 				{
 					Current = new KeyValuePair<TKey, TValue>(entry.key, entry.value);
@@ -2666,7 +2666,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (array.Length - index < _dictionary.Length)
 				throw new ArgumentException(null);
 			var length = _dictionary._count;
-			Entry[]? entries = _dictionary._entries;
+			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
 					array[index++] = entries[i].key;
@@ -2691,7 +2691,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				if (array is not object[] objects)
 					throw new ArrayTypeMismatchException();
 				var length = _dictionary._count;
-				Entry[]? entries = _dictionary._entries;
+				var entries = _dictionary._entries;
 				for (var i = 0; i < length; i++)
 					if (entries![i].next >= -1 && entries![i].nextM >= -1) objects[index++] = entries[i].key;
 			}
@@ -2739,7 +2739,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 					throw new InvalidOperationException();
 				while ((uint)_index < (uint)_dictionary._count)
 				{
-					ref Entry entry = ref _dictionary._entries![_index++];
+					ref var entry = ref _dictionary._entries![_index++];
 					if (entry.next >= -1 && entry.nextM >= -1)
 					{
 						Current = entry.key;
@@ -2790,7 +2790,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (array.Length - index < _dictionary.Length)
 				throw new ArgumentException(null);
 			var length = _dictionary._count;
-			Entry[]? entries = _dictionary._entries;
+			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
 				if (entries![i].next >= -1 && entries![i].nextM >= -1)
 					array[index++] = entries[i].value;
@@ -2815,7 +2815,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				if (array is not object[] objects)
 					throw new ArrayTypeMismatchException();
 				var length = _dictionary._count;
-				Entry[]? entries = _dictionary._entries;
+				var entries = _dictionary._entries;
 				for (var i = 0; i < length; i++)
 					if (entries![i].next >= -1 && entries![i].nextM >= -1) objects[index++] = entries[i].value;
 			}
@@ -2863,7 +2863,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 					throw new InvalidOperationException();
 				while ((uint)_index < (uint)_dictionary._count)
 				{
-					ref Entry entry = ref _dictionary._entries![_index++];
+					ref var entry = ref _dictionary._entries![_index++];
 					if (entry.next >= -1 && entry.nextM >= -1)
 					{
 						Current = entry.value;

@@ -35,7 +35,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!function(item))
 					return false;
@@ -54,7 +54,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!function(item, i))
 					return false;
 			}
@@ -64,7 +64,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!function(item, i))
 					return false;
 			}
@@ -75,7 +75,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!function(item, i))
 					return false;
 			}
@@ -84,7 +84,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!function(item, i))
 					return false;
@@ -132,7 +132,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					return true;
@@ -151,7 +151,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					return true;
 			}
@@ -161,7 +161,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					return true;
 			}
@@ -172,7 +172,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					return true;
 			}
@@ -181,7 +181,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					return true;
@@ -204,7 +204,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -219,7 +219,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -234,7 +234,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -247,7 +247,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			List<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -274,7 +274,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -289,7 +289,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -304,7 +304,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -317,7 +317,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			List<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -371,7 +371,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			List<TSource2> result2 = new(length);
 			var i = 0;
-			foreach ((TSource, TSource2) item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -395,7 +395,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -409,7 +409,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -423,7 +423,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -435,7 +435,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			List<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -459,7 +459,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -473,7 +473,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -487,7 +487,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -499,7 +499,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			List<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -528,7 +528,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -546,7 +546,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -564,7 +564,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -580,7 +580,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -613,7 +613,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -631,7 +631,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -649,7 +649,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -665,7 +665,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -729,7 +729,7 @@ public partial class List<T, TCertain>
 			List<TSource2> result2 = new(length);
 			List<TSource3> result3 = new(length);
 			var i = 0;
-			foreach ((TSource, TSource2, TSource3) item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -756,7 +756,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -772,7 +772,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -788,7 +788,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -802,7 +802,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -829,7 +829,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -845,7 +845,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -861,7 +861,7 @@ public partial class List<T, TCertain>
 			List<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -875,7 +875,7 @@ public partial class List<T, TCertain>
 			List<TResult2> result2 = new(length);
 			List<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.EnsureCapacity(i + 1);
 				result2.EnsureCapacity(i + 1);
@@ -901,7 +901,7 @@ public partial class List<T, TCertain>
 			result2 = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item))
 					result.Add(item);
 				else
@@ -917,7 +917,7 @@ public partial class List<T, TCertain>
 			result2 = new(array.Length / 2);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item))
 					result.Add(item);
 				else
@@ -934,7 +934,7 @@ public partial class List<T, TCertain>
 			result2 = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item))
 					result.Add(item);
 				else
@@ -949,7 +949,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
 			result2 = new(length / 2);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					result.Add(item);
@@ -974,7 +974,7 @@ public partial class List<T, TCertain>
 			result2 = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					result.Add(item);
 				else
@@ -990,7 +990,7 @@ public partial class List<T, TCertain>
 			result2 = new(array.Length / 2);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					result.Add(item);
 				else
@@ -1007,7 +1007,7 @@ public partial class List<T, TCertain>
 			result2 = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					result.Add(item);
 				else
@@ -1022,7 +1022,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
 			result2 = new(length / 2);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					result.Add(item);
@@ -1046,8 +1046,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -1059,8 +1059,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -1072,8 +1072,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -1088,8 +1088,8 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				result._items[i] = function(item, item2);
 				i++;
 			}
@@ -1108,8 +1108,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -1121,8 +1121,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -1134,8 +1134,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -1150,8 +1150,8 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				result._items[i] = function(item, item2, i);
 				i++;
 			}
@@ -1168,8 +1168,8 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -1181,8 +1181,8 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -1194,8 +1194,8 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -1210,8 +1210,8 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				result._items[i] = (item, item2);
 				i++;
 			}
@@ -1230,9 +1230,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
-				TSource3 item3 = list3._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
+				var item3 = list3._items[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -1244,9 +1244,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -1258,9 +1258,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -1276,9 +1276,9 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
-				TSource3 item3 = en3.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
+				var item3 = en3.Current;
 				result._items[i] = function(item, item2, item3);
 				i++;
 			}
@@ -1297,9 +1297,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
-				TSource3 item3 = list3._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
+				var item3 = list3._items[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -1311,9 +1311,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -1325,9 +1325,9 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -1343,9 +1343,9 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
-				TSource3 item3 = en3.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
+				var item3 = en3.Current;
 				result._items[i] = function(item, item2, item3, i);
 				i++;
 			}
@@ -1362,9 +1362,9 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
-				TSource3 item3 = list3._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
+				var item3 = list3._items[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -1376,9 +1376,9 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -1390,9 +1390,9 @@ public partial class List<T, TCertain>
 			List<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -1408,9 +1408,9 @@ public partial class List<T, TCertain>
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
 				result.EnsureCapacity(i + 1);
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
-				TSource3 item3 = en3.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
+				var item3 = en3.Current;
 				result._items[i] = (item, item2, item3);
 				i++;
 			}
@@ -1434,7 +1434,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (item?.Equals(target) ?? false)
 					return true;
 			}
@@ -1444,7 +1444,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (item?.Equals(target) ?? false)
 					return true;
 			}
@@ -1455,7 +1455,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (item?.Equals(target) ?? false)
 					return true;
 			}
@@ -1464,7 +1464,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (item?.Equals(target) ?? false)
 					return true;
@@ -1481,7 +1481,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1491,7 +1491,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1502,7 +1502,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1511,7 +1511,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return true;
@@ -1529,7 +1529,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1539,7 +1539,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1550,7 +1550,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1559,7 +1559,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return true;
@@ -1577,7 +1577,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1587,7 +1587,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1598,7 +1598,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1607,7 +1607,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return true;
@@ -1651,7 +1651,7 @@ public partial class List<T, TCertain>
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item);
 				i++;
@@ -1671,7 +1671,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -1682,7 +1682,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = array.Length;
@@ -1694,7 +1694,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -1704,7 +1704,7 @@ public partial class List<T, TCertain>
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item, i);
 				i++;
@@ -1745,7 +1745,7 @@ public partial class List<T, TCertain>
 		{
 			List<TResult> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(function(item));
 				i++;
@@ -1764,7 +1764,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result.AddRange(function(item, i));
 			}
 			return result;
@@ -1774,7 +1774,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result.AddRange(function(item, i));
 			}
 			return result;
@@ -1785,7 +1785,7 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result.AddRange(function(item, i));
 			}
 			return result;
@@ -1794,7 +1794,7 @@ public partial class List<T, TCertain>
 		{
 			List<TResult> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(function(item, i));
 				i++;
@@ -1836,7 +1836,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var n = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 				if (function(item))
 					n++;
 			return n;
@@ -1877,7 +1877,7 @@ public partial class List<T, TCertain>
 		{
 			var n = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 				if (function(item, i++))
 					n++;
 			return n;
@@ -1892,7 +1892,7 @@ public partial class List<T, TCertain>
 			var n = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (item?.Equals(target) ?? false)
 					n++;
 			}
@@ -1903,7 +1903,7 @@ public partial class List<T, TCertain>
 			var n = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (item?.Equals(target) ?? false)
 					n++;
 			}
@@ -1915,7 +1915,7 @@ public partial class List<T, TCertain>
 			var n = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (item?.Equals(target) ?? false)
 					n++;
 			}
@@ -1925,7 +1925,7 @@ public partial class List<T, TCertain>
 		{
 			var n = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (item?.Equals(target) ?? false)
 					n++;
@@ -1946,8 +1946,8 @@ public partial class List<T, TCertain>
 			var length = Math.Min(list._size, list2._size);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -1959,8 +1959,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -1973,8 +1973,8 @@ public partial class List<T, TCertain>
 			var length = list2_.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -1988,8 +1988,8 @@ public partial class List<T, TCertain>
 			{
 				if (!en2.MoveNext())
 					return false;
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!function(item, item2))
 					return false;
 			}
@@ -2008,8 +2008,8 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -2021,8 +2021,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -2035,8 +2035,8 @@ public partial class List<T, TCertain>
 			var length = list2_.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -2051,8 +2051,8 @@ public partial class List<T, TCertain>
 			{
 				if (!en2.MoveNext())
 					return false;
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!function(item, item2, i))
 					return false;
 				i++;
@@ -2070,8 +2070,8 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -2083,8 +2083,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -2097,8 +2097,8 @@ public partial class List<T, TCertain>
 			var length = list2_.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -2112,8 +2112,8 @@ public partial class List<T, TCertain>
 			{
 				if (!en2.MoveNext())
 					return false;
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -2169,7 +2169,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2181,7 +2181,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length / 2);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2194,7 +2194,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2205,7 +2205,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					result.Add(item);
@@ -2226,7 +2226,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2238,7 +2238,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length / 2);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2251,7 +2251,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length / 2);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2262,7 +2262,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					result.Add(item);
@@ -2282,7 +2282,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item))
 					return item;
 			}
@@ -2292,7 +2292,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item))
 					return item;
 			}
@@ -2303,7 +2303,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item))
 					return item;
 			}
@@ -2312,7 +2312,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					return item;
@@ -2331,7 +2331,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					return item;
 			}
@@ -2341,7 +2341,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					return item;
 			}
@@ -2352,7 +2352,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					return item;
 			}
@@ -2361,7 +2361,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					return item;
@@ -2381,7 +2381,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2393,7 +2393,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2406,7 +2406,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item))
 					result.Add(item);
 			}
@@ -2417,7 +2417,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					result.Add(item);
@@ -2438,7 +2438,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2450,7 +2450,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2463,7 +2463,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2474,7 +2474,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					result.Add(item);
@@ -2497,7 +2497,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2521,7 +2521,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2546,7 +2546,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2569,7 +2569,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -2602,7 +2602,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2626,7 +2626,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2651,7 +2651,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2674,7 +2674,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -2707,7 +2707,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2731,7 +2731,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2756,7 +2756,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2779,7 +2779,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -2812,7 +2812,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2836,7 +2836,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2861,7 +2861,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -2884,7 +2884,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -2917,7 +2917,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2941,7 +2941,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2966,7 +2966,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2989,7 +2989,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3022,7 +3022,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3046,7 +3046,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3071,7 +3071,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3094,7 +3094,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3127,7 +3127,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3151,7 +3151,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3176,7 +3176,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3199,7 +3199,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3232,7 +3232,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3256,7 +3256,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3281,7 +3281,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3304,7 +3304,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3337,7 +3337,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3361,7 +3361,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3386,7 +3386,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3409,7 +3409,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3442,7 +3442,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3466,7 +3466,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3491,7 +3491,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3514,7 +3514,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3547,7 +3547,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3571,7 +3571,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3596,7 +3596,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3619,7 +3619,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -3652,7 +3652,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3676,7 +3676,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3701,7 +3701,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -3724,7 +3724,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -4438,24 +4438,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindAllEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x) => function(x) == value);
 		}
 	}
@@ -4467,24 +4467,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindAllEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindAllEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 		}
 	}
@@ -4501,7 +4501,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4525,7 +4525,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4550,7 +4550,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4573,7 +4573,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -4606,7 +4606,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4630,7 +4630,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4655,7 +4655,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4678,7 +4678,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -4711,7 +4711,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4735,7 +4735,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4760,7 +4760,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4783,7 +4783,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -4816,7 +4816,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4840,7 +4840,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4865,7 +4865,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -4888,7 +4888,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -4921,7 +4921,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4945,7 +4945,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4970,7 +4970,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4993,7 +4993,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5026,7 +5026,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5050,7 +5050,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5075,7 +5075,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5098,7 +5098,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5131,7 +5131,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5155,7 +5155,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5180,7 +5180,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5203,7 +5203,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5236,7 +5236,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5260,7 +5260,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5285,7 +5285,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5308,7 +5308,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5341,7 +5341,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5365,7 +5365,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5390,7 +5390,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5413,7 +5413,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5446,7 +5446,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5470,7 +5470,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5495,7 +5495,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5518,7 +5518,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5551,7 +5551,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5575,7 +5575,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5600,7 +5600,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5623,7 +5623,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5656,7 +5656,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5680,7 +5680,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5705,7 +5705,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -5728,7 +5728,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -5792,7 +5792,7 @@ public partial class List<T, TCertain>
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					result.Add(i);
@@ -5814,7 +5814,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					result._items[j++] = i;
 			}
@@ -5828,7 +5828,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					result._items[j++] = i;
 			}
@@ -5843,7 +5843,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					result._items[j++] = i;
 			}
@@ -5855,7 +5855,7 @@ public partial class List<T, TCertain>
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					result.Add(i);
@@ -5896,7 +5896,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item))
 					return i;
@@ -5915,7 +5915,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					return i;
 			}
@@ -5925,7 +5925,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					return i;
 			}
@@ -5936,7 +5936,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					return i;
 			}
@@ -5945,7 +5945,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (function(item, i))
 					return i;
@@ -5964,7 +5964,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item))
 					return item;
 			}
@@ -5975,7 +5975,7 @@ public partial class List<T, TCertain>
 			var length = array.Length;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item))
 					return item;
 			}
@@ -5986,7 +5986,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item))
 					return item;
 			}
@@ -6005,7 +6005,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					return item;
 			}
@@ -6016,7 +6016,7 @@ public partial class List<T, TCertain>
 			var length = array.Length;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					return item;
 			}
@@ -6027,7 +6027,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					return item;
 			}
@@ -6078,7 +6078,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (function(item, i))
 					return i;
 			}
@@ -6089,7 +6089,7 @@ public partial class List<T, TCertain>
 			var length = array.Length;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (function(item, i))
 					return i;
 			}
@@ -6100,7 +6100,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (function(item, i))
 					return i;
 			}
@@ -6122,7 +6122,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6144,7 +6144,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6166,7 +6166,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6196,7 +6196,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6218,7 +6218,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6240,7 +6240,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6270,7 +6270,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6292,7 +6292,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6314,7 +6314,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6344,7 +6344,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6366,7 +6366,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6388,7 +6388,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6418,7 +6418,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6440,7 +6440,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6462,7 +6462,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6492,7 +6492,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6514,7 +6514,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6536,7 +6536,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6566,7 +6566,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6588,7 +6588,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6610,7 +6610,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6640,7 +6640,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6662,7 +6662,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6684,7 +6684,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6714,7 +6714,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6736,7 +6736,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6758,7 +6758,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6788,7 +6788,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6810,7 +6810,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6832,7 +6832,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6862,7 +6862,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6884,7 +6884,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6906,7 +6906,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6936,7 +6936,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6958,7 +6958,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -6980,7 +6980,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7613,19 +7613,19 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindLastEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
 		}
 		else
@@ -7639,19 +7639,19 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindLastEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
@@ -7670,7 +7670,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7692,7 +7692,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7714,7 +7714,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7744,7 +7744,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7766,7 +7766,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7788,7 +7788,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7818,7 +7818,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7840,7 +7840,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7862,7 +7862,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7892,7 +7892,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7914,7 +7914,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7936,7 +7936,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -7966,7 +7966,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7988,7 +7988,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8010,7 +8010,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8040,7 +8040,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8062,7 +8062,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8084,7 +8084,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8114,7 +8114,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8136,7 +8136,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8158,7 +8158,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8188,7 +8188,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8210,7 +8210,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8232,7 +8232,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8262,7 +8262,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8284,7 +8284,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8306,7 +8306,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8336,7 +8336,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8358,7 +8358,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8380,7 +8380,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8410,7 +8410,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8432,7 +8432,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8454,7 +8454,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8484,7 +8484,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8506,7 +8506,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8528,7 +8528,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8558,7 +8558,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8580,7 +8580,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8602,7 +8602,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8632,7 +8632,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8654,7 +8654,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8676,7 +8676,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8706,7 +8706,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8728,7 +8728,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8750,7 +8750,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8780,7 +8780,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8802,7 +8802,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8824,7 +8824,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8854,7 +8854,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8876,7 +8876,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8898,7 +8898,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8928,7 +8928,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8950,7 +8950,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -8972,7 +8972,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9002,7 +9002,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9024,7 +9024,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9046,7 +9046,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9076,7 +9076,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9098,7 +9098,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9120,7 +9120,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9150,7 +9150,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9172,7 +9172,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9194,7 +9194,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9224,7 +9224,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9246,7 +9246,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9268,7 +9268,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9298,7 +9298,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9320,7 +9320,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9342,7 +9342,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9372,7 +9372,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9394,7 +9394,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -9416,7 +9416,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10049,19 +10049,19 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindLastIndexEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
 		}
 		else
@@ -10075,19 +10075,19 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindLastIndexEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindLastIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
@@ -10106,7 +10106,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10128,7 +10128,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10150,7 +10150,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10180,7 +10180,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10202,7 +10202,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10224,7 +10224,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10254,7 +10254,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10276,7 +10276,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10298,7 +10298,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10328,7 +10328,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10350,7 +10350,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10372,7 +10372,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10402,7 +10402,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10424,7 +10424,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10446,7 +10446,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10476,7 +10476,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10498,7 +10498,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10520,7 +10520,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10550,7 +10550,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10572,7 +10572,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10594,7 +10594,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10624,7 +10624,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10646,7 +10646,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10668,7 +10668,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10698,7 +10698,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10720,7 +10720,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10742,7 +10742,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10772,7 +10772,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10794,7 +10794,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10816,7 +10816,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10846,7 +10846,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10868,7 +10868,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10890,7 +10890,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10920,7 +10920,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10942,7 +10942,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10964,7 +10964,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -10994,7 +10994,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11015,7 +11015,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11037,7 +11037,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11057,7 +11057,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11087,7 +11087,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11108,7 +11108,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11130,7 +11130,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11150,7 +11150,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11180,7 +11180,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11201,7 +11201,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11223,7 +11223,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11243,7 +11243,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11273,7 +11273,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11294,7 +11294,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11316,7 +11316,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11336,7 +11336,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11366,7 +11366,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11387,7 +11387,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11409,7 +11409,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11429,7 +11429,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11459,7 +11459,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11480,7 +11480,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11502,7 +11502,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11522,7 +11522,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11552,7 +11552,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11573,7 +11573,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11595,7 +11595,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11615,7 +11615,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11645,7 +11645,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11666,7 +11666,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11688,7 +11688,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11708,7 +11708,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11738,7 +11738,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11759,7 +11759,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11781,7 +11781,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11801,7 +11801,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11831,7 +11831,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11852,7 +11852,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11874,7 +11874,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -11894,7 +11894,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -11924,7 +11924,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11945,7 +11945,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11967,7 +11967,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11987,7 +11987,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -12017,7 +12017,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -12038,7 +12038,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -12060,7 +12060,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -12080,7 +12080,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -12791,24 +12791,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x) => function(x) == value);
 		}
 	}
@@ -12820,24 +12820,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindEnumerable(source, (x, index) => function(x, index) == value);
 		}
 	}
@@ -12854,7 +12854,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -12875,7 +12875,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -12897,7 +12897,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -12917,7 +12917,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -12947,7 +12947,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -12968,7 +12968,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -12990,7 +12990,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13010,7 +13010,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13040,7 +13040,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13061,7 +13061,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13083,7 +13083,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13103,7 +13103,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13133,7 +13133,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13154,7 +13154,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13176,7 +13176,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13196,7 +13196,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13226,7 +13226,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13247,7 +13247,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13269,7 +13269,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13289,7 +13289,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13319,7 +13319,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13340,7 +13340,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13362,7 +13362,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13382,7 +13382,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13412,7 +13412,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13433,7 +13433,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13455,7 +13455,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13475,7 +13475,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13505,7 +13505,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13526,7 +13526,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13548,7 +13548,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13568,7 +13568,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13598,7 +13598,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13619,7 +13619,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13641,7 +13641,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13661,7 +13661,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13691,7 +13691,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13712,7 +13712,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13734,7 +13734,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13754,7 +13754,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13784,7 +13784,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13805,7 +13805,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13827,7 +13827,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13847,7 +13847,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13877,7 +13877,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13898,7 +13898,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13920,7 +13920,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -13940,7 +13940,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -13971,7 +13971,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13998,7 +13998,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14026,7 +14026,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14051,7 +14051,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14086,7 +14086,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14113,7 +14113,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14141,7 +14141,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14166,7 +14166,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14201,7 +14201,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14228,7 +14228,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14256,7 +14256,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14281,7 +14281,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14316,7 +14316,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14343,7 +14343,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14371,7 +14371,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14396,7 +14396,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14431,7 +14431,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14458,7 +14458,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14486,7 +14486,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14511,7 +14511,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14546,7 +14546,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14573,7 +14573,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14601,7 +14601,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14626,7 +14626,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14661,7 +14661,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14688,7 +14688,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14716,7 +14716,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14741,7 +14741,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14776,7 +14776,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14803,7 +14803,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14831,7 +14831,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -14856,7 +14856,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -14891,7 +14891,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14918,7 +14918,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14946,7 +14946,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14971,7 +14971,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -15006,7 +15006,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15033,7 +15033,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15061,7 +15061,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15086,7 +15086,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -15121,7 +15121,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -15148,7 +15148,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -15176,7 +15176,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -15201,7 +15201,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -15236,7 +15236,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15263,7 +15263,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15291,7 +15291,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -15316,7 +15316,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16031,24 +16031,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindIndexesEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x) => function(x) == value);
 		}
 	}
@@ -16060,24 +16060,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindIndexesEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexesEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 		}
 	}
@@ -16095,7 +16095,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16122,7 +16122,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16150,7 +16150,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16175,7 +16175,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16210,7 +16210,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16237,7 +16237,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16265,7 +16265,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16290,7 +16290,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16325,7 +16325,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16352,7 +16352,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16380,7 +16380,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16405,7 +16405,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16440,7 +16440,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16467,7 +16467,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16495,7 +16495,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16520,7 +16520,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16555,7 +16555,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16582,7 +16582,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16610,7 +16610,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16635,7 +16635,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16670,7 +16670,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16697,7 +16697,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16725,7 +16725,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16750,7 +16750,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16785,7 +16785,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16812,7 +16812,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16840,7 +16840,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16865,7 +16865,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -16900,7 +16900,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16927,7 +16927,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16955,7 +16955,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -16980,7 +16980,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17015,7 +17015,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17042,7 +17042,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17070,7 +17070,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17095,7 +17095,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17130,7 +17130,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17157,7 +17157,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17185,7 +17185,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17210,7 +17210,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17245,7 +17245,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17272,7 +17272,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17300,7 +17300,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17325,7 +17325,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17360,7 +17360,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17387,7 +17387,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17415,7 +17415,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17440,7 +17440,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17474,7 +17474,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17495,7 +17495,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17517,7 +17517,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17537,7 +17537,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17567,7 +17567,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17588,7 +17588,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17610,7 +17610,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17630,7 +17630,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17660,7 +17660,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17681,7 +17681,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17703,7 +17703,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17723,7 +17723,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17753,7 +17753,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17774,7 +17774,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17796,7 +17796,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17816,7 +17816,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17846,7 +17846,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17867,7 +17867,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17889,7 +17889,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17909,7 +17909,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -17939,7 +17939,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17960,7 +17960,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -17982,7 +17982,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18002,7 +18002,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18032,7 +18032,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18053,7 +18053,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18075,7 +18075,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18095,7 +18095,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18125,7 +18125,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18146,7 +18146,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18168,7 +18168,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18188,7 +18188,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18218,7 +18218,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18239,7 +18239,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18261,7 +18261,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18281,7 +18281,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18311,7 +18311,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18332,7 +18332,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18354,7 +18354,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18374,7 +18374,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18404,7 +18404,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18425,7 +18425,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18447,7 +18447,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18467,7 +18467,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -18497,7 +18497,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18518,7 +18518,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18540,7 +18540,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -18560,7 +18560,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19271,24 +19271,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindIndexEnumerable(list, (x) => function(x) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x) => function(x) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x) => function(x) == value);
 		}
 	}
@@ -19300,24 +19300,24 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			mpz_t? value = MedianEnumerable(list, function);
+			var value = MedianEnumerable(list, function);
 			return FindIndexEnumerable(list, (x, index) => function(x, index) == value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			mpz_t? value = MedianEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(array.AsSpan(), function);
 			return FindIndexEnumerable(array, (x, index) => function(x, index) == value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			mpz_t? value = MedianEnumerable(list2, function);
+			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
 		else
 		{
-			mpz_t? value = MedianEnumerable(source, function);
+			var value = MedianEnumerable(source, function);
 			return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 		}
 	}
@@ -19334,7 +19334,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19355,7 +19355,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19377,7 +19377,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19397,7 +19397,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19427,7 +19427,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19448,7 +19448,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19470,7 +19470,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19490,7 +19490,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19520,7 +19520,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19541,7 +19541,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19563,7 +19563,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19583,7 +19583,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19613,7 +19613,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19634,7 +19634,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19656,7 +19656,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19676,7 +19676,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19706,7 +19706,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19727,7 +19727,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19749,7 +19749,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19769,7 +19769,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19799,7 +19799,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19820,7 +19820,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19842,7 +19842,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -19862,7 +19862,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19892,7 +19892,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19913,7 +19913,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19935,7 +19935,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19955,7 +19955,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -19985,7 +19985,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20006,7 +20006,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20028,7 +20028,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20048,7 +20048,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -20078,7 +20078,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20099,7 +20099,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20121,7 +20121,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20141,7 +20141,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -20171,7 +20171,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20192,7 +20192,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20214,7 +20214,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20234,7 +20234,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -20264,7 +20264,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20285,7 +20285,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20307,7 +20307,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20327,7 +20327,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -20357,7 +20357,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20378,7 +20378,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20400,7 +20400,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -20420,7 +20420,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -20461,7 +20461,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			foreach (TSource item in source)
+			foreach (var item in source)
 				action(item);
 		}
 	}
@@ -20490,7 +20490,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				action(item, i);
 				i++;
@@ -20511,7 +20511,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20528,7 +20528,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20546,7 +20546,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20562,7 +20562,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20589,7 +20589,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20606,7 +20606,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20624,7 +20624,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20640,7 +20640,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20665,7 +20665,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20682,7 +20682,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20700,7 +20700,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20716,7 +20716,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20743,7 +20743,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20760,7 +20760,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20778,7 +20778,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20794,7 +20794,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20821,7 +20821,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20838,7 +20838,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20856,7 +20856,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20872,7 +20872,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20897,7 +20897,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20914,7 +20914,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20932,7 +20932,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20948,7 +20948,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -20975,7 +20975,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20992,7 +20992,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21010,7 +21010,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21026,7 +21026,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21053,7 +21053,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21070,7 +21070,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21088,7 +21088,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21104,7 +21104,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21129,7 +21129,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21146,7 +21146,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21164,7 +21164,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21180,7 +21180,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21207,7 +21207,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21224,7 +21224,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21242,7 +21242,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21258,7 +21258,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21285,7 +21285,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21302,7 +21302,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21320,7 +21320,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21336,7 +21336,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21361,7 +21361,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21378,7 +21378,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21396,7 +21396,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21412,7 +21412,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
@@ -21439,7 +21439,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21456,7 +21456,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21474,7 +21474,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21490,7 +21490,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
@@ -21517,7 +21517,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21534,7 +21534,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21552,7 +21552,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21568,7 +21568,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
@@ -21593,7 +21593,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21610,7 +21610,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21628,7 +21628,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21644,7 +21644,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
@@ -21671,7 +21671,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21688,7 +21688,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21706,7 +21706,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21722,7 +21722,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
@@ -21749,7 +21749,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21766,7 +21766,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21784,7 +21784,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21800,7 +21800,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
@@ -21825,7 +21825,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21842,7 +21842,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21860,7 +21860,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21876,7 +21876,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
@@ -21903,7 +21903,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21920,7 +21920,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21938,7 +21938,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -21954,7 +21954,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
@@ -21981,7 +21981,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -21998,7 +21998,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -22016,7 +22016,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -22032,7 +22032,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
@@ -22057,7 +22057,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22074,7 +22074,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22092,7 +22092,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22108,7 +22108,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
@@ -22135,7 +22135,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -22152,7 +22152,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -22170,7 +22170,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
@@ -22186,7 +22186,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
@@ -22213,7 +22213,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -22230,7 +22230,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -22248,7 +22248,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
@@ -22264,7 +22264,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
@@ -22289,7 +22289,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22306,7 +22306,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22324,7 +22324,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22340,7 +22340,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
@@ -22367,7 +22367,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22384,7 +22384,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22402,7 +22402,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22418,7 +22418,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
@@ -22445,7 +22445,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22462,7 +22462,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22480,7 +22480,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22496,7 +22496,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
@@ -22521,7 +22521,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22538,7 +22538,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22556,7 +22556,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22572,7 +22572,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
@@ -22599,7 +22599,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22616,7 +22616,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22634,7 +22634,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22650,7 +22650,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
@@ -22677,7 +22677,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22694,7 +22694,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22712,7 +22712,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22728,7 +22728,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
@@ -22753,7 +22753,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22770,7 +22770,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22788,7 +22788,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22804,7 +22804,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
@@ -22831,7 +22831,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22848,7 +22848,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22866,7 +22866,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -22882,7 +22882,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
@@ -22909,7 +22909,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22926,7 +22926,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22944,7 +22944,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -22960,7 +22960,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
@@ -22985,7 +22985,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23002,7 +23002,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23020,7 +23020,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23036,7 +23036,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
@@ -23063,7 +23063,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -23080,7 +23080,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -23098,7 +23098,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
@@ -23114,7 +23114,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
@@ -23141,7 +23141,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -23158,7 +23158,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -23176,7 +23176,7 @@ public partial class List<T, TCertain>
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -23192,7 +23192,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TResult f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
@@ -23217,7 +23217,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23234,7 +23234,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23252,7 +23252,7 @@ public partial class List<T, TCertain>
 			TSource f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23268,7 +23268,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			TSource f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
@@ -23291,7 +23291,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (item?.Equals(target) ?? false)
 					result._items[j++] = i;
 			}
@@ -23305,7 +23305,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (item?.Equals(target) ?? false)
 					result._items[j++] = i;
 			}
@@ -23320,7 +23320,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (item?.Equals(target) ?? false)
 					result._items[j++] = i;
 			}
@@ -23332,7 +23332,7 @@ public partial class List<T, TCertain>
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (item?.Equals(target) ?? false)
 					result.Add(i);
@@ -23356,7 +23356,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23383,7 +23383,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23411,7 +23411,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23436,7 +23436,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -23471,7 +23471,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23498,7 +23498,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23526,7 +23526,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23551,7 +23551,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -23586,7 +23586,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23613,7 +23613,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23641,7 +23641,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23666,7 +23666,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -23701,7 +23701,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23728,7 +23728,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23756,7 +23756,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23781,7 +23781,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -23816,7 +23816,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23843,7 +23843,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23871,7 +23871,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23896,7 +23896,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -23931,7 +23931,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23958,7 +23958,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -23986,7 +23986,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24011,7 +24011,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24046,7 +24046,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24073,7 +24073,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24101,7 +24101,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24126,7 +24126,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24161,7 +24161,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24188,7 +24188,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24216,7 +24216,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24241,7 +24241,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24276,7 +24276,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24303,7 +24303,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24331,7 +24331,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24356,7 +24356,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24391,7 +24391,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24418,7 +24418,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24446,7 +24446,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24471,7 +24471,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24506,7 +24506,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24533,7 +24533,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24561,7 +24561,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24586,7 +24586,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -24621,7 +24621,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24648,7 +24648,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24676,7 +24676,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -24701,7 +24701,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -25299,7 +25299,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -25326,7 +25326,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -25354,7 +25354,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -25379,7 +25379,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -25408,7 +25408,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25416,7 +25416,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25424,14 +25424,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25445,7 +25445,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25453,7 +25453,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25461,14 +25461,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25482,7 +25482,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25490,7 +25490,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25498,14 +25498,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25519,7 +25519,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25527,7 +25527,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25535,14 +25535,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25556,7 +25556,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25564,7 +25564,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25572,14 +25572,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25593,7 +25593,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25601,7 +25601,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25609,14 +25609,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25630,7 +25630,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25638,7 +25638,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25646,14 +25646,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25667,7 +25667,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25675,7 +25675,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25683,14 +25683,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25704,7 +25704,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25712,7 +25712,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25720,14 +25720,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25741,7 +25741,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25749,7 +25749,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25757,14 +25757,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25778,7 +25778,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25786,7 +25786,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25794,14 +25794,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25815,7 +25815,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25823,7 +25823,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25831,14 +25831,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -25849,28 +25849,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<decimal> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			decimal? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25881,28 +25881,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<double> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25913,28 +25913,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<int> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25945,28 +25945,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<uint> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -25977,28 +25977,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
 		}
 		else
 		{
-			List<long> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -26009,28 +26009,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -26044,27 +26044,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26077,27 +26077,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26110,27 +26110,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26143,27 +26143,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26176,27 +26176,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26209,27 +26209,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26242,27 +26242,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26275,27 +26275,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26308,27 +26308,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26341,27 +26341,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26374,28 +26374,28 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(source, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -26407,28 +26407,28 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(source, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -26437,25 +26437,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26465,25 +26465,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26493,25 +26493,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			int? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26521,25 +26521,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26549,25 +26549,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			long? value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 		}
@@ -26577,26 +26577,26 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(array);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list2);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(source);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(source);
+			var value = MedianEnumerable(list_);
 			return value == null ? new() : IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -26614,7 +26614,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26641,7 +26641,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26669,7 +26669,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26694,7 +26694,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -26729,7 +26729,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26756,7 +26756,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26784,7 +26784,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26809,7 +26809,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -26844,7 +26844,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26871,7 +26871,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26899,7 +26899,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -26924,7 +26924,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -26959,7 +26959,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26986,7 +26986,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27014,7 +27014,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27039,7 +27039,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27074,7 +27074,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27101,7 +27101,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27129,7 +27129,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27154,7 +27154,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27189,7 +27189,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27216,7 +27216,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27244,7 +27244,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27269,7 +27269,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27304,7 +27304,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27331,7 +27331,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27359,7 +27359,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27384,7 +27384,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27419,7 +27419,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27446,7 +27446,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27474,7 +27474,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27499,7 +27499,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27534,7 +27534,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27561,7 +27561,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27589,7 +27589,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27614,7 +27614,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27649,7 +27649,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27676,7 +27676,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27704,7 +27704,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27729,7 +27729,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27764,7 +27764,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27791,7 +27791,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27819,7 +27819,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -27844,7 +27844,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -27879,7 +27879,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27906,7 +27906,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27934,7 +27934,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27959,7 +27959,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -28557,7 +28557,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -28584,7 +28584,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -28612,7 +28612,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -28637,7 +28637,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -28666,7 +28666,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -28676,7 +28676,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -28687,7 +28687,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -28696,7 +28696,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (item?.Equals(target) ?? false)
 					return i;
@@ -28713,7 +28713,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28723,7 +28723,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28734,7 +28734,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28743,7 +28743,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return i;
@@ -28761,7 +28761,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28771,7 +28771,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28782,7 +28782,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28791,7 +28791,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return i;
@@ -28809,7 +28809,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28819,7 +28819,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28830,7 +28830,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28839,7 +28839,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (comparer.Equals(item, target))
 					return i;
@@ -28861,7 +28861,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -28882,7 +28882,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -28904,7 +28904,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -28924,7 +28924,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -28954,7 +28954,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -28975,7 +28975,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -28997,7 +28997,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29017,7 +29017,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29047,7 +29047,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29068,7 +29068,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29090,7 +29090,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29110,7 +29110,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29140,7 +29140,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29161,7 +29161,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29183,7 +29183,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29203,7 +29203,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29233,7 +29233,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29254,7 +29254,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29276,7 +29276,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29296,7 +29296,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29326,7 +29326,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29347,7 +29347,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29369,7 +29369,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29389,7 +29389,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29419,7 +29419,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29440,7 +29440,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29462,7 +29462,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29482,7 +29482,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29512,7 +29512,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29533,7 +29533,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29555,7 +29555,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29575,7 +29575,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29605,7 +29605,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29626,7 +29626,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29648,7 +29648,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29668,7 +29668,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29698,7 +29698,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29719,7 +29719,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29741,7 +29741,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29761,7 +29761,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29791,7 +29791,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29812,7 +29812,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29834,7 +29834,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29854,7 +29854,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -29884,7 +29884,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29905,7 +29905,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29927,7 +29927,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -29947,7 +29947,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -30430,7 +30430,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -30451,7 +30451,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -30473,7 +30473,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -30493,7 +30493,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -30518,27 +30518,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30551,27 +30551,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30584,27 +30584,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30617,27 +30617,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30650,7 +30650,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30658,7 +30658,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30666,14 +30666,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30687,7 +30687,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30695,7 +30695,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30703,14 +30703,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30724,7 +30724,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30732,7 +30732,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30740,14 +30740,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30761,7 +30761,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30769,7 +30769,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30777,14 +30777,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30798,7 +30798,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30806,7 +30806,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30814,14 +30814,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30835,7 +30835,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30843,7 +30843,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30851,14 +30851,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -30872,7 +30872,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30880,7 +30880,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30888,14 +30888,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30909,7 +30909,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30917,7 +30917,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30925,14 +30925,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -30943,25 +30943,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30971,25 +30971,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -30999,28 +30999,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<int> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -31031,28 +31031,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<uint> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -31063,28 +31063,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else
 		{
-			List<long> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : -1;
@@ -31095,28 +31095,28 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : -1;
@@ -31130,27 +31130,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31163,27 +31163,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31196,27 +31196,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31229,27 +31229,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31262,27 +31262,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31295,27 +31295,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31328,27 +31328,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31361,27 +31361,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31394,27 +31394,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31427,27 +31427,27 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ConvertEnumerable(source, function);
+			var list_ = ConvertEnumerable(source, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31460,28 +31460,28 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(source, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 	}
@@ -31493,28 +31493,28 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ConvertEnumerable(source, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(source, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 	}
@@ -31523,25 +31523,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<decimal> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31551,25 +31551,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<double> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31579,25 +31579,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<int> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31607,25 +31607,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<uint> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31635,25 +31635,25 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
 		else
 		{
-			List<long> list_ = ReturnOrConstruct(source);
+			var list_ = ReturnOrConstruct(source);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 		}
@@ -31663,26 +31663,26 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(array);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list2);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 		else
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(source);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(source);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : IndexOfEnumerable(list_, value);
 		}
 	}
@@ -31699,7 +31699,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31720,7 +31720,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31742,7 +31742,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31762,7 +31762,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -31792,7 +31792,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31813,7 +31813,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31835,7 +31835,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31855,7 +31855,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -31885,7 +31885,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31906,7 +31906,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31928,7 +31928,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -31948,7 +31948,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -31978,7 +31978,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31999,7 +31999,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32021,7 +32021,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32041,7 +32041,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32071,7 +32071,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32092,7 +32092,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32114,7 +32114,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32134,7 +32134,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32164,7 +32164,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32185,7 +32185,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32207,7 +32207,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32227,7 +32227,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32257,7 +32257,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32278,7 +32278,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32300,7 +32300,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32320,7 +32320,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32350,7 +32350,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32371,7 +32371,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32393,7 +32393,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32413,7 +32413,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32443,7 +32443,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32464,7 +32464,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32486,7 +32486,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32506,7 +32506,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32536,7 +32536,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32557,7 +32557,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32579,7 +32579,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32599,7 +32599,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32629,7 +32629,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32650,7 +32650,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32672,7 +32672,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -32692,7 +32692,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -32722,7 +32722,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32743,7 +32743,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32765,7 +32765,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32785,7 +32785,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -33268,7 +33268,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -33289,7 +33289,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -33311,7 +33311,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -33331,7 +33331,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 				{
@@ -33357,7 +33357,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				List<TSource> item = list._items[i];
+				var item = list._items[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33367,7 +33367,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				List<TSource> item = array[i];
+				var item = array[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33378,7 +33378,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				List<TSource> item = list2[i];
+				var item = list2[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33387,7 +33387,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (List<TSource> item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33425,7 +33425,7 @@ public partial class List<T, TCertain>
 		{
 			List<TResult> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33442,7 +33442,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource[] item = list._items[i];
+				var item = list._items[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33452,7 +33452,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource[] item = array[i];
+				var item = array[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33463,7 +33463,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource[] item = list2[i];
+				var item = list2[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33472,7 +33472,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource[] item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33489,7 +33489,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				G.IList<TSource> item = list._items[i];
+				var item = list._items[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33499,7 +33499,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				G.IList<TSource> item = array[i];
+				var item = array[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33510,7 +33510,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				G.IList<TSource> item = list2[i];
+				var item = list2[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33519,7 +33519,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (G.IList<TSource> item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33536,7 +33536,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				IEnumerable<TSource> item = list._items[i];
+				var item = list._items[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33546,7 +33546,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				IEnumerable<TSource> item = array[i];
+				var item = array[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33557,7 +33557,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				IEnumerable<TSource> item = list2[i];
+				var item = list2[i];
 				result.AddRange(item);
 			}
 			return result;
@@ -33566,7 +33566,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (IEnumerable<TSource> item in source)
+			foreach (var item in source)
 			{
 				result.AddRange(item);
 				i++;
@@ -33582,7 +33582,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -33593,7 +33593,7 @@ public partial class List<T, TCertain>
 			var length = array.Length;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -33604,7 +33604,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (item?.Equals(target) ?? false)
 					return i;
 			}
@@ -33621,7 +33621,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33631,7 +33631,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = array.Length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33642,7 +33642,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33660,7 +33660,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33670,7 +33670,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = array.Length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33681,7 +33681,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33699,7 +33699,7 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33709,7 +33709,7 @@ public partial class List<T, TCertain>
 		{
 			for (var i = array.Length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33720,7 +33720,7 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33742,7 +33742,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33764,7 +33764,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33786,7 +33786,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33816,7 +33816,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -33838,7 +33838,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -33860,7 +33860,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -33890,7 +33890,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33912,7 +33912,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33934,7 +33934,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33964,7 +33964,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -33986,7 +33986,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34008,7 +34008,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34038,7 +34038,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34060,7 +34060,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34082,7 +34082,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34112,7 +34112,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34134,7 +34134,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34156,7 +34156,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34186,7 +34186,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34208,7 +34208,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34230,7 +34230,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34260,7 +34260,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34282,7 +34282,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34304,7 +34304,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34334,7 +34334,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34356,7 +34356,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34378,7 +34378,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34408,7 +34408,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34430,7 +34430,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34452,7 +34452,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34482,7 +34482,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34504,7 +34504,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34526,7 +34526,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34556,7 +34556,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34578,7 +34578,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34600,7 +34600,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34988,7 +34988,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -35010,7 +35010,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -35032,7 +35032,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -35057,21 +35057,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35086,21 +35086,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35115,21 +35115,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35144,21 +35144,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35173,7 +35173,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35181,7 +35181,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35189,7 +35189,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35205,7 +35205,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35213,7 +35213,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35221,7 +35221,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35237,7 +35237,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35245,7 +35245,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35253,7 +35253,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35269,7 +35269,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35277,7 +35277,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35285,7 +35285,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35301,7 +35301,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35309,7 +35309,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35317,7 +35317,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35333,7 +35333,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35341,7 +35341,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35349,7 +35349,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35365,7 +35365,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35373,7 +35373,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35381,7 +35381,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35397,7 +35397,7 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35405,7 +35405,7 @@ public partial class List<T, TCertain>
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35413,7 +35413,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35426,19 +35426,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35450,19 +35450,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35474,21 +35474,21 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (int?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35501,21 +35501,21 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (uint?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35528,21 +35528,21 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (long?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : -1;
@@ -35555,21 +35555,21 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MeanEnumerable(list_);
 			var value2 = (mpz_t?)value;
 			return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : -1;
@@ -35585,21 +35585,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35614,21 +35614,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<decimal> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<decimal> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<decimal> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35643,21 +35643,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35672,21 +35672,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<double> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<double> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<double> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35701,21 +35701,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35730,21 +35730,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<int> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<int> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<int> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35759,21 +35759,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35788,21 +35788,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<uint> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<uint> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<uint> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35817,21 +35817,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35846,21 +35846,21 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<long> list_ = ConvertEnumerable(list, function);
+			var list_ = ConvertEnumerable(list, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<long> list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<long> list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2, function);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35875,22 +35875,22 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -35904,22 +35904,22 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			List<mpz_t> list_ = ConvertEnumerable(list, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is TSource[] array)
 		{
 			var length = array.Length;
-			List<mpz_t> list_ = ConvertEnumerable(array.AsSpan(), function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			List<mpz_t> list_ = ConvertEnumerable(list2, function);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ConvertEnumerable(list2, function);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -35930,19 +35930,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<decimal> list)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is decimal[] array)
 		{
-			List<decimal> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<decimal> list2)
 		{
-			List<decimal> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			decimal? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35954,19 +35954,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<double> list)
 		{
-			List<double> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is double[] array)
 		{
-			List<double> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<double> list2)
 		{
-			List<double> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			double? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -35978,19 +35978,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			List<int> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is int[] array)
 		{
-			List<int> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			List<int> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			int? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -36002,19 +36002,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			List<uint> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is uint[] array)
 		{
-			List<uint> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			List<uint> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			uint? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -36026,19 +36026,19 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			List<long> list_ = ReturnOrConstruct(list);
+			var list_ = ReturnOrConstruct(list);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is long[] array)
 		{
-			List<long> list_ = ReturnOrConstruct(array);
+			var list_ = ReturnOrConstruct(array);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			List<long> list_ = ReturnOrConstruct(list2);
+			var list_ = ReturnOrConstruct(list2);
 			long? value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 		}
@@ -36050,20 +36050,20 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<mpz_t> list)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is mpz_t[] array)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(array);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(array);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<mpz_t> list2)
 		{
-			List<mpz_t> list_ = ReturnOrConstruct(list2);
-			mpz_t? value = MedianEnumerable(list_);
+			var list_ = ReturnOrConstruct(list2);
+			var value = MedianEnumerable(list_);
 			return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -36082,7 +36082,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36104,7 +36104,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36126,7 +36126,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36156,7 +36156,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36178,7 +36178,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36200,7 +36200,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36230,7 +36230,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36252,7 +36252,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36274,7 +36274,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36304,7 +36304,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36326,7 +36326,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36348,7 +36348,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36378,7 +36378,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36400,7 +36400,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36422,7 +36422,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36452,7 +36452,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36474,7 +36474,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36496,7 +36496,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36526,7 +36526,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36548,7 +36548,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36570,7 +36570,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36600,7 +36600,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36622,7 +36622,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36644,7 +36644,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36674,7 +36674,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36696,7 +36696,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36718,7 +36718,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36748,7 +36748,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36770,7 +36770,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36792,7 +36792,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36822,7 +36822,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36844,7 +36844,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36866,7 +36866,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -36896,7 +36896,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36918,7 +36918,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36940,7 +36940,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -37328,7 +37328,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -37350,7 +37350,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -37372,7 +37372,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 				{
 					indicator = item;
@@ -37397,7 +37397,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var n = 0;
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			while (en.MoveNext()) n++;
 			return n;
 		}
@@ -37414,7 +37414,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37428,7 +37428,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37443,7 +37443,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37456,7 +37456,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -37479,7 +37479,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37493,7 +37493,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37508,7 +37508,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37521,7 +37521,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -37544,7 +37544,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37558,7 +37558,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37573,7 +37573,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37586,7 +37586,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -37609,7 +37609,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37623,7 +37623,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37638,7 +37638,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37651,7 +37651,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -37674,7 +37674,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37688,7 +37688,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37703,7 +37703,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37716,7 +37716,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -37739,7 +37739,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37753,7 +37753,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37768,7 +37768,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37781,7 +37781,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -37804,7 +37804,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37818,7 +37818,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37833,7 +37833,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37846,7 +37846,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -37869,7 +37869,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37883,7 +37883,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37898,7 +37898,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37911,7 +37911,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -37934,7 +37934,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37948,7 +37948,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37963,7 +37963,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -37976,7 +37976,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -37999,7 +37999,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38013,7 +38013,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38028,7 +38028,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38041,7 +38041,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -38064,7 +38064,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -38078,7 +38078,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -38093,7 +38093,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) > indicator!)
@@ -38106,7 +38106,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -38129,7 +38129,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38143,7 +38143,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38158,7 +38158,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38171,7 +38171,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -38507,7 +38507,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -38521,7 +38521,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -38536,7 +38536,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -38549,7 +38549,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = item;
@@ -38592,7 +38592,7 @@ public partial class List<T, TCertain>
 		{
 			decimal result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -38611,7 +38611,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -38621,7 +38621,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -38632,7 +38632,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -38641,7 +38641,7 @@ public partial class List<T, TCertain>
 		{
 			decimal result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -38681,7 +38681,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += (double)function(item);
 				i++;
@@ -38700,7 +38700,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -38710,7 +38710,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -38721,7 +38721,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -38730,7 +38730,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += (double)function(item, i);
 				i++;
@@ -38770,7 +38770,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -38789,7 +38789,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -38799,7 +38799,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -38810,7 +38810,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -38819,7 +38819,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -38859,7 +38859,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -38878,7 +38878,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -38888,7 +38888,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -38899,7 +38899,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -38908,7 +38908,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -38948,7 +38948,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -38967,7 +38967,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -38977,7 +38977,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -38988,7 +38988,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -38997,7 +38997,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -39037,7 +39037,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += (double)function(item);
 				i++;
@@ -39056,7 +39056,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(list._size, 1);
@@ -39066,7 +39066,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(array.Length, 1);
@@ -39077,7 +39077,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -39086,7 +39086,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += (double)function(item, i);
 				i++;
@@ -39338,7 +39338,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				result += (double)item;
 			}
 			return result / Math.Max(list._size, 1);
@@ -39348,7 +39348,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				result += (double)item;
 			}
 			return result / Math.Max(array.Length, 1);
@@ -39359,7 +39359,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				result += (double)item;
 			}
 			return result / Math.Max(list2.Count, 1);
@@ -39368,7 +39368,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				result += (double)item;
 				i++;
@@ -39791,7 +39791,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39805,7 +39805,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39820,7 +39820,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39833,7 +39833,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -39856,7 +39856,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -39870,7 +39870,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -39885,7 +39885,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -39898,7 +39898,7 @@ public partial class List<T, TCertain>
 			decimal indicator = 0;
 			decimal f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -39921,7 +39921,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39935,7 +39935,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39950,7 +39950,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39963,7 +39963,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -39986,7 +39986,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40000,7 +40000,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40015,7 +40015,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40028,7 +40028,7 @@ public partial class List<T, TCertain>
 			double indicator = 0;
 			double f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -40051,7 +40051,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40065,7 +40065,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40080,7 +40080,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40093,7 +40093,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -40116,7 +40116,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40130,7 +40130,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40145,7 +40145,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40158,7 +40158,7 @@ public partial class List<T, TCertain>
 			var indicator = 0;
 			int f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -40181,7 +40181,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40195,7 +40195,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40210,7 +40210,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40223,7 +40223,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -40246,7 +40246,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40260,7 +40260,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40275,7 +40275,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40288,7 +40288,7 @@ public partial class List<T, TCertain>
 			uint indicator = 0;
 			uint f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -40311,7 +40311,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40325,7 +40325,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40340,7 +40340,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40353,7 +40353,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -40376,7 +40376,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40390,7 +40390,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40405,7 +40405,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40418,7 +40418,7 @@ public partial class List<T, TCertain>
 			long indicator = 0;
 			long f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -40441,7 +40441,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40455,7 +40455,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40470,7 +40470,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40483,7 +40483,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item);
@@ -40506,7 +40506,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40520,7 +40520,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40535,7 +40535,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40548,7 +40548,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = function(item, i);
@@ -40884,7 +40884,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -40898,7 +40898,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -40913,7 +40913,7 @@ public partial class List<T, TCertain>
 			mpz_t f;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -40926,7 +40926,7 @@ public partial class List<T, TCertain>
 			mpz_t indicator = 0;
 			mpz_t f;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				if (i == 0)
 					indicator = item;
@@ -40955,7 +40955,7 @@ public partial class List<T, TCertain>
 			TSource? result = default;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result = result == null || i == 0 ? item : function(result, item);
 			}
 			return result;
@@ -40965,7 +40965,7 @@ public partial class List<T, TCertain>
 			TSource? result = default;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result = result == null || i == 0 ? item : function(result, item);
 			}
 			return result;
@@ -40976,7 +40976,7 @@ public partial class List<T, TCertain>
 			TSource? result = default;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result = result == null || i == 0 ? item : function(result, item);
 			}
 			return result;
@@ -40985,7 +40985,7 @@ public partial class List<T, TCertain>
 		{
 			TSource? result = default;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result = result == null || i == 0 ? item : function(result, item);
 				i++;
@@ -40999,14 +40999,14 @@ public partial class List<T, TCertain>
 		if (source is List<TSource> list)
 		{
 			var length = list._size;
-			TResult? result = seed;
+			var result = seed;
 			for (var i = 0; i < length; i++)
 				result = function(result, list._items[i]);
 			return result;
 		}
 		else if (source is TSource[] array)
 		{
-			TResult? result = seed;
+			var result = seed;
 			for (var i = 0; i < array.Length; i++)
 				result = function(result, array[i]);
 			return result;
@@ -41014,16 +41014,16 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<TSource> list2)
 		{
 			var length = list2.Count;
-			TResult? result = seed;
+			var result = seed;
 			for (var i = 0; i < length; i++)
 				result = function(result, list2[i]);
 			return result;
 		}
 		else
 		{
-			TResult? result = seed;
+			var result = seed;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result = function(result, item);
 				i++;
@@ -41043,7 +41043,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41055,7 +41055,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41068,7 +41068,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41079,7 +41079,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
@@ -41101,7 +41101,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41113,7 +41113,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41126,7 +41126,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41137,7 +41137,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
@@ -41157,7 +41157,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41169,7 +41169,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41182,7 +41182,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41193,7 +41193,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(item))
 					result.Add(item);
@@ -41215,7 +41215,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41227,7 +41227,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41240,7 +41240,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41251,7 +41251,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
@@ -41273,7 +41273,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41285,7 +41285,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41298,7 +41298,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41309,7 +41309,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
@@ -41329,7 +41329,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41341,7 +41341,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41354,7 +41354,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41365,7 +41365,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(item))
 					result.Add(item);
@@ -41387,7 +41387,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41399,7 +41399,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41412,7 +41412,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41423,7 +41423,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
@@ -41445,7 +41445,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41457,7 +41457,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41470,7 +41470,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41481,7 +41481,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
@@ -41501,7 +41501,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41513,7 +41513,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41526,7 +41526,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41537,7 +41537,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(item))
 					result.Add(item);
@@ -41559,7 +41559,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41571,7 +41571,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41584,7 +41584,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -41595,7 +41595,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
@@ -41617,7 +41617,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41629,7 +41629,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41642,7 +41642,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
 			}
@@ -41653,7 +41653,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(function(item, i)))
 					result.Add(item);
@@ -41673,7 +41673,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41685,7 +41685,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41698,7 +41698,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(1024);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41709,7 +41709,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (hs.TryAdd(item))
 					result.Add(item);
@@ -41733,8 +41733,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -41755,8 +41755,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -41777,8 +41777,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -41808,8 +41808,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -41830,8 +41830,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -41852,8 +41852,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -41881,8 +41881,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -41903,8 +41903,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -41925,8 +41925,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -41956,8 +41956,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -41978,8 +41978,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42000,8 +42000,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42031,8 +42031,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42053,8 +42053,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42075,8 +42075,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42104,8 +42104,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42126,8 +42126,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42148,8 +42148,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42179,8 +42179,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42201,8 +42201,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42223,8 +42223,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42254,8 +42254,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42276,8 +42276,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42298,8 +42298,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42327,8 +42327,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42349,8 +42349,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42371,8 +42371,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42402,8 +42402,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42424,8 +42424,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42446,8 +42446,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item)))
 				{
 					result._items[j] = item;
@@ -42477,8 +42477,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42499,8 +42499,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42521,8 +42521,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42550,8 +42550,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42572,8 +42572,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42594,8 +42594,8 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42622,7 +42622,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42634,7 +42634,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = array.Length;
@@ -42647,7 +42647,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42658,7 +42658,7 @@ public partial class List<T, TCertain>
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 				i++;
@@ -42678,7 +42678,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42690,7 +42690,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = array.Length;
@@ -42703,7 +42703,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42714,7 +42714,7 @@ public partial class List<T, TCertain>
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 				i++;
@@ -42734,7 +42734,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42746,7 +42746,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = array.Length;
@@ -42759,7 +42759,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42770,7 +42770,7 @@ public partial class List<T, TCertain>
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 				i++;
@@ -42790,7 +42790,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42802,7 +42802,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = array.Length;
@@ -42815,7 +42815,7 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42826,7 +42826,7 @@ public partial class List<T, TCertain>
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var j = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 				i++;
@@ -42844,7 +42844,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result._items[^(i + 1)] = item;
 			}
 			result._size = length;
@@ -42855,7 +42855,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[^(i + 1)] = item;
 			}
 			result._size = array.Length;
@@ -42867,7 +42867,7 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[^(i + 1)] = item;
 			}
 			result._size = length;
@@ -42877,7 +42877,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[^(i + 1)] = item;
 				i++;
@@ -43123,7 +43123,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -43138,7 +43138,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -43229,7 +43229,7 @@ public partial class List<T, TCertain>
 			List<List<TSource>> result = new(64);
 			int i = 0, j = 0, k = 0;
 			result.Add(new(fragmentLength));
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[j]._items[k++] = item;
 				if (k >= fragmentLength)
@@ -43257,8 +43257,8 @@ public partial class List<T, TCertain>
 			var length = list2._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -43270,8 +43270,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array2.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -43284,8 +43284,8 @@ public partial class List<T, TCertain>
 			var length = list2_2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -43298,8 +43298,8 @@ public partial class List<T, TCertain>
 			var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!function(item, item2))
 					return false;
 			}
@@ -43318,8 +43318,8 @@ public partial class List<T, TCertain>
 			var length = list2._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -43331,8 +43331,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array2.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -43345,8 +43345,8 @@ public partial class List<T, TCertain>
 			var length = list2_2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -43360,8 +43360,8 @@ public partial class List<T, TCertain>
 			var i = 0;
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!function(item, item2, i))
 					return false;
 				i++;
@@ -43379,8 +43379,8 @@ public partial class List<T, TCertain>
 			var length = list2._size;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
-				TSource2 item2 = list2._items[i];
+				var item = list._items[i];
+				var item2 = list2._items[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -43392,8 +43392,8 @@ public partial class List<T, TCertain>
 				return false;
 			for (var i = 0; i < array2.Length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -43406,8 +43406,8 @@ public partial class List<T, TCertain>
 			var length = list2_2.Count;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -43420,8 +43420,8 @@ public partial class List<T, TCertain>
 			var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
-				TSource item = en.Current;
-				TSource2 item2 = en2.Current;
+				var item = en.Current;
+				var item2 = en2.Current;
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -43460,7 +43460,7 @@ public partial class List<T, TCertain>
 		{
 			decimal result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43479,7 +43479,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43489,7 +43489,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43500,7 +43500,7 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43509,7 +43509,7 @@ public partial class List<T, TCertain>
 		{
 			decimal result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -43549,7 +43549,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43568,7 +43568,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43578,7 +43578,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43589,7 +43589,7 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43598,7 +43598,7 @@ public partial class List<T, TCertain>
 		{
 			double result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -43638,7 +43638,7 @@ public partial class List<T, TCertain>
 		{
 			var result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43657,7 +43657,7 @@ public partial class List<T, TCertain>
 			var result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43667,7 +43667,7 @@ public partial class List<T, TCertain>
 			var result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43678,7 +43678,7 @@ public partial class List<T, TCertain>
 			var result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43687,7 +43687,7 @@ public partial class List<T, TCertain>
 		{
 			var result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -43727,7 +43727,7 @@ public partial class List<T, TCertain>
 		{
 			uint result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43746,7 +43746,7 @@ public partial class List<T, TCertain>
 			uint result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43756,7 +43756,7 @@ public partial class List<T, TCertain>
 			uint result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43767,7 +43767,7 @@ public partial class List<T, TCertain>
 			uint result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43776,7 +43776,7 @@ public partial class List<T, TCertain>
 		{
 			uint result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -43816,7 +43816,7 @@ public partial class List<T, TCertain>
 		{
 			long result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43835,7 +43835,7 @@ public partial class List<T, TCertain>
 			long result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43845,7 +43845,7 @@ public partial class List<T, TCertain>
 			long result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43856,7 +43856,7 @@ public partial class List<T, TCertain>
 			long result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43865,7 +43865,7 @@ public partial class List<T, TCertain>
 		{
 			long result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -43905,7 +43905,7 @@ public partial class List<T, TCertain>
 		{
 			mpz_t result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item);
 				i++;
@@ -43924,7 +43924,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43934,7 +43934,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43945,7 +43945,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result += function(item, i);
 			}
 			return result;
@@ -43954,7 +43954,7 @@ public partial class List<T, TCertain>
 		{
 			mpz_t result = 0;
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result += function(item, i);
 				i++;
@@ -44206,7 +44206,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list._items[i];
+				var item = list._items[i];
 				result += item;
 			}
 			return result;
@@ -44216,7 +44216,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
-				mpz_t item = array[i];
+				var item = array[i];
 				result += item;
 			}
 			return result;
@@ -44227,7 +44227,7 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < length; i++)
 			{
-				mpz_t item = list2[i];
+				var item = list2[i];
 				result += item;
 			}
 			return result;
@@ -44236,7 +44236,7 @@ public partial class List<T, TCertain>
 		{
 			mpz_t result = 0;
 			var i = 0;
-			foreach (mpz_t item in source)
+			foreach (var item in source)
 			{
 				result += item;
 				i++;
@@ -44255,7 +44255,7 @@ public partial class List<T, TCertain>
 		{
 			List<TSource> result = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i++] = item;
 				if (i >= length)
@@ -44282,7 +44282,7 @@ public partial class List<T, TCertain>
 				return new();
 			List<TSource> result = new(end - start);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				if (i >= start)
 					result._items[i - start] = item;
@@ -44392,7 +44392,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
@@ -44407,7 +44407,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
@@ -44446,7 +44446,7 @@ public partial class List<T, TCertain>
 		{
 			var result = new TResult[length];
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result[i] = function(item);
 				i++;
@@ -44467,7 +44467,7 @@ public partial class List<T, TCertain>
 			var result = new TResult[length];
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list._items[i];
+				var item = list._items[i];
 				result[i] = function(item, i);
 			}
 			return result;
@@ -44477,7 +44477,7 @@ public partial class List<T, TCertain>
 			var result = new TResult[array.Length];
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result[i] = function(item, i);
 			}
 			return result;
@@ -44488,7 +44488,7 @@ public partial class List<T, TCertain>
 			var result = new TResult[length];
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result[i] = function(item, i);
 			}
 			return result;
@@ -44497,7 +44497,7 @@ public partial class List<T, TCertain>
 		{
 			var result = new TResult[length];
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result[i] = function(item, i);
 				i++;
@@ -44524,7 +44524,7 @@ public partial class List<T, TCertain>
 			var result = new TSource[length];
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result[i] = item;
 			}
 			return result;
@@ -44533,7 +44533,7 @@ public partial class List<T, TCertain>
 		{
 			var result = new TSource[length];
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result[i] = item;
 				i++;
@@ -44776,7 +44776,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 		}
@@ -44796,7 +44796,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 		}
@@ -44826,7 +44826,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item);
 		}
 		result._size = length;
@@ -44843,7 +44843,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -44865,7 +44865,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 			result3._items[i] = function3(item);
@@ -44888,7 +44888,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 			result3._items[i] = function3(item, i);
@@ -44923,7 +44923,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item);
 		}
 		result._size = length;
@@ -44942,7 +44942,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -44960,7 +44960,7 @@ public partial class List<T, TCertain>
 		result2 = new(length / 2);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item))
 				result.Add(item);
 			else
@@ -44980,7 +44980,7 @@ public partial class List<T, TCertain>
 		result2 = new(length / 2);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item, i))
 				result.Add(item);
 			else
@@ -45172,7 +45172,7 @@ public partial class List<T, TCertain>
 		var length = Math.Min(source.Length, source2.Length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (item == null || !item.Equals(source2[i]))
 				return false;
 		}
@@ -45187,7 +45187,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(length / 2);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item))
 				result.Add(item);
 		}
@@ -45203,7 +45203,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(length / 2);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item, i))
 				result.Add(item);
 		}
@@ -45218,7 +45218,7 @@ public partial class List<T, TCertain>
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item))
 				return item;
 		}
@@ -45232,7 +45232,7 @@ public partial class List<T, TCertain>
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item, i))
 				return item;
 		}
@@ -45247,7 +45247,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item))
 				result.Add(item);
 		}
@@ -45263,7 +45263,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item, i))
 				result.Add(item);
 		}
@@ -45281,7 +45281,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45309,7 +45309,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45337,7 +45337,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45365,7 +45365,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45393,7 +45393,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45421,7 +45421,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45449,7 +45449,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45477,7 +45477,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45505,7 +45505,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45533,7 +45533,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45561,7 +45561,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45589,7 +45589,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45822,7 +45822,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -45831,7 +45831,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -45845,7 +45845,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45873,7 +45873,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45901,7 +45901,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45929,7 +45929,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -45957,7 +45957,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -45985,7 +45985,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46013,7 +46013,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46041,7 +46041,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46069,7 +46069,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46097,7 +46097,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46125,7 +46125,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46153,7 +46153,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46252,7 +46252,7 @@ public partial class List<T, TCertain>
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item))
 				return item;
 		}
@@ -46266,7 +46266,7 @@ public partial class List<T, TCertain>
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (function(item, i))
 				return item;
 		}
@@ -46283,7 +46283,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46308,7 +46308,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46333,7 +46333,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46358,7 +46358,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46383,7 +46383,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46408,7 +46408,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46433,7 +46433,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46458,7 +46458,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46483,7 +46483,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46508,7 +46508,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46533,7 +46533,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46558,7 +46558,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46788,7 +46788,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -46797,7 +46797,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -46811,7 +46811,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46836,7 +46836,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46861,7 +46861,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46886,7 +46886,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46911,7 +46911,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46936,7 +46936,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -46961,7 +46961,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -46986,7 +46986,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47011,7 +47011,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47036,7 +47036,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47061,7 +47061,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47086,7 +47086,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47111,7 +47111,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47136,7 +47136,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47161,7 +47161,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47186,7 +47186,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47211,7 +47211,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47236,7 +47236,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47261,7 +47261,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47286,7 +47286,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47311,7 +47311,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47336,7 +47336,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47361,7 +47361,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47386,7 +47386,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47616,7 +47616,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -47625,7 +47625,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -47639,7 +47639,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47664,7 +47664,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47689,7 +47689,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47714,7 +47714,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47739,7 +47739,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47764,7 +47764,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47789,7 +47789,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47814,7 +47814,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47839,7 +47839,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47864,7 +47864,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47889,7 +47889,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47914,7 +47914,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47939,7 +47939,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -47964,7 +47964,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -47989,7 +47989,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48014,7 +48014,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48039,7 +48039,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48064,7 +48064,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48089,7 +48089,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48114,7 +48114,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48139,7 +48139,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48164,7 +48164,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48189,7 +48189,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48214,7 +48214,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48444,7 +48444,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -48453,7 +48453,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -48467,7 +48467,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48492,7 +48492,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48517,7 +48517,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48542,7 +48542,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48567,7 +48567,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48592,7 +48592,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48617,7 +48617,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48642,7 +48642,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48667,7 +48667,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48692,7 +48692,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48717,7 +48717,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48742,7 +48742,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48768,7 +48768,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48799,7 +48799,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48830,7 +48830,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48861,7 +48861,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48892,7 +48892,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48923,7 +48923,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -48954,7 +48954,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -48985,7 +48985,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49016,7 +49016,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49047,7 +49047,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49078,7 +49078,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49109,7 +49109,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49344,7 +49344,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -49353,7 +49353,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -49368,7 +49368,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49399,7 +49399,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49430,7 +49430,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49461,7 +49461,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49492,7 +49492,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49523,7 +49523,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49554,7 +49554,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49585,7 +49585,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49616,7 +49616,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49647,7 +49647,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49678,7 +49678,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49709,7 +49709,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49739,7 +49739,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49764,7 +49764,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49789,7 +49789,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49814,7 +49814,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49839,7 +49839,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49864,7 +49864,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49889,7 +49889,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49914,7 +49914,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49939,7 +49939,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -49964,7 +49964,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -49989,7 +49989,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50014,7 +50014,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50244,7 +50244,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
 	}
 
@@ -50253,7 +50253,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t? value = MedianEnumerable(source, function);
+		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
@@ -50267,7 +50267,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50292,7 +50292,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50317,7 +50317,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50342,7 +50342,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50367,7 +50367,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50392,7 +50392,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50417,7 +50417,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50442,7 +50442,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50467,7 +50467,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50492,7 +50492,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50517,7 +50517,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -50542,7 +50542,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -50769,7 +50769,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
@@ -50791,7 +50791,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
@@ -50811,7 +50811,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
@@ -50833,7 +50833,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
@@ -50855,7 +50855,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
@@ -50875,7 +50875,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
@@ -50897,7 +50897,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
@@ -50919,7 +50919,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
@@ -50939,7 +50939,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
@@ -50961,7 +50961,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
@@ -50983,7 +50983,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
@@ -51003,7 +51003,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
@@ -51025,7 +51025,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
@@ -51047,7 +51047,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
@@ -51067,7 +51067,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
@@ -51089,7 +51089,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
@@ -51111,7 +51111,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
@@ -51131,7 +51131,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
@@ -51153,7 +51153,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
@@ -51175,7 +51175,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
@@ -51195,7 +51195,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
@@ -51217,7 +51217,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
@@ -51239,7 +51239,7 @@ public partial class List<T, TCertain>
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
@@ -51259,7 +51259,7 @@ public partial class List<T, TCertain>
 		TSource f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
@@ -51294,7 +51294,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51325,7 +51325,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51356,7 +51356,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51387,7 +51387,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51418,7 +51418,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51449,7 +51449,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51480,7 +51480,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51511,7 +51511,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51542,7 +51542,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51573,7 +51573,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51604,7 +51604,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -51635,7 +51635,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -51809,7 +51809,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -51834,7 +51834,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51845,7 +51845,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51856,7 +51856,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51867,7 +51867,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51878,7 +51878,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51889,7 +51889,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51900,7 +51900,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51911,7 +51911,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51922,7 +51922,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51933,7 +51933,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2.Value) : new();
@@ -51944,7 +51944,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -51955,7 +51955,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? new() : value == value2 ? IndexesOfEnumerable(list_, value2) : new();
@@ -52008,7 +52008,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52018,7 +52018,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52028,7 +52028,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52038,7 +52038,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52048,7 +52048,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52058,7 +52058,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52068,7 +52068,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52078,7 +52078,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52088,7 +52088,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52098,7 +52098,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value.Value);
 	}
@@ -52108,8 +52108,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value);
 	}
 
@@ -52118,8 +52118,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? new() : IndexesOfEnumerable(list_, value);
 	}
 
@@ -52155,7 +52155,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
 	{
-		mpz_t? value = MedianEnumerable(source);
+		var value = MedianEnumerable(source);
 		return value == null ? new() : IndexesOfEnumerable(source, value);
 	}
 
@@ -52170,7 +52170,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52201,7 +52201,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52232,7 +52232,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52263,7 +52263,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52294,7 +52294,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52325,7 +52325,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52356,7 +52356,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52387,7 +52387,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52418,7 +52418,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52449,7 +52449,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52480,7 +52480,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52511,7 +52511,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52685,7 +52685,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -52724,7 +52724,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52749,7 +52749,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52774,7 +52774,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52799,7 +52799,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52824,7 +52824,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52849,7 +52849,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52874,7 +52874,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52899,7 +52899,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52924,7 +52924,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52949,7 +52949,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -52974,7 +52974,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -52999,7 +52999,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53137,7 +53137,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -53157,7 +53157,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53168,7 +53168,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53179,7 +53179,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53190,7 +53190,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53201,7 +53201,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53212,7 +53212,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53223,7 +53223,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53234,7 +53234,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53245,7 +53245,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53256,7 +53256,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2.Value) : default;
@@ -53267,7 +53267,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : default;
@@ -53278,7 +53278,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? -1 : value == value2 ? IndexOfEnumerable(list_, value2) : default;
@@ -53331,7 +53331,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53341,7 +53341,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53351,7 +53351,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53361,7 +53361,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53371,7 +53371,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53381,7 +53381,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53391,7 +53391,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53401,7 +53401,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53411,7 +53411,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53421,7 +53421,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value.Value);
 	}
@@ -53431,8 +53431,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value);
 	}
 
@@ -53441,8 +53441,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? -1 : IndexOfEnumerable(list_, value);
 	}
 
@@ -53478,7 +53478,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
 	{
-		mpz_t? value = MedianEnumerable(source);
+		var value = MedianEnumerable(source);
 		return value == null ? -1 : IndexOfEnumerable(source, value);
 	}
 
@@ -53492,7 +53492,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53517,7 +53517,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53542,7 +53542,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53567,7 +53567,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53592,7 +53592,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53617,7 +53617,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53642,7 +53642,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53667,7 +53667,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53692,7 +53692,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53717,7 +53717,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53742,7 +53742,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -53767,7 +53767,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -53905,7 +53905,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -53926,7 +53926,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			List<TSource> item = source[i];
+			var item = source[i];
 			result.AddRange(item);
 		}
 		return result;
@@ -53947,7 +53947,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource[] item = source[i];
+			var item = source[i];
 			result.AddRange(item);
 		}
 		return result;
@@ -53959,7 +53959,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			G.IList<TSource> item = source[i];
+			var item = source[i];
 			result.AddRange(item);
 		}
 		return result;
@@ -53971,7 +53971,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			IEnumerable<TSource> item = source[i];
+			var item = source[i];
 			result.AddRange(item);
 		}
 		return result;
@@ -53996,7 +53996,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54021,7 +54021,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54046,7 +54046,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54071,7 +54071,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54096,7 +54096,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54121,7 +54121,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54146,7 +54146,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54171,7 +54171,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54196,7 +54196,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54221,7 +54221,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54246,7 +54246,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54271,7 +54271,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54409,7 +54409,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -54429,7 +54429,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54440,7 +54440,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54451,7 +54451,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54462,7 +54462,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54473,7 +54473,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54484,7 +54484,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (int?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54495,7 +54495,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54506,7 +54506,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (uint?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54517,7 +54517,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54528,7 +54528,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (long?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2.Value) : default;
@@ -54539,7 +54539,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : default;
@@ -54550,7 +54550,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MeanEnumerable(list_);
 		var value2 = (mpz_t?)value;
 		return value2 == null ? -1 : value == value2 ? LastIndexOfEnumerable(list_, value2) : default;
@@ -54603,7 +54603,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54613,7 +54613,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<decimal> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		decimal? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54623,7 +54623,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54633,7 +54633,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<double> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		double? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54643,7 +54643,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54653,7 +54653,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<int> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		int? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54663,7 +54663,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54673,7 +54673,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<uint> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		uint? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54683,7 +54683,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54693,7 +54693,7 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<long> list_ = ConvertEnumerable(source, function);
+		var list_ = ConvertEnumerable(source, function);
 		long? value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value.Value);
 	}
@@ -54703,8 +54703,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 	}
 
@@ -54713,8 +54713,8 @@ public partial class List<T, TCertain>
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		List<mpz_t> list_ = ConvertEnumerable(source, function);
-		mpz_t? value = MedianEnumerable(list_);
+		var list_ = ConvertEnumerable(source, function);
+		var value = MedianEnumerable(list_);
 		return value == null ? -1 : LastIndexOfEnumerable(list_, value);
 	}
 
@@ -54750,7 +54750,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
 	{
-		mpz_t? value = MedianEnumerable(source);
+		var value = MedianEnumerable(source);
 		return value == null ? -1 : LastIndexOfEnumerable(source, value);
 	}
 
@@ -54764,7 +54764,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54789,7 +54789,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54814,7 +54814,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54839,7 +54839,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54864,7 +54864,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54889,7 +54889,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54914,7 +54914,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54939,7 +54939,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -54964,7 +54964,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -54989,7 +54989,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -55014,7 +55014,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item);
@@ -55039,7 +55039,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = function(item, i);
@@ -55177,7 +55177,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = length - 1; i >= 0; i--)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 			{
 				indicator = item;
@@ -55201,7 +55201,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55219,7 +55219,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55237,7 +55237,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55255,7 +55255,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55273,7 +55273,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55291,7 +55291,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55309,7 +55309,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55327,7 +55327,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55345,7 +55345,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55363,7 +55363,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55381,7 +55381,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) > indicator!)
@@ -55399,7 +55399,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) > indicator!)
@@ -55495,7 +55495,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = item;
 			else if ((f = item) > indicator!)
@@ -55702,7 +55702,7 @@ public partial class List<T, TCertain>
 		double result = 0;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			result += (double)item;
 		}
 		return result / source.Length;
@@ -55779,7 +55779,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55797,7 +55797,7 @@ public partial class List<T, TCertain>
 		decimal f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -55815,7 +55815,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55833,7 +55833,7 @@ public partial class List<T, TCertain>
 		double f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -55851,7 +55851,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55869,7 +55869,7 @@ public partial class List<T, TCertain>
 		int f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -55887,7 +55887,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55905,7 +55905,7 @@ public partial class List<T, TCertain>
 		uint f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -55923,7 +55923,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55941,7 +55941,7 @@ public partial class List<T, TCertain>
 		long f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -55959,7 +55959,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item);
 			else if ((f = function(item)) < indicator!)
@@ -55977,7 +55977,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = function(item, i);
 			else if ((f = function(item, i)) < indicator!)
@@ -56073,7 +56073,7 @@ public partial class List<T, TCertain>
 		mpz_t f;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			if (i == 0)
 				indicator = item;
 			else if ((f = item) < indicator!)
@@ -56088,7 +56088,7 @@ public partial class List<T, TCertain>
 		TSource? result = default;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result = result == null ? item : function(result, item);
 		}
 		return result;
@@ -56100,7 +56100,7 @@ public partial class List<T, TCertain>
 		TResult? result = default;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result = result == null ? seed : function(result, item);
 		}
 		return result;
@@ -56115,7 +56115,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -56132,7 +56132,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -56147,7 +56147,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -56164,7 +56164,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -56181,7 +56181,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -56196,7 +56196,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -56213,7 +56213,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -56230,7 +56230,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -56245,7 +56245,7 @@ public partial class List<T, TCertain>
 		List<TSource> result = new(1024);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -56261,7 +56261,7 @@ public partial class List<T, TCertain>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -56276,7 +56276,7 @@ public partial class List<T, TCertain>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -56291,7 +56291,7 @@ public partial class List<T, TCertain>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -56348,7 +56348,7 @@ public partial class List<T, TCertain>
 		var length = source2.Length;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (item == null || !item.Equals(source2[i]))
 				return false;
 		}
@@ -56553,7 +56553,7 @@ public partial class List<T, TCertain>
 		mpz_t result = 0;
 		for (var i = 0; i < length; i++)
 		{
-			mpz_t item = source[i];
+			var item = source[i];
 			result += item;
 		}
 		return result;
@@ -56592,7 +56592,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 		});
@@ -56612,7 +56612,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 		});
@@ -56641,7 +56641,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item);
 		});
 		result._size = length;
@@ -56658,7 +56658,7 @@ public partial class List<T, TCertain>
 		List<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item, i);
 		});
 		result._size = length;
@@ -56680,7 +56680,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 			result3._items[i] = function3(item);
@@ -56703,7 +56703,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 			result3._items[i] = function3(item, i);
@@ -56737,7 +56737,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item);
 		});
 		result._size = length;
@@ -56756,7 +56756,7 @@ public partial class List<T, TCertain>
 		List<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 		});
 		result._size = length;
@@ -56773,8 +56773,8 @@ public partial class List<T, TCertain>
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = function(item, item2);
 		});
 		result._size = length;
@@ -56789,8 +56789,8 @@ public partial class List<T, TCertain>
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = function(item, item2, i);
 		});
 		result._size = length;
@@ -56803,8 +56803,8 @@ public partial class List<T, TCertain>
 		List<(TSource, TSource2)> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = (item, item2);
 		});
 		result._size = length;
@@ -56819,9 +56819,9 @@ public partial class List<T, TCertain>
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = function(item, item2, item3);
 		});
 		result._size = length;
@@ -56836,9 +56836,9 @@ public partial class List<T, TCertain>
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = function(item, item2, item3, i);
 		});
 		result._size = length;
@@ -56851,9 +56851,9 @@ public partial class List<T, TCertain>
 		List<(TSource, TSource2, TSource3)> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = (item, item2, item3);
 		});
 		result._size = length;
@@ -56866,7 +56866,7 @@ public partial class List<T, TCertain>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (item?.Equals(target) ?? false)
 			{
 				result = true;
@@ -56882,7 +56882,7 @@ public partial class List<T, TCertain>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -56899,7 +56899,7 @@ public partial class List<T, TCertain>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -56916,7 +56916,7 @@ public partial class List<T, TCertain>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -57230,7 +57230,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -57245,7 +57245,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -57260,7 +57260,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -57273,7 +57273,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			NList<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
@@ -57298,7 +57298,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -57313,7 +57313,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -57328,7 +57328,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -57341,7 +57341,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			NList<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
@@ -57393,7 +57393,7 @@ public unsafe partial class NList<T>
 			NList<TSource> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			NList<TSource2> result2 = new(length);
 			var i = 0;
-			foreach ((TSource, TSource2) item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i]) = item;
 				i++;
@@ -57415,7 +57415,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57429,7 +57429,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57443,7 +57443,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57455,7 +57455,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			NList<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i]) = function(item);
 				i++;
@@ -57477,7 +57477,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57491,7 +57491,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57505,7 +57505,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57517,7 +57517,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			NList<TResult2> result2 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i]) = function(item, i);
 				i++;
@@ -57544,7 +57544,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -57562,7 +57562,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -57580,7 +57580,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -57596,7 +57596,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
@@ -57624,7 +57624,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -57642,7 +57642,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -57660,7 +57660,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -57676,7 +57676,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
@@ -57737,7 +57737,7 @@ public unsafe partial class NList<T>
 			NList<TSource2> result2 = new(length);
 			NList<TSource3> result3 = new(length);
 			var i = 0;
-			foreach ((TSource, TSource2, TSource3) item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i], result3._items[i]) = item;
 				i++;
@@ -57761,7 +57761,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57777,7 +57777,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57793,7 +57793,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57807,7 +57807,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 				i++;
@@ -57831,7 +57831,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57847,7 +57847,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57863,7 +57863,7 @@ public unsafe partial class NList<T>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57877,7 +57877,7 @@ public unsafe partial class NList<T>
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 				i++;
@@ -57900,7 +57900,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 		}
@@ -57920,7 +57920,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 		}
@@ -57950,7 +57950,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item);
 		}
 		result._size = length;
@@ -57967,7 +57967,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -57989,7 +57989,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 			result3._items[i] = function3(item);
@@ -58012,7 +58012,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 			result3._items[i] = function3(item, i);
@@ -58047,7 +58047,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item);
 		}
 		result._size = length;
@@ -58066,7 +58066,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -58086,7 +58086,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 		}
@@ -58106,7 +58106,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 		}
@@ -58136,7 +58136,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			(result._items[i], result2._items[i]) = function(item);
 		}
 		result._size = length;
@@ -58153,7 +58153,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			(result._items[i], result2._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -58175,7 +58175,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 			result3._items[i] = function3(item);
@@ -58198,7 +58198,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 			result3._items[i] = function3(item, i);
@@ -58233,7 +58233,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item);
 		}
 		result._size = length;
@@ -58252,7 +58252,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 		}
 		result._size = length;
@@ -58271,8 +58271,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
+				var item = list[i];
+				var item2 = list2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -58284,8 +58284,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -58297,8 +58297,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -58318,8 +58318,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
+				var item = list[i];
+				var item2 = list2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -58331,8 +58331,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -58344,8 +58344,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -58363,8 +58363,8 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
+				var item = list[i];
+				var item2 = list2[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -58376,8 +58376,8 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
+				var item = array[i];
+				var item2 = array2[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -58389,8 +58389,8 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -58410,9 +58410,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
-				TSource3 item3 = list3[i];
+				var item = list[i];
+				var item2 = list2[i];
+				var item3 = list3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -58424,9 +58424,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -58438,9 +58438,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -58460,9 +58460,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
-				TSource3 item3 = list3[i];
+				var item = list[i];
+				var item2 = list2[i];
+				var item3 = list3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -58474,9 +58474,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -58488,9 +58488,9 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -58508,9 +58508,9 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
-				TSource2 item2 = list2[i];
-				TSource3 item3 = list3[i];
+				var item = list[i];
+				var item2 = list2[i];
+				var item3 = list3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -58522,9 +58522,9 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = array[i];
-				TSource2 item2 = array2[i];
-				TSource3 item3 = array3[i];
+				var item = array[i];
+				var item2 = array2[i];
+				var item3 = array3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -58536,9 +58536,9 @@ public unsafe partial class NList<T>
 			NList<(TSource, TSource2, TSource3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2_[i];
-				TSource2 item2 = list2_2[i];
-				TSource3 item3 = list2_3[i];
+				var item = list2_[i];
+				var item2 = list2_2[i];
+				var item3 = list2_3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -58718,7 +58718,7 @@ public unsafe partial class NList<T>
 		{
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item);
 				i++;
@@ -58738,7 +58738,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list[i];
+				var item = list[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -58749,7 +58749,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				TSource item = array[i];
+				var item = array[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = array.Length;
@@ -58761,7 +58761,7 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				TSource item = list2[i];
+				var item = list2[i];
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -58771,7 +58771,7 @@ public unsafe partial class NList<T>
 		{
 			NList<TResult> result = new(List<TSource>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i] = function(item, i);
 				i++;
@@ -58825,7 +58825,7 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = function(item, i);
 		}
 		result._size = length;
@@ -58885,7 +58885,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (function(item))
 				result.Add(item);
 		}
@@ -58903,7 +58903,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (function(item, i))
 				result.Add(item);
 		}
@@ -58921,7 +58921,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (function(item))
 				result.Add(item);
 		}
@@ -58939,7 +58939,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (function(item, i))
 				result.Add(item);
 		}
@@ -58961,54 +58961,6 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<NList<TSource>> source) where TSource : unmanaged
-	//{
-	//	int _size = source._size;
-	//	NList<TSource> result = new(_size);
-	//	for (int i = 0; i < _size; i++)
-	//	{
-	//		NList<TSource> item = source._items[i];
-	//		result.AddRange(item);
-	//	}
-	//	return result;
-	//}
-
-	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<TSource[]> source) where TSource : unmanaged
-	//{
-	//	int _size = source._size;
-	//	NList<TSource> result = new(_size);
-	//	for (int i = 0; i < _size; i++)
-	//	{
-	//		TSource[] item = source._items[i];
-	//		result.AddRange(item);
-	//	}
-	//	return result;
-	//}
-
-	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<G.IList<TSource>> source) where TSource : unmanaged
-	//{
-	//	int _size = source._size;
-	//	NList<TSource> result = new(_size);
-	//	for (int i = 0; i < _size; i++)
-	//	{
-	//		G.IList<TSource> item = source._items[i];
-	//		result.AddRange(item);
-	//	}
-	//	return result;
-	//}
-
-	//internal static NList<TSource> JoinIntoSingleEnumerable<TSource>(ReadOnlySpan<IEnumerable<TSource>> source) where TSource : unmanaged
-	//{
-	//	int _size = source._size;
-	//	NList<TSource> result = new(_size);
-	//	for (int i = 0; i < _size; i++)
-	//	{
-	//		IEnumerable<TSource> item = source._items[i];
-	//		result.AddRange(item);
-	//	}
-	//	return result;
-	//}
-
 	internal static NList<TSource> RemoveDoublesEnumerable<TSource, TResult>(NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
@@ -59019,7 +58971,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -59038,7 +58990,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -59055,7 +59007,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -59074,7 +59026,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -59093,7 +59045,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -59110,7 +59062,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -59129,7 +59081,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item)))
 				result.Add(item);
 		}
@@ -59148,7 +59100,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(function(item, i)))
 				result.Add(item);
 		}
@@ -59165,7 +59117,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			if (hs.TryAdd(item))
 				result.Add(item);
 		}
@@ -59182,7 +59134,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -59197,7 +59149,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -59212,7 +59164,7 @@ public unsafe partial class NList<T>
 		var j = 0;
 		for (var i = 0; i < length; i++)
 		{
-			TSource item = source._items[i];
+			var item = source._items[i];
 			result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 		}
 		result._size = length;
@@ -59236,7 +59188,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -59251,7 +59203,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -59295,7 +59247,7 @@ public unsafe partial class NList<T>
 		{
 			NList<TSource> result = new(length);
 			var i = 0;
-			foreach (TSource item in source)
+			foreach (var item in source)
 			{
 				result._items[i++] = item;
 				if (i >= length)
@@ -59313,7 +59265,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
@@ -59328,7 +59280,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<TSource> result = new();
-			IEnumerator<TSource> en = source.GetEnumerator();
+			var en = source.GetEnumerator();
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
@@ -59347,7 +59299,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 		});
@@ -59367,7 +59319,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 		});
@@ -59396,7 +59348,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item);
 		});
 		result._size = length;
@@ -59413,7 +59365,7 @@ public unsafe partial class NList<T>
 		NList<TResult2> result2 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i]) = function(item, i);
 		});
 		result._size = length;
@@ -59435,7 +59387,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item);
 			result2._items[i] = function2(item);
 			result3._items[i] = function3(item);
@@ -59458,7 +59410,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 			result2._items[i] = function2(item, i);
 			result3._items[i] = function3(item, i);
@@ -59492,7 +59444,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item);
 		});
 		result._size = length;
@@ -59511,7 +59463,7 @@ public unsafe partial class NList<T>
 		NList<TResult3> result3 = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 		});
 		result._size = length;
@@ -59528,8 +59480,8 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = function(item, item2);
 		});
 		result._size = length;
@@ -59544,8 +59496,8 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = function(item, item2, i);
 		});
 		result._size = length;
@@ -59558,8 +59510,8 @@ public unsafe partial class NList<T>
 		NList<(TSource, TSource2)> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
+			var item = source[i];
+			var item2 = source2[i];
 			result._items[i] = (item, item2);
 		});
 		result._size = length;
@@ -59574,9 +59526,9 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = function(item, item2, item3);
 		});
 		result._size = length;
@@ -59591,9 +59543,9 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = function(item, item2, item3, i);
 		});
 		result._size = length;
@@ -59606,9 +59558,9 @@ public unsafe partial class NList<T>
 		NList<(TSource, TSource2, TSource3)> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
-			TSource2 item2 = source2[i];
-			TSource3 item3 = source3[i];
+			var item = source[i];
+			var item2 = source2[i];
+			var item3 = source3[i];
 			result._items[i] = (item, item2, item3);
 		});
 		result._size = length;
@@ -59621,7 +59573,7 @@ public unsafe partial class NList<T>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (item.Equals(target))
 			{
 				result = true;
@@ -59637,7 +59589,7 @@ public unsafe partial class NList<T>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -59654,7 +59606,7 @@ public unsafe partial class NList<T>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -59671,7 +59623,7 @@ public unsafe partial class NList<T>
 		var result = false;
 		Parallel.For(0, length, (i, pls) =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			if (comparer.Equals(item, target))
 			{
 				result = true;
@@ -59700,7 +59652,7 @@ public unsafe partial class NList<T>
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
 		{
-			TSource item = source[i];
+			var item = source[i];
 			result._items[i] = function(item, i);
 		});
 		result._size = length;
@@ -59779,8 +59731,8 @@ public static class RedStarLinq
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<TSource, TResult, TResult2, TResult3>(this IEnumerable<TSource> source, Func<TSource, int, (TResult, TResult2, TResult3)> function) => List<TSource>.BreakEnumerable(source, function);
 	public static List<TSource> BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
 	public static List<TSource> BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable(source, function, out result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out var result2), result2);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2, Func<TSource, TSource2, int, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<(TSource, TSource2)> Combine<TSource, TSource2>(this IEnumerable<TSource> source, IEnumerable<TSource2> source2) => List<(TSource, TSource2)>.CombineEnumerable(source, source2);
@@ -60789,12 +60741,12 @@ public static class RedStarLinq
 	public static List<TSource> BreakFilter<TSource>(this Span<TSource> source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out result2);
 	public static List<TSource> BreakFilter<TSource>(this TSource[] source, Func<TSource, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out result2);
 	public static List<TSource> BreakFilter<TSource>(this TSource[] source, Func<TSource, int, bool> function, out List<TSource> result2) => List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out List<TSource> result2), result2);
-	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out List<TSource> result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this ReadOnlySpan<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable(source, function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this Span<TSource> source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source, function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out var result2), result2);
+	public static (List<TSource>, List<TSource>) BreakFilter<TSource>(this TSource[] source, Func<TSource, int, bool> function) => (List<bool>.BreakFilterEnumerable((ReadOnlySpan<TSource>)source.AsSpan(), function, out var result2), result2);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this ReadOnlySpan<TSource> source, ReadOnlySpan<TSource2> source2, Func<TSource, TSource2, int, TResult> function) => List<TResult>.CombineEnumerable(source, source2, function);
 	public static List<TResult> Combine<TSource, TSource2, TResult>(this Span<TSource> source, Span<TSource2> source2, Func<TSource, TSource2, TResult> function) => List<TResult>.CombineEnumerable((ReadOnlySpan<TSource>)source, (ReadOnlySpan<TSource2>)source2, function);
@@ -62816,6 +62768,18 @@ public static class RedStarLinq
 	public static TResult[] ToArray<TSource, TResult>(this ReadOnlySpan<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<TSource, TResult>(this Span<TSource> source, Func<TSource, TResult> function) => List<TResult>.ToArrayEnumerable((ReadOnlySpan<TSource>)source, function);
 	public static TResult[] ToArray<TSource, TResult>(this Span<TSource> source, Func<TSource, int, TResult> function) => List<TResult>.ToArrayEnumerable((ReadOnlySpan<TSource>)source, function);
+	public static BitList ToBitList(this ReadOnlySpan<bool> source) => new(source.ToArray());
+	public static BitList ToBitList(this ReadOnlySpan<byte> source) => new(source.ToArray());
+	public static BitList ToBitList(this ReadOnlySpan<int> source) => new(source.ToArray());
+	public static BitList ToBitList(this ReadOnlySpan<uint> source) => new(source);
+	public static BitList ToBitList(this Span<bool> source) => new(source.ToArray());
+	public static BitList ToBitList(this Span<byte> source) => new(source.ToArray());
+	public static BitList ToBitList(this Span<int> source) => new(source.ToArray());
+	public static BitList ToBitList(this Span<uint> source) => new(source);
+	public static BitList ToBitList(this bool[] source) => new(source);
+	public static BitList ToBitList(this byte[] source) => new(source);
+	public static BitList ToBitList(this int[] source) => new(source);
+	public static BitList ToBitList(this uint[] source) => new(source);
 	public static (List<TResult>, List<TResult2>) PBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) => List<TSource>.PBreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) PBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) => List<TSource>.PBreakEnumerable(source, function, function2);
 	public static (List<TSource>, List<TSource2>) PBreak<TSource, TSource2>(this G.IList<(TSource, TSource2)> source) => List<TSource>.PBreakEnumerable(source);
@@ -62950,10 +62914,6 @@ public static class RedStarLinq
 	public static NList<TSource> NFindAll<TSource>(this NList<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.FindAllEnumerable(source, function);
 	public static NList<TSource> NFindAll<TSource>(this NList<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.FindAllEnumerable(source, function);
 	public static NList<int> NIndexesOf<TSource>(this NList<TSource> source, TSource target) where TSource : unmanaged => NList<TSource>.IndexesOfEnumerable(source, target);
-	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<NList<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
-	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<TSource[]> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
-	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<G.IList<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
-	//public static NList<TSource> NJoinIntoSingle<TSource>(this ReadOnlySpan<IEnumerable<TSource>> source) where TSource : unmanaged => NList<TSource>.JoinIntoSingleEnumerable(source);
 	public static NList<TSource> NRemoveDoubles<TSource, TResult>(this NList<TSource> source, Func<TSource, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TSource>.RemoveDoublesEnumerable(source, function);
 	public static NList<TSource> NRemoveDoubles<TSource, TResult>(this NList<TSource> source, Func<TSource, int, TResult> function) where TSource : unmanaged where TResult : unmanaged => NList<TSource>.RemoveDoublesEnumerable(source, function);
 	public static NList<TSource> NRemoveDoubles<TSource>(this NList<TSource> source) where TSource : unmanaged => NList<TSource>.RemoveDoublesEnumerable(source);

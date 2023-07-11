@@ -6,6 +6,386 @@ namespace Corlib.NStar;
 [DebuggerDisplay("Length = {Length}")]
 [ComVisible(true)]
 [Serializable]
+public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where TCertain : Buffer<T, TCertain>, new()
+{
+	private protected T[] _items;
+	private protected int _start;
+
+	public Buffer(int capacity)
+	{
+		if (capacity <= 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		_items = new T[capacity];
+		_start = 0;
+	}
+
+	public Buffer(IEnumerable<T> collection)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is ICollection<T> c)
+		{
+			var length = c.Count;
+			if (length == 0)
+				throw new ArgumentException(null, nameof(collection));
+			else
+			{
+				_items = new T[length];
+				c.CopyTo(_items, 0);
+				_size = length;
+			}
+		}
+		else
+		{
+			_size = 0;
+			_items = new T[collection.Length()];
+			using var en = collection.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+		_start = 0;
+	}
+
+	public Buffer(int capacity, IEnumerable<T> collection) : this(capacity)
+	{
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is G.IList<T> list)
+		{
+			var length = list.Count;
+			if (length == 0)
+				return;
+			var start = Max(0, length - capacity);
+			for (var i = start; i < length; i++)
+				_items[i - start] = list[i];
+			_size = length;
+		}
+		else
+		{
+			using var en = collection.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+	}
+
+	public Buffer(params T[] array)
+	{
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		_size = array.Length;
+		_items = array.ToArray();
+		_start = 0;
+	}
+
+	public Buffer(int capacity, params T[] array)
+	{
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		_size = Min(capacity, array.Length);
+		_items = new T[capacity];
+		Array.Copy(array, Max(0, array.Length - _size), _items, 0, _size);
+		_start = 0;
+	}
+
+	public Buffer(ReadOnlySpan<T> span)
+	{
+		if (span == null)
+			throw new ArgumentNullException(nameof(span));
+		_size = span.Length;
+		_items = span.ToArray();
+		_start = 0;
+	}
+
+	public Buffer(int capacity, ReadOnlySpan<T> span)
+	{
+		if (span == null)
+			throw new ArgumentNullException(nameof(span));
+		_size = Min(capacity, span.Length);
+		_items = new T[capacity];
+		span.Slice(Max(0, span.Length - _size), _size).CopyTo(_items);
+		_start = 0;
+	}
+
+	public override int Capacity
+	{
+		get => _items.Length;
+		set
+		{
+			if (value < _size)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			if (value == _items.Length)
+				return;
+			if (value == 0)
+				throw new ArgumentOutOfRangeException(nameof(value));
+			var newItems = new T[value];
+			if (_size > 0)
+			{
+				if (_start + _size < Capacity)
+					Array.Copy(_items, _start, newItems, 0, _size);
+				else
+				{
+					Array.Copy(_items, _start, newItems, 0, Capacity - _start);
+					Array.Copy(_items, 0, newItems, Capacity - _start, _size - (Capacity - _start));
+				}
+			}
+			_items = newItems;
+			_start = 0;
+			Changed();
+		}
+	}
+
+	public override TCertain Add(T item)
+	{
+		if (_size == Capacity)
+		{
+			SetInternal(_size, item);
+			_start = (_start + 1) % Capacity;
+		}
+		else
+			SetInternal(_size++, item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public override Span<T> AsSpan(int index, int length) => throw new NotSupportedException();
+
+	private protected override void ClearInternal(int index, int length)
+	{
+		if (_start + index + length < Capacity)
+			Array.Clear(_items, _start + index, length);
+		else if (_start + index < Capacity)
+		{
+			Array.Clear(_items, _start + index, Capacity - _start - index);
+			Array.Clear(_items, 0, length - (Capacity - _start - index));
+		}
+		else
+			Array.Clear(_items, (_start + index) % Capacity, length);
+		Changed();
+	}
+
+	public virtual Buffer<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, Buffer<TOutput>>(converter);
+
+	public virtual Buffer<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, Buffer<TOutput>>(converter);
+
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	{
+		if (source != destination || sourceIndex >= destinationIndex)
+			for (var i = 0; i < length; i++)
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		else
+			for (var i = length - 1; i >= 0; i--)
+				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+		destination.Changed();
+	}
+
+	private protected override void CopyToInternal(Array array, int arrayIndex)
+	{
+		if (_start + _size < Capacity)
+			Array.Copy(_items, _start, array, arrayIndex, _size);
+		else
+		{
+			Array.Copy(_items, _start, array, arrayIndex, Capacity - _start);
+			Array.Copy(_items, 0, array, arrayIndex + Capacity - _start, _size - (Capacity - _start));
+		}
+	}
+
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	{
+		if (_start + index + length < Capacity)
+			Array.Copy(_items, _start + index, array, arrayIndex, length);
+		else if (_start + index < Capacity)
+		{
+			Array.Copy(_items, _start + index, array, arrayIndex, Capacity - _start - index);
+			Array.Copy(_items, 0, array, arrayIndex + Capacity - _start - index, length - (Capacity - _start - index));
+		}
+		else
+			Array.Copy(_items, (_start + index) % Capacity, array, arrayIndex, length);
+	}
+
+	public override void Dispose()
+	{
+		_items = default!;
+		_size = 0;
+		GC.SuppressFinalize(this);
+	}
+
+	private protected override void EnsureCapacity(int min) => throw new NotSupportedException();
+
+	internal override T GetInternal(int index, bool invoke = true)
+	{
+		var item = _items[(_start + index) % Capacity];
+		if (invoke)
+			Changed();
+		return item;
+	}
+
+	private protected override int IndexOfInternal(T item, int index, int length)
+	{
+		for (var i = index; i < index + length; i++)
+			if (GetInternal(i)?.Equals(item) ?? item == null)
+				return i;
+		return -1;
+	}
+
+	public override TCertain Insert(int index, T item)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (index == 0 && _size == Capacity)
+			return this2;
+		if (index < _size)
+			Copy(this2, index, this2, index + 1, _size - index);
+		SetInternal(index, item);
+		if (_size < Capacity)
+			_size++;
+		else
+			_start = (_start + 1) % Capacity;
+		Changed();
+		return this2;
+	}
+
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection) => throw new NotImplementedException();
+	//{
+	//	if ((uint)index > (uint)_size)
+	//		throw new ArgumentOutOfRangeException(nameof(index));
+	//	var length = collection.Length();
+	//	var this2 = this as TCertain ?? throw new InvalidOperationException();
+	//	if (length == 0)
+	//		return this2;
+	//	var toSkip = Max(0, length + _size - Capacity - index);
+	//	var index2 = _size + length - toSkip >= Capacity + index ? 0 : index;
+	//	if (index2 < _size)
+	//		Copy(this2, index2, this2, index2 + length - toSkip, _size - index2);
+	//	var i = 0;
+	//	var en = collection.GetEnumerator();
+	//	while (i < toSkip && en.MoveNext())
+	//		i++;
+	//	while (en.MoveNext())
+	//		SetInternal(index2 + i++, en.Current);
+	//	_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
+	//	_size = Min(_size + length - toSkip, Capacity);
+	//	return this2;
+	//}
+
+	private protected override int LastIndexOfInternal(T item, int index, int length)
+	{
+		for (var i = index + length - 1; i >= index; i--)
+			if (GetInternal(i)?.Equals(item) ?? item == null)
+				return i;
+		return -1;
+	}
+
+	private protected override TCertain ReverseInternal(int index, int length)
+	{
+		for (var i = 0; i < length / 2; i++)
+		{
+			var temp = GetInternal(index + i);
+			SetInternal(index + i, GetInternal(index + length - i - 1));
+			SetInternal(index + length - i - 1, temp);
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	internal override void SetInternal(int index, T value)
+	{
+		_items[(_start + index) % Capacity] = value;
+		Changed();
+	}
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
+public class Buffer<T> : Buffer<T, Buffer<T>>
+{
+	public Buffer() { }
+
+	public Buffer(int capacity) : base(capacity) { }
+
+	public Buffer(IEnumerable<T> collection) : base(collection) { }
+
+	public Buffer(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
+
+	public Buffer(params T[] array) : base(array) { }
+
+	public Buffer(int capacity, params T[] array) : base(capacity, array) { }
+
+	public Buffer(ReadOnlySpan<T> span) : base(span) { }
+
+	public Buffer(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
+
+	private protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, Buffer<T>> CollectionCreator => x => new(x);
+
+	public static implicit operator Buffer<T>(T x) => new(x);
+
+	public static implicit operator Buffer<T>(T[] x) => new(x);
+
+	public static explicit operator Buffer<T>((T, T) x) => new(x.Item1, x.Item2);
+
+	public static explicit operator Buffer<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+
+	public static explicit operator Buffer<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+
+	public static explicit operator (T, T)(Buffer<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T)(Buffer<T> x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T)(Buffer<T> x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T)(Buffer<T> x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T)(Buffer<T> x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+
+	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(Buffer<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
+}
+
+[DebuggerDisplay("Length = {Length}")]
+[ComVisible(true)]
+[Serializable]
 public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TCertain : List<T, TCertain>, new()
 {
 	private protected T[] _items;
@@ -40,7 +420,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			_size = 0;
 			_items = _emptyArray;
-			using IEnumerator<T> en = collection.GetEnumerator();
+			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
@@ -62,7 +442,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		else
 		{
-			using IEnumerator<T> en = collection.GetEnumerator();
+			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
@@ -193,7 +573,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		T item = _items[index];
+		var item = _items[index];
 		if (invoke)
 			Changed();
 		return item;
@@ -666,7 +1046,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		{
 			_size = 0;
 			_items = _emptyArray;
-			using IEnumerator<T> en = collection.GetEnumerator();
+			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
@@ -689,7 +1069,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		}
 		else
 		{
-			using IEnumerator<T> en = collection.GetEnumerator();
+			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
@@ -832,7 +1212,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		T item = _items[index];
+		var item = _items[index];
 		if (invoke)
 			Changed();
 		return item;
@@ -862,7 +1242,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	private protected override int IndexOfInternal(T item, int index, int length)
 	{
-		T* ptr = _items + index;
+		var ptr = _items + index;
 		for (var i = 0; i < length; i++)
 			if (ptr[i].Equals(item))
 				return index + i;
@@ -1403,7 +1783,7 @@ public class SumList : BaseList<int, SumList>
 		// Even if we don't actually remove from the list, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		parent = null;
 		grandParent = null;
 		match = null;
@@ -1418,7 +1798,7 @@ public class SumList : BaseList<int, SumList>
 					current.ColorRed();
 				else if (parent.Left != null && parent.Right != null)
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -1446,7 +1826,7 @@ public class SumList : BaseList<int, SumList>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -1485,7 +1865,7 @@ public class SumList : BaseList<int, SumList>
 
 	internal virtual Node? FindNode(int index)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -1510,7 +1890,7 @@ public class SumList : BaseList<int, SumList>
 
 	internal Node? FindRange(int from, int to, bool lowerBoundActive, bool upperBoundActive)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if (lowerBoundActive && Comparer.Compare(from, current.Left?.LeavesCount ?? 0) > 0)
@@ -1528,7 +1908,7 @@ public class SumList : BaseList<int, SumList>
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
-		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		int found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -1551,7 +1931,7 @@ public class SumList : BaseList<int, SumList>
 
 	internal override int GetInternal(int index, bool invoke = true)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -1579,7 +1959,7 @@ public class SumList : BaseList<int, SumList>
 
 	public virtual long GetLeftValuesSum(int index, out int actualValue)
 	{
-		Node? current = root;
+		var current = root;
 		long sum = 0;
 		while (current != null)
 		{
@@ -1624,7 +2004,7 @@ public class SumList : BaseList<int, SumList>
 			sumExceedsBy = (int)Min(sum - ValuesSum, int.MaxValue);
 			return _size;
 		}
-		Node? current = root;
+		var current = root;
 		sumExceedsBy = 0;
 		var index = 0;
 		while (current != null)
@@ -1665,7 +2045,7 @@ public class SumList : BaseList<int, SumList>
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
 		var stack = new Stack<Node>(2 * Log2(Length + 1));
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			stack.Push(current);
@@ -1676,7 +2056,7 @@ public class SumList : BaseList<int, SumList>
 			current = stack.Pop();
 			if (!action(current))
 				return false;
-			Node? node = current.Right;
+			var node = current.Right;
 			while (node != null)
 			{
 				stack.Push(node);
@@ -1699,7 +2079,7 @@ public class SumList : BaseList<int, SumList>
 		// Search for a node at bottom to insert the new node.
 		// If we can guarantee the node we found is not a 4-node, it would be easy to do insertion.
 		// We split 4-nodes along the search path.
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? greatGrandParent = null;
@@ -1811,7 +2191,7 @@ public class SumList : BaseList<int, SumList>
 	{
 		if (root == null)
 			return this;
-		FindForRemove(index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
@@ -1885,7 +2265,7 @@ public class SumList : BaseList<int, SumList>
 
 	internal override void SetInternal(int index, int value)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -2053,7 +2433,7 @@ public class SumList : BaseList<int, SumList>
 #if DEBUG
 			Debug.Assert(length == GetCount());
 #endif
-			Node newRoot = ShallowClone();
+			var newRoot = ShallowClone();
 			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
@@ -2185,7 +2565,7 @@ public class SumList : BaseList<int, SumList>
 		/// </summary>
 		public Node RotateLeft()
 		{
-			Node child = Right!;
+			var child = Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
@@ -2205,8 +2585,8 @@ public class SumList : BaseList<int, SumList>
 		/// </summary>
 		public Node RotateLeftRight()
 		{
-			Node child = Left!;
-			Node grandChild = child.Right!;
+			var child = Left!;
+			var grandChild = child.Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
@@ -2228,7 +2608,7 @@ public class SumList : BaseList<int, SumList>
 		/// </summary>
 		public Node RotateRight()
 		{
-			Node child = Left!;
+			var child = Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
@@ -2248,8 +2628,8 @@ public class SumList : BaseList<int, SumList>
 		/// </summary>
 		public Node RotateRightLeft()
 		{
-			Node child = Right!;
-			Node grandChild = child.Left!;
+			var child = Right!;
+			var grandChild = child.Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
@@ -2364,7 +2744,7 @@ public class SumList : BaseList<int, SumList>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _list.root;
+			var node = _list.root;
 			Node? next, other;
 			while (node != null)
 			{
@@ -2394,7 +2774,7 @@ public class SumList : BaseList<int, SumList>
 				return false;
 			}
 			_current = _stack.Pop();
-			Node? node = _reverse ? _current.Left : _current.Right;
+			var node = _reverse ? _current.Left : _current.Right;
 			Node? next, other;
 			while (node != null)
 			{
@@ -2458,7 +2838,7 @@ public class SumList : BaseList<int, SumList>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				int result = default;
 				while (current != null)
 				{
@@ -2482,7 +2862,7 @@ public class SumList : BaseList<int, SumList>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				int result = default;
 				while (current != null)
 				{
@@ -2569,7 +2949,7 @@ public class SumList : BaseList<int, SumList>
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
-			Node? current = root;
+			var current = root;
 			while (current != null)
 			{
 				if (IsWithinRange(current.Left?.LeavesCount ?? 0))
@@ -2587,7 +2967,7 @@ public class SumList : BaseList<int, SumList>
 				current = stack.Pop();
 				if (!action(current))
 					return false;
-				Node? node = current.Right;
+				var node = current.Right;
 				while (node != null)
 				{
 					if (IsWithinRange(node.Left?.LeavesCount ?? 0))
@@ -2914,7 +3294,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		// Even if we don't actually remove from the list, we may be altering its structure (by doing rotations
 		// and such). So update our version to disable any enumerators/subsets working on it.
 		version++;
-		Node? current = root;
+		var current = root;
 		parent = null;
 		grandParent = null;
 		match = null;
@@ -2929,7 +3309,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 					current.ColorRed();
 				else if (parent.Left != null && parent.Right != null)
 				{
-					Node sibling = parent.GetSibling(current);
+					var sibling = parent.GetSibling(current);
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -2957,7 +3337,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 					{
 						// `current` is a 2-node and `sibling` is either a 3-node or a 4-node.
 						// We can change the color of `current` to red by some rotation.
-						Node newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
+						var newGrandParent = parent.Rotate(parent.GetRotation(current, sibling))!;
 						newGrandParent.Color = parent.Color;
 						parent.ColorBlack();
 						current.ColorRed();
@@ -2996,7 +3376,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal virtual Node? FindNode(int index)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -3021,7 +3401,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal Node? FindRange(int from, int to, bool lowerBoundActive, bool upperBoundActive)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if (lowerBoundActive && Comparer.Compare(from, current.Left?.LeavesCount ?? 0) > 0)
@@ -3039,7 +3419,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
-		FindForRemove(index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		int found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
@@ -3062,7 +3442,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal override mpz_t GetInternal(int index, bool invoke = true)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -3090,7 +3470,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public virtual mpz_t GetLeftValuesSum(int index, out mpz_t actualValue)
 	{
-		Node? current = root;
+		var current = root;
 		mpz_t sum = 0;
 		while (current != null)
 		{
@@ -3136,7 +3516,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			return _size;
 		}
 		sum = new(sum);
-		Node? current = root;
+		var current = root;
 		sumExceedsBy = 0;
 		var index = 0;
 		while (current != null)
@@ -3180,7 +3560,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
 		var stack = new Stack<Node>(2 * Log2(Length + 1));
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			stack.Push(current);
@@ -3191,7 +3571,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			current = stack.Pop();
 			if (!action(current))
 				return false;
-			Node? node = current.Right;
+			var node = current.Right;
 			while (node != null)
 			{
 				stack.Push(node);
@@ -3214,7 +3594,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		// Search for a node at bottom to insert the new node.
 		// If we can guarantee the node we found is not a 4-node, it would be easy to do insertion.
 		// We split 4-nodes along the search path.
-		Node? current = root;
+		var current = root;
 		Node? parent = null;
 		Node? grandParent = null;
 		Node? greatGrandParent = null;
@@ -3326,7 +3706,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	{
 		if (root == null)
 			return this;
-		FindForRemove(index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch);
+		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
@@ -3400,7 +3780,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal override void SetInternal(int index, mpz_t value)
 	{
-		Node? current = root;
+		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
@@ -3568,7 +3948,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 #if DEBUG
 			Debug.Assert(length == GetCount());
 #endif
-			Node newRoot = ShallowClone();
+			var newRoot = ShallowClone();
 			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
@@ -3700,7 +4080,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		/// </summary>
 		public Node RotateLeft()
 		{
-			Node child = Right!;
+			var child = Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = child.Left;
@@ -3720,8 +4100,8 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		/// </summary>
 		public Node RotateLeftRight()
 		{
-			Node child = Left!;
-			Node grandChild = child.Right!;
+			var child = Left!;
+			var grandChild = child.Right!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = grandChild.Right;
@@ -3743,7 +4123,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		/// </summary>
 		public Node RotateRight()
 		{
-			Node child = Left!;
+			var child = Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Left = child.Right;
@@ -3763,8 +4143,8 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		/// </summary>
 		public Node RotateRightLeft()
 		{
-			Node child = Right!;
-			Node grandChild = child.Left!;
+			var child = Right!;
+			var grandChild = child.Left!;
 			var parent = Parent;
 			var isRight = parent != null && (parent.Right == this || (parent.Left == this ? false : throw new InvalidOperationException()));
 			Right = grandChild.Left;
@@ -3879,7 +4259,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		private void Initialize()
 		{
 			_current = null;
-			Node? node = _list.root;
+			var node = _list.root;
 			Node? next, other;
 			while (node != null)
 			{
@@ -3909,7 +4289,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 				return false;
 			}
 			_current = _stack.Pop();
-			Node? node = _reverse ? _current.Left : _current.Right;
+			var node = _reverse ? _current.Left : _current.Right;
 			Node? next, other;
 			while (node != null)
 			{
@@ -3973,7 +4353,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				int result = default;
 				while (current != null)
 				{
@@ -3997,7 +4377,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			get
 			{
 				VersionCheck();
-				Node? current = root;
+				var current = root;
 				int result = default;
 				while (current != null)
 				{
@@ -4084,7 +4464,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
-			Node? current = root;
+			var current = root;
 			while (current != null)
 			{
 				if (IsWithinRange(current.Left?.LeavesCount ?? 0))
@@ -4102,7 +4482,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 				current = stack.Pop();
 				if (!action(current))
 					return false;
-				Node? node = current.Right;
+				var node = current.Right;
 				while (node != null)
 				{
 					if (IsWithinRange(node.Left?.LeavesCount ?? 0))

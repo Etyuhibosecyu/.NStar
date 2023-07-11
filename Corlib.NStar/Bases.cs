@@ -115,11 +115,11 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain BreakFilter(Func<T, bool> match, out TCertain result2)
 	{
-		TCertain result = CapacityCreator(_size / 2);
+		var result = CapacityCreator(_size / 2);
 		result2 = CapacityCreator(_size / 2);
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item))
 				result.Add(item);
 			else
@@ -132,11 +132,11 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain BreakFilter(Func<T, int, bool> match, out TCertain result2)
 	{
-		TCertain result = CapacityCreator(_size / 2);
+		var result = CapacityCreator(_size / 2);
 		result2 = CapacityCreator(_size / 2);
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item, i))
 				result.Add(item);
 			else
@@ -147,9 +147,9 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return result;
 	}
 
-	public virtual (TCertain, TCertain) BreakFilter(Func<T, bool> match) => (BreakFilter(match, out TCertain result2), result2);
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, bool> match) => (BreakFilter(match, out var result2), result2);
 
-	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out TCertain result2), result2);
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out var result2), result2);
 
 	public virtual TCertain BreakFilterInPlace(Func<T, bool> match, out TCertain result2)
 	{
@@ -157,7 +157,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var targetIndex = 0;
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item))
 			{
 				if (i != targetIndex)
@@ -177,7 +177,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var targetIndex = 0;
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item, i))
 			{
 				if (i != targetIndex)
@@ -191,9 +191,9 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out TCertain result2), result2);
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
 
-	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out TCertain result2), result2);
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
 
 	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
 
@@ -246,7 +246,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		else
 		{
-			EqualityComparer<T> c = EqualityComparer<T>.Default;
+			var c = EqualityComparer<T>.Default;
 			for (var i = index; i < index + length; i++)
 				if (c.Equals(GetInternal(i), item))
 					return true;
@@ -362,7 +362,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (converter == null)
 			throw new ArgumentNullException(nameof(converter));
-		TCertainOutput list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
+		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
 		for (var i = 0; i < _size; i++)
 			list.SetInternal(i, converter(GetInternal(i)));
 		list._size = _size;
@@ -373,7 +373,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	{
 		if (converter == null)
 			throw new ArgumentNullException(nameof(converter));
-		TCertainOutput list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
+		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
 		for (var i = 0; i < _size; i++)
 			list.SetInternal(i, converter(GetInternal(i), i));
 		list._size = _size;
@@ -485,7 +485,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				if (toEnd && index < _size - length)
 					return false;
 			}
-			foreach (T item in collection)
+			foreach (var item in collection)
 				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
 					return false;
 			return !toEnd || index == _size;
@@ -496,10 +496,10 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
-		TCertain result = CapacityCreator(_size / 2);
+		var result = CapacityCreator(_size / 2);
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item))
 				result.Add(item);
 		}
@@ -510,10 +510,10 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Filter(Func<T, int, bool> match)
 	{
-		TCertain result = CapacityCreator(_size / 2);
+		var result = CapacityCreator(_size / 2);
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item, i))
 				result.Add(item);
 		}
@@ -527,7 +527,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var targetIndex = 0;
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item) && i != targetIndex++)
 				SetInternal(targetIndex - 1, item);
 		}
@@ -541,7 +541,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var targetIndex = 0;
 		for (var i = 0; i < _size; i++)
 		{
-			T item = GetInternal(i);
+			var item = GetInternal(i);
 			if (match(item, i) && i != targetIndex++)
 				SetInternal(targetIndex - 1, item);
 		}
@@ -713,13 +713,13 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var foundIndex = IndexOf(collection, index, length, out var otherCount);
 		if (foundIndex == -1)
 		{
-			TCertain toReturn = CollectionCreator(this);
+			var toReturn = CollectionCreator(this);
 			Clear();
 			return toReturn;
 		}
 		else
 		{
-			TCertain toReturn = GetRange(0, foundIndex, true);
+			var toReturn = GetRange(0, foundIndex, true);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -740,13 +740,13 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var foundIndex = LastIndexOf(collection, index, length, out var otherCount);
 		if (foundIndex == -1)
 		{
-			TCertain toReturn = CollectionCreator(this);
+			var toReturn = CollectionCreator(this);
 			Clear();
 			return toReturn;
 		}
 		else
 		{
-			TCertain toReturn = GetRange(0, foundIndex, true);
+			var toReturn = GetRange(0, foundIndex, true);
 			Remove(0, foundIndex + otherCount);
 			return toReturn;
 		}
@@ -784,7 +784,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			return new();
 		else if (!alwaysCopy && index == 0 && length == _size && this is TCertain thisList)
 			return thisList;
-		TCertain list = CapacityCreator(length);
+		var list = CapacityCreator(length);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
 		list._size = length;
 		return list;
@@ -1181,8 +1181,8 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	internal static TCertain RemoveIndexes(TCertain originalList, Queue<int> toRemove)
 	{
-		List<int> toRemove2 = toRemove.ToList().Sort();
-		TCertain result = originalList.CapacityCreator(originalList._size - toRemove2._size);
+		var toRemove2 = toRemove.ToList().Sort();
+		var result = originalList.CapacityCreator(originalList._size - toRemove2._size);
 		var pos = 0;
 		for (var i = 0; i < toRemove2._size; i++)
 		{
@@ -1206,7 +1206,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Repeat(int length)
 	{
-		TCertain result = CapacityCreator(Length * length);
+		var result = CapacityCreator(Length * length);
 		for (var i = 0; i < length; i++)
 			result.AddRange(this);
 		return result;
@@ -1216,7 +1216,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain Replace(T oldItem, T newItem)
 	{
-		TCertain result = CollectionCreator(this);
+		var result = CollectionCreator(this);
 		for (var index = IndexOf(oldItem); index >= 0; index = IndexOf(oldItem, index + 1))
 			result.SetInternal(index, newItem);
 		return result;
@@ -1227,7 +1227,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		var length = oldCollection.Length();
 		if (length == 0 || length > _size)
 			return CollectionCreator(this);
-		TCertain result = CapacityCreator(_size);
+		var result = CapacityCreator(_size);
 		LimitedQueue<T> queue = new(length);
 		for (var i = 0; i < length - 1; i++)
 			queue.Enqueue(GetInternal(i));
@@ -1446,7 +1446,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			new_list.Add(list[0].CapacityCreator(list._size));
 			for (var j = 0; j < list._size; j++)
 			{
-				TCertain temp = list[j];
+				var temp = list[j];
 				new_list[i].Add(temp._size <= i ? default! : temp[i]);
 			}
 		}
@@ -1493,7 +1493,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 		public bool MoveNext()
 		{
-			BaseList<T, TCertain> localList = list;
+			var localList = list;
 			if ((uint)index < (uint)localList._size)
 			{
 				current = localList[index++];
@@ -1850,7 +1850,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			return CapacityCreator(0);
 		else if (!alwaysCopy && index == 0 && length == Size && this is TCertain thisList)
 			return thisList;
-		TCertain list = CapacityCreator(length);
+		var list = CapacityCreator(length);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
 		list.Size = length;
 		return list;
@@ -1937,7 +1937,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		else
 		{
 			mpz_t i = 0;
-			foreach (T item in collection)
+			foreach (var item in collection)
 			{
 				SetInternal(i, item);
 				i++;
@@ -2142,14 +2142,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : List<T>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : 0, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		IEnumerator<T> en = collection.GetEnumerator();
+		var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			Add(en.Current);
 	}
 
 	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		IEnumerator<T> en = collection.GetEnumerator();
+		var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			Add(en.Current);
 	}
@@ -2425,14 +2425,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (sourceIndex >= destinationIndex)
 		{
-			TCertain buff = destinationBits[destinationIntIndex].GetRange(0, destinationBitsIndex);
+			var buff = destinationBits[destinationIntIndex].GetRange(0, destinationBitsIndex);
 			buff.AddRange(sourceBits[sourceIntIndex].GetRange(sourceBitsIndex));
 			for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; sourceCurrentIntIndex < sourceEndIntIndex + 1 || destinationCurrentIntIndex < destinationEndIntIndex;)
 			{
 				var currentLength = destinationCount[destinationCurrentIntIndex];
 				if (buff.Length < currentLength)
 				{
-					TCertain sourceElem = sourceBits[sourceCurrentIntIndex++];
+					var sourceElem = sourceBits[sourceCurrentIntIndex++];
 					buff.AddRange(sourceCurrentIntIndex == sourceEndIntIndex ? sourceElem.GetRange(0, destinationEndBitsIndex + 1) : sourceElem);
 				}
 				if (buff.Length >= currentLength && destinationCurrentIntIndex < destinationEndIntIndex)
@@ -2445,7 +2445,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 		{
-			TCertain buff = sourceBits[sourceEndIntIndex].GetRange(0, sourceEndBitsIndex + 1);
+			var buff = sourceBits[sourceEndIntIndex].GetRange(0, sourceEndBitsIndex + 1);
 			buff.AddRange(destinationBits[destinationEndIntIndex].GetRange(destinationEndBitsIndex + 1));
 			buff.Capacity = fragment << 1;
 			for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; sourceCurrentIntIndex > sourceIntIndex - 1 || destinationCurrentIntIndex > destinationIntIndex;)
@@ -2453,7 +2453,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				var currentLength = destinationCount[destinationCurrentIntIndex];
 				if (buff.Length < currentLength)
 				{
-					TCertain sourceElem = sourceBits[sourceCurrentIntIndex--];
+					var sourceElem = sourceBits[sourceCurrentIntIndex--];
 					buff.high?.Insert(0, sourceElem);
 				}
 				if (buff.Length >= currentLength && destinationCurrentIntIndex > destinationIntIndex)
@@ -2626,7 +2626,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual bool IsSupersetOf(IEnumerable<T> other)
 	{
-		foreach (T item in other)
+		foreach (var item in other)
 			if (!Contains(item))
 				return false;
 		return true;
@@ -2636,7 +2636,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
-		foreach (T item in other)
+		foreach (var item in other)
 			if (Contains(item))
 				return true;
 		return false;
@@ -2657,17 +2657,17 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		{
 			if (Length != length)
 				return false;
-			foreach (T item in other)
+			foreach (var item in other)
 				if (!Contains(item))
 					return false;
 			return true;
 		}
 		else
 		{
-			TCertain set = CollectionCreator(other);
+			var set = CollectionCreator(other);
 			if (Length != set.Length)
 				return false;
-			foreach (T item in set)
+			foreach (var item in set)
 				if (!Contains(item))
 					return false;
 			return true;
@@ -2676,7 +2676,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{
-		TCertain temp = CollectionCreator(other);
+		var temp = CollectionCreator(other);
 		temp.ExceptWith(this);
 		ExceptWith(other);
 		return AddRange(temp);
@@ -2692,7 +2692,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual TCertain UnionWith(IEnumerable<T> other)
 	{
-		foreach (T item in other)
+		foreach (var item in other)
 			TryAdd(item);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}

@@ -114,20 +114,23 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
-		T item = entries[index].item;
+		var item = entries[index].item;
 		if (invoke)
 			Changed();
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	private protected override int IndexOfInternal(T item, int index, int length) => IndexOfInternal(item, index, length, -1);
+
+	private protected virtual int IndexOfInternal(T item, int index, int length, int hashCode = -1)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
-			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			if (hashCode < 0)
+				hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
 				if (~entries[i].next == i)
@@ -149,12 +152,12 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		entries = new Entry[size];
 	}
 
-	private protected abstract TCertain Insert(T? item, bool add, out int index);
+	private protected abstract TCertain Insert(T? item, bool add, out int index, int hashCode);
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
-		TCertain set = CollectionCreator(collection);
+		var set = CollectionCreator(collection);
 		set.ExceptWith(this);
 		var length = set._size;
 		if (length > 0)
@@ -180,7 +183,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
 			{
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				if (t.hashCode != 0)
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
 			}
@@ -188,7 +191,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
@@ -198,7 +201,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	private protected virtual void SetNull(int index)
 	{
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		if (t.hashCode >= 0)
 			return;
 		uint collisionCount = 0;
@@ -214,7 +217,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t2 = ref entries[last];
+					ref var t2 = ref entries[last];
 					t2.next = entries[i].next;
 				}
 				break;
@@ -230,11 +233,18 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	public override bool TryAdd(T item, out int index)
 	{
-		if (TryGetIndexOf(item, out index))
+		if (item == null)
+			throw new ArgumentNullException(nameof(item));
+		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+		if (TryGetIndexOf(item, out index, hashCode))
 			return false;
-		Insert(item, true, out index);
+		Insert(item, true, out index, hashCode);
 		return true;
 	}
+
+	public override bool TryGetIndexOf(T item, out int index) => TryGetIndexOf(item, out index, -1);
+
+	private protected virtual bool TryGetIndexOf(T item, out int index, int hashCode = -1) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
 [DebuggerDisplay("Length = {Length}")]
@@ -282,7 +292,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -292,7 +302,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -411,7 +421,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		{
 			if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 				throw new ArgumentOutOfRangeException(nameof(index));
-			foreach (T item in collection)
+			foreach (var item in collection)
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
@@ -424,7 +434,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item))
 				RemoveValue(item);
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -433,7 +443,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		var i = 0;
-		foreach (T item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
 			if (!match(item, i++))
 				RemoveValue(item);
 		return this as TCertain ?? throw new InvalidOperationException();
@@ -454,7 +464,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
@@ -471,7 +481,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	private protected override TCertain Insert(T? item, bool add, out int index)
+	private protected override TCertain Insert(T? item, bool add, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -479,24 +489,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
-		uint collisionCount = 0;
-		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var targetBucket = hashCode % buckets.Length;
-		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
-		{
-			if (~entries[i].next == i)
-				throw new InvalidOperationException();
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (add)
-					throw new ArgumentException(null);
-				index = i;
-				return this as TCertain ?? throw new InvalidOperationException();
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
 		if (freeCount > 0)
 		{
 			index = ~freeList;
@@ -513,7 +506,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			index = _size;
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -529,7 +522,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			return this as TCertain ?? throw new InvalidOperationException();
 		if (entries[index].hashCode >= 0)
 			return this as TCertain ?? throw new InvalidOperationException();
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		uint collisionCount = 0;
 		var bucket = ~t.hashCode % buckets.Length;
 		var last = -1;
@@ -543,7 +536,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t2 = ref entries[last];
+					ref var t2 = ref entries[last];
 					t2.next = entries[i].next;
 				}
 				break;
@@ -580,10 +573,10 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref var t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				ref Entry t2 = ref entries[i];
+				ref var t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
@@ -620,7 +613,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			}
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -756,7 +749,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -766,7 +759,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -807,7 +800,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			array[arrayIndex++] = entries[index++].item;
 	}
 
-	private protected override TCertain Insert(T? item, bool add, out int index)
+	private protected override TCertain Insert(T? item, bool add, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -815,24 +808,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
-		uint collisionCount = 0;
-		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var targetBucket = hashCode % buckets.Length;
-		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
-		{
-			if (~entries[i].next == i)
-				throw new InvalidOperationException();
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (add)
-					throw new ArgumentException(null);
-				index = i;
-				return this as TCertain ?? throw new InvalidOperationException();
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
 		if (_size == entries.Length)
 		{
 			Resize();
@@ -840,7 +816,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 		index = _size;
 		_size++;
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -865,7 +841,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		var hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		uint collisionCount = 0;
 		var oldBucket = ~t.hashCode % buckets.Length;
 		var last = -1;
@@ -879,7 +855,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 					buckets[oldBucket] = entries[i].next;
 				else
 				{
-					ref Entry t2 = ref entries[last];
+					ref var t2 = ref entries[last];
 					t2.next = entries[i].next;
 				}
 				break;
@@ -962,7 +938,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (collection is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			foreach (T item in collection)
+			foreach (var item in collection)
 				TryAdd(item);
 	}
 
@@ -975,7 +951,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (collection is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			foreach (T item in collection)
+			foreach (var item in collection)
 				TryAdd(item);
 	}
 
@@ -1035,7 +1011,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
-			foreach (T item in other)
+			foreach (var item in other)
 				RemoveValue(item);
 		return this;
 	}
@@ -1048,10 +1024,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return base.IndexOf(collection, index, length, out otherCount);
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	private protected override int IndexOfInternal(T item, int index, int length, int hashCode = -1)
 	{
 		var foundIndex = UnsafeIndexOf(item, index, length);
-		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length);
+		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length, hashCode);
 	}
 
 	private protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
@@ -1066,7 +1042,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> Insert(int index, IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
 
-	private protected override ParallelHashSet<T> Insert(T? item, bool add, out int index)
+	private protected override ParallelHashSet<T> Insert(T? item, bool add, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -1075,7 +1051,6 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (buckets == null)
 			throw new InvalidOperationException();
 		uint collisionCount = 0;
-		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var targetBucket = hashCode % buckets.Length;
 		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
 		{
@@ -1125,7 +1100,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				index = _size;
 				_size++;
 			}
-			ref Entry t = ref entries[index];
+			ref var t = ref entries[index];
 			t.hashCode = ~hashCode;
 			t.next = buckets[targetBucket];
 			t.item = item;
@@ -1140,7 +1115,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			set = new ParallelHashSet<T>(other);
 		Parallel.For(0, Length, i =>
 		{
-			T item = this[i];
+			var item = this[i];
 			if (!set.Contains(item))
 				RemoveValue(item);
 		});
@@ -1160,7 +1135,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				}
 			});
 		else
-			foreach (T item in other)
+			foreach (var item in other)
 				if (!Contains(item))
 					return false;
 		return result;
@@ -1185,7 +1160,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				}
 			});
 		else
-			foreach (T item in other)
+			foreach (var item in other)
 				if (Contains(item))
 					return true;
 		return result;
@@ -1239,7 +1214,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		{
 			if (Length != length)
 				return false;
-			foreach (T item in other)
+			foreach (var item in other)
 				if (!Contains(item))
 					return false;
 			return true;
@@ -1275,7 +1250,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));
 		else
-			foreach (T item in other)
+			foreach (var item in other)
 				TryAdd(item);
 		return this;
 	}
@@ -1326,14 +1301,15 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// методов записи!). Перед использованием рекомендуется убедиться, что нет потоков, пытающихся писать
 	/// в хэш-множество.
 	/// </summary>
-	public virtual int UnsafeIndexOf(T item, int index, int length)
+	public virtual int UnsafeIndexOf(T item, int index, int length, int hashCode = -1)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
-			var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
+			if (hashCode < 0)
+				hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 			for (var i = ~buckets[hashCode % buckets.Length]; i >= 0; i = ~entries[i].next)
 			{
 				if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item) && i >= index && i < index + length)
@@ -1390,7 +1366,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			index = _size;
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -1408,10 +1384,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		var bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
-			ref Entry t = ref entries[bucket];
+			ref var t = ref entries[bucket];
 			t.next = entries[index].next;
 		}
-		ref Entry t2 = ref entries[index];
+		ref var t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = freeList;
 		t2.item = default!;
@@ -1440,10 +1416,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref var t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				ref Entry t2 = ref entries[i];
+				ref var t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = freeList;
 				t2.item = default!;
@@ -1468,7 +1444,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
 			{
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				if (t.hashCode != 0)
 					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
 			}
@@ -1476,7 +1452,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
@@ -1528,7 +1504,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -1538,7 +1514,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		foreach (T item in collection)
+		foreach (var item in collection)
 			TryAdd(item);
 	}
 
@@ -1651,7 +1627,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		{
 			if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 				throw new ArgumentOutOfRangeException(nameof(index));
-			foreach (T item in collection)
+			foreach (var item in collection)
 			{
 				while (entries[index].hashCode >= 0)
 					index++;
@@ -1694,7 +1670,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			if (newEntries[i].hashCode < 0)
 			{
 				var bucket = ~newEntries[i].hashCode % newSize;
-				ref Entry t = ref newEntries[i];
+				ref var t = ref newEntries[i];
 				t.next = newBuckets[bucket];
 				newBuckets[bucket] = ~i;
 			}
@@ -1718,11 +1694,11 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	private protected virtual int IndexGetDirect(int actual) => deleted.NthAbsent(actual);
 
-	private protected override int IndexOfInternal(T item, int index, int length) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + length) - index2));
+	private protected override int IndexOfInternal(T item, int index, int length, int hashCode = -1) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + length) - index2, hashCode));
 
-	private protected virtual int IndexOfDirect(T item, int index, int length) => base.IndexOfInternal(item, index, length);
+	private protected virtual int IndexOfDirect(T item, int index, int length, int hashCode = -1) => base.IndexOfInternal(item, index, length, hashCode);
 
-	private protected override TCertain Insert(T? item, bool add, out int index)
+	private protected override TCertain Insert(T? item, bool add, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -1730,24 +1706,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			Initialize(0, out buckets, out entries);
 		if (buckets == null)
 			throw new InvalidOperationException();
-		uint collisionCount = 0;
-		var hashCode = Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var targetBucket = hashCode % buckets.Length;
-		for (var i = ~buckets[targetBucket]; i >= 0; i = ~entries[i].next)
-		{
-			if (~entries[i].next == i)
-				throw new InvalidOperationException();
-			if (entries[i].hashCode == ~hashCode && Comparer.Equals(entries[i].item, item))
-			{
-				if (add)
-					throw new ArgumentException(null);
-				index = i;
-				return this as TCertain ?? throw new InvalidOperationException();
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
 		if (deleted.Length > 0)
 			index = deleted.GetAndRemove(^1);
 		else
@@ -1760,7 +1719,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			index = _size;
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[targetBucket];
 		t.item = item;
@@ -1790,7 +1749,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref var t = ref entries[last];
 					t.next = entries[i].next;
 				}
 				break;
@@ -1799,7 +1758,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			if (collisionCount > entries.Length)
 				throw new InvalidOperationException();
 		}
-		ref Entry t2 = ref entries[index];
+		ref var t2 = ref entries[index];
 		t2.hashCode = 0;
 		t2.next = 0;
 		t2.item = default!;
@@ -1829,10 +1788,10 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 					buckets[bucket] = entries[i].next;
 				else
 				{
-					ref Entry t = ref entries[last];
+					ref var t = ref entries[last];
 					t.next = entries[i].next;
 				}
-				ref Entry t2 = ref entries[i];
+				ref var t2 = ref entries[i];
 				t2.hashCode = 0;
 				t2.next = 0;
 				t2.item = default!;
@@ -1879,7 +1838,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			}
 			_size++;
 		}
-		ref Entry t = ref entries[index];
+		ref var t = ref entries[index];
 		t.hashCode = ~hashCode;
 		t.next = buckets[bucket];
 		t.item = item;

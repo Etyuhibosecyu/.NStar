@@ -1040,7 +1040,7 @@ public static unsafe partial class Extents
 		}
 		RadixSort(&converted, &indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
-		T[] oldItems = array[index..(index + length)];
+		var oldItems = array[index..(index + length)];
 		for (var i = 0; i < length; i++)
 			array[index + i] = oldItems[indexes[i]];
 		Marshal.FreeHGlobal((nint)indexes);

@@ -45,7 +45,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		{
 			_size = 0;
 			_array = new T[_defaultCapacity];
-			using IEnumerator<T> en = collection.GetEnumerator();
+			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Push(en.Current);
 		}
@@ -98,7 +98,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 	public virtual bool Contains(T? item)
 	{
 		var length = _size;
-		EqualityComparer<T> c = EqualityComparer<T>.Default;
+		var c = EqualityComparer<T>.Default;
 		while (length-- > 0)
 			if (item == null)
 			{
@@ -162,7 +162,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 	{
 		if (_size == 0)
 			throw new InvalidOperationException();
-		T item = _array[--_size];
+		var item = _array[--_size];
 		_array[_size] = default!;     // Free memory quicker.
 		return item;
 	}
@@ -315,7 +315,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
 	{
-		IEnumerator<T> en = col.GetEnumerator();
+		var en = col.GetEnumerator();
 		while (en.MoveNext())
 			Enqueue(en.Current);
 	}
@@ -391,7 +391,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	{
 		if (_size == 0)
 			throw new InvalidOperationException();
-		T removed = _array[_head];
+		var removed = _array[_head];
 		_array[_head] = default!;
 		_head = (_head + 1) % _array.Length;
 		_size--;
@@ -563,7 +563,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
 	{
-		IEnumerator<T> en = col.GetEnumerator();
+		var en = col.GetEnumerator();
 		while (en.MoveNext())
 			Enqueue(en.Current);
 	}
@@ -621,7 +621,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			var index = (int)(_size / fragment);
 			if (index == CapacityStep)
 			{
-				Queue<BigQueue<T>> temp = high;
+				var temp = high;
 				high = new(4);
 				high.Enqueue(new(_size) { high = temp, _size = temp.Length });
 				high.Enqueue(new(_size));
@@ -654,7 +654,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			return low.Dequeue();
 		else if (high != null)
 		{
-			T removed = high.Peek().Dequeue();
+			var removed = high.Peek().Dequeue();
 			if (high.Peek()._size == 0)
 				high.Dequeue();
 			return removed;
@@ -878,7 +878,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		IEnumerator<T> en = collection.GetEnumerator();
+		var en = collection.GetEnumerator();
 		mpz_t i = 0;
 		while (en.MoveNext())
 		{
@@ -889,7 +889,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		IEnumerator<T> en = collection.GetEnumerator();
+		var en = collection.GetEnumerator();
 		mpz_t i = 0;
 		while (en.MoveNext())
 		{
@@ -1046,7 +1046,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		if (!(sourceBits.isHigh && sourceBits.high != null && destinationBits.isHigh && destinationBits.high != null && sourceBits.fragment == destinationBits.fragment))
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		TCertain[] sourceBits2 = sourceBits.high, destinationBits2 = destinationBits.high;
-		mpz_t fragment = sourceBits.fragment;
+		var fragment = sourceBits.fragment;
 		var sourceIntIndex = (int)sourceIndex.Divide(fragment, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
 		var destinationIntIndex = (int)destinationIndex.Divide(fragment, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
 		var intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
@@ -1067,7 +1067,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		}
 		else if (sourceIndex >= destinationIndex)
 		{
-			TCertain buff = CapacityCreator(fragment << 1);
+			var buff = CapacityCreator(fragment << 1);
 			Copy(destinationBits2[destinationIntIndex], 0, buff, 0, destinationBitsIndex);
 			Copy(sourceBits2[sourceIntIndex], sourceBitsIndex, buff, destinationBitsIndex, fragment - sourceBitsIndex);
 			var buffBitsIndex = destinationBitsIndex + (fragment - sourceBitsIndex);
@@ -1092,7 +1092,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		}
 		else
 		{
-			TCertain buff = CapacityCreator(fragment << 1);
+			var buff = CapacityCreator(fragment << 1);
 			Copy(sourceBits2[sourceEndIntIndex], 0, buff, 0, sourceEndBitsIndex + 1);
 			Copy(destinationBits2[destinationEndIntIndex], destinationEndBitsIndex + 1, buff, sourceEndBitsIndex + 1, RedStarLinq.Min(fragment, destinationBits2[destinationEndIntIndex].Length) - (destinationEndBitsIndex + 1));
 			var buffBitsIndex = sourceEndBitsIndex + (fragment - destinationEndBitsIndex);
@@ -1234,7 +1234,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			return CapacityCreator(0);
 		else if (!alwaysCopy && index == 0 && length == Size && this is TCertain thisList)
 			return thisList;
-		TCertain list = CapacityCreator(length);
+		var list = CapacityCreator(length);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
 		return list;
 	}
@@ -1456,7 +1456,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		else if (bits is IEnumerable<byte> bytes)
 		{
 			var b = true;
-			IEnumerator<byte> en = bytes.GetEnumerator();
+			var en = bytes.GetEnumerator();
 			BigArray<uint> values = new(length: GetArrayLength(bytes.Length(), 4));
 			var n = 0;
 			while (b)
