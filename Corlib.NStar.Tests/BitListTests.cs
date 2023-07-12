@@ -737,6 +737,205 @@ public class BitListTests
 	}
 
 	[TestMethod]
+	public void TestPad()
+	{
+		var a = new BitList(bitList);
+		var b = a.Pad(100);
+		var c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(14, false));
+		c.AddRange(new BitList(15, false));
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(100, true);
+		c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(14, true));
+		c.AddRange(new BitList(15, true));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, true));
+	}
+
+	[TestMethod]
+	public void TestPadInPlace()
+	{
+		var a = new BitList(bitList);
+		var b = a.PadInPlace(100);
+		var c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(14, false));
+		c.AddRange(new BitList(15, false));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadInPlace(100, true);
+		c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(14, true));
+		c.AddRange(new BitList(15, true));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadInPlace(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadInPlace(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, true));
+	}
+
+	[TestMethod]
+	public void TestPadLeft()
+	{
+		var a = new BitList(bitList);
+		var b = a.PadLeft(100);
+		var c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(29, false));
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(100, true);
+		c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(29, true));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, true));
+	}
+
+	[TestMethod]
+	public void TestPadLeftInPlace()
+	{
+		var a = new BitList(bitList);
+		var b = a.PadLeftInPlace(100);
+		var c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(29, false));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadLeftInPlace(100, true);
+		c = new G.List<bool>(bitList);
+		c.InsertRange(0, new BitList(29, true));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadLeftInPlace(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadLeftInPlace(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, true));
+	}
+
+	[TestMethod]
+	public void TestPadRight()
+	{
+		var a = new BitList(bitList);
+		var b = a.PadRight(100);
+		var c = new G.List<bool>(bitList);
+		c.AddRange(new BitList(29, false));
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(100, true);
+		c = new G.List<bool>(bitList);
+		c.AddRange(new BitList(29, true));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, true));
+	}
+
+	[TestMethod]
+	public void TestPadRightInPlace()
+	{
+		var a = new BitList(bitList);
+		var b = a.PadRightInPlace(100);
+		var c = new G.List<bool>(bitList);
+		c.AddRange(new BitList(29, false));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadRightInPlace(100, true);
+		c = new G.List<bool>(bitList);
+		c.AddRange(new BitList(29, true));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadRightInPlace(36);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(bitList);
+		b = a.PadRightInPlace(36, true);
+		c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, true));
+	}
+
+	[TestMethod]
 	public void TestRemove()
 	{
 		var a = new BitList(bitList);

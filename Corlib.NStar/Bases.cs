@@ -1099,6 +1099,108 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	private protected abstract int LastIndexOfInternal(T item, int index, int length);
 
+	public virtual TCertain Pad(int length) => Pad(length, default!);
+
+	public virtual TCertain Pad(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		var result = CapacityCreator(length);
+		var left = (length - _size) >> 1;
+		for (var i = 0; i < left; i++)
+			result.Add(value);
+		result.AddRange(this2);
+		while (result.Length < length)
+			result.Add(value);
+		return result;
+	}
+
+	public virtual TCertain PadInPlace(int length) => PadInPlace(length, default!);
+
+	public virtual TCertain PadInPlace(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		var left = (length - _size) >> 1;
+		var toPadLeft = CapacityCreator(left);
+		for (var i = 0; i < left; i++)
+			toPadLeft.Add(value);
+		Insert(0, toPadLeft);
+		while (_size < length)
+			Add(value);
+		return this2;
+	}
+
+	public virtual TCertain PadLeft(int length) => PadLeft(length, default!);
+
+	public virtual TCertain PadLeft(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		var result = CapacityCreator(length);
+		var left = length - _size;
+		for (var i = 0; i < left; i++)
+			result.Add(value);
+		result.AddRange(this2);
+		return result;
+	}
+
+	public virtual TCertain PadLeftInPlace(int length) => PadLeftInPlace(length, default!);
+
+	public virtual TCertain PadLeftInPlace(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		var left = length - _size;
+		var toPadLeft = CapacityCreator(left);
+		for (var i = 0; i < left; i++)
+			toPadLeft.Add(value);
+		Insert(0, toPadLeft);
+		return this2;
+	}
+
+	public virtual TCertain PadRight(int length) => PadRight(length, default!);
+
+	public virtual TCertain PadRight(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		var result = CapacityCreator(length);
+		result.AddRange(this2);
+		while (result.Length < length)
+			result.Add(value);
+		return result;
+	}
+
+	public virtual TCertain PadRightInPlace(int length) => PadRightInPlace(length, default!);
+
+	public virtual TCertain PadRightInPlace(int length, T value)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length <= _size)
+			return this2;
+		while (_size < length)
+			Add(value);
+		return this2;
+	}
+
 	public virtual T Random() => this[random.Next(_size)];
 
 	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];

@@ -970,6 +970,18 @@ public class String : List<char, String>
 
 	public override int GetHashCode() => base.GetHashCode();
 
+	public override String Pad(int length) => Pad(length, ' ');
+
+	public override String PadInPlace(int length) => PadInPlace(length, ' ');
+
+	public override String PadLeft(int length) => PadLeft(length, ' ');
+
+	public override String PadLeftInPlace(int length) => PadLeftInPlace(length, ' ');
+
+	public override String PadRight(int length) => PadRight(length, ' ');
+
+	public override String PadRightInPlace(int length) => PadRightInPlace(length, ' ');
+
 	public override string ToString() => new(AsSpan());
 
 	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;

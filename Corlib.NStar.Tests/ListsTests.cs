@@ -781,6 +781,213 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestPad()
+	{
+		var a = new List<string>(list);
+		var b = a.Pad(10);
+		var c = new G.List<string>(list);
+		c.Insert(0, default!);
+		c.Add(default!);
+		c.Add(default!);
+		Assert.IsTrue(a.Equals(list));
+		Assert.IsTrue(E.SequenceEqual(list, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(10, "XXX");
+		c = new G.List<string>(list);
+		c.Insert(0, "XXX");
+		c.Add("XXX");
+		c.Add("XXX");
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, "XXX"));
+	}
+
+	[TestMethod]
+	public void TestPadInPlace()
+	{
+		var a = new List<string>(list);
+		var b = a.PadInPlace(10);
+		var c = new G.List<string>(list);
+		c.Insert(0, default!);
+		c.Add(default!);
+		c.Add(default!);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadInPlace(10, "XXX");
+		c = new G.List<string>(list);
+		c.Insert(0, "XXX");
+		c.Add("XXX");
+		c.Add("XXX");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadInPlace(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadInPlace(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, "XXX"));
+	}
+
+	[TestMethod]
+	public void TestPadLeft()
+	{
+		var a = new List<string>(list);
+		var b = a.PadLeft(10);
+		var c = new G.List<string>(list);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		Assert.IsTrue(a.Equals(list));
+		Assert.IsTrue(E.SequenceEqual(list, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(10, "XXX");
+		c = new G.List<string>(list);
+		c.Insert(0, "XXX");
+		c.Insert(0, "XXX");
+		c.Insert(0, "XXX");
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, "XXX"));
+	}
+
+	[TestMethod]
+	public void TestPadLeftInPlace()
+	{
+		var a = new List<string>(list);
+		var b = a.PadLeftInPlace(10);
+		var c = new G.List<string>(list);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadLeftInPlace(10, "XXX");
+		c = new G.List<string>(list);
+		c.Insert(0, "XXX");
+		c.Insert(0, "XXX");
+		c.Insert(0, "XXX");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadLeftInPlace(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadLeftInPlace(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, "XXX"));
+	}
+
+	[TestMethod]
+	public void TestPadRight()
+	{
+		var a = new List<string>(list);
+		var b = a.PadRight(10);
+		var c = new G.List<string>(list) { default!, default!, default! };
+		Assert.IsTrue(a.Equals(list));
+		Assert.IsTrue(E.SequenceEqual(list, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(10, "XXX");
+		c = new G.List<string>(list) { "XXX", "XXX", "XXX" };
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, "XXX"));
+	}
+
+	[TestMethod]
+	public void TestPadRightInPlace()
+	{
+		var a = new List<string>(list);
+		var b = a.PadRightInPlace(10);
+		var c = new G.List<string>(list) { default!, default!, default! };
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadRightInPlace(10, "XXX");
+		c = new G.List<string>(list) { "XXX", "XXX", "XXX" };
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadRightInPlace(5);
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(list);
+		b = a.PadRightInPlace(5, "XXX");
+		c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, "XXX"));
+	}
+
+	[TestMethod]
 	public void TestRemove()
 	{
 		var a = new List<string>(list);
@@ -789,8 +996,6 @@ public class ListTests
 		c.RemoveRange(6, 1);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = new List<string>(a).Remove(0, 1);
@@ -2226,6 +2431,213 @@ public class NListTests
 		b = a.LastIndexOfAnyExcluding(a);
 		Assert.AreEqual(b, -1);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
+	}
+
+	[TestMethod]
+	public void TestPad()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.Pad(10);
+		var c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, default!);
+		c.Add(default!);
+		c.Add(default!);
+		Assert.IsTrue(a.Equals(nList));
+		Assert.IsTrue(E.SequenceEqual(nList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Add(('X', 'X', 'X'));
+		c.Add(('X', 'X', 'X'));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.Pad(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pad(-1, ('X', 'X', 'X')));
+	}
+
+	[TestMethod]
+	public void TestPadInPlace()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.PadInPlace(10);
+		var c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, default!);
+		c.Add(default!);
+		c.Add(default!);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadInPlace(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Add(('X', 'X', 'X'));
+		c.Add(('X', 'X', 'X'));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadInPlace(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadInPlace(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadInPlace(-1, ('X', 'X', 'X')));
+	}
+
+	[TestMethod]
+	public void TestPadLeft()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.PadLeft(10);
+		var c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		Assert.IsTrue(a.Equals(nList));
+		Assert.IsTrue(E.SequenceEqual(nList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Insert(0, ('X', 'X', 'X'));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadLeft(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeft(-1, ('X', 'X', 'X')));
+	}
+
+	[TestMethod]
+	public void TestPadLeftInPlace()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.PadLeftInPlace(10);
+		var c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		c.Insert(0, default!);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadLeftInPlace(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Insert(0, ('X', 'X', 'X'));
+		c.Insert(0, ('X', 'X', 'X'));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadLeftInPlace(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadLeftInPlace(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadLeftInPlace(-1, ('X', 'X', 'X')));
+	}
+
+	[TestMethod]
+	public void TestPadRight()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.PadRight(10);
+		var c = new G.List<(char, char, char)>(nList) { default!, default!, default! };
+		Assert.IsTrue(a.Equals(nList));
+		Assert.IsTrue(E.SequenceEqual(nList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList) { ('X', 'X', 'X'), ('X', 'X', 'X'), ('X', 'X', 'X') };
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.PadRight(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRight(-1, ('X', 'X', 'X')));
+	}
+
+	[TestMethod]
+	public void TestPadRightInPlace()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.PadRightInPlace(10);
+		var c = new G.List<(char, char, char)>(nList) { default!, default!, default! };
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadRightInPlace(10, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList) { ('X', 'X', 'X'), ('X', 'X', 'X'), ('X', 'X', 'X') };
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadRightInPlace(5);
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		a = new(nList);
+		b = a.PadRightInPlace(5, ('X', 'X', 'X'));
+		c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.PadRightInPlace(-1, ('X', 'X', 'X')));
 	}
 
 	[TestMethod]
