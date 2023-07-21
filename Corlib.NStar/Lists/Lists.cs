@@ -231,9 +231,14 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
-		if (index == 0 && _size == Capacity)
-			return this2;
-		if (index < _size)
+		if (index == 0)
+		{
+			if (_size == Capacity)
+				return this2;
+			else
+				_start = (_start + Capacity - 1) % Capacity;
+		}
+		if (index > 0 && index < _size)
 			Copy(this2, index, this2, index + 1, _size - index);
 		SetInternal(index, item);
 		if (_size < Capacity)
@@ -273,6 +278,24 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 			if (GetInternal(i)?.Equals(item) ?? item == null)
 				return i;
 		return -1;
+	}
+
+	public override TCertain RemoveAt(int index)
+	{
+		if ((uint)index >= (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		_size--;
+		if (index == 0)
+		{
+			SetInternal(0, default!);
+			_start = (_start + 1) % Capacity;
+			return this2;
+		}
+		else if (index < _size)
+			Copy(this2, index + 1, this2, index, _size - index);
+		SetInternal(_size, default!);
+		return this2;
 	}
 
 	private protected override TCertain ReverseInternal(int index, int length)
@@ -1198,6 +1221,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		Changed();
 	}
 
+	private protected override int CompareInternal(int index, NList<T> other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
+
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
 	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
@@ -1220,6 +1245,36 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		_capacity = 0;
 		_size = 0;
 		GC.SuppressFinalize(this);
+	}
+
+	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (collection is not G.IList<T>)
+			return base.EqualsInternal(collection, index, toEnd);
+		if (collection is NList<T> nList)
+		{
+			if (index > _size - nList.Length)
+				return false;
+			if (toEnd && index < _size - nList.Length)
+				return false;
+			T* leftptr = _items + index, rightptr = nList._items;
+			return EqualMemory(leftptr, rightptr, nList.Length);
+		}
+		if (collection is T[] array)
+		{
+			if (index > _size - array.Length)
+				return false;
+			if (toEnd && index < _size - array.Length)
+				return false;
+			var leftptr = _items + index;
+			fixed (T* rightptr = array)
+				return EqualMemory(leftptr, rightptr, array.Length);
+		}
+		return base.EqualsInternal(collection, index, toEnd);
 	}
 
 	internal override T GetInternal(int index, bool invoke = true)

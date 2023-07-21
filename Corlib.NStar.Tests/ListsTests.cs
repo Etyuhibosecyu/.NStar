@@ -224,6 +224,40 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestCompare()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new List<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
+			var b = new List<string>(a);
+			var n = random.Next(0, a.Length);
+			do
+				b[n] = random.Next(1000).ToString("D3");
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b) == n);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+			b = new(a);
+			n = random.Next(2, a.Length);
+			do
+				b[n] = random.Next(1000).ToString("D3");
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+			b = new(a);
+			var length = a.Length;
+			n = random.Next(2, a.Length);
+			do
+				b[n] = random.Next(1000).ToString("D3");
+			while (b[n] == a[n]);
+			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
+			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
+			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
+			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
+			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+		}
+	}
+
+	[TestMethod]
 	public void TestConcat()
 	{
 		var a = new List<string>(list);
@@ -1865,6 +1899,41 @@ public class NListTests
 	}
 
 	[TestMethod]
+	public void TestCompare()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new NList<(char, char, char)>(E.Select(E.Range(0, random.Next(3, 100)), _ => Next()));
+			var b = new NList<(char, char, char)>(a);
+			var n = random.Next(0, a.Length);
+			do
+				b[n] = Next();
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b) == n);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
+			b = new(a);
+			n = random.Next(2, a.Length);
+			do
+				b[n] = Next();
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
+			b = new(a);
+			var length = a.Length;
+			n = random.Next(2, a.Length);
+			do
+				b[n] = Next();
+			while (b[n] == a[n]);
+			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
+			a.Insert(0, E.Select(E.Range(0, index), _ => Next()));
+			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => Next()));
+			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
+			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+		}
+		static (char, char, char) Next() => ((char, char, char))random.Next(1000).ToString("D3").ToList();
+	}
+
+	[TestMethod]
 	public void TestConcat()
 	{
 		var a = new NList<(char, char, char)>(nList);
@@ -1990,17 +2059,107 @@ public class NListTests
 	[TestMethod]
 	public void TestEquals()
 	{
-		var a = new NList<(char, char, char)>(nList);
-		var b = a.Contains(('M', 'M', 'M'));
-		Assert.IsTrue(b);
-		b = a.Equals(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')), 2);
-		Assert.IsTrue(b);
-		b = a.Equals(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('N', 'N', 'N')), 2);
-		Assert.IsTrue(!b);
-		b = a.Equals(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')), 3);
-		Assert.IsTrue(!b);
-		b = a.Equals(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')), 2, true);
-		Assert.IsTrue(!b);
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new NList<(char, char, char)>(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
+			G.IEnumerable<(char, char, char)> b = new NList<(char, char, char)>(a);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.Append(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.Skip(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.Prepend(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.SkipLast(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.Append(E.SkipLast(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>(E.Prepend(E.Skip(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new NList<(char, char, char)>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(a);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.Append(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.Skip(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.Prepend(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.SkipLast(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.Append(E.SkipLast(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>(E.Prepend(E.Skip(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new List<(char, char, char)>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(a);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.Append(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.Skip(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.Prepend(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.SkipLast(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.Append(E.SkipLast(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.ToArray(E.Prepend(E.Skip(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = Array.Empty<(char, char, char)>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(a);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.Append(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.Skip(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.Prepend(b, Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.SkipLast(b, 1));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.Append(E.SkipLast(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>(E.Prepend(E.Skip(b, 1), Next()));
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = new G.List<(char, char, char)>();
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(a, x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Append(b, Next()), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Skip(b, 1), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Prepend(b, Next()), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.SkipLast(b, 1), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Append(E.SkipLast(b, 1), Next()), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Prepend(E.Skip(b, 1), Next()), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.Select(E.Take(a, 0), x => x);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(a, _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.Append(a, Next()), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.Skip(a, 1), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.Prepend(a, Next()), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.SkipLast(a, 1), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.Append(E.SkipLast(a, 1), Next()), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.SkipWhile(E.Prepend(E.Skip(a, 1), Next()), _ => random.Next(10) != -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+			b = E.TakeWhile(a, _ => random.Next(10) == -1);
+			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
+		}
+		static (char, char, char) Next() => ((char, char, char))random.Next(1000).ToString("D3").ToList();
 	}
 
 	[TestMethod]

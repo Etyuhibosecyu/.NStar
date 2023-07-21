@@ -223,6 +223,37 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual object Clone() => Copy();
 
+	public virtual int Compare(int index, TCertain other, int otherIndex) => Compare(index, other, otherIndex, Min(_size - index, other._size - otherIndex));
+
+	public virtual int Compare(int index, TCertain other, int otherIndex, int length)
+	{
+		if (other == null)
+			throw new ArgumentNullException(nameof(other));
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (otherIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(otherIndex));
+		if (otherIndex + length > other._size)
+			throw new ArgumentException(null);
+		return CompareInternal(index, other, otherIndex, length);
+	}
+
+	public virtual int Compare(TCertain other) => Compare(0, other, 0, Min(_size, other._size));
+
+	public virtual int Compare(TCertain other, int length) => Compare(0, other, 0, length);
+
+	private protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
+	{
+		for (var i = 0; i < length; i++)
+			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i)) ?? other.GetInternal(otherIndex + i) == null))
+				return i;
+		return length;
+	}
+
 	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);

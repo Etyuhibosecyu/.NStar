@@ -709,6 +709,9 @@ public static unsafe partial class Extents
 
 	internal static readonly Random random = new();
 
+	[LibraryImport("kernel32.dll", EntryPoint = "RtlCompareMemory", SetLastError = false)]
+	private static partial uint CompareMemory(nint left, nint right, uint length);
+
 	[LibraryImport("kernel32.dll", EntryPoint = "RtlCopyMemory", SetLastError = false)]
 	private static partial void CopyMemory(nint destination, nint source, uint length);
 
@@ -746,6 +749,8 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
 
+	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => (int)(CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) / sizeof(T));
+
 	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((nint)destination, (nint)source, (uint)(sizeof(T) * length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
@@ -777,6 +782,8 @@ public static unsafe partial class Extents
 		var quotient = left.Divide(right, out var remainder);
 		return (quotient, remainder);
 	}
+
+	public static bool EqualMemory<T>(T* left, T* right, int length) where T : unmanaged => CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) == sizeof(T) * length;
 
 	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((nint)source, (uint)(sizeof(T) * length), fill);
 

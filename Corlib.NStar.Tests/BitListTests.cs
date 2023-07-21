@@ -155,6 +155,40 @@ public class BitListTests
 	}
 
 	[TestMethod]
+	public void TestCompare()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new BitList(E.Select(E.Range(0, random.Next(3, 3000)), _ => random.Next(2) == 1));
+			var b = new BitList(a);
+			var n = random.Next(0, a.Length);
+			do
+				b[n] = random.Next(2) == 1;
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b) == n);
+			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
+			b = new(a);
+			n = random.Next(2, a.Length);
+			do
+				b[n] = random.Next(2) == 1;
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
+			b = new(a);
+			var length = a.Length;
+			n = random.Next(2, a.Length);
+			do
+				b[n] = random.Next(2) == 1;
+			while (b[n] == a[n]);
+			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
+			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(2) == 1));
+			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(2) == 1));
+			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
+			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+		}
+	}
+
+	[TestMethod]
 	public void TestConcat()
 	{
 		var a = new BitList(bitList);
