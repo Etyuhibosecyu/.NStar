@@ -158,7 +158,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<int> ints)
 		{
-			var uintArray = List<uint>.ToArrayEnumerable(ints, x => (uint)x);
+			var uintArray = List<int>.ToArrayEnumerable(ints, x => (uint)x);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
 			fixed (uint* ptr = uintArray)
 				CopyMemory(ptr, _items, uintArray.Length);
