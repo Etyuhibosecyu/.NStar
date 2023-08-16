@@ -1,5 +1,4 @@
-﻿
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace Corlib.NStar;
 
@@ -43069,12 +43068,12 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<TSource> SkipEnumerable<TSource>(IEnumerable<TSource> source, int length)
+	internal static Slice<TSource> SkipEnumerable<TSource>(IEnumerable<TSource> source, int length)
 	{
-		if (length <= 0)
-			return new(source);
-		else if (source is List<TSource> list)
+		if (source is List<TSource> list)
 			return list.Skip(length);
+		else if (length <= 0)
+			return new(source.ToList());
 		else
 		{
 			var en = source.GetEnumerator();
@@ -43084,16 +43083,16 @@ public partial class List<T, TCertain>
 			List<TSource> result = new(TryGetLengthEasilyEnumerable(source, out var count2) ? Math.Max(count2 - length, 0) : 1024);
 			while (en.MoveNext())
 				result.Add(en.Current);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static List<TSource> SkipLastEnumerable<TSource>(IEnumerable<TSource> source, int length)
+	internal static Slice<TSource> SkipLastEnumerable<TSource>(IEnumerable<TSource> source, int length)
 	{
-		if (length <= 0)
-			return new(source);
-		else if (source is List<TSource> list)
+		if (source is List<TSource> list)
 			return list.SkipLast(length);
+		else if (length <= 0)
+			return new(source.ToList());
 		else if (TryGetLengthEasilyEnumerable(source, out var count2))
 		{
 			var end = Math.Max(count2 - length, 0);
@@ -43103,7 +43102,7 @@ public partial class List<T, TCertain>
 			for (; i < end && en.MoveNext(); i++)
 				result._items[i] = en.Current;
 			result._size = i;
-			return result;
+			return result.GetSlice();
 		}
 		else
 		{
@@ -43112,11 +43111,11 @@ public partial class List<T, TCertain>
 			var en = source.GetEnumerator();
 			while (en.MoveNext())
 				queue.Enqueue(en.Current, result);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static List<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
+	internal static Slice<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
 	{
 		if (source is List<TSource> list)
 			return list.SkipWhile(function);
@@ -43127,11 +43126,11 @@ public partial class List<T, TCertain>
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static List<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
+	internal static Slice<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
 	{
 		if (source is List<TSource> list)
 			return list.SkipWhile(function);
@@ -43142,7 +43141,7 @@ public partial class List<T, TCertain>
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
@@ -44245,7 +44244,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, int length)
+	internal static Slice<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, int length)
 	{
 		if (length <= 0)
 			return new();
@@ -44262,17 +44261,17 @@ public partial class List<T, TCertain>
 					break;
 			}
 			result._size = i;
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static List<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, Range range)
+	internal static Slice<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, Range range)
 	{
 		if (source is List<TSource> list)
 		{
 			var start = Clamp(range.Start.GetOffset(list.Length), 0, list.Length);
 			var end = Clamp(range.End.GetOffset(list.Length), 0, list.Length);
-			return start >= end ? new() : list.GetRange(start, end - start);
+			return start >= end ? new() : list.GetSlice(start, end - start);
 		}
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
 		{
@@ -44291,7 +44290,7 @@ public partial class List<T, TCertain>
 					break;
 			}
 			result._size = end - start;
-			return result;
+			return result.GetSlice();
 		}
 		int index = range.Start.Value, index2 = range.End.Value;
 		var en = source.GetEnumerator();
@@ -44307,7 +44306,7 @@ public partial class List<T, TCertain>
 			for (; i < index2 && en.MoveNext(); i++)
 				result._items[i - index] = en.Current;
 			result._size = i - index;
-			return result;
+			return result.GetSlice();
 		}
 		else if (!range.Start.IsFromEnd && range.End.IsFromEnd)
 		{
@@ -44319,7 +44318,7 @@ public partial class List<T, TCertain>
 			LimitedQueue<TSource> queue = new(index2);
 			while (en.MoveNext())
 				queue.Enqueue(en.Current, result);
-			return result;
+			return result.GetSlice();
 		}
 		else if (range.Start.IsFromEnd && !range.End.IsFromEnd)
 		{
@@ -44336,7 +44335,7 @@ public partial class List<T, TCertain>
 			for (i = 0; i < result._items.Length; i++)
 				result._items[i] = queue.Dequeue();
 			result._size = result._items.Length;
-			return result;
+			return result.GetSlice();
 		}
 		else if (range.Start.IsFromEnd && range.End.IsFromEnd)
 		{
@@ -44349,13 +44348,13 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < result._items.Length; i++)
 				result._items[i] = queue.Dequeue();
 			result._size = result._items.Length;
-			return result;
+			return result.GetSlice();
 		}
 		else
 			return new();
 	}
 
-	internal static List<TSource> TakeLastEnumerable<TSource>(IEnumerable<TSource> source, int length)
+	internal static Slice<TSource> TakeLastEnumerable<TSource>(IEnumerable<TSource> source, int length)
 	{
 		if (length <= 0)
 			return new();
@@ -44373,7 +44372,7 @@ public partial class List<T, TCertain>
 			for (i = 0; i < result._items.Length && en.MoveNext(); i++)
 				result._items[i] = en.Current;
 			result._size = result._items.Length;
-			return result;
+			return result.GetSlice();
 		}
 		else
 		{
@@ -44381,11 +44380,11 @@ public partial class List<T, TCertain>
 			var en = source.GetEnumerator();
 			while (en.MoveNext())
 				queue.Enqueue(en.Current);
-			return queue.ToList();
+			return queue.ToList().GetSlice();
 		}
 	}
 
-	internal static List<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
+	internal static Slice<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function)
 	{
 		if (source is List<TSource> list)
 			return list.TakeWhile(function);
@@ -44396,11 +44395,11 @@ public partial class List<T, TCertain>
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static List<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
+	internal static Slice<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function)
 	{
 		if (source is List<TSource> list)
 			return list.TakeWhile(function);
@@ -44411,7 +44410,7 @@ public partial class List<T, TCertain>
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
@@ -59181,7 +59180,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
+	internal static Slice<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
 	{
 		if (source is NList<TSource> list)
 			return list.SkipWhile(function);
@@ -59192,11 +59191,11 @@ public unsafe partial class NList<T>
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static NList<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged
+	internal static Slice<TSource> SkipWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged
 	{
 		if (source is NList<TSource> list)
 			return list.SkipWhile(function);
@@ -59207,7 +59206,7 @@ public unsafe partial class NList<T>
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
@@ -59237,7 +59236,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, int length) where TSource : unmanaged
+	internal static Slice<TSource> TakeEnumerable<TSource>(IEnumerable<TSource> source, int length) where TSource : unmanaged
 	{
 		if (length == 0)
 			return new();
@@ -59254,11 +59253,11 @@ public unsafe partial class NList<T>
 					break;
 			}
 			result._size = i;
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static NList<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
+	internal static Slice<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged
 	{
 		if (source is NList<TSource> list)
 			return list.TakeWhile(function);
@@ -59269,11 +59268,11 @@ public unsafe partial class NList<T>
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
-	internal static NList<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged
+	internal static Slice<TSource> TakeWhileEnumerable<TSource>(IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged
 	{
 		if (source is NList<TSource> list)
 			return list.TakeWhile(function);
@@ -59284,7 +59283,7 @@ public unsafe partial class NList<T>
 			var i = 0;
 			TSource item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
-			return result;
+			return result.GetSlice();
 		}
 	}
 
@@ -59716,9 +59715,9 @@ public static class RedStarLinq
 	public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<bool>.AnyEnumerable(source, function);
 	public static bool Any<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<bool>.AnyEnumerable(source, function);
 	public static IEnumerable<TSource> AsEnumerable<TSource>(this IEnumerable<TSource> source) => source;
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source) => source is TSource[] array ? MemoryExtensions.AsSpan(array) : List<TSource>.ReturnOrConstruct(source).AsSpan();
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index) => source is TSource[] array ? MemoryExtensions.AsSpan(array, index) : List<TSource>.ReturnOrConstruct(source).AsSpan(index);
-	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index, int length) => source is TSource[] array ? MemoryExtensions.AsSpan(array, index, length) : List<TSource>.ReturnOrConstruct(source).AsSpan(index, length);
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source) => source is BaseIndexable<TSource> collection ? collection.AsSpan() : source is TSource[] array ? MemoryExtensions.AsSpan(array) : List<TSource>.ReturnOrConstruct(source).AsSpan();
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index) => source is BaseIndexable<TSource> collection ? collection.AsSpan(index) : source is TSource[] array ? MemoryExtensions.AsSpan(array, index) : List<TSource>.ReturnOrConstruct(source).AsSpan(index);
+	public static Span<TSource> AsSpan<TSource>(this IEnumerable<TSource> source, int index, int length) => source is BaseIndexable<TSource> collection ? collection.AsSpan(index, length) : source is TSource[] array ? MemoryExtensions.AsSpan(array, index, length) : List<TSource>.ReturnOrConstruct(source).AsSpan(index, length);
 	public static (List<TResult>, List<TResult2>) Break<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) => List<TSource>.BreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<TSource, TResult, TResult2>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) => List<TSource>.BreakEnumerable(source, function, function2);
 	public static (List<TSource>, List<TSource2>) Break<TSource, TSource2>(this IEnumerable<(TSource, TSource2)> source) => List<TSource>.BreakEnumerable(source);
@@ -60573,10 +60572,10 @@ public static class RedStarLinq
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source) => List<TResult>.SetInnerTypeEnumerable<TResult>(source);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<TResult>.SetInnerTypeEnumerable(source, function);
-	public static List<TSource> Skip<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.SkipEnumerable(source, length);
-	public static List<TSource> SkipLast<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.SkipLastEnumerable(source, length);
-	public static List<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
-	public static List<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
+	public static Slice<TSource> Skip<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.SkipEnumerable(source, length);
+	public static Slice<TSource> SkipLast<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.SkipLastEnumerable(source, length);
+	public static Slice<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
+	public static Slice<TSource> SkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.SkipWhileEnumerable(source, function);
 	public static IEnumerable<TSource> Sort<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => Enumerable.OrderBy(source, function);
 	public static IEnumerable<TSource> Sort<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) => List<TSource>.Sort(source, function);
 	public static IEnumerable<TSource> Sort<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function, IComparer<TResult> comparer) => Enumerable.OrderBy(source, function, comparer);
@@ -60611,11 +60610,11 @@ public static class RedStarLinq
 	public static uint Sum(this IEnumerable<uint> source) => List<int>.SumEnumerable(source);
 	public static long Sum(this IEnumerable<long> source) => List<long>.SumEnumerable(source);
 	public static mpz_t Sum(this IEnumerable<mpz_t> source) => List<mpz_t>.SumEnumerable(source);
-	public static List<TSource> Take<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.TakeEnumerable(source, length);
-	public static List<TSource> Take<TSource>(this IEnumerable<TSource> source, Range range) => List<TSource>.TakeEnumerable(source, range);
-	public static List<TSource> TakeLast<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.TakeLastEnumerable(source, length);
-	public static List<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
-	public static List<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
+	public static Slice<TSource> Take<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.TakeEnumerable(source, length);
+	public static Slice<TSource> Take<TSource>(this IEnumerable<TSource> source, Range range) => List<TSource>.TakeEnumerable(source, range);
+	public static Slice<TSource> TakeLast<TSource>(this IEnumerable<TSource> source, int length) => List<TSource>.TakeLastEnumerable(source, length);
+	public static Slice<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
+	public static Slice<TSource> TakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) => List<TSource>.TakeWhileEnumerable(source, function);
 	public static TResult[] ToArray<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, TResult> function) => List<TSource>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, int, TResult> function) => List<TSource>.ToArrayEnumerable(source, function);
 	public static TSource[] ToArray<TSource>(this IEnumerable<TSource> source) => List<TSource>.ToArrayEnumerable(source);
@@ -62927,12 +62926,12 @@ public static class RedStarLinq
 	public static NList<int> NRepresentIntoNumbers<TSource>(this NList<TSource> source, Func<TSource, TSource, bool> equalFunction) where TSource : unmanaged => NList<TSource>.RepresentIntoNumbersEnumerable(source, equalFunction);
 	public static NList<int> NRepresentIntoNumbers<TSource>(this NList<TSource> source, Func<TSource, TSource, bool> equalFunction, Func<TSource, int> hashCodeFunction) where TSource : unmanaged => NList<TSource>.RepresentIntoNumbersEnumerable(source, equalFunction, hashCodeFunction);
 	public static NList<TSource> NReverse<TSource>(this NList<TSource> source) where TSource : unmanaged => NList<TSource>.ReverseEnumerable(source);
-	public static NList<TSource> NSkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.SkipWhileEnumerable(source, function);
-	public static NList<TSource> NSkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.SkipWhileEnumerable(source, function);
+	public static Slice<TSource> NSkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.SkipWhileEnumerable(source, function);
+	public static Slice<TSource> NSkipWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.SkipWhileEnumerable(source, function);
 	public static List<NList<TSource>> NSplitIntoEqual<TSource>(this NList<TSource> source, int fragmentLength) where TSource : unmanaged => NList<TSource>.SplitIntoEqualEnumerable(source, fragmentLength);
-	public static NList<TSource> NTake<TSource>(this IEnumerable<TSource> source, int length) where TSource : unmanaged => NList<TSource>.TakeEnumerable(source, length);
-	public static NList<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
-	public static NList<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
+	public static Slice<TSource> NTake<TSource>(this IEnumerable<TSource> source, int length) where TSource : unmanaged => NList<TSource>.TakeEnumerable(source, length);
+	public static Slice<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
+	public static Slice<TSource> NTakeWhile<TSource>(this IEnumerable<TSource> source, Func<TSource, int, bool> function) where TSource : unmanaged => NList<TSource>.TakeWhileEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, TResult> function, Func<TSource, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) PNBreak<TSource, TResult, TResult2>(this G.IList<TSource> source, Func<TSource, int, TResult> function, Func<TSource, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<TResult>.PBreakEnumerable(source, function, function2);
 	public static (NList<TSource>, NList<TSource2>) PNBreak<TSource, TSource2>(this G.IList<(TSource, TSource2)> source) where TSource : unmanaged where TSource2 : unmanaged => NList<TSource>.PBreakEnumerable(source);

@@ -597,6 +597,10 @@ public class BitListTests
 		c = new G.List<bool>(bitList).GetRange(1, 4);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetRange(^5..);
+		c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetRange(^5..^1);
 		c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 4);
 		Assert.IsTrue(b.Equals(c));
@@ -610,6 +614,63 @@ public class BitListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+	}
+
+	[TestMethod]
+	public void TestGetSlice()
+	{
+		var a = new BitList(bitList);
+		var b = a.GetSlice(..);
+		var c = new G.List<bool>(bitList);
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1);
+		c = new G.List<bool>(bitList).GetRange(1, bitList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1, 4);
+		c = new G.List<bool>(bitList).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5);
+		c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(..^1);
+		c = new G.List<bool>(bitList).GetRange(0, bitList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..);
+		c = new G.List<bool>(bitList).GetRange(1, bitList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..^1);
+		c = new G.List<bool>(bitList).GetRange(1, bitList.Length - 2);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..5);
+		c = new G.List<bool>(bitList).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..);
+		c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..^1);
+		c = new G.List<bool>(bitList).GetRange(bitList.Length - 5, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^50..50);
+		c = new G.List<bool>(bitList).GetRange(bitList.Length - 50, 100 - bitList.Length);
+		Assert.IsTrue(a.Equals(bitList));
+		Assert.IsTrue(E.SequenceEqual(bitList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
+		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
 	}
 
 	[TestMethod]

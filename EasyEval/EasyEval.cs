@@ -106,9 +106,7 @@ public static void Main()
 
 internal class SimpleUnloadableAssemblyLoadContext : AssemblyLoadContext
 {
-	public SimpleUnloadableAssemblyLoadContext() : base()
-	{
-	}
+	public SimpleUnloadableAssemblyLoadContext() : base() { }
 
 	protected override Assembly? Load(AssemblyName assemblyName) => null;
 }

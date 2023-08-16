@@ -2,9 +2,7 @@
 
 namespace Corlib.NStar;
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TCertain : BaseHashList<T, TCertain>, new()
 {
 	private protected struct Entry
@@ -302,14 +300,18 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		if (index < 0)
+		if (_size != 0 && index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
+		if (_size != 0 && length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		var endIndex = index + length;
-		for (var i = endIndex - 1; i >= index; i--)
+		if (_size == 0)
+			return -1;
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var endIndex = index - length + 1;
+		for (var i = index; i >= endIndex; i--)
 			if (Comparer.Equals(entries[i].item, item))
 				return i;
 		return -1;
@@ -403,9 +405,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
 /// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
@@ -790,9 +790,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
 /// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
@@ -834,9 +832,7 @@ public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 	private protected override Func<IEnumerable<T>, FastDelHashList<T>> CollectionCreator => x => new(x);
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
 /// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,

@@ -2,9 +2,7 @@
 
 namespace Corlib.NStar;
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseHashSet<T, TCertain>, new()
 {
 	private protected struct Entry
@@ -247,9 +245,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	private protected virtual bool TryGetIndexOf(T item, out int index, int hashCode = -1) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
 /// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
@@ -666,9 +662,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве одновременно удаление и индексацию, так как
 /// после удаления даже одного элемента обращение по индексу может привести к недействительному элементу
@@ -710,9 +704,7 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 	private protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
 /// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
@@ -872,9 +864,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Рекомендуется не использовать в этом хэш-множестве удаление в цикле, так как такое действие
 /// имеет асимптотику O(n²), и при большом размере хэш-множества программа может зависнуть. Дело в том,
@@ -914,9 +904,7 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 	private protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 {
 	private protected readonly object lockObj = new();
@@ -1018,10 +1006,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> FixUpFakeIndexes() => Lock(lockObj, base.FixUpFakeIndexes);
 
-	public override int IndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
+	public override int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
 	{
 		lock (lockObj)
-			return base.IndexOf(collection, index, length, out otherCount);
+			return base.IndexOf(collection, index, length, out collectionLength);
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int length, int hashCode = -1)
@@ -1141,10 +1129,10 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return result;
 	}
 
-	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
+	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
 	{
 		lock (lockObj)
-			return base.LastIndexOf(collection, index, length, out otherCount);
+			return base.LastIndexOf(collection, index, length, out collectionLength);
 	}
 
 	public override bool Overlaps(IEnumerable<T> other)
@@ -1470,9 +1458,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
 {
 	private protected readonly TreeSet<int> deleted = new();

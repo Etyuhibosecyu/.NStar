@@ -2,9 +2,734 @@
 
 namespace Corlib.NStar;
 
-[ComVisible(false)]
-[DebuggerDisplay("Length = {Length}")]
-[Serializable()]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class Chain : IReadOnlyCollection<int>
+{
+	private readonly int start;
+
+	public Chain(int length) : this(0, length) { }
+
+	public Chain(int start, int length)
+	{
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		this.start = start;
+		Length = length;
+	}
+
+	public virtual int Length { get; }
+
+	public virtual Enumerator GetEnumerator() => new(this);
+
+	IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public virtual List<int> ToList()
+	{
+		List<int> list = new(Length);
+		for (var i = 0; i < Length; i++)
+			list.Add(start + i);
+		return list;
+	}
+
+	public struct Enumerator : IEnumerator<int>
+	{
+		private readonly Chain chain;
+		private int index;
+
+		public Enumerator(Chain chain)
+		{
+			this.chain = chain;
+			index = 0;
+			Current = chain.start;
+		}
+
+		public int Current { get; private set; }
+
+		readonly object IEnumerator.Current => Current;
+
+		public void Dispose() => index = chain.Length;
+
+		public bool MoveNext()
+		{
+			if (index < chain.Length)
+			{
+				Current = chain.start + index++;
+				return true;
+			}
+			else
+			{
+				Current = chain.start + chain.Length;
+				return false;
+			}
+		}
+
+		public void Reset() => index = 0;
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class Group<T, TKey> : List<T>
+{
+	public virtual TKey Key { get; private set; }
+
+	public Group(int capacity, TKey key) : base(capacity) => Key = key;
+
+	public Group(IEnumerable<T> collection, TKey key) : base(collection) => Key = key;
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable
+{
+	private T[] _array;
+	private int _head;
+	private int _tail;
+	private int _size;
+	private const int _MinimumGrow = 4;
+	[NonSerialized]
+	private readonly object _syncRoot = new();
+
+	internal virtual int Capacity => _array.Length;
+	public virtual int Length => _size;
+
+	int System.Collections.ICollection.Count => Length;
+
+	bool System.Collections.ICollection.IsSynchronized => false;
+
+	object System.Collections.ICollection.SyncRoot => _syncRoot;
+
+	public Queue() : this(32) { }
+
+	public Queue(int capacity)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		_array = new T[capacity];
+		_head = 0;
+		_tail = 0;
+		_size = 0;
+	}
+
+	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
+	{
+		var en = col.GetEnumerator();
+		while (en.MoveNext())
+			Enqueue(en.Current);
+	}
+
+	public virtual object Clone()
+	{
+		Queue<T> q = new(_size) { _size = _size };
+		var numToCopy = _size;
+		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
+		Array.Copy(_array, _head, q._array, 0, firstPart);
+		numToCopy -= firstPart;
+		if (numToCopy > 0)
+			Array.Copy(_array, 0, q._array, _array.Length - _head, numToCopy);
+		return q;
+	}
+
+	public virtual void Clear()
+	{
+		if (_head < _tail)
+			Array.Clear(_array, _head, _size);
+		else
+		{
+			Array.Clear(_array, _head, _array.Length - _head);
+			Array.Clear(_array, 0, _tail);
+		}
+		_head = 0;
+		_tail = 0;
+		_size = 0;
+	}
+
+	public virtual void CopyTo(Array array, int index)
+	{
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		if (array.Rank != 1)
+			throw new RankException();
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var arrayLen = array.Length;
+		if (arrayLen - index < _size)
+			throw new ArgumentException(null);
+		var numToCopy = _size;
+		if (numToCopy == 0)
+			return;
+		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
+		Array.Copy(_array, _head, array, index, firstPart);
+		numToCopy -= firstPart;
+		if (numToCopy > 0)
+			Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
+	}
+
+	public virtual void Enqueue(T obj)
+	{
+		if (_size == _array.Length)
+		{
+			var newCapacity = _array.Length * 2;
+			if (newCapacity < _array.Length + _MinimumGrow)
+				newCapacity = _array.Length + _MinimumGrow;
+			SetCapacity(newCapacity);
+		}
+		_array[_tail] = obj;
+		_tail = (_tail + 1) % _array.Length;
+		_size++;
+	}
+
+	public virtual Enumerator GetEnumerator() => new(this);
+
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public virtual T Dequeue()
+	{
+		if (_size == 0)
+			throw new InvalidOperationException();
+		var removed = _array[_head];
+		_array[_head] = default!;
+		_head = (_head + 1) % _array.Length;
+		_size--;
+		return removed;
+	}
+
+	public virtual T Peek()
+	{
+		if (_size == 0)
+			throw new InvalidOperationException();
+		return _array[_head];
+	}
+
+	public virtual bool Contains(T? obj)
+	{
+		var index = _head;
+		var length = _size;
+		while (length-- > 0)
+		{
+			if (obj == null && _array[index] == null)
+				return true;
+			else if (_array[index] != null && (_array[index]?.Equals(obj) ?? false))
+				return true;
+			index = (index + 1) % _array.Length;
+		}
+		return false;
+	}
+
+	internal T GetElement(int i) => _array[(_head + i) % _array.Length];
+
+	public virtual T[] ToArray()
+	{
+		var arr = new T[_size];
+		if (_size == 0)
+			return arr;
+		if (_head < _tail)
+			Array.Copy(_array, _head, arr, 0, _size);
+		else
+		{
+			Array.Copy(_array, _head, arr, 0, _array.Length - _head);
+			Array.Copy(_array, 0, arr, _array.Length - _head, _tail);
+		}
+		return arr;
+	}
+
+	private protected void SetCapacity(int capacity)
+	{
+		if (Capacity == capacity)
+			return;
+		var newArray = new T[capacity];
+		if (_size > 0)
+		{
+			if (_head < _tail)
+				Array.Copy(_array, _head, newArray, 0, _size);
+			else
+			{
+				Array.Copy(_array, _head, newArray, 0, _array.Length - _head);
+				Array.Copy(_array, 0, newArray, _array.Length - _head, _tail);
+			}
+		}
+		_array = newArray;
+		_head = 0;
+		_tail = (_size == capacity) ? 0 : _size;
+	}
+
+	public virtual void TrimExcess() => SetCapacity(_size);
+
+	[Serializable]
+	public struct Enumerator : IEnumerator<T>
+	{
+		private readonly Queue<T> queue;
+		private int index;
+		private T current;
+
+		public readonly T Current
+		{
+			get
+			{
+				if (index == 0 || index == queue._size + 1)
+					throw new InvalidOperationException();
+				return current;
+			}
+		}
+
+		internal Enumerator(Queue<T> queue)
+		{
+			this.queue = queue;
+			index = 0;
+			current = default!;
+		}
+
+		public readonly void Dispose()
+		{
+		}
+
+		public bool MoveNext()
+		{
+			if (index < queue._size)
+			{
+				current = queue.GetElement(index++)!;
+				return true;
+			}
+			return MoveNextRare();
+		}
+
+		private bool MoveNextRare()
+		{
+			index = queue._size + 1;
+			current = default!;
+			return false;
+		}
+
+		readonly object IEnumerator.Current
+		{
+			get
+			{
+				if (index == 0 || index == queue._size + 1)
+					throw new InvalidOperationException();
+				return Current!;
+			}
+		}
+
+		void IEnumerator.Reset()
+		{
+			index = 0;
+			current = default!;
+		}
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class BigQueue<T> : IEnumerable<T>, ICloneable
+{
+	private Queue<T>? low;
+	private Queue<BigQueue<T>>? high;
+	private mpz_t _size;
+	private mpz_t fragment;
+	private bool isHigh;
+	private const int CapacityStepBitLength = 16, CapacityFirstStepBitLength = 16;
+	private const int CapacityStep = 1 << CapacityStepBitLength, CapacityFirstStep = 1 << CapacityFirstStepBitLength;
+
+	public BigQueue() : this(32) { }
+
+	public BigQueue(mpz_t capacity)
+	{
+		if (capacity < 0)
+			throw new ArgumentOutOfRangeException(nameof(capacity));
+		if (capacity <= CapacityFirstStep)
+		{
+			low = new((int)capacity);
+			high = null;
+			fragment = 1;
+			isHigh = false;
+		}
+		else
+		{
+			low = null;
+			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			high = new((int)GetArrayLength(capacity, fragment));
+			for (mpz_t i = 0; i < capacity / fragment; i++)
+				high.Enqueue(new(fragment));
+			high.Enqueue(new(capacity % fragment));
+			isHigh = true;
+		}
+		_size = 0;
+	}
+
+	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
+	{
+		var en = col.GetEnumerator();
+		while (en.MoveNext())
+			Enqueue(en.Current);
+	}
+
+	public virtual mpz_t Length => _size;
+
+	public virtual object Clone()
+	{
+		BigQueue<T> q = new(_size) { _size = _size };
+		if (!isHigh && low != null)
+		{
+			q.low = (Queue<T>)low.Clone();
+			q.high = null;
+		}
+		else if (high != null)
+		{
+			q.low = null;
+			q.high = (Queue<BigQueue<T>>)high.Clone();
+		}
+		q.isHigh = isHigh;
+		return q;
+	}
+
+	public virtual void Clear()
+	{
+		if (!isHigh && low != null)
+			low.Clear();
+		else high?.Clear();
+	}
+
+	public virtual void CopyTo(Array array, int index)
+	{
+		if (!isHigh && low != null)
+			low.CopyTo(array, index);
+		else
+			throw new InvalidOperationException("Слишком большая очередь для копирования в массив!");
+	}
+
+	public virtual void Enqueue(T obj)
+	{
+		if (_size == CapacityFirstStep && !isHigh && low != null)
+		{
+			high = new(4);
+			high.Enqueue(new(CapacityStep) { low = low, _size = low.Length });
+			high.Enqueue(new(CapacityStep));
+			high.GetElement(1).Enqueue(obj);
+			low = null;
+			fragment = CapacityFirstStep;
+			isHigh = true;
+		}
+		else if (!isHigh && low != null)
+			low.Enqueue(obj);
+		else if (high != null)
+		{
+			var index = (int)(_size / fragment);
+			if (index == CapacityStep)
+			{
+				var temp = high;
+				high = new(4);
+				high.Enqueue(new(_size) { high = temp, _size = temp.Length });
+				high.Enqueue(new(_size));
+				high.GetElement(high.Length - 1).Enqueue(obj);
+				fragment *= CapacityStep;
+			}
+			else if (high.GetElement(index)._size == fragment)
+			{
+				high.Enqueue(new(CapacityStep));
+				high.GetElement(index).Enqueue(obj);
+			}
+			else
+				high.GetElement(index).Enqueue(obj);
+		}
+		_size++;
+	}
+
+	public virtual Enumerator GetEnumerator() => new(this);
+
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public virtual T Dequeue()
+	{
+		if (_size == 0)
+			throw new InvalidOperationException();
+		_size--;
+		if (!isHigh && low != null)
+			return low.Dequeue();
+		else if (high != null)
+		{
+			var removed = high.Peek().Dequeue();
+			if (high.Peek()._size == 0)
+				high.Dequeue();
+			return removed;
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual T Peek()
+	{
+		if (_size == 0)
+			throw new InvalidOperationException();
+		if (!isHigh && low != null)
+			return low.Peek();
+		else if (high != null)
+			return high.Peek().Peek();
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	private protected Queue<T> PeekQueue()
+	{
+		if (!isHigh && low != null)
+			return low;
+		else if (high != null)
+			return high.Peek().PeekQueue();
+		else
+			return new();
+	}
+
+	public virtual bool Contains(T? obj)
+	{
+		if (!isHigh && low != null)
+			return low.Contains(obj);
+		else if (high != null)
+		{
+			for (var i = 0; i < high.Length; i++)
+				if (high.GetElement(i).Contains(obj))
+					return true;
+			return false;
+		}
+		else
+			return false;
+	}
+
+	internal T GetElement(mpz_t i)
+	{
+		if (!isHigh && low != null)
+			return low.GetElement((int)(i % CapacityStep));
+		else if (high != null)
+			return high.GetElement((int)(i / fragment)).GetElement(i % fragment);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual T[] ToArray()
+	{
+		if (!isHigh && low != null)
+			return low.ToArray();
+		else
+			throw new InvalidOperationException("Слишком большая очередь для преобразования в массив!");
+	}
+
+	public virtual void TrimExcess()
+	{
+		if (_size <= CapacityFirstStep)
+		{
+			low = PeekQueue();
+			low.TrimExcess();
+		}
+		else if (high != null)
+		{
+			high.TrimExcess();
+			high.GetElement(high.Length - 1).TrimExcess();
+		}
+	}
+
+	[Serializable]
+	public struct Enumerator : IEnumerator<T>
+	{
+		private readonly BigQueue<T> queue;
+		private mpz_t index;
+		private T current;
+
+		public readonly T Current
+		{
+			get
+			{
+				if (index == 0 || index == queue._size + 1)
+					throw new InvalidOperationException();
+				return current;
+			}
+		}
+
+		internal Enumerator(BigQueue<T> queue)
+		{
+			this.queue = queue;
+			index = 0;
+			current = default!;
+		}
+
+		public readonly void Dispose()
+		{
+		}
+
+		public bool MoveNext()
+		{
+			if (index < queue._size)
+			{
+				current = queue.GetElement(index)!;
+				index++;
+				return true;
+			}
+			return MoveNextRare();
+		}
+
+		private bool MoveNextRare()
+		{
+			index = queue._size + 1;
+			current = default!;
+			return false;
+		}
+
+		readonly object IEnumerator.Current
+		{
+			get
+			{
+				if (index == 0 || index == queue._size + 1)
+					throw new InvalidOperationException();
+				return Current!;
+			}
+		}
+
+		void IEnumerator.Reset()
+		{
+			index = 0;
+			current = default!;
+		}
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class LimitedQueue<T> : Queue<T>
+{
+	public LimitedQueue(int capacity) : base(capacity) { }
+
+	public LimitedQueue(IEnumerable<T> col) : base(col) => SetCapacity(Length);
+
+	public virtual bool IsFull => Length == Capacity;
+
+	public override void Enqueue(T obj)
+	{
+		if (IsFull)
+			base.Dequeue();
+		base.Enqueue(obj);
+	}
+
+	public virtual void Enqueue(T obj, G.ICollection<T> receiver)
+	{
+		if (IsFull)
+			receiver.Add(base.Dequeue());
+		base.Enqueue(obj);
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public class Slice<T> : BaseIndexable<T, Slice<T>>
+{
+	private readonly G.IList<T> _base;
+	private readonly int _start;
+
+	public Slice() : this(Array.Empty<T>()) { }
+
+	public Slice(G.IList<T> @base) : this(@base, 0, @base.Count) { }
+
+	public Slice(G.IList<T> @base, Index start) : this(@base, start.GetOffset(@base.Count)) { }
+
+	public Slice(G.IList<T> @base, int start) : this(@base, start, @base.Count - start) { }
+
+	public Slice(G.IList<T> @base, int start, int length)
+	{
+		if (start < 0)
+			throw new ArgumentOutOfRangeException(nameof(start));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (start + length > @base.Count)
+			throw new ArgumentException(null);
+		if (@base is null)
+			throw new ArgumentNullException(nameof(@base));
+		if (@base is Slice<T> slice)
+		{
+			_base = slice._base;
+			_start = slice._start + start;
+			_size = length;
+		}
+		else
+		{
+			_base = @base;
+			_start = start;
+			_size = length;
+		}
+	}
+
+	public Slice(G.IList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
+
+	public Slice(Slice<T> slice) : this(slice._base, slice._start, slice._size) { }
+
+	public Slice(Slice<T> slice, Index start) : this(slice, start.GetOffset(slice._size)) { }
+
+	public Slice(Slice<T> slice, int start) : this(slice, start, slice._size - start) { }
+
+	public Slice(Slice<T> slice, int start, int length) : this(slice._base, slice._start + start, length) { }
+
+	public Slice(Slice<T> slice, Range range) : this(range.End.GetOffset(slice._size) > slice._size ? throw new ArgumentException(null) : slice._base, slice._start + CreateVar(range.GetOffsetAndLength(slice._size), out var startAndLength).Offset, startAndLength.Length) { }
+
+	public override int Length => _size;
+
+	public override Span<T> AsSpan(int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		return _base.AsSpan(_start + index, length);
+	}
+
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	{
+		if (_base is BaseIndexable<T> collection)
+			collection.CopyTo(_start + index, array, arrayIndex, length);
+		else if (_base is T[] array2)
+			Array.Copy(array2, _start + index, array, arrayIndex, length);
+		else
+			ForEach(x => array[arrayIndex++] = x, index, length);
+	}
+
+	public override void Dispose() => GC.SuppressFinalize(this);
+
+	internal override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection.GetInternal(_start + index) : _base[_start + index];
+
+	private protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
+
+	private protected override Slice<T> GetSliceInternal(int index, int length) => new(_base, _start + index, length);
+
+	private protected override int IndexOfInternal(T item, int index, int length)
+	{
+		if (_base is BaseIndexable<T> collection)
+			return CreateVar(collection.IndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+		else if (_base is T[] array)
+			return CreateVar(Array.IndexOf(array, item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+		else
+		{
+			for (var i = _start + index; i < _start + index + length; i++)
+				if (_base[i]?.Equals(item) ?? item == null)
+					return i - _start;
+			return -1;
+		}
+	}
+
+	private protected override int LastIndexOfInternal(T item, int index, int length)
+	{
+		if (_base is BaseIndexable<T> collection)
+			return CreateVar(collection.LastIndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+		else if (_base is T[] array)
+			return CreateVar(Array.LastIndexOf(array, item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
+		else
+		{
+			var endIndex = _start + index - length + 1;
+			for (var i = _start + index; i >= endIndex; i--)
+				if (_base[i]?.Equals(item) ?? item == null)
+					return i - _start;
+			return -1;
+		}
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 {
 	private T[] _array;     // Storage for stack elements
@@ -279,546 +1004,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable
-{
-	private T[] _array;
-	private int _head;
-	private int _tail;
-	private int _size;
-	private const int _MinimumGrow = 4;
-	[NonSerialized]
-	private readonly object _syncRoot = new();
-
-	internal virtual int Capacity => _array.Length;
-	public virtual int Length => _size;
-
-	int System.Collections.ICollection.Count => Length;
-
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	object System.Collections.ICollection.SyncRoot => _syncRoot;
-
-	public Queue() : this(32) { }
-
-	public Queue(int capacity)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		_array = new T[capacity];
-		_head = 0;
-		_tail = 0;
-		_size = 0;
-	}
-
-	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
-	{
-		var en = col.GetEnumerator();
-		while (en.MoveNext())
-			Enqueue(en.Current);
-	}
-
-	public virtual object Clone()
-	{
-		Queue<T> q = new(_size) { _size = _size };
-		var numToCopy = _size;
-		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
-		Array.Copy(_array, _head, q._array, 0, firstPart);
-		numToCopy -= firstPart;
-		if (numToCopy > 0)
-			Array.Copy(_array, 0, q._array, _array.Length - _head, numToCopy);
-		return q;
-	}
-
-	public virtual void Clear()
-	{
-		if (_head < _tail)
-			Array.Clear(_array, _head, _size);
-		else
-		{
-			Array.Clear(_array, _head, _array.Length - _head);
-			Array.Clear(_array, 0, _tail);
-		}
-		_head = 0;
-		_tail = 0;
-		_size = 0;
-	}
-
-	public virtual void CopyTo(Array array, int index)
-	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
-		if (array.Rank != 1)
-			throw new RankException();
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		var arrayLen = array.Length;
-		if (arrayLen - index < _size)
-			throw new ArgumentException(null);
-		var numToCopy = _size;
-		if (numToCopy == 0)
-			return;
-		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
-		Array.Copy(_array, _head, array, index, firstPart);
-		numToCopy -= firstPart;
-		if (numToCopy > 0)
-			Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
-	}
-
-	public virtual void Enqueue(T obj)
-	{
-		if (_size == _array.Length)
-		{
-			var newCapacity = _array.Length * 2;
-			if (newCapacity < _array.Length + _MinimumGrow)
-				newCapacity = _array.Length + _MinimumGrow;
-			SetCapacity(newCapacity);
-		}
-		_array[_tail] = obj;
-		_tail = (_tail + 1) % _array.Length;
-		_size++;
-	}
-
-	public virtual Enumerator GetEnumerator() => new(this);
-
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-	public virtual T Dequeue()
-	{
-		if (_size == 0)
-			throw new InvalidOperationException();
-		var removed = _array[_head];
-		_array[_head] = default!;
-		_head = (_head + 1) % _array.Length;
-		_size--;
-		return removed;
-	}
-
-	public virtual T Peek()
-	{
-		if (_size == 0)
-			throw new InvalidOperationException();
-		return _array[_head];
-	}
-
-	public virtual bool Contains(T? obj)
-	{
-		var index = _head;
-		var length = _size;
-		while (length-- > 0)
-		{
-			if (obj == null && _array[index] == null)
-				return true;
-			else if (_array[index] != null && (_array[index]?.Equals(obj) ?? false))
-				return true;
-			index = (index + 1) % _array.Length;
-		}
-		return false;
-	}
-
-	internal T GetElement(int i) => _array[(_head + i) % _array.Length];
-
-	public virtual T[] ToArray()
-	{
-		var arr = new T[_size];
-		if (_size == 0)
-			return arr;
-		if (_head < _tail)
-			Array.Copy(_array, _head, arr, 0, _size);
-		else
-		{
-			Array.Copy(_array, _head, arr, 0, _array.Length - _head);
-			Array.Copy(_array, 0, arr, _array.Length - _head, _tail);
-		}
-		return arr;
-	}
-
-	private protected void SetCapacity(int capacity)
-	{
-		if (Capacity == capacity)
-			return;
-		var newArray = new T[capacity];
-		if (_size > 0)
-		{
-			if (_head < _tail)
-				Array.Copy(_array, _head, newArray, 0, _size);
-			else
-			{
-				Array.Copy(_array, _head, newArray, 0, _array.Length - _head);
-				Array.Copy(_array, 0, newArray, _array.Length - _head, _tail);
-			}
-		}
-		_array = newArray;
-		_head = 0;
-		_tail = (_size == capacity) ? 0 : _size;
-	}
-
-	public virtual void TrimExcess() => SetCapacity(_size);
-
-	[Serializable]
-	public struct Enumerator : IEnumerator<T>
-	{
-		private readonly Queue<T> queue;
-		private int index;
-		private T current;
-
-		public readonly T Current
-		{
-			get
-			{
-				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
-				return current;
-			}
-		}
-
-		internal Enumerator(Queue<T> queue)
-		{
-			this.queue = queue;
-			index = 0;
-			current = default!;
-		}
-
-		public readonly void Dispose()
-		{
-		}
-
-		public bool MoveNext()
-		{
-			if (index < queue._size)
-			{
-				current = queue.GetElement(index++)!;
-				return true;
-			}
-			return MoveNextRare();
-		}
-
-		private bool MoveNextRare()
-		{
-			index = queue._size + 1;
-			current = default!;
-			return false;
-		}
-
-		readonly object IEnumerator.Current
-		{
-			get
-			{
-				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
-				return Current!;
-			}
-		}
-
-		void IEnumerator.Reset()
-		{
-			index = 0;
-			current = default!;
-		}
-	}
-}
-
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-public class BigQueue<T> : IEnumerable<T>, ICloneable
-{
-	private Queue<T>? low;
-	private Queue<BigQueue<T>>? high;
-	private mpz_t _size;
-	private mpz_t fragment;
-	private bool isHigh;
-	private const int CapacityStepBitLength = 16, CapacityFirstStepBitLength = 16;
-	private const int CapacityStep = 1 << CapacityStepBitLength, CapacityFirstStep = 1 << CapacityFirstStepBitLength;
-
-	public BigQueue() : this(32) { }
-
-	public BigQueue(mpz_t capacity)
-	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
-		if (capacity <= CapacityFirstStep)
-		{
-			low = new((int)capacity);
-			high = null;
-			fragment = 1;
-			isHigh = false;
-		}
-		else
-		{
-			low = null;
-			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-			high = new((int)GetArrayLength(capacity, fragment));
-			for (mpz_t i = 0; i < capacity / fragment; i++)
-				high.Enqueue(new(fragment));
-			high.Enqueue(new(capacity % fragment));
-			isHigh = true;
-		}
-		_size = 0;
-	}
-
-	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
-	{
-		var en = col.GetEnumerator();
-		while (en.MoveNext())
-			Enqueue(en.Current);
-	}
-
-	public virtual mpz_t Length => _size;
-
-	public virtual object Clone()
-	{
-		BigQueue<T> q = new(_size) { _size = _size };
-		if (!isHigh && low != null)
-		{
-			q.low = (Queue<T>)low.Clone();
-			q.high = null;
-		}
-		else if (high != null)
-		{
-			q.low = null;
-			q.high = (Queue<BigQueue<T>>)high.Clone();
-		}
-		q.isHigh = isHigh;
-		return q;
-	}
-
-	public virtual void Clear()
-	{
-		if (!isHigh && low != null)
-			low.Clear();
-		else high?.Clear();
-	}
-
-	public virtual void CopyTo(Array array, int index)
-	{
-		if (!isHigh && low != null)
-			low.CopyTo(array, index);
-		else
-			throw new InvalidOperationException("Слишком большая очередь для копирования в массив!");
-	}
-
-	public virtual void Enqueue(T obj)
-	{
-		if (_size == CapacityFirstStep && !isHigh && low != null)
-		{
-			high = new(4);
-			high.Enqueue(new(CapacityStep) { low = low, _size = low.Length });
-			high.Enqueue(new(CapacityStep));
-			high.GetElement(1).Enqueue(obj);
-			low = null;
-			fragment = CapacityFirstStep;
-			isHigh = true;
-		}
-		else if (!isHigh && low != null)
-			low.Enqueue(obj);
-		else if (high != null)
-		{
-			var index = (int)(_size / fragment);
-			if (index == CapacityStep)
-			{
-				var temp = high;
-				high = new(4);
-				high.Enqueue(new(_size) { high = temp, _size = temp.Length });
-				high.Enqueue(new(_size));
-				high.GetElement(high.Length - 1).Enqueue(obj);
-				fragment *= CapacityStep;
-			}
-			else if (high.GetElement(index)._size == fragment)
-			{
-				high.Enqueue(new(CapacityStep));
-				high.GetElement(index).Enqueue(obj);
-			}
-			else
-				high.GetElement(index).Enqueue(obj);
-		}
-		_size++;
-	}
-
-	public virtual Enumerator GetEnumerator() => new(this);
-
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-	public virtual T Dequeue()
-	{
-		if (_size == 0)
-			throw new InvalidOperationException();
-		_size--;
-		if (!isHigh && low != null)
-			return low.Dequeue();
-		else if (high != null)
-		{
-			var removed = high.Peek().Dequeue();
-			if (high.Peek()._size == 0)
-				high.Dequeue();
-			return removed;
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
-
-	public virtual T Peek()
-	{
-		if (_size == 0)
-			throw new InvalidOperationException();
-		if (!isHigh && low != null)
-			return low.Peek();
-		else if (high != null)
-			return high.Peek().Peek();
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
-
-	private protected Queue<T> PeekQueue()
-	{
-		if (!isHigh && low != null)
-			return low;
-		else if (high != null)
-			return high.Peek().PeekQueue();
-		else
-			return new();
-	}
-
-	public virtual bool Contains(T? obj)
-	{
-		if (!isHigh && low != null)
-			return low.Contains(obj);
-		else if (high != null)
-		{
-			for (var i = 0; i < high.Length; i++)
-				if (high.GetElement(i).Contains(obj))
-					return true;
-			return false;
-		}
-		else
-			return false;
-	}
-
-	internal T GetElement(mpz_t i)
-	{
-		if (!isHigh && low != null)
-			return low.GetElement((int)(i % CapacityStep));
-		else if (high != null)
-			return high.GetElement((int)(i / fragment)).GetElement(i % fragment);
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
-
-	public virtual T[] ToArray()
-	{
-		if (!isHigh && low != null)
-			return low.ToArray();
-		else
-			throw new InvalidOperationException("Слишком большая очередь для преобразования в массив!");
-	}
-
-	public virtual void TrimExcess()
-	{
-		if (_size <= CapacityFirstStep)
-		{
-			low = PeekQueue();
-			low.TrimExcess();
-		}
-		else if (high != null)
-		{
-			high.TrimExcess();
-			high.GetElement(high.Length - 1).TrimExcess();
-		}
-	}
-
-	[Serializable]
-	public struct Enumerator : IEnumerator<T>
-	{
-		private readonly BigQueue<T> queue;
-		private mpz_t index;
-		private T current;
-
-		public readonly T Current
-		{
-			get
-			{
-				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
-				return current;
-			}
-		}
-
-		internal Enumerator(BigQueue<T> queue)
-		{
-			this.queue = queue;
-			index = 0;
-			current = default!;
-		}
-
-		public readonly void Dispose()
-		{
-		}
-
-		public bool MoveNext()
-		{
-			if (index < queue._size)
-			{
-				current = queue.GetElement(index)!;
-				index++;
-				return true;
-			}
-			return MoveNextRare();
-		}
-
-		private bool MoveNextRare()
-		{
-			index = queue._size + 1;
-			current = default!;
-			return false;
-		}
-
-		readonly object IEnumerator.Current
-		{
-			get
-			{
-				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
-				return Current!;
-			}
-		}
-
-		void IEnumerator.Reset()
-		{
-			index = 0;
-			current = default!;
-		}
-	}
-}
-
-public class LimitedQueue<T> : Queue<T>
-{
-	public LimitedQueue(int capacity) : base(capacity) { }
-
-	public LimitedQueue(IEnumerable<T> col) : base(col) => SetCapacity(Length);
-
-	public virtual bool IsFull => Length == Capacity;
-
-	public override void Enqueue(T obj)
-	{
-		if (IsFull)
-			base.Dequeue();
-		base.Enqueue(obj);
-	}
-
-	public virtual void Enqueue(T obj, G.ICollection<T> receiver)
-	{
-		if (IsFull)
-			receiver.Add(base.Dequeue());
-		base.Enqueue(obj);
-	}
-}
-
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow> where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
 	private protected TLow? low;
@@ -1260,6 +1446,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 	}
 }
 
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 {
 	public BigArray() { }
@@ -1281,6 +1468,7 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }
 
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 {
 	// XPerY=n means that n Xs can be stored in 1 Y. 
@@ -1614,79 +1802,4 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
-}
-
-public class Chain : IReadOnlyCollection<int>
-{
-	private readonly int start;
-
-	public Chain(int length) : this(0, length) { }
-
-	public Chain(int start, int length)
-	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		this.start = start;
-		Length = length;
-	}
-
-	public virtual int Length { get; }
-
-	public virtual Enumerator GetEnumerator() => new(this);
-
-	IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-	public virtual List<int> ToList()
-	{
-		List<int> list = new(Length);
-		for (var i = 0; i < Length; i++)
-			list.Add(start + i);
-		return list;
-	}
-
-	public struct Enumerator : IEnumerator<int>
-	{
-		private readonly Chain chain;
-		private int index;
-
-		public Enumerator(Chain chain)
-		{
-			this.chain = chain;
-			index = 0;
-			Current = chain.start;
-		}
-
-		public int Current { get; private set; }
-
-		readonly object IEnumerator.Current => Current;
-
-		public void Dispose() => index = chain.Length;
-
-		public bool MoveNext()
-		{
-			if (index < chain.Length)
-			{
-				Current = chain.start + index++;
-				return true;
-			}
-			else
-			{
-				Current = chain.start + chain.Length;
-				return false;
-			}
-		}
-
-		public void Reset() => index = 0;
-	}
-}
-
-public class Group<T, TKey> : List<T>
-{
-	public virtual TKey Key { get; private set; }
-
-	public Group(int capacity, TKey key) : base(capacity) => Key = key;
-
-	public Group(IEnumerable<T> collection, TKey key) : base(collection) => Key = key;
 }

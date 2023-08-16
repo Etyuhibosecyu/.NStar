@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.Net.Sockets;
 using System.Runtime.CompilerServices;
 
 namespace Corlib.NStar;
@@ -26,9 +23,7 @@ internal enum InsertionBehavior : byte
 	ThrowOnExisting = 2
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
 /// Внимание! Несмотря на название "SortedDictionary", этот словарь не всегда является отсортированным!
 /// При небольшом количестве элементов проверка каждого на равенство ненамного медленнее
@@ -655,8 +650,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	[DebuggerDisplay("Length = {Length}")]
-	[Serializable()]
+	[DebuggerDisplay("Length = {Length}"), Serializable]
 	internal sealed class KeyList : IList<TKey>, ICollection
 	{
 		private readonly SortedDictionary<TKey, TValue> _dict;
@@ -718,8 +712,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		public bool RemoveValue(TKey key) => throw new NotSupportedException();
 	}
 
-	[DebuggerDisplay("Length = {Length}")]
-	[Serializable()]
+	[DebuggerDisplay("Length = {Length}"), Serializable]
 	internal sealed class ValueList : IList<TValue>, ICollection
 	{
 		private readonly SortedDictionary<TKey, TValue> _dict;
@@ -776,9 +769,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 // Оптимизированный словарь, который для маленького числа элементов использует поэлементное сравнение
 // и добавление в конец (импортируя этот функционал из SortedDictionary, чтобы не создавать
 // лишнее дублирование), а при увеличении числа элементов действует как классический словарь от Microsoft.
@@ -1336,8 +1327,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : notnull
 {
 	private protected struct Entry
@@ -2636,7 +2626,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 	}
 
-	[DebuggerDisplay("Length = {Length}")]
+	[DebuggerDisplay("Length = {Length}"), Serializable]
 	public sealed class KeyCollection : ICollection<TKey>, ICollection, IReadOnlyCollection<TKey>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary;
@@ -2760,7 +2750,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 	}
 
-	[DebuggerDisplay("Length = {Length}")]
+	[DebuggerDisplay("Length = {Length}"), Serializable]
 	public sealed class ValueCollection : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
 	{
 		private readonly Mirror<TKey, TValue> _dictionary;

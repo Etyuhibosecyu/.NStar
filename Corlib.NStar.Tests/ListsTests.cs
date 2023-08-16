@@ -75,9 +75,9 @@ public class BufferTests
 			Assert.IsTrue(E.SequenceEqual(gl, buf));
 		}, () =>
 		{
-			//collectionActions.Random(random)();
-			//Assert.IsTrue(buf.Equals(gl));
-			//Assert.IsTrue(E.SequenceEqual(gl, buf));
+			collectionActions.Random(random)();
+			Assert.IsTrue(buf.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, buf));
 		}, () =>
 		{
 			if (buf.Length == 0)
@@ -96,6 +96,16 @@ public class BufferTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		arr = RedStarLinq.FillArray(14, _ => random.Next(16));
+		var n = 1;
+		toInsert = RedStarLinq.FillArray(5, _ => random.Next(16));
+		buf = new(16, arr);
+		gl = new(arr);
+		buf.Insert(n, toInsert);
+		gl.InsertRange(n, toInsert);
+		gl.RemoveRange(0, Max(gl.Count - 16, 0));
+		Assert.IsTrue(buf.Equals(gl));
+		Assert.IsTrue(E.SequenceEqual(gl, buf));
 	}
 }
 
@@ -666,6 +676,10 @@ public class ListTests
 		c = new G.List<string>(list).GetRange(1, 4);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetRange(^5..);
+		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetRange(^5..^1);
 		c = new G.List<string>(list).GetRange(list.Length - 5, 4);
 		Assert.IsTrue(b.Equals(c));
@@ -679,6 +693,63 @@ public class ListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+	}
+
+	[TestMethod]
+	public void TestGetSlice()
+	{
+		var a = new List<string>(list);
+		var b = a.GetSlice(..);
+		var c = new G.List<string>(list);
+		Assert.IsTrue(a.Equals(list));
+		Assert.IsTrue(E.SequenceEqual(list, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1);
+		c = new G.List<string>(list).GetRange(1, list.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1, 4);
+		c = new G.List<string>(list).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5);
+		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(..^1);
+		c = new G.List<string>(list).GetRange(0, list.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..);
+		c = new G.List<string>(list).GetRange(1, list.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..^1);
+		c = new G.List<string>(list).GetRange(1, list.Length - 2);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..5);
+		c = new G.List<string>(list).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..);
+		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..^1);
+		c = new G.List<string>(list).GetRange(list.Length - 5, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..5);
+		c = new G.List<string>(list).GetRange(list.Length - 5, 10 - list.Length);
+		Assert.IsTrue(a.Equals(list));
+		Assert.IsTrue(E.SequenceEqual(list, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
+		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
 	}
 
 	[TestMethod]
@@ -2456,6 +2527,10 @@ public class NListTests
 		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetRange(^5..);
+		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetRange(^5..^1);
 		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 4);
 		Assert.IsTrue(b.Equals(c));
@@ -2469,6 +2544,63 @@ public class NListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
 		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+	}
+
+	[TestMethod]
+	public void TestGetSlice()
+	{
+		var a = new NList<(char, char, char)>(nList);
+		var b = a.GetSlice(..);
+		var c = new G.List<(char, char, char)>(nList);
+		Assert.IsTrue(a.Equals(nList));
+		Assert.IsTrue(E.SequenceEqual(nList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1);
+		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1, 4);
+		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5);
+		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(..^1);
+		c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..);
+		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..^1);
+		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 2);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(1..5);
+		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..);
+		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..^1);
+		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 4);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^5..5);
+		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 10 - nList.Length);
+		Assert.IsTrue(a.Equals(nList));
+		Assert.IsTrue(E.SequenceEqual(nList, a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
+		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
 	}
 
 	[TestMethod]

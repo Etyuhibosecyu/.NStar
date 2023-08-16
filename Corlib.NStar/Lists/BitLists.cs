@@ -2,9 +2,7 @@
 
 namespace Corlib.NStar;
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 {
 	private uint* _items;
@@ -791,9 +789,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigBitList : BigList<bool, BigBitList, BitList>
 {
 	// XPerY=n means that n Xs can be stored in 1 Y. 

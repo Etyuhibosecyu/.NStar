@@ -1,34 +1,14 @@
-﻿using System.Diagnostics;
+﻿using Corlib.NStar;
+using System.Diagnostics;
 
 namespace Corlib.NStar;
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
-public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>, IDisposable, IEquatable<TCertain> where TCertain : BaseList<T, TCertain>, new()
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 {
 	private protected int _size;
-	public abstract int Capacity { get; set; }
 	[NonSerialized]
 	private protected object _syncRoot = new();
-
-	private protected abstract Func<int, TCertain> CapacityCreator { get; }
-
-	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
-
-	private protected virtual int DefaultCapacity => 32;
-
-	bool System.Collections.IList.IsFixedSize => false;
-
-	bool G.ICollection<T>.IsReadOnly => false;
-
-	bool System.Collections.IList.IsReadOnly => false;
-
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	public virtual int Length => _size;
-
-	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
 	public virtual T this[Index index, bool invoke = true]
 	{
@@ -39,69 +19,14 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				throw new IndexOutOfRangeException();
 			return GetInternal(index2, invoke);
 		}
-		set
-		{
-			var index2 = index.GetOffset(_size);
-			if ((uint)index2 >= (uint)_size)
-				throw new IndexOutOfRangeException();
-			SetInternal(index2, value);
-		}
+		set => throw new NotSupportedException();
 	}
-
-	public virtual TCertain this[Range range] => GetRange(range);
-
-	T G.IList<T>.this[int index] { get => this[index]; set => this[index] = value; }
 
 	T G.IReadOnlyList<T>.this[int index] => this[index];
 
-	object? System.Collections.IList.this[int index]
-	{
-		get => this[index];
-		set
-		{
-			if (value == null)
-				throw new ArgumentNullException(nameof(value));
-			try
-			{
-				this[index] = (T)value;
-			}
-			catch (InvalidCastException)
-			{
-				throw new ArgumentException(null, nameof(value));
-			}
-		}
-	}
+	public virtual int Length => _size;
 
-	public delegate void ListChangedHandler(TCertain newList);
-
-	public event ListChangedHandler? ListChanged;
-
-	public virtual TCertain Add(T item)
-	{
-		if (_size == Capacity) EnsureCapacity(_size + 1);
-		SetInternal(_size++, item);
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	void G.ICollection<T>.Add(T item) => Add(item);
-
-	int System.Collections.IList.Add(object? item)
-	{
-		try
-		{
-			if (item != null)
-				Add((T)item);
-		}
-		catch (InvalidCastException)
-		{
-			throw new ArgumentException(null, nameof(item));
-		}
-		return _size - 1;
-	}
-
-	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
-
-	public virtual TCertain Append(T item) => CollectionCreator(this).Add(item);
+	protected static bool IsCompatibleObject(object? value) => value is T || value == null && default(T) == null;
 
 	public virtual Span<T> AsSpan() => AsSpan(0, _size);
 
@@ -113,100 +38,11 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual Span<T> AsSpan(Range range) => AsSpan()[range];
 
-	public virtual TCertain BreakFilter(Func<T, bool> match, out TCertain result2)
-	{
-		var result = CapacityCreator(_size / 2);
-		result2 = CapacityCreator(_size / 2);
-		for (var i = 0; i < _size; i++)
-		{
-			var item = GetInternal(i);
-			if (match(item))
-				result.Add(item);
-			else
-				result2.Add(item);
-		}
-		if (result._size < _size * 0.8)
-			result.TrimExcess();
-		return result;
-	}
+	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, _size);
 
-	public virtual TCertain BreakFilter(Func<T, int, bool> match, out TCertain result2)
-	{
-		var result = CapacityCreator(_size / 2);
-		result2 = CapacityCreator(_size / 2);
-		for (var i = 0; i < _size; i++)
-		{
-			var item = GetInternal(i);
-			if (match(item, i))
-				result.Add(item);
-			else
-				result2.Add(item);
-		}
-		if (result._size < _size * 0.8)
-			result.TrimExcess();
-		return result;
-	}
+	public virtual bool Contains(IEnumerable<T> collection, int index) => Contains(collection, index, _size - index);
 
-	public virtual (TCertain, TCertain) BreakFilter(Func<T, bool> match) => (BreakFilter(match, out var result2), result2);
-
-	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out var result2), result2);
-
-	public virtual TCertain BreakFilterInPlace(Func<T, bool> match, out TCertain result2)
-	{
-		result2 = CapacityCreator(_size / 2);
-		var targetIndex = 0;
-		for (var i = 0; i < _size; i++)
-		{
-			var item = GetInternal(i);
-			if (match(item))
-			{
-				if (i != targetIndex)
-					SetInternal(targetIndex, item);
-				targetIndex++;
-			}
-			else
-				result2.Add(item);
-		}
-		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public virtual TCertain BreakFilterInPlace(Func<T, int, bool> match, out TCertain result2)
-	{
-		result2 = CapacityCreator(_size / 2);
-		var targetIndex = 0;
-		for (var i = 0; i < _size; i++)
-		{
-			var item = GetInternal(i);
-			if (match(item, i))
-			{
-				if (i != targetIndex)
-					SetInternal(targetIndex, item);
-				targetIndex++;
-			}
-			else
-				result2.Add(item);
-		}
-		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
-
-	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
-
-	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
-
-	public virtual void Clear()
-	{
-		if (_size > 0)
-		{
-			ClearInternal();
-			_size = 0;
-		}
-	}
-
-	public virtual void Clear(int index, int length)
+	public virtual bool Contains(IEnumerable<T> collection, int index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -214,47 +50,29 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		ClearInternal(index, length);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (length == 0 || !collection.Any())
+			return false;
+		if (collection is not G.IList<T> list)
+			list = collection.ToList();
+		var j = 0;
+		for (var i = 0; i - j <= length - list.Count; i++)
+		{
+			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
+			{
+				j++;
+				if (j >= list.Count)
+					return true;
+			}
+			else if (j != 0)
+			{
+				i -= j;
+				j = 0;
+			}
+		}
+		return false;
 	}
-
-	private protected virtual void ClearInternal() => ClearInternal(0, _size);
-
-	private protected abstract void ClearInternal(int index, int length);
-
-	public virtual object Clone() => Copy();
-
-	public virtual int Compare(int index, TCertain other, int otherIndex) => Compare(index, other, otherIndex, Min(_size - index, other._size - otherIndex));
-
-	public virtual int Compare(int index, TCertain other, int otherIndex, int length)
-	{
-		if (other == null)
-			throw new ArgumentNullException(nameof(other));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (otherIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(otherIndex));
-		if (otherIndex + length > other._size)
-			throw new ArgumentException(null);
-		return CompareInternal(index, other, otherIndex, length);
-	}
-
-	public virtual int Compare(TCertain other) => Compare(0, other, 0, Min(_size, other._size));
-
-	public virtual int Compare(TCertain other, int length) => Compare(0, other, 0, length);
-
-	private protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
-	{
-		for (var i = 0; i < length; i++)
-			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i)) ?? other.GetInternal(otherIndex + i) == null))
-				return i;
-		return length;
-	}
-
-	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
 
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
 
@@ -285,56 +103,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
-	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, _size);
-
-	public virtual bool Contains(IEnumerable<T> collection, int index) => Contains(collection, index, _size - index);
-
-	public virtual bool Contains(IEnumerable<T> collection, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (length == 0 || !collection.Any())
-			return false;
-		if (collection is not G.IList<T> list)
-			list = CollectionCreator(collection);
-		var j = 0;
-		for (var i = 0; i - j <= length - list.Count; i++)
-		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
-			{
-				j++;
-				if (j >= list.Count)
-					return true;
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
-		return false;
-	}
-
-	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, _size);
-
-	public virtual bool Contains(TCertain list, int index) => Contains((IEnumerable<T>)list, index, _size - index);
-
-	public virtual bool Contains(TCertain list, int index, int length) => Contains((IEnumerable<T>)list, index, length);
-
-	bool System.Collections.IList.Contains(object? item)
-	{
-		if (IsCompatibleObject(item))
-			if (item != null)
-				return Contains((T)item);
-		return false;
-	}
-
 	public virtual bool ContainsAny(IEnumerable<T> collection) => ContainsAny(collection, 0, _size);
 
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index) => ContainsAny(collection, index, _size - index);
@@ -355,12 +123,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				return true;
 		return false;
 	}
-
-	public virtual bool ContainsAny(TCertain list) => ContainsAny((IEnumerable<T>)list, 0, _size);
-
-	public virtual bool ContainsAny(TCertain list, int index) => ContainsAny((IEnumerable<T>)list, index, _size - index);
-
-	public virtual bool ContainsAny(TCertain list, int index, int length) => ContainsAny((IEnumerable<T>)list, index, length);
 
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, _size);
 
@@ -383,53 +145,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return false;
 	}
 
-	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((IEnumerable<T>)list, 0, _size);
-
-	public virtual bool ContainsAnyExcluding(TCertain list, int index) => ContainsAnyExcluding((IEnumerable<T>)list, index, _size - index);
-
-	public virtual bool ContainsAnyExcluding(TCertain list, int index, int length) => ContainsAnyExcluding((IEnumerable<T>)list, index, length);
-
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
-	{
-		if (converter == null)
-			throw new ArgumentNullException(nameof(converter));
-		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
-		for (var i = 0; i < _size; i++)
-			list.SetInternal(i, converter(GetInternal(i)));
-		list._size = _size;
-		return list;
-	}
-
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
-	{
-		if (converter == null)
-			throw new ArgumentNullException(nameof(converter));
-		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
-		for (var i = 0; i < _size; i++)
-			list.SetInternal(i, converter(GetInternal(i), i));
-		list._size = _size;
-		return list;
-	}
-
-	public virtual TCertain Copy() => CollectionCreator(this);
-
-	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length);
-
-	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
-
-	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, Length);
-
-	public virtual void CopyTo(int index, T[] array, int arrayIndex, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		CopyToInternal(index, array, arrayIndex, length);
-	}
-
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
 		if (array != null && array.Rank != 1)
@@ -446,6 +161,27 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 	}
 
+	public virtual void CopyTo(int index, T[] array, int arrayIndex, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (array == null)
+			throw new ArgumentNullException(nameof(array));
+		if (arrayIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		if (arrayIndex + length > array.Length)
+			throw new ArgumentException(null);
+		CopyToInternal(index, array, arrayIndex, length);
+	}
+
+	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
+
+	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, Length);
+
 	private protected virtual void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
@@ -457,20 +193,13 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public abstract void Dispose();
 
+	public virtual bool EndsWith(T? item) => _size > 0 && (GetInternal(_size - 1)?.Equals(item) ?? item == null);
+
 	public virtual bool EndsWith(IEnumerable<T> collection) => _size >= CreateVar(collection.Length(), out var length) && EqualsInternal(collection, _size - length);
 
-	public virtual bool EndsWith(TCertain list) => EndsWith((IEnumerable<T>)list);
+	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 
-	private protected virtual void EnsureCapacity(int min)
-	{
-		if (Capacity < min)
-		{
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
-			Capacity = newCapacity;
-		}
-	}
+	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
 
 	public override bool Equals(object? obj)
 	{
@@ -481,14 +210,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		else
 			return Equals(m);
 	}
-
-	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
-
-	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
-
-	public virtual bool Equals(TCertain? list) => EqualsInternal(list, 0, true);
-
-	public virtual bool Equals(TCertain? list, int index, bool toEnd = false) => EqualsInternal(list, index, toEnd);
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
@@ -524,6 +245,906 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 	}
 
 	public virtual bool Exists(Predicate<T> match) => FindIndex(match) != -1;
+
+	public virtual T? Find(Predicate<T> match)
+	{
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		for (var i = 0; i < _size; i++)
+			if (match(this[i]))
+				return this[i];
+		return default;
+	}
+
+	public virtual List<T> FindAll(Predicate<T> match)
+	{
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		List<T> list = new();
+		for (var i = 0; i < _size; i++)
+			if (match(this[i]))
+				list.Add(this[i]);
+		return list;
+	}
+
+	public virtual int FindIndex(int startIndex, int length, Predicate<T> match)
+	{
+		if ((uint)startIndex > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(startIndex));
+		if (length < 0 || startIndex > _size - length)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		var endIndex = startIndex + length;
+		for (var i = startIndex; i < endIndex; i++)
+			if (match(this[i]))
+				return i;
+		return -1;
+	}
+
+	public virtual int FindIndex(int startIndex, Predicate<T> match) => FindIndex(startIndex, _size - startIndex, match);
+
+	public virtual int FindIndex(Predicate<T> match) => FindIndex(0, _size, match);
+
+	public virtual T? FindLast(Predicate<T> match)
+	{
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		for (var i = _size - 1; i >= 0; i--)
+			if (match(this[i]))
+				return this[i];
+		return default;
+	}
+
+	public virtual int FindLastIndex(int startIndex, int length, Predicate<T> match)
+	{
+		if ((uint)startIndex >= (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(startIndex));
+		if (length < 0 || startIndex - length + 1 < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		if (_size == 0)
+			if (startIndex != -1)
+				throw new ArgumentOutOfRangeException(nameof(startIndex));
+		var endIndex = startIndex - length;
+		for (var i = startIndex; i > endIndex; i--)
+			if (match(this[i]))
+				return i;
+		return -1;
+	}
+
+	public virtual int FindLastIndex(int startIndex, Predicate<T> match) => FindLastIndex(startIndex, startIndex + 1, match);
+
+	public virtual int FindLastIndex(Predicate<T> match) => FindLastIndex(_size - 1, _size, match);
+
+	public virtual void ForEach(Action<T> action) => ForEach(action, 0, _size);
+
+	public virtual void ForEach(Action<T> action, int index) => ForEach(action, index, _size - index);
+
+	public virtual void ForEach(Action<T> action, int index, int count)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		for (var i = index; i < index + count; i++)
+			action(this[i]);
+	}
+
+	public virtual void ForEach(Action<T, int> action) => ForEach(action, 0, _size);
+
+	public virtual void ForEach(Action<T, int> action, int index) => ForEach(action, index, _size - index);
+
+	public virtual void ForEach(Action<T, int> action, int index, int count)
+	{
+		if (action == null)
+			throw new ArgumentNullException(nameof(action));
+		for (var i = index; i < index + count; i++)
+			action(this[i], i);
+	}
+
+	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
+
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorInternal();
+
+	private Enumerator GetEnumeratorInternal() => new(this);
+
+	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 9 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 9 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
+
+	internal abstract T GetInternal(int index, bool invoke = true);
+
+	public virtual Slice<T> GetSlice() => GetSlice(0, _size);
+
+	public virtual Slice<T> GetSlice(Index index) => GetSlice(index.GetOffset(_size));
+
+	public virtual Slice<T> GetSlice(int index) => GetSlice(index, _size - index);
+
+	public virtual Slice<T> GetSlice(int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (length == 0)
+			return new();
+		return GetSliceInternal(index, length);
+	}
+
+	public virtual Slice<T> GetSlice(Range range)
+	{
+		if (range.End.GetOffset(_size) > _size)
+			throw new ArgumentException(null);
+		var (start, length) = range.GetOffsetAndLength(_size);
+		return GetSlice(start, length);
+	}
+
+	private protected abstract Slice<T> GetSliceInternal(int index, int length);
+
+	public virtual int IndexOf(IEnumerable<T> collection) => IndexOf(collection, 0, _size);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index) => IndexOf(collection, index, _size - index);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length) => IndexOf(collection, index, length, out _);
+
+	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (_size == 0 || length == 0 || !collection.Any())
+		{
+			collectionLength = 0;
+			return -1;
+		}
+		if (collection is not G.ICollection<T> c)
+			c = collection.ToList();
+		collectionLength = c.Count;
+		for (var i = index; i <= index + length - collectionLength; i++)
+			if (EqualsInternal(collection, i))
+				return i;
+		return -1;
+	}
+
+	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
+
+	public virtual int IndexOf(T item, int index) => IndexOf(item, index, _size - index);
+
+	public virtual int IndexOf(T item, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		return IndexOfInternal(item, index, length);
+	}
+
+	public virtual int IndexOfAny(IEnumerable<T> collection) => IndexOfAny(collection, 0, _size);
+
+	public virtual int IndexOfAny(IEnumerable<T> collection, int index) => IndexOfAny(collection, index, _size - index);
+
+	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		var hs = collection.ToHashSet();
+		for (var i = index; i < index + length; i++)
+			if (hs.Contains(GetInternal(i)))
+				return i;
+		return -1;
+	}
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection) => IndexOfAnyExcluding(collection, 0, _size);
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) => IndexOfAnyExcluding(collection, index, _size - index);
+
+	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		var hs = collection.ToHashSet();
+		for (var i = index; i < index + length; i++)
+			if (!hs.Contains(GetInternal(i)))
+				return i;
+		return -1;
+	}
+
+	private protected abstract int IndexOfInternal(T item, int index, int length);
+
+	public virtual int LastIndexOf(IEnumerable<T> collection) => LastIndexOf(collection, _size - 1, _size);
+
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index) => LastIndexOf(collection, index, index + 1);
+
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length) => LastIndexOf(collection, index, length, out _);
+
+	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
+	{
+		if (_size != 0 && index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (_size != 0 && length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		if (_size == 0 || length == 0 || !collection.Any())
+		{
+			collectionLength = 0;
+			return -1;
+		}
+		if (collection is not G.ICollection<T> c)
+			c = collection.ToList();
+		collectionLength = c.Count;
+		var startIndex = index + 1 - length;
+		for (var i = length - collectionLength; i >= 0; i--)
+			if (EqualsInternal(c, startIndex + i))
+				return startIndex + i;
+		return -1;
+	}
+
+	public virtual int LastIndexOf(T item) => LastIndexOf(item, _size - 1, _size);
+
+	public virtual int LastIndexOf(T item, int index) => LastIndexOf(item, index, index + 1);
+
+	public virtual int LastIndexOf(T item, int index, int length)
+	{
+		if (_size != 0 && index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (_size != 0 && length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (_size == 0)
+			return -1;
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		return LastIndexOfInternal(item, index, length);
+	}
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection) => LastIndexOfAny(collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index) => LastIndexOfAny(collection, index, index + 1);
+
+	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int length)
+	{
+		if (_size != 0 && index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (_size != 0 && length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		var hs = collection.ToHashSet();
+		var startIndex = index + 1 - length;
+		for (var i = index; i >= startIndex; i--)
+			if (hs.Contains(GetInternal(i)))
+				return i;
+		return -1;
+	}
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) => LastIndexOfAnyExcluding(collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) => LastIndexOfAnyExcluding(collection, index, index + 1);
+
+	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
+	{
+		if (_size != 0 && index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (_size != 0 && length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index >= _size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length > index + 1)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (collection == null)
+			throw new ArgumentNullException(nameof(collection));
+		var hs = collection.ToHashSet();
+		var startIndex = index + 1 - length;
+		for (var i = index; i >= startIndex; i--)
+			if (!hs.Contains(GetInternal(i)))
+				return i;
+		return -1;
+	}
+
+	private protected abstract int LastIndexOfInternal(T item, int index, int length);
+
+	public virtual T Random() => this[random.Next(_size)];
+
+	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];
+
+	public virtual Slice<T> Skip(int length) => GetSlice(Clamp(length, 0, _size));
+
+	public virtual Slice<T> SkipLast(int length) => GetSlice(0, Max(0, _size - Max(length, 0)));
+
+	public virtual Slice<T> SkipWhile(Func<T, bool> function)
+	{
+		var i = 0;
+		for (; i < _size && function(GetInternal(i)); i++) ;
+		return GetSlice(i);
+	}
+
+	public virtual Slice<T> SkipWhile(Func<T, int, bool> function)
+	{
+		var i = 0;
+		for (; i < _size && function(GetInternal(i), i); i++) ;
+		return GetSlice(i);
+	}
+
+	public virtual bool StartsWith(T? item) => _size > 0 && (GetInternal(0)?.Equals(item) ?? item == null);
+
+	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0);
+
+	public virtual Slice<T> Take(int length) => GetSlice(0, Clamp(length, 0, _size));
+
+	public virtual Slice<T> TakeLast(int length) => GetSlice(Max(0, _size - Max(length, 0)));
+
+	public virtual Slice<T> TakeWhile(Func<T, bool> function)
+	{
+		var i = 0;
+		for (; i < _size && function(GetInternal(i)); i++) ;
+		return GetSlice(0, i);
+	}
+
+	public virtual Slice<T> TakeWhile(Func<T, int, bool> function)
+	{
+		var i = 0;
+		for (; i < _size && function(GetInternal(i), i); i++) ;
+		return GetSlice(0, i);
+	}
+
+	public virtual T[] ToArray()
+	{
+		var array = new T[Length];
+		CopyToInternal(0, array, 0, Length);
+		return array;
+	}
+
+	public virtual bool TrueForAll(Predicate<T> match)
+	{
+		if (match == null)
+			throw new ArgumentNullException(nameof(match));
+		for (var i = 0; i < _size; i++)
+			if (!match(this[i]))
+				return false;
+		return true;
+	}
+
+	[Serializable]
+	public struct Enumerator : IEnumerator<T>, IEnumerator
+	{
+		private readonly BaseIndexable<T> collection;
+		private int index;
+		private T current;
+
+		internal Enumerator(BaseIndexable<T> collection)
+		{
+			this.collection = collection;
+			index = 0;
+			current = default!;
+		}
+
+		public readonly void Dispose()
+		{
+		}
+
+		public bool MoveNext()
+		{
+			var localCollection = collection;
+			if ((uint)index < (uint)localCollection._size)
+			{
+				current = localCollection[index++];
+				return true;
+			}
+			return MoveNextRare();
+		}
+
+		private bool MoveNextRare()
+		{
+			index = collection._size + 1;
+			current = default!;
+			return false;
+		}
+
+		public readonly T Current => current;
+
+		readonly object IEnumerator.Current
+		{
+			get
+			{
+				if (index == 0 || index == collection._size + 1)
+					throw new InvalidOperationException();
+				return Current!;
+			}
+		}
+
+		void IEnumerator.Reset()
+		{
+			index = 0;
+			current = default!;
+		}
+	}
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<TCertain> where TCertain : BaseIndexable<T, TCertain>, new()
+{
+	public virtual TCertain this[Range range] => GetRange(range);
+
+	public virtual int Compare(int index, TCertain other, int otherIndex) => Compare(index, other, otherIndex, Min(_size - index, other._size - otherIndex));
+
+	public virtual int Compare(int index, TCertain other, int otherIndex, int length)
+	{
+		if (other == null)
+			throw new ArgumentNullException(nameof(other));
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (otherIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(otherIndex));
+		if (otherIndex + length > other._size)
+			throw new ArgumentException(null);
+		return CompareInternal(index, other, otherIndex, length);
+	}
+
+	public virtual int Compare(TCertain other) => Compare(0, other, 0, Min(_size, other._size));
+
+	public virtual int Compare(TCertain other, int length) => Compare(0, other, 0, length);
+
+	private protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
+	{
+		for (var i = 0; i < length; i++)
+			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i)) ?? other.GetInternal(otherIndex + i) == null))
+				return i;
+		return length;
+	}
+
+	public virtual bool Contains(TCertain collection) => Contains((IEnumerable<T>)collection, 0, _size);
+
+	public virtual bool Contains(TCertain collection, int index) => Contains((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual bool Contains(TCertain collection, int index, int length) => Contains((IEnumerable<T>)collection, index, length);
+
+	public virtual bool ContainsAny(TCertain collection) => ContainsAny((IEnumerable<T>)collection, 0, _size);
+
+	public virtual bool ContainsAny(TCertain collection, int index) => ContainsAny((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual bool ContainsAny(TCertain collection, int index, int length) => ContainsAny((IEnumerable<T>)collection, index, length);
+
+	public virtual bool ContainsAnyExcluding(TCertain collection) => ContainsAnyExcluding((IEnumerable<T>)collection, 0, _size);
+
+	public virtual bool ContainsAnyExcluding(TCertain collection, int index) => ContainsAnyExcluding((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual bool ContainsAnyExcluding(TCertain collection, int index, int length) => ContainsAnyExcluding((IEnumerable<T>)collection, index, length);
+
+	public virtual bool EndsWith(TCertain collection) => EndsWith((IEnumerable<T>)collection);
+
+	public virtual bool Equals(TCertain? collection) => EqualsInternal(collection, 0, true);
+
+	public virtual bool Equals(TCertain? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
+
+	public virtual new TCertain ForEach(Action<T> action) => ForEach(action, 0, _size);
+
+	public virtual new TCertain ForEach(Action<T> action, int index) => ForEach(action, index, _size - index);
+
+	public virtual new TCertain ForEach(Action<T> action, int index, int length)
+	{
+		base.ForEach(action, index, length);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual new TCertain ForEach(Action<T, int> action) => ForEach(action, 0, _size);
+
+	public virtual new TCertain ForEach(Action<T, int> action, int index) => ForEach(action, index, _size - index);
+
+	public virtual new TCertain ForEach(Action<T, int> action, int index, int length)
+	{
+		base.ForEach(action, index, length);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain GetAfter(IEnumerable<T> collection) => GetAfter(collection, 0, _size);
+
+	public virtual TCertain GetAfter(IEnumerable<T> collection, int index) => GetAfter(collection, index, _size - index);
+
+	public virtual TCertain GetAfter(IEnumerable<T> collection, int index, int length)
+	{
+		var foundIndex = IndexOf(collection, index, length, out var collectionLength);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength);
+	}
+
+	public virtual TCertain GetAfter(TCertain collection) => GetAfter((IEnumerable<T>)collection, 0, _size);
+
+	public virtual TCertain GetAfter(TCertain collection, int index) => GetAfter((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual TCertain GetAfter(TCertain collection, int index, int length) => GetAfter((IEnumerable<T>)collection, index, length);
+
+	public virtual TCertain GetAfterLast(IEnumerable<T> collection) => GetAfterLast(collection, _size - 1, _size);
+
+	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index) => GetAfterLast(collection, index, index + 1);
+
+	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index, int length)
+	{
+		var foundIndex = LastIndexOf(collection, index, length, out var collectionLength);
+		return foundIndex == -1 ? new() : GetRange(foundIndex + collectionLength);
+	}
+
+	public virtual TCertain GetAfterLast(TCertain collection) => GetAfterLast((IEnumerable<T>)collection, _size - 1, _size);
+
+	public virtual TCertain GetAfterLast(TCertain collection, int index) => GetAfterLast((IEnumerable<T>)collection, index, index + 1);
+
+	public virtual TCertain GetAfterLast(TCertain collection, int index, int length) => GetAfterLast((IEnumerable<T>)collection, index, length);
+
+	public virtual TCertain GetBefore(IEnumerable<T> collection) => GetBefore(collection, 0, _size);
+
+	public virtual TCertain GetBefore(IEnumerable<T> collection, int index) => GetBefore(collection, index, _size - index);
+
+	public virtual TCertain GetBefore(IEnumerable<T> collection, int index, int length)
+	{
+		var foundIndex = IndexOf(collection, index, length);
+		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+	}
+
+	public virtual TCertain GetBefore(TCertain collection) => GetBefore((IEnumerable<T>)collection, 0, _size);
+
+	public virtual TCertain GetBefore(TCertain collection, int index) => GetBefore((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual TCertain GetBefore(TCertain collection, int index, int length) => GetBefore((IEnumerable<T>)collection, index, length);
+
+	public virtual TCertain GetBeforeLast(IEnumerable<T> collection) => GetBeforeLast(collection, _size - 1, _size);
+
+	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index) => GetBeforeLast(collection, index, index + 1);
+
+	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index, int length)
+	{
+		var foundIndex = LastIndexOf(collection, index, length);
+		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+	}
+
+	public virtual TCertain GetBeforeLast(TCertain collection) => GetBeforeLast((IEnumerable<T>)collection, _size - 1, _size);
+
+	public virtual TCertain GetBeforeLast(TCertain collection, int index) => GetBeforeLast((IEnumerable<T>)collection, index, index + 1);
+
+	public virtual TCertain GetBeforeLast(TCertain collection, int index, int length) => GetBeforeLast((IEnumerable<T>)collection, index, length);
+
+	public virtual TCertain GetRange(int index, bool alwaysCopy = false) => GetRange(index, _size - index, alwaysCopy);
+
+	public virtual TCertain GetRange(int index, int length, bool alwaysCopy = false)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		if (length == 0)
+			return new();
+		else if (!alwaysCopy && index == 0 && length == _size && this is TCertain thisList)
+			return thisList;
+		return GetRangeInternal(index, length);
+	}
+
+	public virtual TCertain GetRange(Range range, bool alwaysCopy = false)
+	{
+		if (range.End.GetOffset(_size) > _size)
+			throw new ArgumentException(null);
+		var (start, length) = range.GetOffsetAndLength(_size);
+		return GetRange(start, length, alwaysCopy);
+	}
+
+	private protected abstract TCertain GetRangeInternal(int index, int length);
+
+	public virtual int IndexOf(TCertain collection) => IndexOf((IEnumerable<T>)collection, 0, _size);
+
+	public virtual int IndexOf(TCertain collection, int index) => IndexOf((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual int IndexOf(TCertain collection, int index, int length) => IndexOf((IEnumerable<T>)collection, index, length);
+
+	public virtual int IndexOf(TCertain collection, int index, int length, out int collectionLength) => IndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
+
+	public virtual int IndexOfAny(TCertain collection) => IndexOfAny((IEnumerable<T>)collection, 0, _size);
+
+	public virtual int IndexOfAny(TCertain collection, int index) => IndexOfAny((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual int IndexOfAny(TCertain collection, int index, int length) => IndexOfAny((IEnumerable<T>)collection, index, length);
+
+	public virtual int IndexOfAnyExcluding(TCertain collection) => IndexOfAnyExcluding((IEnumerable<T>)collection, 0, _size);
+
+	public virtual int IndexOfAnyExcluding(TCertain collection, int index) => IndexOfAnyExcluding((IEnumerable<T>)collection, index, _size - index);
+
+	public virtual int IndexOfAnyExcluding(TCertain collection, int index, int length) => IndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
+
+	public virtual int LastIndexOf(TCertain collection) => LastIndexOf((IEnumerable<T>)collection, _size - 1, _size);
+
+	public virtual int LastIndexOf(TCertain collection, int index) => LastIndexOf((IEnumerable<T>)collection, index, index + 1);
+
+	public virtual int LastIndexOf(TCertain collection, int index, int length) => LastIndexOf((IEnumerable<T>)collection, index, length);
+
+	public virtual int LastIndexOf(TCertain collection, int index, int length, out int collectionLength) => LastIndexOf((IEnumerable<T>)collection, index, length, out collectionLength);
+
+	public virtual int LastIndexOfAny(TCertain collection) => LastIndexOfAny((IEnumerable<T>)collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAny(TCertain collection, int index) => LastIndexOfAny((IEnumerable<T>)collection, index, index + 1);
+
+	public virtual int LastIndexOfAny(TCertain collection, int index, int length) => LastIndexOfAny((IEnumerable<T>)collection, index, length);
+
+	public virtual int LastIndexOfAnyExcluding(TCertain collection) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, _size - 1, _size);
+
+	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, index + 1);
+
+	public virtual int LastIndexOfAnyExcluding(TCertain collection, int index, int length) => LastIndexOfAnyExcluding((IEnumerable<T>)collection, index, length);
+
+	public virtual bool StartsWith(TCertain collection) => StartsWith((IEnumerable<T>)collection);
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
+{
+	public override T this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			var index2 = index.GetOffset(_size);
+			if ((uint)index2 >= (uint)_size)
+				throw new IndexOutOfRangeException();
+			SetInternal(index2, value);
+		}
+	}
+
+	T G.IList<T>.this[int index] { get => this[index]; set => this[index] = value; }
+
+	object? System.Collections.IList.this[int index]
+	{
+		get => this[index];
+		set
+		{
+			if (value == null)
+				throw new ArgumentNullException(nameof(value));
+			try
+			{
+				this[index] = (T)value;
+			}
+			catch (InvalidCastException)
+			{
+				throw new ArgumentException(null, nameof(value));
+			}
+		}
+	}
+
+	public abstract int Capacity { get; set; }
+
+	private protected abstract Func<int, TCertain> CapacityCreator { get; }
+
+	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
+
+	private protected virtual int DefaultCapacity => 32;
+
+	bool System.Collections.IList.IsFixedSize => false;
+
+	bool G.ICollection<T>.IsReadOnly => false;
+
+	bool System.Collections.IList.IsReadOnly => false;
+
+	bool System.Collections.ICollection.IsSynchronized => false;
+
+	object System.Collections.ICollection.SyncRoot => _syncRoot;
+
+	public delegate void ListChangedHandler(TCertain newList);
+
+	public event ListChangedHandler? ListChanged;
+
+	public virtual TCertain Add(T item)
+	{
+		if (_size == Capacity) EnsureCapacity(_size + 1);
+		SetInternal(_size++, item);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	void G.ICollection<T>.Add(T item) => Add(item);
+
+	int System.Collections.IList.Add(object? item)
+	{
+		try
+		{
+			if (item != null)
+				Add((T)item);
+		}
+		catch (InvalidCastException)
+		{
+			throw new ArgumentException(null, nameof(item));
+		}
+		return _size - 1;
+	}
+
+	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
+
+	public virtual TCertain Append(T item) => CollectionCreator(this).Add(item);
+
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, bool> match) => (BreakFilter(match, out var result2), result2);
+
+	public virtual TCertain BreakFilter(Func<T, bool> match, out TCertain result2)
+	{
+		var result = CapacityCreator(_size / 2);
+		result2 = CapacityCreator(_size / 2);
+		for (var i = 0; i < _size; i++)
+		{
+			var item = GetInternal(i);
+			if (match(item))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		if (result._size < _size * 0.8)
+			result.TrimExcess();
+		return result;
+	}
+
+	public virtual (TCertain, TCertain) BreakFilter(Func<T, int, bool> match) => (BreakFilter(match, out var result2), result2);
+
+	public virtual TCertain BreakFilter(Func<T, int, bool> match, out TCertain result2)
+	{
+		var result = CapacityCreator(_size / 2);
+		result2 = CapacityCreator(_size / 2);
+		for (var i = 0; i < _size; i++)
+		{
+			var item = GetInternal(i);
+			if (match(item, i))
+				result.Add(item);
+			else
+				result2.Add(item);
+		}
+		if (result._size < _size * 0.8)
+			result.TrimExcess();
+		return result;
+	}
+
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
+
+	public virtual TCertain BreakFilterInPlace(Func<T, bool> match, out TCertain result2)
+	{
+		result2 = CapacityCreator(_size / 2);
+		var targetIndex = 0;
+		for (var i = 0; i < _size; i++)
+		{
+			var item = GetInternal(i);
+			if (match(item))
+			{
+				if (i != targetIndex)
+					SetInternal(targetIndex, item);
+				targetIndex++;
+			}
+			else
+				result2.Add(item);
+		}
+		_size = targetIndex;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
+
+	public virtual TCertain BreakFilterInPlace(Func<T, int, bool> match, out TCertain result2)
+	{
+		result2 = CapacityCreator(_size / 2);
+		var targetIndex = 0;
+		for (var i = 0; i < _size; i++)
+		{
+			var item = GetInternal(i);
+			if (match(item, i))
+			{
+				if (i != targetIndex)
+					SetInternal(targetIndex, item);
+				targetIndex++;
+			}
+			else
+				result2.Add(item);
+		}
+		_size = targetIndex;
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+
+	public virtual void Clear()
+	{
+		if (_size > 0)
+		{
+			ClearInternal();
+			_size = 0;
+		}
+	}
+
+	public virtual void Clear(int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		ClearInternal(index, length);
+	}
+
+	private protected virtual void ClearInternal() => ClearInternal(0, _size);
+
+	private protected abstract void ClearInternal(int index, int length);
+
+	public virtual object Clone() => Copy();
+
+	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
+
+	bool System.Collections.IList.Contains(object? item)
+	{
+		if (IsCompatibleObject(item))
+			if (item != null)
+				return Contains((T)item);
+		return false;
+	}
+
+	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
+	{
+		if (converter == null)
+			throw new ArgumentNullException(nameof(converter));
+		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
+		for (var i = 0; i < _size; i++)
+			list.SetInternal(i, converter(GetInternal(i)));
+		list._size = _size;
+		return list;
+	}
+
+	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
+	{
+		if (converter == null)
+			throw new ArgumentNullException(nameof(converter));
+		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
+		for (var i = 0; i < _size; i++)
+			list.SetInternal(i, converter(GetInternal(i), i));
+		list._size = _size;
+		return list;
+	}
+
+	public virtual TCertain Copy() => CollectionCreator(this);
+
+	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length);
+
+	private protected virtual void EnsureCapacity(int min)
+	{
+		if (Capacity < min)
+		{
+			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			if (newCapacity < min) newCapacity = min;
+			Capacity = newCapacity;
+		}
+	}
 
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
@@ -581,167 +1202,13 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual T? Find(Predicate<T> match)
-	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		for (var i = 0; i < _size; i++)
-			if (match(this[i]))
-				return this[i];
-		return default;
-	}
-
-	public virtual TCertain FindAll(Predicate<T> match)
-	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		TCertain list = new();
-		for (var i = 0; i < _size; i++)
-			if (match(this[i]))
-				list.Add(this[i]);
-		return list;
-	}
-
-	public virtual int FindIndex(Predicate<T> match) => FindIndex(0, _size, match);
-
-	public virtual int FindIndex(int startIndex, Predicate<T> match) => FindIndex(startIndex, _size - startIndex, match);
-
-	public virtual int FindIndex(int startIndex, int length, Predicate<T> match)
-	{
-		if ((uint)startIndex > (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(startIndex));
-		if (length < 0 || startIndex > _size - length)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		var endIndex = startIndex + length;
-		for (var i = startIndex; i < endIndex; i++)
-			if (match(this[i]))
-				return i;
-		return -1;
-	}
-
-	public virtual T? FindLast(Predicate<T> match)
-	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		for (var i = _size - 1; i >= 0; i--)
-			if (match(this[i]))
-				return this[i];
-		return default;
-	}
-
-	public virtual int FindLastIndex(Predicate<T> match) => FindLastIndex(_size - 1, _size, match);
-
-	public virtual int FindLastIndex(int startIndex, Predicate<T> match) => FindLastIndex(startIndex, startIndex + 1, match);
-
-	public virtual int FindLastIndex(int startIndex, int length, Predicate<T> match)
-	{
-		if ((uint)startIndex >= (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(startIndex));
-		if (length < 0 || startIndex - length + 1 < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		if (_size == 0)
-			if (startIndex != -1)
-				throw new ArgumentOutOfRangeException(nameof(startIndex));
-		var endIndex = startIndex - length;
-		for (var i = startIndex; i > endIndex; i--)
-			if (match(this[i]))
-				return i;
-		return -1;
-	}
-
-	public virtual TCertain ForEach(Action<T> action)
-	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
-		for (var i = 0; i < _size; i++)
-			action(this[i]);
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public virtual TCertain ForEach(Action<T, int> action)
-	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
-		for (var i = 0; i < _size; i++)
-			action(this[i], i);
-		return this as TCertain ?? throw new InvalidOperationException();
-	}
-
-	public virtual TCertain GetAfter(IEnumerable<T> collection) => GetAfter(collection, 0, _size);
-
-	public virtual TCertain GetAfter(IEnumerable<T> collection, int index) => GetAfter(collection, index, _size - index);
-
-	public virtual TCertain GetAfter(IEnumerable<T> collection, int index, int length)
-	{
-		var foundIndex = IndexOf(collection, index, length, out var otherCount);
-		return foundIndex == -1 ? new() : GetRange(foundIndex + otherCount);
-	}
-
-	public virtual TCertain GetAfter(TCertain list) => GetAfter((IEnumerable<T>)list, 0, _size);
-
-	public virtual TCertain GetAfter(TCertain list, int index) => GetAfter((IEnumerable<T>)list, index, _size - index);
-
-	public virtual TCertain GetAfter(TCertain list, int index, int length) => GetAfter((IEnumerable<T>)list, index, length);
-
-	public virtual TCertain GetAfterLast(IEnumerable<T> collection) => GetAfterLast(collection, _size - 1, _size);
-
-	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index) => GetAfterLast(collection, index, index + 1);
-
-	public virtual TCertain GetAfterLast(IEnumerable<T> collection, int index, int length)
-	{
-		var foundIndex = LastIndexOf(collection, index, length, out var otherCount);
-		return foundIndex == -1 ? new() : GetRange(foundIndex + otherCount);
-	}
-
-	public virtual TCertain GetAfterLast(TCertain list) => GetAfterLast((IEnumerable<T>)list, _size - 1, _size);
-
-	public virtual TCertain GetAfterLast(TCertain list, int index) => GetAfterLast((IEnumerable<T>)list, index, index + 1);
-
-	public virtual TCertain GetAfterLast(TCertain list, int index, int length) => GetAfterLast((IEnumerable<T>)list, index, length);
-
-	public virtual TCertain GetBefore(IEnumerable<T> collection) => GetBefore(collection, 0, _size);
-
-	public virtual TCertain GetBefore(IEnumerable<T> collection, int index) => GetBefore(collection, index, _size - index);
-
-	public virtual TCertain GetBefore(IEnumerable<T> collection, int index, int length)
-	{
-		var foundIndex = IndexOf(collection, index, length);
-		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
-	}
-
-	public virtual TCertain GetBefore(TCertain list) => GetBefore((IEnumerable<T>)list, 0, _size);
-
-	public virtual TCertain GetBefore(TCertain list, int index) => GetBefore((IEnumerable<T>)list, index, _size - index);
-
-	public virtual TCertain GetBefore(TCertain list, int index, int length) => GetBefore((IEnumerable<T>)list, index, length);
-
-	public virtual TCertain GetBeforeLast(IEnumerable<T> collection) => GetBeforeLast(collection, _size - 1, _size);
-
-	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index) => GetBeforeLast(collection, index, index + 1);
-
-	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index, int length)
-	{
-		var foundIndex = LastIndexOf(collection, index, length);
-		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
-	}
-
-	public virtual TCertain GetBeforeLast(TCertain list) => GetBeforeLast((IEnumerable<T>)list, _size - 1, _size);
-
-	public virtual TCertain GetBeforeLast(TCertain list, int index) => GetBeforeLast((IEnumerable<T>)list, index, index + 1);
-
-	public virtual TCertain GetBeforeLast(TCertain list, int index, int length) => GetBeforeLast((IEnumerable<T>)list, index, length);
-
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection) => GetBeforeSetAfter(collection, 0, _size);
 
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index) => GetBeforeSetAfter(collection, index, _size - index);
 
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index, int length)
 	{
-		var foundIndex = IndexOf(collection, index, length, out var otherCount);
+		var foundIndex = IndexOf(collection, index, length, out var collectionLength);
 		if (foundIndex == -1)
 		{
 			var toReturn = CollectionCreator(this);
@@ -751,7 +1218,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		else
 		{
 			var toReturn = GetRange(0, foundIndex, true);
-			Remove(0, foundIndex + otherCount);
+			Remove(0, foundIndex + collectionLength);
 			return toReturn;
 		}
 	}
@@ -768,7 +1235,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain GetBeforeSetAfterLast(IEnumerable<T> collection, int index, int length)
 	{
-		var foundIndex = LastIndexOf(collection, index, length, out var otherCount);
+		var foundIndex = LastIndexOf(collection, index, length, out var collectionLength);
 		if (foundIndex == -1)
 		{
 			var toReturn = CollectionCreator(this);
@@ -778,7 +1245,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		else
 		{
 			var toReturn = GetRange(0, foundIndex, true);
-			Remove(0, foundIndex + otherCount);
+			Remove(0, foundIndex + collectionLength);
 			return toReturn;
 		}
 	}
@@ -789,98 +1256,15 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index, int length) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, length);
 
-	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
-
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorInternal();
-
-	private Enumerator GetEnumeratorInternal() => new(this);
-
-	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 9 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 9 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
-
-	internal abstract T GetInternal(int index, bool invoke = true);
-
-	public virtual TCertain GetRange(int index, bool alwaysCopy = false) => GetRange(index, _size - index, alwaysCopy);
-
-	public virtual TCertain GetRange(int index, int length, bool alwaysCopy = false)
+	private protected override TCertain GetRangeInternal(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (length == 0)
-			return new();
-		else if (!alwaysCopy && index == 0 && length == _size && this is TCertain thisList)
-			return thisList;
 		var list = CapacityCreator(length);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
 		list._size = length;
 		return list;
 	}
 
-	public virtual TCertain GetRange(Range range, bool alwaysCopy = false)
-	{
-		if (range.End.GetOffset(_size) > _size)
-			throw new ArgumentException(null);
-		var (start, length) = range.GetOffsetAndLength(_size);
-		return GetRange(start, length, alwaysCopy);
-	}
-
-	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
-
-	public virtual int IndexOf(T item, int index) => IndexOf(item, index, _size - index);
-
-	public virtual int IndexOf(T item, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		return IndexOfInternal(item, index, length);
-	}
-
-	public virtual int IndexOf(IEnumerable<T> collection) => IndexOf(collection, 0, _size);
-
-	public virtual int IndexOf(IEnumerable<T> collection, int index) => IndexOf(collection, index, _size - index);
-
-	public virtual int IndexOf(IEnumerable<T> collection, int index, int length) => IndexOf(collection, index, length, out _);
-
-	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (_size == 0 || length == 0 || !collection.Any())
-		{
-			otherCount = 0;
-			return -1;
-		}
-		if (collection is not G.ICollection<T> c)
-			return IndexOf(CollectionCreator(collection), index, length, out otherCount);
-		otherCount = c.Count;
-		for (var i = index; i <= index + length - otherCount; i++)
-			if (EqualsInternal(collection, i))
-				return i;
-		return -1;
-	}
-
-	public virtual int IndexOf(TCertain list) => IndexOf((IEnumerable<T>)list, 0, _size);
-
-	public virtual int IndexOf(TCertain list, int index) => IndexOf((IEnumerable<T>)list, index, _size - index);
-
-	public virtual int IndexOf(TCertain list, int index, int length) => IndexOf((IEnumerable<T>)list, index, length);
-
-	public virtual int IndexOf(TCertain list, int index, int length, out int otherCount) => IndexOf((IEnumerable<T>)list, index, length, out otherCount);
+	private protected override Slice<T> GetSliceInternal(int index, int length) => new(this, index, length);
 
 	int System.Collections.IList.IndexOf(object? item)
 	{
@@ -889,62 +1273,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 				return IndexOf((T)item);
 		return -1;
 	}
-
-	public virtual int IndexOfAny(IEnumerable<T> collection) => IndexOfAny(collection, 0, _size);
-
-	public virtual int IndexOfAny(IEnumerable<T> collection, int index) => IndexOfAny(collection, index, _size - index);
-
-	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		var hs = collection.ToHashSet();
-		for (var i = index; i < index + length; i++)
-			if (hs.Contains(GetInternal(i)))
-				return i;
-		return -1;
-	}
-
-	public virtual int IndexOfAny(TCertain list) => IndexOfAny((IEnumerable<T>)list, 0, _size);
-
-	public virtual int IndexOfAny(TCertain list, int index) => IndexOfAny((IEnumerable<T>)list, index, _size - index);
-
-	public virtual int IndexOfAny(TCertain list, int index, int length) => IndexOfAny((IEnumerable<T>)list, index, length);
-
-	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection) => IndexOfAnyExcluding(collection, 0, _size);
-
-	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index) => IndexOfAnyExcluding(collection, index, _size - index);
-
-	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > _size)
-			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		var hs = collection.ToHashSet();
-		for (var i = index; i < index + length; i++)
-			if (!hs.Contains(GetInternal(i)))
-				return i;
-		return -1;
-	}
-
-	public virtual int IndexOfAnyExcluding(TCertain list) => IndexOfAnyExcluding((IEnumerable<T>)list, 0, _size);
-
-	public virtual int IndexOfAnyExcluding(TCertain list, int index) => IndexOfAnyExcluding((IEnumerable<T>)list, index, _size - index);
-
-	public virtual int IndexOfAnyExcluding(TCertain list, int index, int length) => IndexOfAnyExcluding((IEnumerable<T>)list, index, length);
-
-	private protected abstract int IndexOfInternal(T item, int index, int length);
 
 	public virtual TCertain Insert(int index, T item)
 	{
@@ -1005,130 +1333,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		}
 		return this2;
 	}
-
-	protected static bool IsCompatibleObject(object? value) => value is T || value == null && default(T) == null;
-
-	public virtual int LastIndexOf(T item) => LastIndexOf(item, _size - 1, _size);
-
-	public virtual int LastIndexOf(T item, int index) => LastIndexOf(item, index, index + 1);
-
-	public virtual int LastIndexOf(T item, int index, int length)
-	{
-		if (_size != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (_size != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (_size == 0)
-			return -1;
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		return LastIndexOfInternal(item, index, length);
-	}
-
-	public virtual int LastIndexOf(IEnumerable<T> collection) => LastIndexOf(collection, _size - 1, _size);
-
-	public virtual int LastIndexOf(IEnumerable<T> collection, int index) => LastIndexOf(collection, index, index + 1);
-
-	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length) => LastIndexOf(collection, index, length, out _);
-
-	public virtual int LastIndexOf(IEnumerable<T> collection, int index, int length, out int otherCount)
-	{
-		if (_size != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (_size != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (_size == 0 || length == 0 || !collection.Any())
-		{
-			otherCount = 0;
-			return -1;
-		}
-		if (collection is not G.ICollection<T> c)
-			return LastIndexOf(CollectionCreator(collection), index, length, out otherCount);
-		otherCount = c.Count;
-		var startIndex = index + 1 - length;
-		for (var i = length - otherCount; i >= 0; i--)
-			if (EqualsInternal(c, startIndex + i))
-				return startIndex + i;
-		return -1;
-	}
-
-	public virtual int LastIndexOf(TCertain list) => LastIndexOf((IEnumerable<T>)list, _size - 1, _size);
-
-	public virtual int LastIndexOf(TCertain list, int index) => LastIndexOf((IEnumerable<T>)list, index, index + 1);
-
-	public virtual int LastIndexOf(TCertain list, int index, int length) => LastIndexOf((IEnumerable<T>)list, index, length);
-
-	public virtual int LastIndexOf(TCertain list, int index, int length, out int otherCount) => LastIndexOf((IEnumerable<T>)list, index, length, out otherCount);
-
-	public virtual int LastIndexOfAny(IEnumerable<T> collection) => LastIndexOfAny(collection, _size - 1, _size);
-
-	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index) => LastIndexOfAny(collection, index, index + 1);
-
-	public virtual int LastIndexOfAny(IEnumerable<T> collection, int index, int length)
-	{
-		if (_size != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (_size != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		var hs = collection.ToHashSet();
-		var startIndex = index + 1 - length;
-		for (var i = index; i >= startIndex; i--)
-			if (hs.Contains(GetInternal(i)))
-				return i;
-		return -1;
-	}
-
-	public virtual int LastIndexOfAny(TCertain list) => LastIndexOfAny((IEnumerable<T>)list, _size - 1, _size);
-
-	public virtual int LastIndexOfAny(TCertain list, int index) => LastIndexOfAny((IEnumerable<T>)list, index, index + 1);
-
-	public virtual int LastIndexOfAny(TCertain list, int index, int length) => LastIndexOfAny((IEnumerable<T>)list, index, length);
-
-	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection) => LastIndexOfAnyExcluding(collection, _size - 1, _size);
-
-	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index) => LastIndexOfAnyExcluding(collection, index, index + 1);
-
-	public virtual int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
-	{
-		if (_size != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (_size != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		var hs = collection.ToHashSet();
-		var startIndex = index + 1 - length;
-		for (var i = index; i >= startIndex; i--)
-			if (!hs.Contains(GetInternal(i)))
-				return i;
-		return -1;
-	}
-
-	public virtual int LastIndexOfAnyExcluding(TCertain list) => LastIndexOfAnyExcluding((IEnumerable<T>)list, _size - 1, _size);
-
-	public virtual int LastIndexOfAnyExcluding(TCertain list, int index) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, index + 1);
-
-	public virtual int LastIndexOfAnyExcluding(TCertain list, int index, int length) => LastIndexOfAnyExcluding((IEnumerable<T>)list, index, length);
-
-	private protected abstract int LastIndexOfInternal(T item, int index, int length);
 
 	public virtual TCertain Pad(int length) => Pad(length, default!);
 
@@ -1231,10 +1435,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 			Add(value);
 		return this2;
 	}
-
-	public virtual T Random() => this[random.Next(_size)];
-
-	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];
 
 	public virtual TCertain Remove(Index index) => Remove(index.GetOffset(_size));
 
@@ -1521,53 +1721,6 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual TCertain Skip(int length) => GetRange(Clamp(length, 0, _size));
-
-	public virtual TCertain SkipLast(int length) => GetRange(0, Max(0, _size - Max(length, 0)));
-
-	public virtual TCertain SkipWhile(Func<T, bool> function)
-	{
-		var i = 0;
-		for (; i < _size && function(GetInternal(i)); i++) ;
-		return GetRange(i);
-	}
-
-	public virtual TCertain SkipWhile(Func<T, int, bool> function)
-	{
-		var i = 0;
-		for (; i < _size && function(GetInternal(i), i); i++) ;
-		return GetRange(i);
-	}
-
-	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0);
-
-	public virtual bool StartsWith(TCertain list) => StartsWith((IEnumerable<T>)list);
-
-	public virtual TCertain Take(int length) => GetRange(0, Clamp(length, 0, _size));
-
-	public virtual TCertain TakeLast(int length) => GetRange(Max(0, _size - Max(length, 0)));
-
-	public virtual TCertain TakeWhile(Func<T, bool> function)
-	{
-		var i = 0;
-		for (; i < _size && function(GetInternal(i)); i++) ;
-		return GetRange(0, i);
-	}
-
-	public virtual TCertain TakeWhile(Func<T, int, bool> function)
-	{
-		var i = 0;
-		for (; i < _size && function(GetInternal(i), i); i++) ;
-		return GetRange(0, i);
-	}
-
-	public virtual T[] ToArray()
-	{
-		var array = new T[Length];
-		CopyToInternal(0, array, 0, Length);
-		return array;
-	}
-
 	public static List<TCertain> Transpose(List<TCertain> list, bool widen = false)
 	{
 		if (list._size == 0)
@@ -1594,72 +1747,7 @@ public abstract class BaseList<T, TCertain> : IList<T>, IList, IReadOnlyList<T>,
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual bool TrueForAll(Predicate<T> match)
-	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		for (var i = 0; i < _size; i++)
-			if (!match(this[i]))
-				return false;
-		return true;
-	}
-
 	public static implicit operator BaseList<T, TCertain>(T x) => new TCertain().Add(x);
-
-	[Serializable]
-	public struct Enumerator : IEnumerator<T>, IEnumerator
-	{
-		private readonly BaseList<T, TCertain> list;
-		private int index;
-		private T current;
-
-		internal Enumerator(BaseList<T, TCertain> list)
-		{
-			this.list = list;
-			index = 0;
-			current = default!;
-		}
-
-		public readonly void Dispose()
-		{
-		}
-
-		public bool MoveNext()
-		{
-			var localList = list;
-			if ((uint)index < (uint)localList._size)
-			{
-				current = localList[index++];
-				return true;
-			}
-			return MoveNextRare();
-		}
-
-		private bool MoveNextRare()
-		{
-			index = list._size + 1;
-			current = default!;
-			return false;
-		}
-
-		public readonly T Current => current;
-
-		readonly object IEnumerator.Current
-		{
-			get
-			{
-				if (index == 0 || index == list._size + 1)
-					throw new InvalidOperationException();
-				return Current!;
-			}
-		}
-
-		void IEnumerator.Reset()
-		{
-			index = 0;
-			current = default!;
-		}
-	}
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -2198,9 +2286,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow> where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
 	private protected TLow? low;
@@ -2687,9 +2773,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 }
 
-[DebuggerDisplay("Length = {Length}")]
-[ComVisible(true)]
-[Serializable]
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> where TCertain : BaseSet<T, TCertain>, new()
 {
 	public override TCertain Add(T item)
@@ -2700,7 +2784,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
-	public override Span<T> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
 	private protected override void ClearInternal(int index, int length)
 	{
