@@ -14,7 +14,7 @@ namespace Corlib.NStar.Tests;
 
 internal static class Global
 {
-	internal static readonly Random random = new(1234567890);
+	internal static readonly Random random = new();
 	internal static readonly G.IEnumerable<string> defaultCollection = new List<string>("AAA", "BBB", "AAA", "BBB", "CCC", "BBB", "CCC", "DDD", "CCC");
 	internal static readonly string defaultString = "XXX";
 	internal static readonly ImmutableArray<string> list = ImmutableArray.Create("MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD");
@@ -28,4 +28,6 @@ internal static class Global
 	internal static readonly bool[] testBools = E.ToArray(E.SelectMany(testBytes, x => E.Select(E.Range(0, 8), y => (x & 1 << y) != 0)));
 	internal static readonly G.IEnumerable<string> enumerable = E.Select(list, x => x);
 	internal static readonly G.IEnumerable<string> enumerable2 = E.SkipWhile(list, _ => random.Next(10) == -1);
+	internal static readonly G.IEnumerable<(char, char, char)> nEnumerable = E.Select(nList, x => x);
+	internal static readonly G.IEnumerable<(char, char, char)> nEnumerable2 = E.SkipWhile(nList, _ => random.Next(10) == -1);
 }

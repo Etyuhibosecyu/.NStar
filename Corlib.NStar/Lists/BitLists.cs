@@ -445,6 +445,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	private protected override void Copy(BitList source, int sourceIndex, BitList destination, int destinationIndex, int length)
 	{
 		CopyBits(source._items, source._capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, length);
+		if (destination._size < destinationIndex + length)
+			destination._size = destinationIndex + length;
 		destination.Changed();
 	}
 

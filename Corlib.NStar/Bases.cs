@@ -1283,7 +1283,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		if (index < _size)
 			Copy(this2, index, this2, index + 1, _size - index);
 		SetInternal(index, item);
-		_size++;
 		return this2;
 	}
 
@@ -1329,7 +1328,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			}
 			else
 				Copy(list, 0, this2, index, length);
-			_size += length;
 		}
 		return this2;
 	}
@@ -1621,7 +1619,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			if (index + length < _size)
 				Copy(this2, index + length, this2, index + list._size, _size - index - length);
 			Copy(list, 0, this2, index, list._size);
-			_size += list._size - length;
+			_size += index + length < _size ? 0 : list._size - length;
 		}
 		return this2;
 	}
@@ -2821,10 +2819,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
-		{
 			base.Insert(index, item);
-			_size--;
-		}
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
@@ -2861,12 +2856,26 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return false;
 	}
 
+	public override TCertain Pad(int length, T value) => throw new NotSupportedException();
+
+	public override TCertain PadInPlace(int length, T value) => throw new NotSupportedException();
+
+	public override TCertain PadLeft(int length, T value) => throw new NotSupportedException();
+
+	public override TCertain PadLeftInPlace(int length, T value) => throw new NotSupportedException();
+
+	public override TCertain PadRight(int length, T value) => throw new NotSupportedException();
+
+	public override TCertain PadRightInPlace(int length, T value) => throw new NotSupportedException();
+
 	public override TCertain Repeat(int length) => length switch
 	{
 		0 => new(),
 		1 => Copy(),
 		_ => throw new ArgumentOutOfRangeException(nameof(length)),
 	};
+
+	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) => base.ReplaceRangeInternal(index, length, collection is TCertain list ? list : CollectionCreator(collection).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)));
 
 	private protected override TCertain ReverseInternal(int index, int length) => throw new NotSupportedException();
 
@@ -2892,6 +2901,8 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			return true;
 		}
 	}
+
+	internal override TCertain SetRangeInternal(int index, int length, TCertain list) => base.SetRangeInternal(index, CreateVar(CollectionCreator(list).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)), out var list2).Length, list2);
 
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{

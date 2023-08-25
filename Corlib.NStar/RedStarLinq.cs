@@ -64984,6 +64984,64 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
+	internal static List<TResult> PairsEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		List<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = function(item, item2);
+		}
+		result._size = length;
+		return result;
+	}
+
+	internal static List<TResult> PairsEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		List<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = function(item, item2, i);
+		}
+		result._size = length;
+		return result;
+	}
+
+	internal static List<(T, T)> PairsEnumerable(ReadOnlySpan<T> source, int offset = 1)
+	{
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		List<(T, T)> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = (item, item2);
+		}
+		result._size = length;
+		return result;
+	}
+
 	internal static T? ProgressionEnumerable(ReadOnlySpan<T> source, Func<T, T, T> function)
 	{
 		var length = source.Length;
@@ -68092,6 +68150,333 @@ public unsafe partial class NList<T>
 				result._items[j++] = i;
 		result._size = j;
 		result.TrimExcess();
+		return result;
+	}
+
+	internal static NList<TResult> PairsEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, T_, TResult> function, int offset = 1) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T_> list)
+		{
+			var length = list.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				var item2 = list[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(List<T_>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T_>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = function(item, item2);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static NList<TResult> PairsEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, T_, int, TResult> function, int offset = 1) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T_> list)
+		{
+			var length = list.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				var item2 = list[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(List<T_>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T_>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = function(item, item2, i);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static NList<(T, T)> PairsEnumerable(IEnumerable<T> source, int offset = 1)
+	{
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T> list)
+		{
+			var length = list.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				var item2 = list[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			NList<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			NList<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			NList<(T, T)> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = (item, item2);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static NList<TResult> PairsEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, T_, TResult> function, int offset = 1) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = function(item, item2);
+		}
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<TResult> PairsEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, T_, int, TResult> function, int offset = 1) where TResult : unmanaged
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = function(item, item2, i);
+		}
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<(T, T)> PairsEnumerable(ReadOnlySpan<T> source, int offset = 1)
+	{
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		var length = source.Length - offset;
+		if (length <= 0)
+			return new();
+		NList<(T, T)> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source[i];
+			var item2 = source[i + offset];
+			result._items[i] = (item, item2);
+		}
+		result._size = length;
 		return result;
 	}
 
@@ -71791,6 +72176,15 @@ public static class RedStarLinq
 	public static long Min(this Span<long> source) => List<long>.MinEnumerable((ReadOnlySpan<long>)source);
 	public static mpz_t Min(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
 	public static mpz_t Min(this Span<mpz_t> source) => List<mpz_t>.MinEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
+	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
+	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
+	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
+	public static List<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static List<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static List<(T, T)> Pairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable(source, offset);
+	public static List<(T, T)> Pairs<T>(this Span<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, offset);
+	public static List<(T, T)> Pairs<T>(this T[] source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), offset);
 	public static T? Progression<T>(this ReadOnlySpan<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static T? Progression<T>(this Span<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? Progression<T>(this T[] source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
@@ -72062,6 +72456,21 @@ public static class RedStarLinq
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
 	public static NList<int> NIndexesOf<T>(this NList<T> source, T target) where T : unmanaged => NList<T>.IndexesOfEnumerable(source, target);
+	public static NList<TResult> NPairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this Span<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this NList<T> source, Func<T, T, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged => NList<T>.PairsEnumerable(source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this NList<T> source, Func<T, T, int, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged => NList<T>.PairsEnumerable(source, function, offset);
+	public static NList<(T, T)> NPairs<T>(this IEnumerable<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
+	public static NList<(T, T)> NPairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
+	public static NList<(T, T)> NPairs<T>(this Span<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable((ReadOnlySpan<T>)source, offset);
+	public static NList<(T, T)> NPairs<T>(this T[] source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), offset);
+	public static NList<(T, T)> NPairs<T>(this NList<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
 	public static NList<T> NRemoveDoubles<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.RemoveDoublesEnumerable(source, function);
 	public static NList<T> NRemoveDoubles<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.RemoveDoublesEnumerable(source, function);
 	public static NList<T> NRemoveDoubles<T>(this NList<T> source) where T : unmanaged => NList<T>.RemoveDoublesEnumerable(source);

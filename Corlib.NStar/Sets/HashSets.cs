@@ -162,7 +162,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		{
 			EnsureCapacity(_size + length);
 			if (index < _size)
-				Copy(this2, index, this2, index + length, entries.Length - index - length);
+				Copy(this2, index, this2, index + length, _size - index);
 			if (this == collection)
 				return this as TCertain ?? throw new InvalidOperationException();
 			else

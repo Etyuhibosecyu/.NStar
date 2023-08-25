@@ -579,6 +579,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, length);
+		if (destination._size < destinationIndex + length)
+			destination._size = destinationIndex + length;
 		Changed();
 	}
 
@@ -620,6 +622,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				Array.Copy(_items, 0, newItems, 0, index);
 			if (index < _size)
 				Array.Copy(_items, index, newItems, index + 1, _size - index);
+			_size++;
 			newItems[index] = item;
 			_items = newItems;
 		}
@@ -627,9 +630,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			if (index < _size)
 				Copy(this as TCertain ?? throw new InvalidOperationException(), index, this as TCertain ?? throw new InvalidOperationException(), index + 1, _size - index);
+			else
+				_size++;
 			_items[index] = item;
 		}
-		_size++;
 		Changed();
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
@@ -1223,6 +1227,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int length)
 	{
 		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, length);
+		if (destination._size < destinationIndex + length)
+			destination._size = destinationIndex + length;
 		Changed();
 	}
 
@@ -1334,7 +1340,6 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 				Copy(this, index, this, index + 1, _size - index);
 			_items[index] = item;
 		}
-		_size++;
 		Changed();
 		return this;
 	}
