@@ -31,6 +31,14 @@ public partial class List<T, TCertain>
 					return false;
 			return true;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+				if (!function(list3[i]))
+					return false;
+			return true;
+		}
 		else
 		{
 			var i = 0;
@@ -75,6 +83,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!function(item, i))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!function(item, i))
 					return false;
 			}
@@ -128,6 +147,14 @@ public partial class List<T, TCertain>
 					return true;
 			return false;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i]))
+					return true;
+			return false;
+		}
 		else
 		{
 			var i = 0;
@@ -172,6 +199,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (function(item, i))
+					return true;
+			}
+			return false;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (function(item, i))
 					return true;
 			}
@@ -234,6 +272,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item);
+				result2._items[i] = function2(item);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -304,6 +357,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item, i);
+				result2._items[i] = function2(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -429,6 +497,20 @@ public partial class List<T, TCertain>
 			result2._size = length;
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				(result._items[i], result2._items[i]) = function(item);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
@@ -487,6 +569,20 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i]) = function(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -573,6 +669,24 @@ public partial class List<T, TCertain>
 			result3._size = length;
 			return (result, result2, result3);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			List<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item);
+				result2._items[i] = function2(item);
+				result3._items[i] = function3(item);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
@@ -649,6 +763,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item, i);
+				result2._items[i] = function2(item, i);
+				result3._items[i] = function3(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			List<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -795,6 +927,22 @@ public partial class List<T, TCertain>
 			result3._size = length;
 			return (result, result2, result3);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			List<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				(result._items[i], result2._items[i], result3._items[i]) = function(item);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
@@ -861,6 +1009,22 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			List<TResult2> result2 = new(length);
+			List<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -943,6 +1107,23 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length / 2);
+			result2 = new(length / 2);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
@@ -1016,6 +1197,23 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length / 2);
+			result2 = new(length / 2);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item, i))
+					result.Add(item);
+				else
+					result2.Add(item);
+			}
+			result.TrimExcess();
+			result2.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
@@ -1073,6 +1271,19 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -1140,6 +1351,19 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
@@ -1200,6 +1424,19 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<(T, T2)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			List<(T, T2)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
@@ -1225,7 +1462,7 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
+			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -1260,6 +1497,20 @@ public partial class List<T, TCertain>
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
+				result._items[i] = function(item, item2, item3);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -1292,7 +1543,7 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
+			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -1327,6 +1578,20 @@ public partial class List<T, TCertain>
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
+				result._items[i] = function(item, item2, item3, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -1357,7 +1622,7 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = MinEnumerable(new[] { list._size, list2._size, list3._size }.AsSpan());
+			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
 			List<(T, T2, T3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -1392,6 +1657,20 @@ public partial class List<T, TCertain>
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
+				result._items[i] = (item, item2, item3);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			List<(T, T2, T3)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -1460,6 +1739,17 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (item?.Equals(target) ?? false)
+					return true;
+			}
+			return false;
+		}
 		else
 		{
 			var i = 0;
@@ -1502,6 +1792,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (comparer.Equals(item, target))
+					return true;
+			}
+			return false;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (comparer.Equals(item, target))
 					return true;
 			}
@@ -1555,6 +1856,17 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (comparer.Equals(item, target))
+					return true;
+			}
+			return false;
+		}
 		else
 		{
 			var i = 0;
@@ -1603,6 +1915,17 @@ public partial class List<T, TCertain>
 			}
 			return false;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (comparer.Equals(item, target))
+					return true;
+			}
+			return false;
+		}
 		else
 		{
 			var i = 0;
@@ -1643,6 +1966,15 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 				result._items[i] = function(list2[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list3[i]);
 			result._size = length;
 			return result;
 		}
@@ -1699,6 +2031,18 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -1738,6 +2082,14 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(1024);
 			for (var i = 0; i < length; i++)
 				result.AddRange(function(list2[i]));
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+				result.AddRange(function(list3[i]));
 			return result;
 		}
 		else
@@ -1789,6 +2141,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result.AddRange(function(item, i));
+			}
+			return result;
+		}
 		else
 		{
 			List<TResult> result = new(1024);
@@ -1832,6 +2195,15 @@ public partial class List<T, TCertain>
 					n++;
 			return n;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var n = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i]))
+					n++;
+			return n;
+		}
 		else
 		{
 			var n = 0;
@@ -1869,6 +2241,15 @@ public partial class List<T, TCertain>
 			var n = 0;
 			for (var i = 0; i < length; i++)
 				if (function(list2[i], i))
+					n++;
+			return n;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var n = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i], i))
 					n++;
 			return n;
 		}
@@ -1915,6 +2296,18 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (item?.Equals(target) ?? false)
+					n++;
+			}
+			return n;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var n = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (item?.Equals(target) ?? false)
 					n++;
 			}
@@ -1974,6 +2367,20 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (!function(item, item2))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count != list3_2.Count)
+				return false;
+			var length = list3_.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (!function(item, item2))
 					return false;
 			}
@@ -2041,6 +2448,20 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count != list3_2.Count)
+				return false;
+			var length = list3_.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (!function(item, item2, i))
+					return false;
+			}
+			return true;
+		}
 		else
 		{
 			var en = source.GetEnumerator();
@@ -2098,6 +2519,20 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (!(item?.Equals(item2) ?? item2 == null))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count != list3_2.Count)
+				return false;
+			var length = list3_.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (!(item?.Equals(item2) ?? item2 == null))
 					return false;
 			}
@@ -2200,6 +2635,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length / 2);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
@@ -2257,6 +2705,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length / 2);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item, i))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
@@ -2308,6 +2769,17 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item))
+					return item;
+			}
+			return default;
+		}
 		else
 		{
 			var i = 0;
@@ -2352,6 +2824,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (function(item, i))
+					return item;
+			}
+			return default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (function(item, i))
 					return item;
 			}
@@ -2412,6 +2895,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -2463,6 +2959,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (function(item, i))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (function(item, i))
 					result.Add(item);
 			}
@@ -2546,6 +3055,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2667,6 +3201,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -2756,6 +3315,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -2877,6 +3461,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -2966,6 +3575,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3087,6 +3721,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -3176,6 +3835,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3297,6 +3981,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -3386,6 +4095,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3507,6 +4241,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -3596,6 +4355,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -3717,6 +4501,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -3766,6 +4575,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -3794,6 +4609,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -3824,6 +4645,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -3852,6 +4679,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -3884,6 +4717,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -3918,6 +4758,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -3950,6 +4797,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -3984,6 +4838,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -4016,6 +4877,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -4050,6 +4918,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -4082,6 +4957,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (mpz_t)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -4116,6 +4998,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -4146,6 +5035,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4174,6 +5069,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4204,6 +5105,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4232,6 +5139,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4262,6 +5175,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4290,6 +5209,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4320,6 +5245,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4348,6 +5279,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4378,6 +5315,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4406,6 +5349,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4436,6 +5385,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -4464,6 +5419,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindAllEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindAllEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -4534,6 +5495,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4655,6 +5641,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -4744,6 +5755,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -4865,6 +5901,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -4954,6 +6015,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5075,6 +6161,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -5164,6 +6275,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5285,6 +6421,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -5374,6 +6535,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5495,6 +6681,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -5584,6 +6795,31 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result.Add(item);
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -5705,6 +6941,31 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result.Add(item);
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result.Clear();
+				}
+				else if (f == indicator!)
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -5766,6 +7027,18 @@ public partial class List<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 				if (function(list2[i]))
+					result._items[j++] = i;
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i]))
 					result._items[j++] = i;
 			result._size = j;
 			result.TrimExcess();
@@ -5834,6 +7107,21 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (function(item, i))
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -5873,6 +7161,14 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 				if (function(list2[i]))
+					return i;
+			return default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+				if (function(list3[i]))
 					return i;
 			return default;
 		}
@@ -5920,6 +7216,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (function(item, i))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (function(item, i))
 					return i;
 			}
@@ -5975,6 +7282,17 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (function(item))
+					return item;
+			}
+			return default;
+		}
 		else
 			return FindLastEnumerable(new List<T>(source), function);
 	}
@@ -6016,6 +7334,17 @@ public partial class List<T, TCertain>
 			}
 			return default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (function(item, i))
+					return item;
+			}
+			return default;
+		}
 		else
 			return FindLastEnumerable(new List<T>(source), function);
 	}
@@ -6045,6 +7374,14 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = length - 1; i >= 0; i--)
 				if (function(list2[i]))
+					return i;
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+				if (function(list3[i]))
 					return i;
 			return -1;
 		}
@@ -6084,6 +7421,17 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (function(item, i))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (function(item, i))
 					return i;
 			}
@@ -6150,6 +7498,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6237,6 +7607,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -6298,6 +7690,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6385,6 +7799,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -6446,6 +7882,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6533,6 +7991,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -6594,6 +8074,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6681,6 +8183,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -6742,6 +8266,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6829,6 +8375,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -6890,6 +8458,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -6977,6 +8567,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
@@ -7002,6 +8614,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -7029,6 +8647,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7055,6 +8679,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7080,6 +8710,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -7110,6 +8746,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7138,6 +8781,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -7168,6 +8818,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7196,6 +8853,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -7226,6 +8890,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7254,6 +8925,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -7284,6 +8962,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7313,6 +8998,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
@@ -7338,6 +9030,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7365,6 +9063,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7390,6 +9094,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7417,6 +9127,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7442,6 +9158,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7469,6 +9191,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7494,6 +9222,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7521,6 +9255,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7546,6 +9286,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7573,6 +9319,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7599,6 +9351,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
@@ -7624,6 +9382,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 			return FindLastMedianEnumerable(new List<T>(source), function);
@@ -7686,6 +9450,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7773,6 +9559,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -7834,6 +9642,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -7921,6 +9751,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -7982,6 +9834,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8069,6 +9943,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -8130,6 +10026,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8217,6 +10135,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -8278,6 +10218,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8365,6 +10327,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -8426,6 +10410,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8513,6 +10519,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
@@ -8574,6 +10602,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8661,6 +10711,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -8722,6 +10794,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8809,6 +10903,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -8870,6 +10986,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -8957,6 +11095,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -9018,6 +11178,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9105,6 +11287,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -9166,6 +11370,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9253,6 +11479,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -9314,6 +11562,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -9401,6 +11671,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
@@ -9426,6 +11718,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -9453,6 +11751,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9479,6 +11783,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9504,6 +11814,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -9534,6 +11850,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9562,6 +11885,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -9592,6 +11922,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9620,6 +11957,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -9650,6 +11994,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9678,6 +12029,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -9708,6 +12066,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9737,6 +12102,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
@@ -9762,6 +12134,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -9789,6 +12167,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -9814,6 +12198,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -9841,6 +12231,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -9866,6 +12262,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -9893,6 +12295,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -9918,6 +12326,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -9945,6 +12359,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -9970,6 +12390,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -9997,6 +12423,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -10023,6 +12455,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
@@ -10048,6 +12486,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
@@ -10110,6 +12554,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10197,6 +12663,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10258,6 +12746,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10345,6 +12855,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10406,6 +12938,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10493,6 +13047,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10554,6 +13130,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10641,6 +13239,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10702,6 +13322,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10789,6 +13431,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10850,6 +13514,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -10937,6 +13623,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
@@ -10997,6 +13705,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11103,6 +13833,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -11183,6 +13935,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11289,6 +14063,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -11369,6 +14165,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11475,6 +14293,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -11555,6 +14395,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11661,6 +14523,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -11741,6 +14625,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -11847,6 +14753,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -11927,6 +14855,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -12033,6 +14983,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -12079,6 +15051,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12107,6 +15085,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12137,6 +15121,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12165,6 +15155,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12197,6 +15193,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -12231,6 +15234,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12263,6 +15273,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -12297,6 +15314,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12329,6 +15353,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -12363,6 +15394,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12395,6 +15433,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -12429,6 +15474,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -12459,6 +15511,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12487,6 +15545,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12517,6 +15581,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12545,6 +15615,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12575,6 +15651,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12603,6 +15685,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12633,6 +15721,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12661,6 +15755,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12691,6 +15791,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12719,6 +15825,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12749,6 +15861,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -12777,6 +15895,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -12841,6 +15965,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -12947,6 +16093,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13027,6 +16195,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13133,6 +16323,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13213,6 +16425,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13319,6 +16553,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13399,6 +16655,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13505,6 +16783,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13585,6 +16885,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13691,6 +17013,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13771,6 +17115,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = item;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -13877,6 +17243,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = item;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = item;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			T? result = default;
@@ -13970,6 +17358,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14103,6 +17519,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -14200,6 +17644,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14333,6 +17805,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -14430,6 +17930,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14563,6 +18091,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -14660,6 +18216,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -14793,6 +18377,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -14890,6 +18502,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -15023,6 +18663,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -15120,6 +18788,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -15253,6 +18949,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -15303,6 +19027,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15331,6 +19061,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15361,6 +19097,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15389,6 +19131,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15421,6 +19169,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -15455,6 +19210,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15487,6 +19249,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -15521,6 +19290,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15553,6 +19329,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -15587,6 +19370,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15619,6 +19409,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (mpz_t)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
@@ -15653,6 +19450,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -15683,6 +19487,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -15711,6 +19521,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15741,6 +19557,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -15769,6 +19591,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15799,6 +19627,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -15827,6 +19661,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15857,6 +19697,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -15885,6 +19731,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15915,6 +19767,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -15943,6 +19801,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -15973,6 +19837,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -16001,6 +19871,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexesEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexesEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -16078,6 +19954,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16211,6 +20115,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -16308,6 +20240,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16441,6 +20401,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -16538,6 +20526,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16671,6 +20687,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -16768,6 +20812,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -16901,6 +20973,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -16998,6 +21098,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17131,6 +21259,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -17228,6 +21384,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17361,6 +21545,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -17445,6 +21657,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17551,6 +21785,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -17631,6 +21887,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17737,6 +22015,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -17817,6 +22117,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -17923,6 +22245,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -18003,6 +22347,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18109,6 +22475,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -18189,6 +22577,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18295,6 +22705,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -18375,6 +22807,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -18481,6 +22935,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -18527,6 +23003,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18555,6 +23037,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -18585,6 +23073,12 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18613,6 +23107,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -18645,6 +23145,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -18679,6 +23186,13 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (int)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18711,6 +23225,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -18745,6 +23266,13 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (uint)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18777,6 +23305,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -18811,6 +23346,13 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (long)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18843,6 +23385,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
@@ -18877,6 +23426,13 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MeanEnumerable(list3, function);
+			var value2 = (mpz_t)value;
+			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
@@ -18907,6 +23463,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -18935,6 +23497,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -18965,6 +23533,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -18993,6 +23567,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -19023,6 +23603,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -19051,6 +23637,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -19081,6 +23673,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -19109,6 +23707,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -19139,6 +23743,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -19167,6 +23777,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -19197,6 +23813,12 @@ public partial class List<T, TCertain>
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x) => function(x) == value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x) => function(x) == value);
+		}
 		else
 		{
 			var value = MedianEnumerable(source, function);
@@ -19225,6 +23847,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			var value = MedianEnumerable(list2, function);
 			return FindIndexEnumerable(list2, (x, index) => function(x, index) == value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var value = MedianEnumerable(list3, function);
+			return FindIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
 		{
@@ -19289,6 +23917,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19395,6 +24045,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -19475,6 +24147,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19581,6 +24275,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -19661,6 +24377,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19767,6 +24505,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -19847,6 +24607,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -19953,6 +24735,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -20033,6 +24837,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20139,6 +24965,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -20219,6 +25067,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -20325,6 +25195,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -20370,6 +25262,12 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				action(list2[i]);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+				action(list3[i]);
+		}
 		else
 		{
 			foreach (var item in source)
@@ -20397,6 +25295,12 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			for (var i = 0; i < length; i++)
 				action(list2[i], i);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+				action(list3[i], i);
 		}
 		else
 		{
@@ -20458,6 +25362,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20545,6 +25467,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -20612,6 +25552,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(T Key, int Count)> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20699,6 +25657,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -20777,6 +25753,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -20844,6 +25838,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(T Key, int Count)> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -20931,6 +25943,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21009,6 +26039,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21076,6 +26124,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(T Key, int Count)> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21163,6 +26229,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21241,6 +26325,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(TResult Key, int Count)> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21308,6 +26410,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index] = (f, result._items[index].Count + 1);
+				else
+					result._items[j++] = (f, 1);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<(T Key, int Count)> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
@@ -21395,6 +26515,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21473,6 +26611,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21540,6 +26696,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21627,6 +26801,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21705,6 +26897,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21772,6 +26982,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -21859,6 +27087,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -21937,6 +27183,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22004,6 +27268,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22091,6 +27373,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22169,6 +27469,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22236,6 +27554,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(item);
+				else
+					result._items[j++] = new((List<T>)item, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<T, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
@@ -22323,6 +27659,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22401,6 +27755,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22468,6 +27840,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22555,6 +27945,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22633,6 +28041,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22700,6 +28126,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -22787,6 +28231,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22865,6 +28327,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -22932,6 +28412,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
@@ -23019,6 +28517,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -23088,6 +28604,24 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, TResult>> result = new(length);
+			var j = 0;
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
@@ -23173,6 +28707,24 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<Group<int, T>> result = new(length);
+			var j = 0;
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result._items[index].Add(i);
+				else
+					result._items[j++] = new((List<int>)i, f);
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<Group<int, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -23232,6 +28784,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (item?.Equals(target) ?? false)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (item?.Equals(target) ?? false)
 					result._items[j++] = i;
 			}
@@ -23323,6 +28890,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23456,6 +29051,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -23553,6 +29176,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23686,6 +29337,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -23783,6 +29462,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -23916,6 +29623,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -24013,6 +29748,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24146,6 +29909,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -24243,6 +30034,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -24376,6 +30195,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -24491,6 +30338,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -24588,6 +30463,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -25337,6 +31240,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list_);
 			return List<decimal>.IndexesOfEnumerable(list_, value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			return List<decimal>.IndexesOfEnumerable(list_, value);
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25367,6 +31277,13 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			return List<decimal>.IndexesOfEnumerable(list_, value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return List<decimal>.IndexesOfEnumerable(list_, value);
 		}
@@ -25403,6 +31320,13 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list_);
 			return List<double>.IndexesOfEnumerable(list_, value);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			return List<double>.IndexesOfEnumerable(list_, value);
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25433,6 +31357,13 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			return List<double>.IndexesOfEnumerable(list_, value);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return List<double>.IndexesOfEnumerable(list_, value);
 		}
@@ -25468,6 +31399,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (int)value;
 			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
@@ -25509,6 +31448,14 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25542,6 +31489,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
@@ -25583,6 +31538,14 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25616,6 +31579,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (long)value;
 			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
@@ -25657,6 +31628,14 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25694,6 +31673,14 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25727,6 +31714,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (mpz_t)value;
 			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
@@ -25946,6 +31941,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -25973,6 +31974,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26004,6 +32011,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -26031,6 +32044,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26062,6 +32081,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -26089,6 +32114,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26120,6 +32151,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -26147,6 +32184,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26178,6 +32221,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -26205,6 +32254,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26236,6 +32291,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -26263,6 +32324,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -26503,6 +32570,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -26600,6 +32695,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			decimal indicator = 0;
+			var j = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26733,6 +32856,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -26830,6 +32981,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			double indicator = 0;
+			var j = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -26963,6 +33142,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -27060,6 +33267,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var indicator = 0;
+			var j = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27193,6 +33428,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -27290,6 +33553,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			uint indicator = 0;
+			var j = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27423,6 +33714,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -27520,6 +33839,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			long indicator = 0;
+			var j = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -27653,6 +34000,34 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -27750,6 +34125,34 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result._items[j++] = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result._items[j = 0] = i;
+					j++;
+				}
+				else if (f == indicator!)
+					result._items[j++] = i;
+			}
+			result._size = j;
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			mpz_t indicator = 0;
+			var j = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -28508,6 +34911,17 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (item?.Equals(target) ?? false)
+					return i;
+			}
+			return -1;
+		}
 		else
 		{
 			var i = 0;
@@ -28550,6 +34964,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28603,6 +35028,17 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
 		else
 		{
 			var i = 0;
@@ -28646,6 +35082,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -28720,6 +35167,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -28826,6 +35295,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -28906,6 +35397,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29012,6 +35525,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -29092,6 +35627,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29198,6 +35755,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -29278,6 +35857,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29384,6 +35985,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -29464,6 +36087,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -29570,6 +36215,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -29663,6 +36330,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -29743,6 +36432,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -30348,6 +37059,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<decimal>.IndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<decimal>.IndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30375,6 +37092,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<decimal>.IndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<decimal>.IndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
 		else
@@ -30406,6 +37129,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<double>.IndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<double>.IndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30433,6 +37162,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<double>.IndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<double>.IndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
 		else
@@ -30466,6 +37201,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (int)value;
 			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
@@ -30507,6 +37250,14 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30540,6 +37291,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
@@ -30581,6 +37340,14 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30614,6 +37381,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (long)value;
 			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
@@ -30655,6 +37430,14 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30692,6 +37475,14 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30725,6 +37516,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (mpz_t)value;
 			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
@@ -30936,6 +37735,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -30963,6 +37768,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -30994,6 +37805,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -31021,6 +37838,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -31052,6 +37875,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -31079,6 +37908,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -31110,6 +37945,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -31137,6 +37978,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -31168,6 +38015,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -31195,6 +38048,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -31226,6 +38085,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
@@ -31253,6 +38118,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -31475,6 +38346,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -31555,6 +38448,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31661,6 +38576,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -31741,6 +38678,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -31847,6 +38806,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -31927,6 +38908,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32033,6 +39036,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -32113,6 +39138,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32219,6 +39266,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -32299,6 +39368,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -32405,6 +39496,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 		{
 			var result = -1;
@@ -32485,6 +39598,28 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -33329,6 +40464,17 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (item?.Equals(target) ?? false)
+					return i;
+			}
+			return -1;
+		}
 		else
 			return LastIndexOfEnumerable(new List<T>(source), target);
 	}
@@ -33362,6 +40508,17 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33406,6 +40563,17 @@ public partial class List<T, TCertain>
 			}
 			return -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
 		else
 			return LastIndexOfEnumerable(new List<T>(source), target, equalFunction);
 	}
@@ -33440,6 +40608,17 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (comparer.Equals(item, target))
+					return i;
+			}
+			return -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (comparer.Equals(item, target))
 					return i;
 			}
@@ -33506,6 +40685,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33593,6 +40794,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -33654,6 +40877,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33741,6 +40986,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -33802,6 +41069,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -33889,6 +41178,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -33950,6 +41261,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34037,6 +41370,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -34098,6 +41453,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -34185,6 +41562,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -34259,6 +41658,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
@@ -34320,6 +41741,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) > indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -34791,6 +42234,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<decimal>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -34815,6 +42264,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<decimal>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
 		else
@@ -34843,6 +42298,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<double>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<double>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -34867,6 +42328,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<double>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<double>.LastIndexOfEnumerable(list_, MeanEnumerable(list_));
 		}
 		else
@@ -34897,6 +42364,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (int)value;
 			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -34933,6 +42408,14 @@ public partial class List<T, TCertain>
 			var value2 = (int)value;
 			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (int)value;
+			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -34961,6 +42444,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -34997,6 +42488,14 @@ public partial class List<T, TCertain>
 			var value2 = (uint)value;
 			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (uint)value;
+			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -35025,6 +42524,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (long)value;
 			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -35061,6 +42568,14 @@ public partial class List<T, TCertain>
 			var value2 = (long)value;
 			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (long)value;
+			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -35093,6 +42608,14 @@ public partial class List<T, TCertain>
 			var value2 = (mpz_t)value;
 			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
@@ -35121,6 +42644,14 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			var value = MeanEnumerable(list_);
+			var value2 = (mpz_t)value;
+			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			var value2 = (mpz_t)value;
 			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -35301,6 +42832,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35325,6 +42862,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35353,6 +42896,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35377,6 +42926,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35405,6 +42960,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35429,6 +42990,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35457,6 +43024,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35481,6 +43054,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35509,6 +43088,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35533,6 +43118,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35561,6 +43152,12 @@ public partial class List<T, TCertain>
 			var list_ = ConvertEnumerable(list2, function);
 			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
+			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
@@ -35585,6 +43182,12 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
+			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var list_ = ConvertEnumerable(list3, function);
 			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
@@ -35787,6 +43390,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -35848,6 +43473,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -35935,6 +43582,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -35996,6 +43665,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			double indicator = 0;
+			double f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36083,6 +43774,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -36144,6 +43857,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			var indicator = 0;
+			int f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36231,6 +43966,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -36292,6 +44049,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			uint indicator = 0;
+			uint f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36379,6 +44158,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -36440,6 +44241,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			long indicator = 0;
+			long f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -36527,6 +44350,28 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
+				if (i == 0)
+				{
+					indicator = function(item);
+					result = i;
+				}
+				else if ((f = function(item)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
 		else
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
@@ -36588,6 +44433,28 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
+				if (i == 0)
+				{
+					indicator = function(item, i);
+					result = i;
+				}
+				else if ((f = function(item, i)) < indicator!)
+				{
+					indicator = f;
+					result = i;
+				}
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = -1;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = length - 1; i >= 0; i--)
+			{
+				var item = list3[i];
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -37098,6 +44965,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			decimal indicator = 0;
@@ -37156,6 +45038,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37228,6 +45125,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			double indicator = 0;
@@ -37286,6 +45198,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37358,6 +45285,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			var indicator = 0;
@@ -37416,6 +45358,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37488,6 +45445,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			uint indicator = 0;
@@ -37546,6 +45518,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37618,6 +45605,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			long indicator = 0;
@@ -37676,6 +45678,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -37748,6 +45765,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			mpz_t indicator = 0;
@@ -37806,6 +45838,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) > indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) > indicator!)
@@ -38235,6 +46282,14 @@ public partial class List<T, TCertain>
 				result += function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			decimal result = 0;
@@ -38284,6 +46339,17 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			decimal result = 0;
@@ -38323,6 +46389,14 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				result += (double)function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += (double)function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -38373,6 +46447,17 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += (double)function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			double result = 0;
@@ -38412,6 +46497,14 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -38462,6 +46555,17 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			double result = 0;
@@ -38501,6 +46605,14 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -38551,6 +46663,17 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			double result = 0;
@@ -38590,6 +46713,14 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -38640,6 +46771,17 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list2.Count, 1);
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
+		}
 		else
 		{
 			double result = 0;
@@ -38679,6 +46821,14 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 				result += (double)function(list2[i]);
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += (double)function(list3[i]);
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -38728,6 +46878,17 @@ public partial class List<T, TCertain>
 				result += (double)function(item, i);
 			}
 			return result / Math.Max(list2.Count, 1);
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += (double)function(item, i);
+			}
+			return result / Math.Max(list3.Count, 1);
 		}
 		else
 		{
@@ -39043,6 +47204,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39065,6 +47231,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39089,6 +47260,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39111,6 +47287,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39135,6 +47316,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39157,6 +47343,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39181,6 +47372,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39203,6 +47399,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39227,6 +47428,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39249,6 +47455,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39273,6 +47484,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
@@ -39295,6 +47511,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
@@ -39385,6 +47606,11 @@ public partial class List<T, TCertain>
 			var length = list2.Count;
 			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? default : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+		}
 		else return TryGetLengthEasilyEnumerable(source, out var length)
 			? length == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(length - 1) / 2]
 			: MedianEnumerable(new List<T>(source), function);
@@ -39408,6 +47634,11 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			return list3.Count == 0 ? default : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else return TryGetLengthEasilyEnumerable(source, out var length)
 			? length == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(length - 1) / 2]
@@ -39468,6 +47699,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39540,6 +47786,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal indicator = 0;
+			decimal f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			decimal indicator = 0;
@@ -39598,6 +47859,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39670,6 +47946,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double indicator = 0;
+			double f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			double indicator = 0;
@@ -39728,6 +48019,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39800,6 +48106,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var indicator = 0;
+			int f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			var indicator = 0;
@@ -39858,6 +48179,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -39930,6 +48266,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint indicator = 0;
+			uint f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			uint indicator = 0;
@@ -39988,6 +48339,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item);
 				else if ((f = function(item)) < indicator!)
@@ -40060,6 +48426,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long indicator = 0;
+			long f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			long indicator = 0;
@@ -40125,6 +48506,21 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (i == 0)
+					indicator = function(item);
+				else if ((f = function(item)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
 		else
 		{
 			mpz_t indicator = 0;
@@ -40183,6 +48579,21 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (i == 0)
+					indicator = function(item, i);
+				else if ((f = function(item, i)) < indicator!)
+					indicator = f;
+			}
+			return indicator;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t indicator = 0;
+			mpz_t f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (i == 0)
 					indicator = function(item, i);
 				else if ((f = function(item, i)) < indicator!)
@@ -40594,6 +49005,275 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static List<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T> list)
+		{
+			var length = list._size - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				var item2 = list._items[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = function(item, item2);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static List<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1)
+	{
+		if (function == null)
+			throw new ArgumentNullException(nameof(function));
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T> list)
+		{
+			var length = list._size - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				var item2 = list._items[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = function(item, item2, i);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static List<(T, T)> PairsEnumerable(IEnumerable<T> source, int offset = 1)
+	{
+		if (offset < 1)
+			throw new ArgumentOutOfRangeException(nameof(offset));
+		if (source is List<T> list)
+		{
+			var length = list._size - offset;
+			if (length <= 0)
+				return new();
+			List<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				var item2 = list._items[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			var length = array.Length - offset;
+			if (length <= 0)
+				return new();
+			List<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = array[i];
+				var item2 = array[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count - offset;
+			if (length <= 0)
+				return new();
+			List<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				var item2 = list2[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count - offset;
+			if (length <= 0)
+				return new();
+			List<(T, T)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				var item2 = list3[i + offset];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			List<(T, T)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
+			if (result.Capacity == 0)
+				return result;
+			var en = source.GetEnumerator();
+			var queue = new LimitedQueue<T>(offset);
+			while (!queue.IsFull && en.MoveNext())
+				queue.Enqueue(en.Current);
+			var i = 0;
+			while (en.MoveNext())
+			{
+				result.EnsureCapacity(i + 1);
+				var item = queue.Dequeue();
+				var item2 = en.Current;
+				result._items[i] = (item, item2);
+				queue.Enqueue(item2);
+				i++;
+			}
+			result._size = i;
+			result._size = i;
+			return result;
+		}
+	}
+
 	internal static T? ProgressionEnumerable(IEnumerable<T> source, Func<T, T, T> function)
 	{
 		if (source is List<T> list)
@@ -40624,6 +49304,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result = result == null || i == 0 ? item : function(result, item);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			T? result = default;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result = result == null || i == 0 ? item : function(result, item);
 			}
 			return result;
@@ -40664,6 +49355,14 @@ public partial class List<T, TCertain>
 			var result = seed;
 			for (var i = 0; i < length; i++)
 				result = function(result, list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = seed;
+			for (var i = 0; i < length; i++)
+				result = function(result, list3[i]);
 			return result;
 		}
 		else
@@ -40716,6 +49415,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (hs.TryAdd(function(item)))
 					result.Add(item);
 			}
@@ -40780,6 +49492,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -40830,6 +49555,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (hs.TryAdd(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -40894,6 +49632,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -40952,6 +49703,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -41002,6 +49766,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (hs.TryAdd(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41066,6 +49843,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -41124,6 +49914,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -41174,6 +49977,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (hs.TryAdd(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41238,6 +50054,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -41296,6 +50125,19 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (hs.TryAdd(function(item, i)))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
 		else
 		{
 			List<T> result = new(1024);
@@ -41346,6 +50188,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				if (hs.TryAdd(item))
+					result.Add(item);
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				if (hs.TryAdd(item))
 					result.Add(item);
 			}
@@ -41438,6 +50293,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
 	}
@@ -41513,6 +50390,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item, i)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function);
 	}
@@ -41574,6 +50473,28 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (hs.TryAdd(item))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -41661,6 +50582,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function, comparer);
 	}
@@ -41736,6 +50679,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item, i)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function, comparer);
 	}
@@ -41797,6 +50762,28 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (hs.TryAdd(item))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -41884,6 +50871,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function, equalFunction);
 	}
@@ -41959,6 +50968,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item, i)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function, equalFunction);
 	}
@@ -42020,6 +51051,28 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (hs.TryAdd(item))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (hs.TryAdd(item))
 				{
 					result._items[j] = item;
@@ -42107,6 +51160,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(function(item)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), function, equalFunction, hashCodeFunction);
 	}
@@ -42170,6 +51245,28 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (hs.TryAdd(function(item, i)))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (hs.TryAdd(function(item, i)))
 				{
 					result._items[j] = item;
@@ -42255,6 +51352,28 @@ public partial class List<T, TCertain>
 			result2.TrimExcess();
 			return (result, result2);
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Math.Min(list3_.Count, list3_2.Count);
+			List<T> result = new(length);
+			List<T2> result2 = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (hs.TryAdd(item))
+				{
+					result._items[j] = item;
+					result2._items[j++] = item2;
+				}
+			}
+			result._size = j;
+			result2._size = j;
+			result.TrimExcess();
+			result2.TrimExcess();
+			return (result, result2);
+		}
 		else
 			return RemoveDoublesEnumerable(ReturnOrConstruct(source), ReturnOrConstruct(source2), equalFunction, hashCodeFunction);
 	}
@@ -42295,6 +51414,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42356,6 +51488,19 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -42407,6 +51552,19 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
 			}
 			result._size = length;
@@ -42468,6 +51626,19 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<int> result = new(length);
+			var j = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = !dic.TryAdd(item, out var index) ? index : j++;
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
@@ -42515,6 +51686,18 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[^(i + 1)] = item;
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[^(i + 1)] = item;
 			}
 			result._size = length;
@@ -42869,6 +52052,30 @@ public partial class List<T, TCertain>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = GetArrayLength(list3.Count, fragmentLength);
+			List<List<T>> result = new(length);
+			var count2 = list3.Count / fragmentLength;
+			var index = 0;
+			for (var i = 0; i < count2; i++)
+			{
+				result._items[i] = new(fragmentLength);
+				for (var j = 0; j < fragmentLength; j++)
+					result._items[i]._items[j] = list3[index++];
+				result._items[i]._size = fragmentLength;
+			}
+			var rest = list3.Count % fragmentLength;
+			if (rest != 0)
+			{
+				result._items[count2] = new(rest);
+				for (var j = 0; j < rest; j++)
+					result._items[count2]._items[j] = list3[index++];
+				result._items[count2]._size = rest;
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			if (!source.Any())
@@ -42938,6 +52145,20 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count < list3_2.Count)
+				return false;
+			var length = list3_2.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (!function(item, item2))
+					return false;
+			}
+			return true;
+		}
 		else
 		{
 			bool b2;
@@ -42994,6 +52215,20 @@ public partial class List<T, TCertain>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				if (!function(item, item2, i))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count < list3_2.Count)
+				return false;
+			var length = list3_2.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				if (!function(item, item2, i))
 					return false;
 			}
@@ -43060,6 +52295,20 @@ public partial class List<T, TCertain>
 			}
 			return true;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			if (list3_.Count < list3_2.Count)
+				return false;
+			var length = list3_2.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				if (!(item?.Equals(item2) ?? item2 == null))
+					return false;
+			}
+			return true;
+		}
 		else
 		{
 			bool b2;
@@ -43101,6 +52350,14 @@ public partial class List<T, TCertain>
 			decimal result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43152,6 +52409,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			decimal result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result;
+		}
 		else
 		{
 			decimal result = 0;
@@ -43190,6 +52458,14 @@ public partial class List<T, TCertain>
 			double result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43241,6 +52517,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			double result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result;
+		}
 		else
 		{
 			double result = 0;
@@ -43279,6 +52566,14 @@ public partial class List<T, TCertain>
 			var result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43330,6 +52625,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result;
+		}
 		else
 		{
 			var result = 0;
@@ -43368,6 +52674,14 @@ public partial class List<T, TCertain>
 			uint result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43419,6 +52733,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			uint result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result;
+		}
 		else
 		{
 			uint result = 0;
@@ -43457,6 +52782,14 @@ public partial class List<T, TCertain>
 			long result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43508,6 +52841,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			long result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result += function(item, i);
+			}
+			return result;
+		}
 		else
 		{
 			long result = 0;
@@ -43546,6 +52890,14 @@ public partial class List<T, TCertain>
 			mpz_t result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t result = 0;
+			for (var i = 0; i < length; i++)
+				result += function(list3[i]);
 			return result;
 		}
 		else
@@ -43593,6 +52945,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result += function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			mpz_t result = 0;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result += function(item, i);
 			}
 			return result;
@@ -44089,6 +53452,14 @@ public partial class List<T, TCertain>
 				result[i] = function(list2[i]);
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = new TResult[length];
+			for (var i = 0; i < length; i++)
+				result[i] = function(list3[i]);
+			return result;
+		}
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
 		{
 			var result = new TResult[length];
@@ -44140,6 +53511,17 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = new TResult[length];
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result[i] = function(item, i);
+			}
+			return result;
+		}
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
 		{
 			var result = new TResult[length];
@@ -44172,6 +53554,17 @@ public partial class List<T, TCertain>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result[i] = item;
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			var result = new T[length];
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result[i] = item;
 			}
 			return result;
@@ -51728,35 +61121,17 @@ public partial class List<T, TCertain>
 		return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<decimal> source)
-	{
-		return List<decimal>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<double> source)
-	{
-		return List<double>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<double> source) => List<double>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<int> source)
-	{
-		return List<int>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<int> source) => List<int>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<uint> source)
-	{
-		return List<uint>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<uint> source) => List<uint>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<long> source)
-	{
-		return List<long>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
-	{
-		return List<mpz_t>.IndexesOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -53033,35 +62408,17 @@ public partial class List<T, TCertain>
 		return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<decimal> source)
-	{
-		return List<decimal>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<double> source)
-	{
-		return List<double>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<double> source) => List<double>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<int> source)
-	{
-		return List<int>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<int> source) => List<int>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<uint> source)
-	{
-		return List<uint>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<uint> source) => List<uint>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<long> source)
-	{
-		return List<long>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
-	{
-		return List<mpz_t>.IndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfEnumerable(source, MedianEnumerable(source));
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -54287,35 +63644,17 @@ public partial class List<T, TCertain>
 		return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<decimal> source)
-	{
-		return List<decimal>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<double> source)
-	{
-		return List<double>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<double> source) => List<double>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<int> source)
-	{
-		return List<int>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<int> source) => List<int>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<uint> source)
-	{
-		return List<uint>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<uint> source) => List<uint>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<long> source)
-	{
-		return List<long>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source)
-	{
-		return List<mpz_t>.LastIndexOfEnumerable(source, MedianEnumerable(source));
-	}
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -56780,13 +66119,13 @@ public partial class List<T, TCertain>
 
 public unsafe partial class NList<T>
 {
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (function2 == null)
 			throw new ArgumentNullException(nameof(function2));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -56801,7 +66140,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -56816,7 +66155,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -56824,6 +66163,21 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item);
+				result2._items[i] = function2(item);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -56848,13 +66202,13 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (function2 == null)
 			throw new ArgumentNullException(nameof(function2));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -56869,7 +66223,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -56884,7 +66238,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -56892,6 +66246,21 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item, i);
+				result2._items[i] = function2(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -56967,11 +66336,11 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -56985,7 +66354,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -56999,7 +66368,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57007,6 +66376,20 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i]) = function(item);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57029,11 +66412,11 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -57047,7 +66430,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -57061,7 +66444,7 @@ public unsafe partial class NList<T>
 			result2._size = length;
 			return (result, result2);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57069,6 +66452,20 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i]) = function(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			return (result, result2);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57091,7 +66488,7 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57099,7 +66496,7 @@ public unsafe partial class NList<T>
 			throw new ArgumentNullException(nameof(function2));
 		if (function3 == null)
 			throw new ArgumentNullException(nameof(function3));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -57117,7 +66514,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -57135,7 +66532,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57144,6 +66541,24 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item);
+				result2._items[i] = function2(item);
+				result3._items[i] = function3(item);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			NList<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -57173,13 +66588,13 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (function2 == null)
 			throw new ArgumentNullException(nameof(function2));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -57197,7 +66612,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -57215,7 +66630,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57224,6 +66639,24 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				result._items[i] = function(item, i);
+				result2._items[i] = function2(item, i);
+				result3._items[i] = function3(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			NList<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -57312,11 +66745,11 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -57332,7 +66765,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -57348,7 +66781,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57357,6 +66790,22 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i], result3._items[i]) = function(item);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			NList<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -57382,11 +66831,11 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -57402,7 +66851,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			NList<TResult> result = new(length);
@@ -57418,7 +66867,7 @@ public unsafe partial class NList<T>
 			result3._size = length;
 			return (result, result2, result3);
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -57427,6 +66876,22 @@ public unsafe partial class NList<T>
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
+				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
+			}
+			result._size = length;
+			result2._size = length;
+			result3._size = length;
+			return (result, result2, result3);
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			NList<TResult2> result2 = new(length);
+			NList<TResult3> result3 = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -57452,7 +66917,7 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57472,7 +66937,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57504,7 +66969,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57521,7 +66986,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57538,7 +67003,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57563,7 +67028,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57600,7 +67065,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57619,7 +67084,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57824,11 +67289,11 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list && source2 is List<T2> list2)
+		if (source is List<T_> list && source2 is List<T2> list2)
 		{
 			var length = Min(list.Length, list2.Length);
 			NList<TResult> result = new(length);
@@ -57841,7 +67306,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array && source2 is T2[] array2)
+		else if (source is T_[] array && source2 is T2[] array2)
 		{
 			var length = Min(array.Length, array2.Length);
 			NList<TResult> result = new(length);
@@ -57854,7 +67319,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		else if (source is G.IList<T_> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			NList<TResult> result = new(length);
@@ -57862,6 +67327,19 @@ public unsafe partial class NList<T>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				result._items[i] = function(item, item2);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Min(list3_.Count, list3_2.Count);
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -57871,11 +67349,11 @@ public unsafe partial class NList<T>
 			return CombineEnumerable(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), function);
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list && source2 is List<T2> list2)
+		if (source is List<T_> list && source2 is List<T2> list2)
 		{
 			var length = Min(list.Length, list2.Length);
 			NList<TResult> result = new(length);
@@ -57888,7 +67366,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array && source2 is T2[] array2)
+		else if (source is T_[] array && source2 is T2[] array2)
 		{
 			var length = Min(array.Length, array2.Length);
 			NList<TResult> result = new(length);
@@ -57901,7 +67379,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
+		else if (source is G.IList<T_> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Min(list2_.Count, list2_2.Count);
 			NList<TResult> result = new(length);
@@ -57909,6 +67387,19 @@ public unsafe partial class NList<T>
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
+				result._items[i] = function(item, item2, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Min(list3_.Count, list3_2.Count);
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -57959,17 +67450,30 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
+		{
+			var length = Min(list3_.Count, list3_2.Count);
+			NList<(T, T2)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				result._items[i] = (item, item2);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 			return CombineEnumerable(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2));
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
+		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
+			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -57981,7 +67485,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
+		else if (source is T_[] array && source2 is T2[] array2 && source3 is T3[] array3)
 		{
 			var length = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			NList<TResult> result = new(length);
@@ -57995,7 +67499,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
+		else if (source is G.IList<T_> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(length);
@@ -58004,6 +67508,20 @@ public unsafe partial class NList<T>
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
+				result._items[i] = function(item, item2, item3);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = List<int>.MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -58013,13 +67531,13 @@ public unsafe partial class NList<T>
 			return CombineEnumerable(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), List<T3>.ReturnOrConstruct(source3), function);
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
+		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
+			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -58031,7 +67549,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
+		else if (source is T_[] array && source2 is T2[] array2 && source3 is T3[] array3)
 		{
 			var length = List<int>.MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
 			NList<TResult> result = new(length);
@@ -58045,7 +67563,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
+		else if (source is G.IList<T_> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
 		{
 			var length = List<int>.MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
 			NList<TResult> result = new(length);
@@ -58054,6 +67572,20 @@ public unsafe partial class NList<T>
 				var item = list2_[i];
 				var item2 = list2_2[i];
 				var item3 = list2_3[i];
+				result._items[i] = function(item, item2, item3, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = List<int>.MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -58067,7 +67599,7 @@ public unsafe partial class NList<T>
 	{
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
-			var length = List<int>.MinEnumerable(new[] { list.Length, list2.Length, list3.Length }.AsSpan());
+			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
 			NList<(T, T2, T3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -58107,11 +67639,25 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
+		{
+			var length = List<int>.MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
+			NList<(T, T2, T3)> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3_[i];
+				var item2 = list3_2[i];
+				var item3 = list3_3[i];
+				result._items[i] = (item, item2, item3);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 			return CombineEnumerable(List<T>.ReturnOrConstruct(source), List<T2>.ReturnOrConstruct(source2), List<T3>.ReturnOrConstruct(source3));
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function) where T2 : unmanaged where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, Func<T_, T2, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58123,7 +67669,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) where T2 : unmanaged where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, Func<T_, T2, int, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58145,7 +67691,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58157,7 +67703,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
+	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58247,11 +67793,11 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -58260,7 +67806,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			NList<TResult> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
@@ -58268,12 +67814,21 @@ public unsafe partial class NList<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 				result._items[i] = function(list2[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list3[i]);
 			result._size = length;
 			return result;
 		}
@@ -58283,6 +67838,8 @@ public unsafe partial class NList<T>
 			var i = 0;
 			foreach (var item in source)
 			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
 				result._items[i] = function(item);
 				i++;
 			}
@@ -58291,11 +67848,11 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static NList<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
-		if (source is List<T> list)
+		if (source is List<T_> list)
 		{
 			var length = list.Length;
 			NList<TResult> result = new(length);
@@ -58307,7 +67864,7 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
-		else if (source is T[] array)
+		else if (source is T_[] array)
 		{
 			NList<TResult> result = new(array.Length);
 			for (var i = 0; i < array.Length; i++)
@@ -58318,7 +67875,7 @@ public unsafe partial class NList<T>
 			result._size = array.Length;
 			return result;
 		}
-		else if (source is G.IList<T> list2)
+		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			NList<TResult> result = new(length);
@@ -58330,12 +67887,26 @@ public unsafe partial class NList<T>
 			result._size = length;
 			return result;
 		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
 		else
 		{
 			NList<TResult> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
 			var i = 0;
 			foreach (var item in source)
 			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
 				result._items[i] = function(item, i);
 				i++;
 			}
@@ -58344,7 +67915,7 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static NList<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58356,7 +67927,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58851,7 +68422,7 @@ public unsafe partial class NList<T>
 		}
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58871,7 +68442,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58902,7 +68473,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58919,7 +68490,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58936,7 +68507,7 @@ public unsafe partial class NList<T>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58961,7 +68532,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58997,7 +68568,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59016,7 +68587,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59035,7 +68606,7 @@ public unsafe partial class NList<T>
 		return (result, result2, result3);
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59051,7 +68622,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59081,7 +68652,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59098,7 +68669,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59196,7 +68767,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59207,7 +68778,7 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59657,6 +69228,11 @@ public static class RedStarLinq
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.FrequencyTableEnumerable(source, equalFunction, hashCodeFunction);
+	public static Slice<T> GetSlice<T>(this G.IList<T> source) => new(source);
+	public static Slice<T> GetSlice<T>(this G.IList<T> source, Index index) => new(source, index);
+	public static Slice<T> GetSlice<T>(this G.IList<T> source, int index) => new(source, index);
+	public static Slice<T> GetSlice<T>(this G.IList<T> source, int index, int length) => new(source, index, length);
+	public static Slice<T> GetSlice<T>(this G.IList<T> source, Range range) => new(source, range);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => List<T>.GroupEnumerable(source);
@@ -60077,7 +69653,10 @@ public static class RedStarLinq
 	public static mpz_t Min(params mpz_t[] source) => List<mpz_t>.MinEnumerable(source.AsSpan());
 	public static T? Min<T>(params T?[] source) => Enumerable.Min(source);
 	public static List<TResult> OfType<TResult>(this IEnumerable source) => List<bool>.OfTypeEnumerable<TResult>(source);
-	public static IEnumerable<T> Prepend<T>(this IEnumerable<T> source, T element) => Enumerable.Prepend(source, element);
+	public static List<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
+	public static List<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
+	public static List<(T, T)> Pairs<T>(this IEnumerable<T> source, int offset = 1) => List<T>.PairsEnumerable(source, offset);
+	public static List<T> Prepend<T>(this IEnumerable<T> source, T element) => new List<T>().Add(element).AddRange(source);
 	public static T? Progression<T>(this IEnumerable<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static TResult? Progression<T, TResult>(this IEnumerable<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable(source, seed, function);
 	public static T Random<T>(this G.IList<T> source) => source[random.Next(source.Count)];
@@ -62382,46 +71961,46 @@ public static class RedStarLinq
 	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static T[] PToArray<T>(this G.IList<T> source) => List<T>.PToArrayEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this IEnumerable<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this IEnumerable<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this ReadOnlySpan<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this Span<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this (T, T2)[] source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source.AsSpan());
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this ReadOnlySpan<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable(source);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this Span<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this (T, T2, T3)[] source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source.AsSpan());
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this NList<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
@@ -62432,6 +72011,12 @@ public static class RedStarLinq
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this NList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable(source);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this NList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.BreakEnumerable(source, function);
+	public static NList<TResult> NCombine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> NCombine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
+	public static NList<(T, T2)> NCombine<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
+	public static NList<TResult> NCombine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> NCombine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
+	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
 	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
 	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
 	public static NList<TResult> NCombine<T, T2, TResult>(this Span<T> source, Span<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
@@ -62456,14 +72041,14 @@ public static class RedStarLinq
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this NList<T> source, NList<T2> source2, NList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
-	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
+	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static NList<TResult> NConvert<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvert<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<T, TResult>(this NList<T> source, Func<T, IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertAndJoinEnumerable(source, function);
@@ -62496,24 +72081,24 @@ public static class RedStarLinq
 	public static Slice<T> NTake<T>(this IEnumerable<T> source, int length) where T : unmanaged => NList<T>.TakeEnumerable(source, length);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.PBreakEnumerable(source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.PBreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) PNBreak<T, T2>(this G.IList<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.PBreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, (TResult, TResult2)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.PBreakEnumerable(source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
 	public static (NList<T>, NList<T2>, NList<T3>) PNBreak<T, T2, T3>(this G.IList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.PBreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<T>.PBreakEnumerable(source, function);
-	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
-	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
 	public static NList<(T, T2)> PNCombine<T, T2>(this G.IList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
-	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
-	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
 	public static NList<(T, T2, T3)> PNCombine<T, T2, T3>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
-	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.PConvertEnumerable(source, function);
-	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
 	public static NList<TResult> PNFill<TResult>(TResult elem, int length) where TResult : unmanaged => NList<TResult>.PFillEnumerable(elem, length);
 	public static NList<TResult> PNFill<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, length);
 	public static NList<TResult> PNFill<TResult>(int length, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, length);

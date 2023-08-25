@@ -750,6 +750,22 @@ public static unsafe partial class Extents
 
 	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => (int)(CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) / sizeof(T));
 
+	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
+
+	public static int CompareMemory<T>(T[] left, T[] right, int length) where T : unmanaged
+	{
+		fixed (T* left2 = left)
+		fixed (T* right2 = right)
+			return CompareMemory(left2, right2, length);
+	}
+
+	public static int CompareMemory<T>(T[] left, int leftIndex, T[] right, int rightIndex, int length) where T : unmanaged
+	{
+		fixed (T* left2 = left)
+		fixed (T* right2 = right)
+			return CompareMemory(left2 + leftIndex, right2 + rightIndex, length);
+	}
+
 	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((nint)destination, (nint)source, (uint)(sizeof(T) * length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);

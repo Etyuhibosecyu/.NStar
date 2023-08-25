@@ -1436,6 +1436,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return this2;
 	}
 
+	public virtual TCertain Prepend(T item) => CapacityCreator(Length + 1).Add(item).AddRange(this);
+
 	public virtual TCertain Remove(Index index) => Remove(index.GetOffset(_size));
 
 	public virtual TCertain Remove(int index) => Remove(index, _size - index);
