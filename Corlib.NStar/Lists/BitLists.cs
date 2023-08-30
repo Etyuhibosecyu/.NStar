@@ -803,9 +803,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public BigBitList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitList(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitList(MpzT length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
@@ -826,10 +826,10 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			high = new((int)GetArrayLength(length, fragment));
 			highCapacity = new();
-			for (mpz_t i = 0; i < length / fragment; i++)
+			for (MpzT i = 0; i < length / fragment; i++)
 			{
 				high.Add(new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
 				highCapacity.Add(fragment);
@@ -893,7 +893,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var fragment2 = (int)ProperFragment;
 				high = new(GetArrayLength(bitList.Length, fragment2));
 				highCapacity = new();
@@ -927,7 +927,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << (((length - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var fragment2 = (int)ProperFragment;
 				var uintsFragment = fragment2 / BitsPerInt;
 				high = new((int)((length + uintsFragment - 1) / uintsFragment));
@@ -1025,7 +1025,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			throw new ArgumentException(null, nameof(bits));
 	}
 
-	private protected override Func<mpz_t, BigBitList> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override int CapacityFirstStepBitLength { get; init; } = 20;
 
@@ -1059,7 +1059,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		return this;
 	}
 
-	public virtual uint GetSmallRange(mpz_t index, int length)
+	public virtual uint GetSmallRange(MpzT index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));

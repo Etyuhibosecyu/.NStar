@@ -266,23 +266,23 @@ public class ValueNotFoundException : SystemException
 public interface IBigCollection<T> : IEnumerable<T>
 {
 	bool IsReadOnly { get; }
-	mpz_t Length { get; }
+	MpzT Length { get; }
 
 	void Add(T item);
 	void Clear();
 	bool Contains(T item);
 	void CopyTo(T[] array, int arrayIndex);
-	void CopyTo(IBigList<T> list, mpz_t listIndex);
+	void CopyTo(IBigList<T> list, MpzT listIndex);
 	bool RemoveValue(T item);
 }
 
 public interface IBigList<T> : IBigCollection<T>
 {
-	T this[mpz_t index] { get; set; }
+	T this[MpzT index] { get; set; }
 
-	mpz_t IndexOf(T item);
-	void Insert(mpz_t index, T item);
-	void RemoveAt(mpz_t index);
+	MpzT IndexOf(T item);
+	void Insert(MpzT index, T item);
+	void RemoveAt(MpzT index);
 }
 
 public interface ICollection : System.Collections.ICollection
@@ -746,7 +746,7 @@ public static unsafe partial class Extents
 	/// <summary>Считает количество бит в числе. Логарифм для этой цели использовать невыгодно, так как это достаточно медленная операция.</summary>
 	/// <param name="x">Исходное число.</param>
 	/// <returns>Количество бит в числе.</returns>
-	public static int BitLength(this uint x) => ((mpz_t)x).BitLength;
+	public static int BitLength(this uint x) => ((MpzT)x).BitLength;
 
 	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => (int)(CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) / sizeof(T));
 
@@ -786,13 +786,13 @@ public static unsafe partial class Extents
 
 	public static T CreateVar<T>(T value, out T @out) => @out = value;
 
-	public static (mpz_t Quotient, int Remainder) DivRem(mpz_t left, int right)
+	public static (MpzT Quotient, int Remainder) DivRem(MpzT left, int right)
 	{
 		var quotient = left.Divide(right, out int remainder);
 		return (quotient, remainder);
 	}
 
-	public static (mpz_t Quotient, mpz_t Remainder) DivRem(mpz_t left, mpz_t right)
+	public static (MpzT Quotient, MpzT Remainder) DivRem(MpzT left, MpzT right)
 	{
 		var quotient = left.Divide(right, out var remainder);
 		return (quotient, remainder);
@@ -819,7 +819,7 @@ public static unsafe partial class Extents
 	/// <returns></returns>
 	public static int GetArrayLength(int n, int div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
-	public static mpz_t GetArrayLength(mpz_t n, mpz_t div) => n > 0 ? ((n - 1) / div + 1) : 0;
+	public static MpzT GetArrayLength(MpzT n, MpzT div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
 	public static void Lock(object lockObj, Action function)
 	{

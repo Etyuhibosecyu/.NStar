@@ -325,15 +325,15 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 {
 	private Queue<T>? low;
 	private Queue<BigQueue<T>>? high;
-	private mpz_t _size;
-	private mpz_t fragment;
+	private MpzT _size;
+	private MpzT fragment;
 	private bool isHigh;
 	private const int CapacityStepBitLength = 16, CapacityFirstStepBitLength = 16;
 	private const int CapacityStep = 1 << CapacityStepBitLength, CapacityFirstStep = 1 << CapacityFirstStepBitLength;
 
 	public BigQueue() : this(32) { }
 
-	public BigQueue(mpz_t capacity)
+	public BigQueue(MpzT capacity)
 	{
 		if (capacity < 0)
 			throw new ArgumentOutOfRangeException(nameof(capacity));
@@ -347,9 +347,9 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			high = new((int)GetArrayLength(capacity, fragment));
-			for (mpz_t i = 0; i < capacity / fragment; i++)
+			for (MpzT i = 0; i < capacity / fragment; i++)
 				high.Enqueue(new(fragment));
 			high.Enqueue(new(capacity % fragment));
 			isHigh = true;
@@ -364,7 +364,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			Enqueue(en.Current);
 	}
 
-	public virtual mpz_t Length => _size;
+	public virtual MpzT Length => _size;
 
 	public virtual object Clone()
 	{
@@ -496,7 +496,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			return false;
 	}
 
-	internal T GetElement(mpz_t i)
+	internal T GetElement(MpzT i)
 	{
 		if (!isHigh && low != null)
 			return low.GetElement((int)(i % CapacityStep));
@@ -532,7 +532,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	public struct Enumerator : IEnumerator<T>
 	{
 		private readonly BigQueue<T> queue;
-		private mpz_t index;
+		private MpzT index;
 		private T current;
 
 		public readonly T Current
@@ -1009,7 +1009,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 {
 	private protected TLow? low;
 	private protected TCertain[]? high;
-	private protected mpz_t fragment = 1;
+	private protected MpzT fragment = 1;
 	private protected bool isHigh;
 
 	public BigArray() : this(-1) { }
@@ -1029,7 +1029,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		Size2 = 0;
 	}
 
-	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
@@ -1049,7 +1049,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		else
 		{
 			low = default;
-			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			var quotient = (int)length.Divide(fragment, out var remainder);
 			var highCount = (int)GetArrayLength(length, fragment);
 			high = new TCertain[highCount];
@@ -1065,7 +1065,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		var en = collection.GetEnumerator();
-		mpz_t i = 0;
+		MpzT i = 0;
 		while (en.MoveNext())
 		{
 			SetInternal(i, en.Current);
@@ -1073,10 +1073,10 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		}
 	}
 
-	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
+	public BigArray(MpzT length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		var en = collection.GetEnumerator();
-		mpz_t i = 0;
+		MpzT i = 0;
 		while (en.MoveNext())
 		{
 			SetInternal(i, en.Current);
@@ -1084,7 +1084,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		}
 	}
 
-	public override mpz_t Capacity
+	public override MpzT Capacity
 	{
 		get => Size;
 		set
@@ -1100,9 +1100,9 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
 
-	private protected override mpz_t Size { get => Size2; set => throw new NotSupportedException(); }
+	private protected override MpzT Size { get => Size2; set => throw new NotSupportedException(); }
 
-	private protected virtual mpz_t Size2 { get; init; } = 0;
+	private protected virtual MpzT Size2 { get; init; } = 0;
 
 	public override TCertain Add(T item) => throw new NotSupportedException();
 
@@ -1115,7 +1115,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		Changed();
 	}
 
-	private protected override void ClearInternal(mpz_t index, mpz_t length)
+	private protected override void ClearInternal(MpzT index, MpzT length)
 	{
 		if (!isHigh && low != null)
 			low.Clear((int)index, (int)length);
@@ -1140,7 +1140,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		Changed();
 	}
 
-	public override bool Contains(T item, mpz_t index, mpz_t length)
+	public override bool Contains(T item, MpzT index, MpzT length)
 	{
 		if (index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1178,7 +1178,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	private protected override void Copy(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length)
 	{
 		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
@@ -1305,7 +1305,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		destinationBits.Changed();
 	}
 
-	private static void CheckParams(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	private static void CheckParams(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length)
 	{
 		if (sourceBits == null)
 			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
@@ -1327,7 +1327,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int length)
+	private protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1356,7 +1356,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t length)
+	private protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -1385,7 +1385,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override T GetInternal(mpz_t index, bool invoke = true)
+	private protected override T GetInternal(MpzT index, bool invoke = true)
 	{
 		T item;
 		if (!isHigh && low != null)
@@ -1408,7 +1408,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		return item;
 	}
 
-	public override TCertain GetRange(mpz_t index, mpz_t length, bool alwaysCopy = false)
+	public override TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1425,7 +1425,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		return list;
 	}
 
-	private protected override void SetInternal(mpz_t index, T value)
+	private protected override void SetInternal(MpzT index, T value)
 	{
 		if (!isHigh && low != null)
 		{
@@ -1453,13 +1453,13 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 
 	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigArray(mpz_t length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(MpzT length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	private protected override Func<mpz_t, BigArray<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigArray<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override Func<int, List<T>> CapacityLowCreator => RedStarLinq.EmptyList<T>;
 
@@ -1480,9 +1480,9 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public BigBitArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitArray(mpz_t length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigBitArray(mpz_t length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(MpzT length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
@@ -1502,7 +1502,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			high = new BigBitArray[(int)GetArrayLength(length, fragment)];
 			for (var i = 0; i < length / fragment; i++)
 				high[i] = new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength);
@@ -1556,7 +1556,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << ((((mpz_t)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var fragment2 = (int)fragment;
 				high = new BigBitArray[GetArrayLength(bitList.Length, fragment2)];
 				int index = 0, i = 0;
@@ -1584,10 +1584,10 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << (((length - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var uintsFragment = fragment / BitsPerInt;
 				high = new BigBitArray[(int)((length + uintsFragment - 1) / uintsFragment)];
-				mpz_t index = 0;
+				MpzT index = 0;
 				var i = 0;
 				for (; index <= length - uintsFragment; index += uintsFragment)
 					high[i++] = new(bigUIntArray.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
@@ -1610,10 +1610,10 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << (((length - 1).BitLength + ((mpz_t)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var uintsFragment = fragment / BitsPerInt;
 				high = new BigBitArray[(int)((length + uintsFragment - 1) / uintsFragment)];
-				mpz_t index = 0;
+				MpzT index = 0;
 				var i = 0;
 				for (; index <= length - uintsFragment; index += uintsFragment)
 					high[i++] = new(bigUIntList.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
@@ -1687,7 +1687,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			throw new ArgumentException(null, nameof(bits));
 	}
 
-	private protected override Func<mpz_t, BigBitArray> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigBitArray> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override Func<int, BitList> CapacityLowCreator => x => new(x, false);
 
@@ -1710,7 +1710,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		return this;
 	}
 
-	public virtual uint GetSmallRange(mpz_t index, int length)
+	public virtual uint GetSmallRange(MpzT index, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));

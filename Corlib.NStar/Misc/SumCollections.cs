@@ -3849,14 +3849,14 @@ public class SumList : BaseList<int, SumList>
 internal delegate bool BigSumWalkPredicate(BigSumList.Node node);
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigSumList : BaseList<mpz_t, BigSumList>
+public class BigSumList : BaseList<MpzT, BigSumList>
 {
 	private Node? root;
 	private int version;
 
 	public BigSumList() { }
 
-	public BigSumList(IEnumerable<mpz_t> collection) : this()
+	public BigSumList(IEnumerable<MpzT> collection) : this()
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
@@ -3880,9 +3880,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		}
 	}
 
-	public BigSumList(params mpz_t[] array) : this((IEnumerable<mpz_t>)array) { }
+	public BigSumList(params MpzT[] array) : this((IEnumerable<MpzT>)array) { }
 
-	public BigSumList(ReadOnlySpan<mpz_t> span) : this((IEnumerable<mpz_t>)span.ToArray()) { }
+	public BigSumList(ReadOnlySpan<MpzT> span) : this((IEnumerable<MpzT>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -3894,7 +3894,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	private protected override Func<int, BigSumList> CapacityCreator => x => new();
 
-	private protected override Func<IEnumerable<mpz_t>, BigSumList> CollectionCreator => x => new(x);
+	private protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
 
 	private protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
 
@@ -3915,11 +3915,11 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	internal virtual int MinInternal => 0;
 
-	public virtual mpz_t ValuesSum => new(root?.ValuesSum ?? 0);
+	public virtual MpzT ValuesSum => new(root?.ValuesSum ?? 0);
 
-	public override BigSumList Add(mpz_t value) => Insert(_size, value);
+	public override BigSumList Add(MpzT value) => Insert(_size, value);
 
-	public override Span<mpz_t> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<MpzT> AsSpan(int index, int length) => throw new NotSupportedException();
 
 	/// <summary>
 	/// Does a left-to-right breadth-first tree walk and calls the delegate for each node.
@@ -3958,7 +3958,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
 
-	private static Node? ConstructRootFromSortedArray(mpz_t[] arr, int startIndex, int endIndex, Node? redNode)
+	private static Node? ConstructRootFromSortedArray(MpzT[] arr, int startIndex, int endIndex, Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -4045,13 +4045,13 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	private protected override void CopyToInternal(Array array, int arrayIndex)
 	{
-		if (array is mpz_t[] array2)
+		if (array is MpzT[] array2)
 			CopyToInternal(0, array2, arrayIndex, _size);
 		else
 			throw new ArgumentException(null, nameof(array));
 	}
 
-	private protected override void CopyToInternal(int index, mpz_t[] array, int arrayIndex, int length)
+	private protected override void CopyToInternal(int index, MpzT[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (index < 0)
@@ -4240,16 +4240,16 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		return found;
 	}
 
-	public override IEnumerator<mpz_t> GetEnumerator() => new Enumerator(this);
+	public override IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
 
-	internal override mpz_t GetInternal(int index, bool invoke = true)
+	internal override MpzT GetInternal(int index, bool invoke = true)
 	{
 		var current = root;
 		while (current != null)
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
-				mpz_t value = new(current.Value);
+				MpzT value = new(current.Value);
 				if (invoke)
 					Changed();
 				return value;
@@ -4270,10 +4270,10 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		throw new ArgumentOutOfRangeException(nameof(index));
 	}
 
-	public virtual mpz_t GetLeftValuesSum(int index, out mpz_t actualValue)
+	public virtual MpzT GetLeftValuesSum(int index, out MpzT actualValue)
 	{
 		var current = root;
-		mpz_t sum = 0;
+		MpzT sum = 0;
 		while (current != null)
 		{
 			var order = Comparer.Compare(index, current.Left?.LeavesCount ?? 0);
@@ -4304,11 +4304,11 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	public virtual bool Increase(int index) => Update(index, GetInternal(index) + 1);
 
-	private protected override int IndexOfInternal(mpz_t value, int index, int length) => throw new NotSupportedException();
+	private protected override int IndexOfInternal(MpzT value, int index, int length) => throw new NotSupportedException();
 
-	public virtual int IndexOfNotGreaterSum(mpz_t sum) => IndexOfNotGreaterSum(sum, out _);
+	public virtual int IndexOfNotGreaterSum(MpzT sum) => IndexOfNotGreaterSum(sum, out _);
 
-	public virtual int IndexOfNotGreaterSum(mpz_t sum, out mpz_t sumExceedsBy)
+	public virtual int IndexOfNotGreaterSum(MpzT sum, out MpzT sumExceedsBy)
 	{
 		if (sum < 0)
 			throw new ArgumentOutOfRangeException(nameof(sum));
@@ -4383,7 +4383,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		return true;
 	}
 
-	public override BigSumList Insert(int index, mpz_t value)
+	public override BigSumList Insert(int index, MpzT value)
 	{
 		if (root == null)
 		{
@@ -4499,7 +4499,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	// Virtual function for TreeSubSet, which may need to do range checks.
 	internal virtual bool IsWithinRange(int index) => true;
 
-	private protected override int LastIndexOfInternal(mpz_t value, int index, int length) => throw new NotSupportedException();
+	private protected override int LastIndexOfInternal(MpzT value, int index, int length) => throw new NotSupportedException();
 
 	// Used for set checking operations (using enumerables) that rely on counting
 	private static int Log2(int value) => BitOperations.Log2((uint)value);
@@ -4580,7 +4580,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 
 	private protected override BigSumList ReverseInternal(int index, int length) => throw new NotSupportedException();
 
-	internal override void SetInternal(int index, mpz_t value)
+	internal override void SetInternal(int index, MpzT value)
 	{
 		var current = root;
 		while (current != null)
@@ -4610,7 +4610,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 	// Virtual function for TreeSubSet, which may need the length variable of the parent list.
 	internal virtual int TotalCount() => Length;
 
-	public virtual bool Update(int index, mpz_t value)
+	public virtual bool Update(int index, MpzT value)
 	{
 		if (value <= 0)
 		{
@@ -4651,9 +4651,9 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 		private Node? _right;
 		private Node? Parent { get; set; }
 		private int _leavesCount;
-		private mpz_t _valuesSum;
+		private MpzT _valuesSum;
 
-		public Node(mpz_t value, NodeColor color)
+		public Node(MpzT value, NodeColor color)
 		{
 			Value = value;
 			Color = color;
@@ -4661,7 +4661,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			_valuesSum = new(value);
 		}
 
-		public mpz_t Value { get; set; }
+		public MpzT Value { get; set; }
 
 		internal Node? Left
 		{
@@ -4718,7 +4718,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			}
 		}
 
-		internal mpz_t ValuesSum
+		internal MpzT ValuesSum
 		{
 			get => _valuesSum;
 			set
@@ -4974,7 +4974,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Right.ColorBlack();
 		}
 
-		public void Update(mpz_t value)
+		public void Update(MpzT value)
 		{
 			ValuesSum += value - Value;
 			Value = new(value);
@@ -5008,7 +5008,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 #endif
 	}
 
-	public new struct Enumerator : IEnumerator<mpz_t>
+	public new struct Enumerator : IEnumerator<MpzT>
 	{
 		private readonly BigSumList _list;
 		private readonly int _version;
@@ -5034,7 +5034,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			Initialize();
 		}
 
-		public readonly mpz_t Current
+		public readonly MpzT Current
 		{
 			get
 			{
@@ -5301,7 +5301,7 @@ public class BigSumList : BaseList<mpz_t, BigSumList>
 			return true;
 		}
 
-		public override BigSumList Insert(int index, mpz_t value)
+		public override BigSumList Insert(int index, MpzT value)
 		{
 			if (!IsWithinRange(index))
 				throw new ArgumentOutOfRangeException(nameof(value));

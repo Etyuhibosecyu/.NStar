@@ -1980,10 +1980,12 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
 			var i = 0;
 			foreach (var item in source)
 			{
+				if (i >= 32 && (i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
 				result._items[i] = function(item);
 				i++;
 			}
@@ -2045,10 +2047,12 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
 			var i = 0;
 			foreach (var item in source)
 			{
+				if (i >= 32 && (i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
 				result._items[i] = function(item, i);
 				i++;
 			}
@@ -4293,7 +4297,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -4301,8 +4305,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -4325,8 +4329,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<T> result = new(array.Length);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -4350,8 +4354,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -4375,8 +4379,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -4399,8 +4403,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -4423,7 +4427,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -4431,8 +4435,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -4455,8 +4459,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<T> result = new(array.Length);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -4480,8 +4484,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -4505,8 +4509,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -4529,8 +4533,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -4933,7 +4937,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -4941,39 +4945,39 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 		}
 	}
 
-	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -4981,35 +4985,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
 	}
 
@@ -5363,7 +5367,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -5398,7 +5402,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -6733,7 +6737,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -6741,8 +6745,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -6765,8 +6769,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<T> result = new(array.Length);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -6790,8 +6794,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -6815,8 +6819,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -6839,8 +6843,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -6863,7 +6867,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -6871,8 +6875,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -6895,8 +6899,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<T> result = new(array.Length);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -6920,8 +6924,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -6945,8 +6949,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -6969,8 +6973,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = new(1024);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -8401,7 +8405,7 @@ public partial class List<T, TCertain>
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -8409,8 +8413,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -8431,8 +8435,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -8453,8 +8457,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -8475,8 +8479,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -8497,7 +8501,7 @@ public partial class List<T, TCertain>
 			return FindLastMaxEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -8505,8 +8509,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -8527,8 +8531,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -8549,8 +8553,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -8571,8 +8575,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -8937,7 +8941,7 @@ public partial class List<T, TCertain>
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -8945,35 +8949,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list, (x) => function(x) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list2, (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -8981,29 +8985,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanEnumerable(new List<T>(source), function);
@@ -9329,7 +9333,7 @@ public partial class List<T, TCertain>
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -9361,7 +9365,7 @@ public partial class List<T, TCertain>
 			return FindLastMedianEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -10353,7 +10357,7 @@ public partial class List<T, TCertain>
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -10361,8 +10365,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -10383,8 +10387,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -10405,8 +10409,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -10427,8 +10431,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -10449,7 +10453,7 @@ public partial class List<T, TCertain>
 			return FindLastMinEnumerable(new List<T>(source), function);
 	}
 
-	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -10457,8 +10461,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -10479,8 +10483,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -10501,8 +10505,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -10523,8 +10527,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -11505,7 +11509,7 @@ public partial class List<T, TCertain>
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -11513,8 +11517,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -11535,8 +11539,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -11557,8 +11561,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -11579,8 +11583,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -11601,7 +11605,7 @@ public partial class List<T, TCertain>
 			return FindLastMaxIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -11609,8 +11613,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -11631,8 +11635,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -11653,8 +11657,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -11675,8 +11679,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -12041,7 +12045,7 @@ public partial class List<T, TCertain>
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -12049,35 +12053,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list, (x) => function(x) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -12085,29 +12089,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 			return FindLastMeanIndexEnumerable(new List<T>(source), function);
@@ -12433,7 +12437,7 @@ public partial class List<T, TCertain>
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -12465,7 +12469,7 @@ public partial class List<T, TCertain>
 			return FindLastMedianIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -13457,7 +13461,7 @@ public partial class List<T, TCertain>
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -13465,8 +13469,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -13487,8 +13491,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -13509,8 +13513,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -13531,8 +13535,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -13553,7 +13557,7 @@ public partial class List<T, TCertain>
 			return FindLastMinIndexEnumerable(new List<T>(source), function);
 	}
 
-	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -13561,8 +13565,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -13583,8 +13587,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -13605,8 +13609,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -13627,8 +13631,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -14799,7 +14803,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -14807,8 +14811,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -14828,8 +14832,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -14850,8 +14854,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -14872,8 +14876,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -14893,8 +14897,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -14914,7 +14918,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -14922,8 +14926,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -14943,8 +14947,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -14965,8 +14969,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -14987,8 +14991,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -15008,8 +15012,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -15409,7 +15413,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -15417,39 +15421,39 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list, (x) => function(x) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list2, (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 		}
 	}
 
-	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -15457,35 +15461,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
 	}
 
@@ -15839,7 +15843,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -15874,7 +15878,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -17059,7 +17063,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -17067,8 +17071,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -17088,8 +17092,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -17110,8 +17114,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -17132,8 +17136,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -17153,8 +17157,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -17174,7 +17178,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -17182,8 +17186,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -17203,8 +17207,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -17225,8 +17229,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -17247,8 +17251,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -17268,8 +17272,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			T? result = default;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -18719,7 +18723,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -18727,9 +18731,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -18754,9 +18758,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -18782,9 +18786,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -18810,9 +18814,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -18837,8 +18841,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -18862,7 +18866,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -18870,9 +18874,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -18897,9 +18901,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -18925,9 +18929,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -18953,9 +18957,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -18980,8 +18984,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -19385,7 +19389,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -19393,39 +19397,39 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 		}
 	}
 
-	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -19433,35 +19437,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 		}
 	}
 
@@ -19815,7 +19819,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -19850,7 +19854,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -21315,7 +21319,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -21323,9 +21327,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -21350,9 +21354,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -21378,9 +21382,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -21406,9 +21410,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -21433,8 +21437,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -21458,7 +21462,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -21466,9 +21470,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -21493,9 +21497,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -21521,9 +21525,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -21549,9 +21553,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -21576,8 +21580,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -22751,7 +22755,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -22759,8 +22763,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -22780,8 +22784,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -22802,8 +22806,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -22824,8 +22828,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -22845,8 +22849,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -22866,7 +22870,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -22874,8 +22878,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -22895,8 +22899,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -22917,8 +22921,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -22939,8 +22943,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -22960,8 +22964,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -23361,7 +23365,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -23369,39 +23373,39 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list, (x) => function(x) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(array.AsSpan(), (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list2, (x) => function(x) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 		}
 	}
 
-	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -23409,35 +23413,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list2, (x, index) => function(x, index) == value2) : default;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
-			var value2 = (mpz_t)value;
-			return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
+			var value2 = (MpzT)value;
+			return value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 		}
 	}
 
@@ -23791,7 +23795,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -23826,7 +23830,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -25011,7 +25015,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -25019,8 +25023,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -25040,8 +25044,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -25062,8 +25066,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -25084,8 +25088,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -25105,8 +25109,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -25126,7 +25130,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -25134,8 +25138,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -25155,8 +25159,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -25177,8 +25181,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -25199,8 +25203,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -25220,8 +25224,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -30251,7 +30255,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -30259,9 +30263,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -30286,9 +30290,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -30314,9 +30318,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -30342,9 +30346,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -30369,8 +30373,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -30394,7 +30398,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -30402,9 +30406,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -30429,9 +30433,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -30457,9 +30461,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -30485,9 +30489,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -30512,8 +30516,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -31102,15 +31106,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<mpz_t> source)
+	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -31132,12 +31136,12 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -31159,13 +31163,13 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -31190,8 +31194,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -31645,7 +31649,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -31654,43 +31658,43 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -31699,39 +31703,39 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 	}
 
@@ -31887,35 +31891,35 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<mpz_t> source)
+	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 		}
 	}
 
@@ -32269,7 +32273,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -32277,34 +32281,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -32312,30 +32316,30 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
@@ -32459,27 +32463,27 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<mpz_t> source)
+	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
@@ -33913,7 +33917,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -33921,9 +33925,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -33948,9 +33952,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -33976,9 +33980,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -34004,9 +34008,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -34031,8 +34035,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -34056,7 +34060,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -34064,9 +34068,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -34091,9 +34095,9 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -34119,9 +34123,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -34147,9 +34151,9 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -34174,8 +34178,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -34764,15 +34768,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(IEnumerable<mpz_t> source)
+	internal static List<int> IndexesOfMinEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -34794,12 +34798,12 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			List<int> result = new(array.Length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -34821,13 +34825,13 @@ public partial class List<T, TCertain>
 			result.TrimExcess();
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			List<int> result = new(length);
-			mpz_t indicator = 0;
+			MpzT indicator = 0;
 			var j = 0;
-			mpz_t f;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -34852,8 +34856,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<int> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -36261,7 +36265,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -36269,8 +36273,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -36290,8 +36294,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -36312,8 +36316,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -36334,8 +36338,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -36355,8 +36359,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -36376,7 +36380,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -36384,8 +36388,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -36405,8 +36409,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -36427,8 +36431,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -36449,8 +36453,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -36470,8 +36474,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -36946,14 +36950,14 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMaxEnumerable(IEnumerable<mpz_t> source)
+	internal static int IndexOfMaxEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -36970,11 +36974,11 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -36991,12 +36995,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -37016,8 +37020,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -37447,7 +37451,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -37456,43 +37460,43 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 	}
 
-	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -37501,39 +37505,39 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 	}
 
@@ -37681,35 +37685,35 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMeanEnumerable(IEnumerable<mpz_t> source)
+	internal static int IndexOfMeanEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
 		}
 	}
 
@@ -38063,7 +38067,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38071,34 +38075,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
-	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -38106,30 +38110,30 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
@@ -38253,27 +38257,27 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMedianEnumerable(IEnumerable<mpz_t> source)
+	internal static int IndexOfMedianEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
 
@@ -39427,7 +39431,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -39435,8 +39439,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -39456,8 +39460,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -39478,8 +39482,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -39500,8 +39504,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -39521,8 +39525,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -39542,7 +39546,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -39550,8 +39554,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -39571,8 +39575,8 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -39593,8 +39597,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -39615,8 +39619,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -39636,8 +39640,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -40112,14 +40116,14 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static int IndexOfMinEnumerable(IEnumerable<mpz_t> source)
+	internal static int IndexOfMinEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -40136,11 +40140,11 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -40157,12 +40161,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -40182,8 +40186,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -41588,7 +41592,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -41596,8 +41600,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -41618,8 +41622,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -41640,8 +41644,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -41662,8 +41666,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -41684,7 +41688,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMaxEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -41692,8 +41696,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -41714,8 +41718,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -41736,8 +41740,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -41758,8 +41762,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -42140,14 +42144,14 @@ public partial class List<T, TCertain>
 			return LastIndexOfMaxEnumerable(new List<long>(source));
 	}
 
-	internal static int LastIndexOfMaxEnumerable(IEnumerable<mpz_t> source)
+	internal static int LastIndexOfMaxEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -42164,12 +42168,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -42186,12 +42190,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -42209,7 +42213,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return LastIndexOfMaxEnumerable(new List<mpz_t>(source));
+			return LastIndexOfMaxEnumerable(new List<MpzT>(source));
 	}
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
@@ -42580,7 +42584,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -42589,38 +42593,38 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -42629,32 +42633,32 @@ public partial class List<T, TCertain>
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42783,31 +42787,31 @@ public partial class List<T, TCertain>
 			return LastIndexOfMeanEnumerable(new List<long>(source));
 	}
 
-	internal static int LastIndexOfMeanEnumerable(IEnumerable<mpz_t> source)
+	internal static int LastIndexOfMeanEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
 			var value = MeanEnumerable(list_);
-			var value2 = (mpz_t)value;
-			return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value2 = (MpzT)value;
+			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
 		}
 		else
-			return LastIndexOfMeanEnumerable(new List<mpz_t>(source));
+			return LastIndexOfMeanEnumerable(new List<MpzT>(source));
 	}
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
@@ -43130,7 +43134,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -43138,31 +43142,31 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -43170,25 +43174,25 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
 			return LastIndexOfMedianEnumerable(new List<T>(source), function);
@@ -43299,25 +43303,25 @@ public partial class List<T, TCertain>
 			return LastIndexOfMedianEnumerable(new List<long>(source));
 	}
 
-	internal static int LastIndexOfMedianEnumerable(IEnumerable<mpz_t> source)
+	internal static int LastIndexOfMedianEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var list_ = ReturnOrConstruct(list);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var list_ = ReturnOrConstruct(array);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var list_ = ReturnOrConstruct(list2);
-			return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else
-			return LastIndexOfMedianEnumerable(new List<mpz_t>(source));
+			return LastIndexOfMedianEnumerable(new List<MpzT>(source));
 	}
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
@@ -44280,7 +44284,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -44288,8 +44292,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -44310,8 +44314,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -44332,8 +44336,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -44354,8 +44358,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -44376,7 +44380,7 @@ public partial class List<T, TCertain>
 			return LastIndexOfMinEnumerable(new List<T>(source), function);
 	}
 
-	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -44384,8 +44388,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -44406,8 +44410,8 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -44428,8 +44432,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -44450,8 +44454,8 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
@@ -44832,14 +44836,14 @@ public partial class List<T, TCertain>
 			return LastIndexOfMinEnumerable(new List<long>(source));
 	}
 
-	internal static int LastIndexOfMinEnumerable(IEnumerable<mpz_t> source)
+	internal static int LastIndexOfMinEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
@@ -44856,12 +44860,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			var length = array.Length;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
@@ -44878,12 +44882,12 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			var result = -1;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
@@ -44901,7 +44905,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return LastIndexOfMinEnumerable(new List<mpz_t>(source));
+			return LastIndexOfMinEnumerable(new List<MpzT>(source));
 	}
 
 	internal static int LengthEnumerable(IEnumerable<T> source)
@@ -45717,15 +45721,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MaxEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static MpzT MaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -45738,8 +45742,8 @@ public partial class List<T, TCertain>
 		}
 		else if (source is T[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -45753,8 +45757,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -45768,8 +45772,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -45782,8 +45786,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -45797,15 +45801,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MaxEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT MaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -45818,8 +45822,8 @@ public partial class List<T, TCertain>
 		}
 		else if (source is T[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -45833,8 +45837,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -45848,8 +45852,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -45862,8 +45866,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -46192,13 +46196,13 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MaxEnumerable(IEnumerable<mpz_t> source)
+	internal static MpzT MaxEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -46209,10 +46213,10 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -46223,11 +46227,11 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -46240,8 +46244,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -46795,7 +46799,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -46843,7 +46847,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -47138,9 +47142,9 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static double MeanEnumerable(IEnumerable<mpz_t> source)
+	internal static double MeanEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
 			double result = 0;
@@ -47151,7 +47155,7 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(list._size, 1);
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
 			double result = 0;
 			for (var i = 0; i < array.Length; i++)
@@ -47161,7 +47165,7 @@ public partial class List<T, TCertain>
 			}
 			return result / Math.Max(array.Length, 1);
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
 			double result = 0;
@@ -47465,7 +47469,7 @@ public partial class List<T, TCertain>
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
-	internal static mpz_t MedianEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -47493,7 +47497,7 @@ public partial class List<T, TCertain>
 			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
-	internal static mpz_t MedianEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -47576,15 +47580,15 @@ public partial class List<T, TCertain>
 			: CreateVar(new List<long>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
-	internal static mpz_t MedianEnumerable(IEnumerable<mpz_t> source)
+	internal static MpzT MedianEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
-			return list._size == 0 ? 0 : new List<mpz_t>(list).Sort()._items[(list._size - 1) / 2];
-		else return source is mpz_t[] array
-			? array.Length == 0 ? 0 : new List<mpz_t>(array).Sort()._items[(array.Length - 1) / 2]
-			: source is G.IList<mpz_t> list2
-			? list2.Count == 0 ? 0 : new List<mpz_t>(list2).Sort()._items[(list2.Count - 1) / 2]
-			: CreateVar(new List<mpz_t>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+		if (source is List<MpzT> list)
+			return list._size == 0 ? 0 : new List<MpzT>(list).Sort()._items[(list._size - 1) / 2];
+		else return source is MpzT[] array
+			? array.Length == 0 ? 0 : new List<MpzT>(array).Sort()._items[(array.Length - 1) / 2]
+			: source is G.IList<MpzT> list2
+			? list2.Count == 0 ? 0 : new List<MpzT>(list2).Sort()._items[(list2.Count - 1) / 2]
+			: CreateVar(new List<MpzT>(source), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static TResult? MedianEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
@@ -48458,15 +48462,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MinEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static MpzT MinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -48479,8 +48483,8 @@ public partial class List<T, TCertain>
 		}
 		else if (source is T[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -48494,8 +48498,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -48509,8 +48513,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -48523,8 +48527,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -48538,15 +48542,15 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MinEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT MinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -48559,8 +48563,8 @@ public partial class List<T, TCertain>
 		}
 		else if (source is T[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -48574,8 +48578,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -48589,8 +48593,8 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -48603,8 +48607,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -48933,13 +48937,13 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t MinEnumerable(IEnumerable<mpz_t> source)
+	internal static MpzT MinEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -48950,10 +48954,10 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -48964,11 +48968,11 @@ public partial class List<T, TCertain>
 			}
 			return indicator;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -48981,8 +48985,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t indicator = 0;
-			mpz_t f;
+			MpzT indicator = 0;
+			MpzT f;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -52865,21 +52869,21 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t SumEnumerable(IEnumerable<T> source, Func<T, mpz_t> function)
+	internal static MpzT SumEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list._items[i]);
 			return result;
 		}
 		else if (source is T[] array)
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < array.Length; i++)
 				result += function(array[i]);
 			return result;
@@ -52887,7 +52891,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list2[i]);
 			return result;
@@ -52895,14 +52899,14 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 				result += function(list3[i]);
 			return result;
 		}
 		else
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -52913,14 +52917,14 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t SumEnumerable(IEnumerable<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT SumEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -52930,7 +52934,7 @@ public partial class List<T, TCertain>
 		}
 		else if (source is T[] array)
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -52941,7 +52945,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -52952,7 +52956,7 @@ public partial class List<T, TCertain>
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
@@ -52962,7 +52966,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -53208,12 +53212,12 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static mpz_t SumEnumerable(IEnumerable<mpz_t> source)
+	internal static MpzT SumEnumerable(IEnumerable<MpzT> source)
 	{
-		if (source is List<mpz_t> list)
+		if (source is List<MpzT> list)
 		{
 			var length = list._size;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
@@ -53221,9 +53225,9 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is mpz_t[] array)
+		else if (source is MpzT[] array)
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
@@ -53231,10 +53235,10 @@ public partial class List<T, TCertain>
 			}
 			return result;
 		}
-		else if (source is G.IList<mpz_t> list2)
+		else if (source is G.IList<MpzT> list2)
 		{
 			var length = list2.Count;
-			mpz_t result = 0;
+			MpzT result = 0;
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
@@ -53244,7 +53248,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			mpz_t result = 0;
+			MpzT result = 0;
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -54591,14 +54595,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<T> result = new(1024);
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -54619,14 +54623,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<T> result = new(1024);
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -54743,24 +54747,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 	}
 
-	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
 	}
 
-	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
 	}
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -54853,7 +54857,7 @@ public partial class List<T, TCertain>
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -54862,7 +54866,7 @@ public partial class List<T, TCertain>
 		return FindAllEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55151,14 +55155,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<T> result = new(1024);
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -55179,14 +55183,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<T> result = new(1024);
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -55559,14 +55563,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -55584,14 +55588,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -55705,24 +55709,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindLastEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
-	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindLastEnumerable(source, (x) => function(x) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindLastEnumerable(source, (x) => function(x) == value2) : default;
 	}
 
-	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindLastEnumerable(source, (x, index) => function(x, index) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindLastEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -55815,7 +55819,7 @@ public partial class List<T, TCertain>
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -55824,7 +55828,7 @@ public partial class List<T, TCertain>
 		return FindLastEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -56083,14 +56087,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -56108,14 +56112,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -56383,14 +56387,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -56408,14 +56412,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -56529,24 +56533,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindLastIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
-	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(source, (x) => function(x) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindLastIndexEnumerable(source, (x) => function(x) == value2) : default;
 	}
 
-	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindLastIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindLastIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -56639,7 +56643,7 @@ public partial class List<T, TCertain>
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -56648,7 +56652,7 @@ public partial class List<T, TCertain>
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -56907,14 +56911,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -56932,14 +56936,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -57207,14 +57211,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -57232,14 +57236,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -57353,24 +57357,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
-	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindEnumerable(source, (x) => function(x) == value2) : default;
 	}
 
-	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -57463,7 +57467,7 @@ public partial class List<T, TCertain>
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57472,7 +57476,7 @@ public partial class List<T, TCertain>
 		return FindEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -57731,14 +57735,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -57756,14 +57760,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		T? result = default;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -58091,15 +58095,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -58122,15 +58126,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -58249,24 +58253,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 	}
 
-	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
+		var value2 = (MpzT)value;
 		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
 	}
 
-	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -58359,7 +58363,7 @@ public partial class List<T, TCertain>
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58368,7 +58372,7 @@ public partial class List<T, TCertain>
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -58687,15 +58691,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -58718,15 +58722,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -58999,14 +59003,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -59024,14 +59028,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -59145,24 +59149,24 @@ public partial class List<T, TCertain>
 		return value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
-	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindIndexEnumerable(source, (x) => function(x) == value2) : default;
 	}
 
-	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
-		var value2 = (mpz_t)value;
-		return value2 == null ? default : value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? FindIndexEnumerable(source, (x, index) => function(x, index) == value2) : default;
 	}
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -59255,7 +59259,7 @@ public partial class List<T, TCertain>
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
 	}
 
-	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59264,7 +59268,7 @@ public partial class List<T, TCertain>
 		return FindIndexEnumerable(source, (x) => function(x) == value);
 	}
 
-	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -59523,14 +59527,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -59548,14 +59552,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -60609,15 +60613,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -60640,15 +60644,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -60816,13 +60820,13 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -60951,26 +60955,26 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(list_, value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -61006,11 +61010,11 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.IndexesOfEnumerable(source, value2) : new();
 	}
 
-	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var value = MeanEnumerable(source);
-		var value2 = (mpz_t)value;
-		return value2 == null ? new() : value == value2 ? List<mpz_t>.IndexesOfEnumerable(source, value2) : new();
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexesOfEnumerable(source, value2) : new();
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -61103,22 +61107,22 @@ public partial class List<T, TCertain>
 		return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfEnumerable(source, MedianEnumerable(source));
@@ -61131,7 +61135,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
-	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfEnumerable(source, MedianEnumerable(source));
+	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<MpzT> source) => List<MpzT>.IndexesOfEnumerable(source, MedianEnumerable(source));
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -61443,15 +61447,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -61474,15 +61478,15 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -61650,13 +61654,13 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		List<int> result = new(length);
-		mpz_t indicator = 0;
+		MpzT indicator = 0;
 		var j = 0;
-		mpz_t f;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -61938,14 +61942,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -61963,14 +61967,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -62103,12 +62107,12 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMaxEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int IndexOfMaxEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -62236,26 +62240,26 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
 	}
 
-	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : default;
 	}
 
-	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(list_, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : default;
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -62293,11 +62297,11 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.IndexOfEnumerable(source, value2) : -1;
 	}
 
-	internal static int IndexOfMeanEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int IndexOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var value = MeanEnumerable(source);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.IndexOfEnumerable(source, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.IndexOfEnumerable(source, value2) : default;
 	}
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -62390,22 +62394,22 @@ public partial class List<T, TCertain>
 		return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.IndexOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.IndexOfEnumerable(source, MedianEnumerable(source));
@@ -62418,7 +62422,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.IndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int IndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfEnumerable(source, MedianEnumerable(source));
+	internal static int IndexOfMedianEnumerable(ReadOnlySpan<MpzT> source) => List<MpzT>.IndexOfEnumerable(source, MedianEnumerable(source));
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -62670,14 +62674,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -62695,14 +62699,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -62835,12 +62839,12 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int IndexOfMinEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int IndexOfMinEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -63174,14 +63178,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -63199,14 +63203,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -63339,12 +63343,12 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -63472,26 +63476,26 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
 	}
 
-	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : default;
 	}
 
-	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(list_, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : default;
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -63529,11 +63533,11 @@ public partial class List<T, TCertain>
 		return value == value2 ? List<long>.LastIndexOfEnumerable(source, value2) : -1;
 	}
 
-	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var value = MeanEnumerable(source);
-		var value2 = (mpz_t)value;
-		return value2 == null ? -1 : value == value2 ? List<mpz_t>.LastIndexOfEnumerable(source, value2) : default;
+		var value2 = (MpzT)value;
+		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(source, value2) : default;
 	}
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -63626,22 +63630,22 @@ public partial class List<T, TCertain>
 		return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		return List<mpz_t>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
+		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfEnumerable(source, MedianEnumerable(source));
@@ -63654,7 +63658,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<long> source) => List<long>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
-	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfEnumerable(source, MedianEnumerable(source));
+	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<MpzT> source) => List<MpzT>.LastIndexOfEnumerable(source, MedianEnumerable(source));
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -63906,14 +63910,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -63931,14 +63935,14 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -64071,12 +64075,12 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		var result = -1;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
@@ -64274,13 +64278,13 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MaxEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static MpzT MaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -64292,13 +64296,13 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -64390,11 +64394,11 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MaxEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static MpzT MaxEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -64516,7 +64520,7 @@ public partial class List<T, TCertain>
 		return result / source.Length;
 	}
 
-	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -64527,7 +64531,7 @@ public partial class List<T, TCertain>
 		return result / source.Length;
 	}
 
-	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
@@ -64598,7 +64602,7 @@ public partial class List<T, TCertain>
 		return result / source.Length;
 	}
 
-	internal static double MeanEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static double MeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
 		double result = 0;
@@ -64650,11 +64654,11 @@ public partial class List<T, TCertain>
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
-	internal static mpz_t MedianEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function) => function == null
+	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
-	internal static mpz_t MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => function == null
+	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
 			: source.Length == 0 ? 0 : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
@@ -64668,7 +64672,7 @@ public partial class List<T, TCertain>
 
 	internal static long MedianEnumerable(ReadOnlySpan<long> source) => source.Length == 0 ? default : new List<long>(source).Sort()[(source.Length - 1) / 2];
 
-	internal static mpz_t MedianEnumerable(ReadOnlySpan<mpz_t> source) => source.Length == 0 ? 0 : new List<mpz_t>(source).Sort()[(source.Length - 1) / 2];
+	internal static MpzT MedianEnumerable(ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new List<MpzT>(source).Sort()[(source.Length - 1) / 2];
 
 	internal static T? MedianEnumerable(ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort()[(source.Length - 1) / 2];
 
@@ -64852,13 +64856,13 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MinEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static MpzT MinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -64870,13 +64874,13 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MinEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT MinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -64968,11 +64972,11 @@ public partial class List<T, TCertain>
 		return indicator;
 	}
 
-	internal static mpz_t MinEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static MpzT MinEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
-		mpz_t indicator = 0;
-		mpz_t f;
+		MpzT indicator = 0;
+		MpzT f;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -65425,23 +65429,23 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static mpz_t SumEnumerable(ReadOnlySpan<T> source, Func<T, mpz_t> function)
+	internal static MpzT SumEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t result = 0;
+		MpzT result = 0;
 		for (var i = 0; i < length; i++)
 			result += function(source[i]);
 		return result;
 	}
 
-	internal static mpz_t SumEnumerable(ReadOnlySpan<T> source, Func<T, int, mpz_t> function)
+	internal static MpzT SumEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
 		if (function == null)
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
-		mpz_t result = 0;
+		MpzT result = 0;
 		for (var i = 0; i < length; i++)
 			result += function(source[i], i);
 		return result;
@@ -65507,10 +65511,10 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static mpz_t SumEnumerable(ReadOnlySpan<mpz_t> source)
+	internal static MpzT SumEnumerable(ReadOnlySpan<MpzT> source)
 	{
 		var length = source.Length;
-		mpz_t result = 0;
+		MpzT result = 0;
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -69313,8 +69317,8 @@ public static class RedStarLinq
 	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable(source, function);
-	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindAllMaxEnumerable(source, function);
-	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMaxEnumerable(source, function);
+	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
+	public static List<T> FindAllMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindAllMeanEnumerable(source, function);
@@ -69325,8 +69329,8 @@ public static class RedStarLinq
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable(source, function);
-	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindAllMeanEnumerable(source, function);
-	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMeanEnumerable(source, function);
+	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
+	public static List<T> FindAllMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindAllMedianEnumerable(source, function);
@@ -69337,8 +69341,8 @@ public static class RedStarLinq
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable(source, function);
-	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindAllMedianEnumerable(source, function);
-	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMedianEnumerable(source, function);
+	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
+	public static List<T> FindAllMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindAllMinEnumerable(source, function);
@@ -69349,8 +69353,8 @@ public static class RedStarLinq
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable(source, function);
-	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindAllMinEnumerable(source, function);
-	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMinEnumerable(source, function);
+	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
+	public static List<T> FindAllMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<int> FindIndexes<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.FindIndexesEnumerable(source, function);
 	public static List<int> FindIndexes<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.FindIndexesEnumerable(source, function);
 	public static int FindIndex<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.FindIndexEnumerable(source, function);
@@ -69369,8 +69373,8 @@ public static class RedStarLinq
 	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable(source, function);
-	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxEnumerable(source, function);
-	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxEnumerable(source, function);
+	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
+	public static T? FindLastMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMeanEnumerable(source, function);
@@ -69381,8 +69385,8 @@ public static class RedStarLinq
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable(source, function);
-	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanEnumerable(source, function);
-	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanEnumerable(source, function);
+	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
+	public static T? FindLastMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMedianEnumerable(source, function);
@@ -69393,8 +69397,8 @@ public static class RedStarLinq
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable(source, function);
-	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianEnumerable(source, function);
-	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianEnumerable(source, function);
+	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
+	public static T? FindLastMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMinEnumerable(source, function);
@@ -69405,8 +69409,8 @@ public static class RedStarLinq
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable(source, function);
-	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinEnumerable(source, function);
-	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinEnumerable(source, function);
+	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
+	public static T? FindLastMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
@@ -69417,8 +69421,8 @@ public static class RedStarLinq
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
-	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
-	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
+	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
+	public static int FindLastMaxIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
@@ -69429,8 +69433,8 @@ public static class RedStarLinq
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
-	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
-	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
+	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
+	public static int FindLastMeanIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
@@ -69441,8 +69445,8 @@ public static class RedStarLinq
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
-	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
-	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
+	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
+	public static int FindLastMedianIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindLastMinIndexEnumerable(source, function);
@@ -69453,8 +69457,8 @@ public static class RedStarLinq
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable(source, function);
-	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinIndexEnumerable(source, function);
-	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinIndexEnumerable(source, function);
+	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
+	public static int FindLastMinIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMaxEnumerable(source, function);
@@ -69465,8 +69469,8 @@ public static class RedStarLinq
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMaxEnumerable(source, function);
-	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMaxEnumerable(source, function);
-	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxEnumerable(source, function);
+	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
+	public static T? FindMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMeanEnumerable(source, function);
@@ -69477,8 +69481,8 @@ public static class RedStarLinq
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMeanEnumerable(source, function);
-	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMeanEnumerable(source, function);
-	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanEnumerable(source, function);
+	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
+	public static T? FindMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMedianEnumerable(source, function);
@@ -69489,8 +69493,8 @@ public static class RedStarLinq
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMedianEnumerable(source, function);
-	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMedianEnumerable(source, function);
-	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianEnumerable(source, function);
+	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
+	public static T? FindMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMinEnumerable(source, function);
@@ -69501,8 +69505,8 @@ public static class RedStarLinq
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMinEnumerable(source, function);
-	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMinEnumerable(source, function);
-	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinEnumerable(source, function);
+	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMinEnumerable(source, function);
+	public static T? FindMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMaxIndexesEnumerable(source, function);
@@ -69513,8 +69517,8 @@ public static class RedStarLinq
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexesEnumerable(source, function);
-	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexesEnumerable(source, function);
-	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexesEnumerable(source, function);
+	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexesEnumerable(source, function);
+	public static List<int> FindMaxIndexes<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMeanIndexesEnumerable(source, function);
@@ -69525,8 +69529,8 @@ public static class RedStarLinq
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexesEnumerable(source, function);
-	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexesEnumerable(source, function);
-	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexesEnumerable(source, function);
+	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexesEnumerable(source, function);
+	public static List<int> FindMeanIndexes<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMedianIndexesEnumerable(source, function);
@@ -69537,8 +69541,8 @@ public static class RedStarLinq
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexesEnumerable(source, function);
-	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexesEnumerable(source, function);
-	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexesEnumerable(source, function);
+	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexesEnumerable(source, function);
+	public static List<int> FindMedianIndexes<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMinIndexesEnumerable(source, function);
@@ -69549,8 +69553,8 @@ public static class RedStarLinq
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMinIndexesEnumerable(source, function);
-	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexesEnumerable(source, function);
-	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexesEnumerable(source, function);
+	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexesEnumerable(source, function);
+	public static List<int> FindMinIndexes<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMaxIndexEnumerable(source, function);
@@ -69561,8 +69565,8 @@ public static class RedStarLinq
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable(source, function);
-	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexEnumerable(source, function);
-	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexEnumerable(source, function);
+	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
+	public static int FindMaxIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMeanIndexEnumerable(source, function);
@@ -69573,8 +69577,8 @@ public static class RedStarLinq
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable(source, function);
-	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexEnumerable(source, function);
-	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexEnumerable(source, function);
+	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
+	public static int FindMeanIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMedianIndexEnumerable(source, function);
@@ -69585,8 +69589,8 @@ public static class RedStarLinq
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable(source, function);
-	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexEnumerable(source, function);
-	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexEnumerable(source, function);
+	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
+	public static int FindMedianIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.FindMinIndexEnumerable(source, function);
@@ -69597,8 +69601,8 @@ public static class RedStarLinq
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable(source, function);
-	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexEnumerable(source, function);
-	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexEnumerable(source, function);
+	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
+	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action) => List<T>.ForEachEnumerable(source, action);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function);
@@ -69693,14 +69697,14 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexesOfMaxEnumerable(source, function);
 	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexesOfMaxEnumerable(source, function);
 	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexesOfMaxEnumerable(source, function);
-	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMaxEnumerable(source, function);
-	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMaxEnumerable(source, function);
+	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMaxEnumerable(source, function);
+	public static List<int> IndexesOfMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMaxEnumerable(source, function);
 	public static List<int> IndexesOfMax(this IEnumerable<decimal> source) => List<decimal>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this IEnumerable<double> source) => List<double>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this IEnumerable<int> source) => List<int>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this IEnumerable<uint> source) => List<int>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this IEnumerable<long> source) => List<long>.IndexesOfMaxEnumerable(source);
-	public static List<int> IndexesOfMax(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexesOfMaxEnumerable(source);
+	public static List<int> IndexesOfMax(this IEnumerable<MpzT> source) => List<MpzT>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexesOfMeanEnumerable(source, function);
@@ -69711,14 +69715,14 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexesOfMeanEnumerable(source, function);
-	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMeanEnumerable(source, function);
-	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMeanEnumerable(source, function);
+	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMeanEnumerable(source, function);
+	public static List<int> IndexesOfMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean(this IEnumerable<decimal> source) => List<decimal>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this IEnumerable<double> source) => List<double>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this IEnumerable<int> source) => List<int>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this IEnumerable<uint> source) => List<int>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this IEnumerable<long> source) => List<long>.IndexesOfMeanEnumerable(source);
-	public static List<int> IndexesOfMean(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexesOfMeanEnumerable(source);
+	public static List<int> IndexesOfMean(this IEnumerable<MpzT> source) => List<MpzT>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexesOfMedianEnumerable(source, function);
@@ -69729,14 +69733,14 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexesOfMedianEnumerable(source, function);
-	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMedianEnumerable(source, function);
-	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMedianEnumerable(source, function);
+	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMedianEnumerable(source, function);
+	public static List<int> IndexesOfMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian(this IEnumerable<decimal> source) => List<decimal>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this IEnumerable<double> source) => List<double>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this IEnumerable<int> source) => List<int>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this IEnumerable<uint> source) => List<int>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this IEnumerable<long> source) => List<long>.IndexesOfMedianEnumerable(source);
-	public static List<int> IndexesOfMedian(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexesOfMedianEnumerable(source);
+	public static List<int> IndexesOfMedian(this IEnumerable<MpzT> source) => List<MpzT>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexesOfMinEnumerable(source, function);
@@ -69747,14 +69751,14 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexesOfMinEnumerable(source, function);
-	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMinEnumerable(source, function);
-	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMinEnumerable(source, function);
+	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMinEnumerable(source, function);
+	public static List<int> IndexesOfMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin(this IEnumerable<decimal> source) => List<decimal>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this IEnumerable<double> source) => List<double>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this IEnumerable<int> source) => List<int>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this IEnumerable<uint> source) => List<int>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this IEnumerable<long> source) => List<long>.IndexesOfMinEnumerable(source);
-	public static List<int> IndexesOfMin(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexesOfMinEnumerable(source);
+	public static List<int> IndexesOfMin(this IEnumerable<MpzT> source) => List<MpzT>.IndexesOfMinEnumerable(source);
 	public static int IndexOf<T>(this IEnumerable<T> source, T target) => List<T>.IndexOfEnumerable(source, target);
 	public static int IndexOf<T>(this IEnumerable<T> source, T target, IEqualityComparer<T> comparer) => List<T>.IndexOfEnumerable(source, target, comparer);
 	public static int IndexOf<T>(this IEnumerable<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.IndexOfEnumerable(source, target, equalFunction);
@@ -69769,14 +69773,14 @@ public static class RedStarLinq
 	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable(source, function);
-	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMaxEnumerable(source, function);
-	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMaxEnumerable(source, function);
+	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
+	public static int IndexOfMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax(this IEnumerable<decimal> source) => List<decimal>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this IEnumerable<double> source) => List<double>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this IEnumerable<int> source) => List<int>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this IEnumerable<uint> source) => List<int>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this IEnumerable<long> source) => List<long>.IndexOfMaxEnumerable(source);
-	public static int IndexOfMax(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexOfMaxEnumerable(source);
+	public static int IndexOfMax(this IEnumerable<MpzT> source) => List<MpzT>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexOfMeanEnumerable(source, function);
@@ -69787,14 +69791,14 @@ public static class RedStarLinq
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable(source, function);
-	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMeanEnumerable(source, function);
-	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMeanEnumerable(source, function);
+	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
+	public static int IndexOfMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean(this IEnumerable<decimal> source) => List<decimal>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this IEnumerable<double> source) => List<double>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this IEnumerable<int> source) => List<int>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this IEnumerable<uint> source) => List<int>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this IEnumerable<long> source) => List<long>.IndexOfMeanEnumerable(source);
-	public static int IndexOfMean(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexOfMeanEnumerable(source);
+	public static int IndexOfMean(this IEnumerable<MpzT> source) => List<MpzT>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexOfMedianEnumerable(source, function);
@@ -69805,14 +69809,14 @@ public static class RedStarLinq
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable(source, function);
-	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMedianEnumerable(source, function);
-	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMedianEnumerable(source, function);
+	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
+	public static int IndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian(this IEnumerable<decimal> source) => List<decimal>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this IEnumerable<double> source) => List<double>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this IEnumerable<int> source) => List<int>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this IEnumerable<uint> source) => List<int>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this IEnumerable<long> source) => List<long>.IndexOfMedianEnumerable(source);
-	public static int IndexOfMedian(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexOfMedianEnumerable(source);
+	public static int IndexOfMedian(this IEnumerable<MpzT> source) => List<MpzT>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.IndexOfMinEnumerable(source, function);
@@ -69823,14 +69827,14 @@ public static class RedStarLinq
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable(source, function);
-	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMinEnumerable(source, function);
-	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMinEnumerable(source, function);
+	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
+	public static int IndexOfMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin(this IEnumerable<decimal> source) => List<decimal>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this IEnumerable<double> source) => List<double>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this IEnumerable<int> source) => List<int>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this IEnumerable<uint> source) => List<int>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this IEnumerable<long> source) => List<long>.IndexOfMinEnumerable(source);
-	public static int IndexOfMin(this IEnumerable<mpz_t> source) => List<mpz_t>.IndexOfMinEnumerable(source);
+	public static int IndexOfMin(this IEnumerable<MpzT> source) => List<MpzT>.IndexOfMinEnumerable(source);
 	public static IEnumerable<T> Intersect<T>(this IEnumerable<T> source, IEnumerable<T> source2) => Enumerable.Intersect(source, source2);
 	public static IEnumerable<T> Intersect<T>(this IEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer) => Enumerable.Intersect(source, source2, comparer);
 	public static IEnumerable<TResult> Join<TOuter, TInner, TKey, TResult>(this IEnumerable<TOuter> outer, IEnumerable<TInner> inner, Func<TOuter, TKey> outerKeySelector, Func<TInner, TKey> innerKeySelector, Func<TOuter, TInner, TResult> resultSelector) => Enumerable.Join(outer, inner, outerKeySelector, innerKeySelector, resultSelector);
@@ -69868,14 +69872,14 @@ public static class RedStarLinq
 	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
-	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
-	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
+	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
+	public static int LastIndexOfMax<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax(this IEnumerable<decimal> source) => List<decimal>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this IEnumerable<double> source) => List<double>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this IEnumerable<int> source) => List<int>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this IEnumerable<uint> source) => List<int>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this IEnumerable<long> source) => List<long>.LastIndexOfMaxEnumerable(source);
-	public static int LastIndexOfMax(this IEnumerable<mpz_t> source) => List<mpz_t>.LastIndexOfMaxEnumerable(source);
+	public static int LastIndexOfMax(this IEnumerable<MpzT> source) => List<MpzT>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
@@ -69886,14 +69890,14 @@ public static class RedStarLinq
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
-	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
-	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
+	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
+	public static int LastIndexOfMean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean(this IEnumerable<decimal> source) => List<decimal>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this IEnumerable<double> source) => List<double>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this IEnumerable<int> source) => List<int>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this IEnumerable<uint> source) => List<int>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this IEnumerable<long> source) => List<long>.LastIndexOfMeanEnumerable(source);
-	public static int LastIndexOfMean(this IEnumerable<mpz_t> source) => List<mpz_t>.LastIndexOfMeanEnumerable(source);
+	public static int LastIndexOfMean(this IEnumerable<MpzT> source) => List<MpzT>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
@@ -69904,14 +69908,14 @@ public static class RedStarLinq
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
-	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
-	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
+	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
+	public static int LastIndexOfMedian<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian(this IEnumerable<decimal> source) => List<decimal>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this IEnumerable<double> source) => List<double>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this IEnumerable<int> source) => List<int>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this IEnumerable<uint> source) => List<int>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this IEnumerable<long> source) => List<long>.LastIndexOfMedianEnumerable(source);
-	public static int LastIndexOfMedian(this IEnumerable<mpz_t> source) => List<mpz_t>.LastIndexOfMedianEnumerable(source);
+	public static int LastIndexOfMedian(this IEnumerable<MpzT> source) => List<MpzT>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.LastIndexOfMinEnumerable(source, function);
@@ -69922,14 +69926,14 @@ public static class RedStarLinq
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable(source, function);
-	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMinEnumerable(source, function);
-	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMinEnumerable(source, function);
+	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
+	public static int LastIndexOfMin<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin(this IEnumerable<decimal> source) => List<decimal>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<double> source) => List<double>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<int> source) => List<int>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<uint> source) => List<int>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this IEnumerable<long> source) => List<long>.LastIndexOfMinEnumerable(source);
-	public static int LastIndexOfMin(this IEnumerable<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable(source);
+	public static int LastIndexOfMin(this IEnumerable<MpzT> source) => List<MpzT>.LastIndexOfMinEnumerable(source);
 	public static int Length<T>(this IEnumerable<T> source) => List<T>.LengthEnumerable(source);
 	public static decimal Max<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MaxEnumerable(source, function);
 	public static decimal Max<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MaxEnumerable(source, function);
@@ -69941,14 +69945,14 @@ public static class RedStarLinq
 	public static uint Max<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.MaxEnumerable(source, function);
 	public static long Max<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.MaxEnumerable(source, function);
 	public static long Max<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.MaxEnumerable(source, function);
-	public static mpz_t Max<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.MaxEnumerable(source, function);
-	public static mpz_t Max<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.MaxEnumerable(source, function);
+	public static MpzT Max<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.MaxEnumerable(source, function);
+	public static MpzT Max<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable(source, function);
 	public static decimal Max(this IEnumerable<decimal> source) => List<decimal>.MaxEnumerable(source);
 	public static double Max(this IEnumerable<double> source) => List<double>.MaxEnumerable(source);
 	public static int Max(this IEnumerable<int> source) => List<int>.MaxEnumerable(source);
 	public static uint Max(this IEnumerable<uint> source) => List<int>.MaxEnumerable(source);
 	public static long Max(this IEnumerable<long> source) => List<long>.MaxEnumerable(source);
-	public static mpz_t Max(this IEnumerable<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
+	public static MpzT Max(this IEnumerable<MpzT> source) => List<MpzT>.MaxEnumerable(source);
 	public static TResult? Max<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => Enumerable.Max(source, selector);
 	public static TResult? Max<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> selector) => List<T>.Max(source, selector);
 	public static T? Max<T>(this IEnumerable<T> source) => Enumerable.Max(source);
@@ -69957,7 +69961,7 @@ public static class RedStarLinq
 	public static int Max(params int[] source) => List<int>.MaxEnumerable(source.AsSpan());
 	public static uint Max(params uint[] source) => List<uint>.MaxEnumerable(source.AsSpan());
 	public static long Max(params long[] source) => List<long>.MaxEnumerable(source.AsSpan());
-	public static mpz_t Max(params mpz_t[] source) => List<mpz_t>.MaxEnumerable(source.AsSpan());
+	public static MpzT Max(params MpzT[] source) => List<MpzT>.MaxEnumerable(source.AsSpan());
 	public static T? Max<T>(params T?[] source) => Enumerable.Max(source);
 	public static decimal Mean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MeanEnumerable(source, function);
@@ -69967,20 +69971,20 @@ public static class RedStarLinq
 	public static double Mean<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.MeanEnumerable(source, function);
-	public static double Mean<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.MeanEnumerable(source, function);
-	public static double Mean<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.MeanEnumerable(source, function);
+	public static double Mean<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.MeanEnumerable(source, function);
+	public static double Mean<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean(this IEnumerable<decimal> source) => List<decimal>.MeanEnumerable(source);
 	public static double Mean(this IEnumerable<double> source) => List<double>.MeanEnumerable(source);
 	public static double Mean(this IEnumerable<int> source) => List<int>.MeanEnumerable(source);
 	public static double Mean(this IEnumerable<uint> source) => List<int>.MeanEnumerable(source);
 	public static double Mean(this IEnumerable<long> source) => List<long>.MeanEnumerable(source);
-	public static double Mean(this IEnumerable<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
+	public static double Mean(this IEnumerable<MpzT> source) => List<MpzT>.MeanEnumerable(source);
 	public static decimal Mean(params decimal[] source) => List<decimal>.MeanEnumerable(source.AsSpan());
 	public static double Mean(params double[] source) => List<double>.MeanEnumerable(source.AsSpan());
 	public static double Mean(params int[] source) => List<int>.MeanEnumerable(source.AsSpan());
 	public static double Mean(params uint[] source) => List<uint>.MeanEnumerable(source.AsSpan());
 	public static double Mean(params long[] source) => List<long>.MeanEnumerable(source.AsSpan());
-	public static double Mean(params mpz_t[] source) => List<mpz_t>.MeanEnumerable(source.AsSpan());
+	public static double Mean(params MpzT[] source) => List<MpzT>.MeanEnumerable(source.AsSpan());
 	public static decimal Median<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MedianEnumerable(source, function);
 	public static decimal Median<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MedianEnumerable(source, function);
 	public static double Median<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.MedianEnumerable(source, function);
@@ -69991,14 +69995,14 @@ public static class RedStarLinq
 	public static uint Median<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.MedianEnumerable(source, function);
 	public static long Median<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.MedianEnumerable(source, function);
 	public static long Median<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.MedianEnumerable(source, function);
-	public static mpz_t Median<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.MedianEnumerable(source, function);
-	public static mpz_t Median<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.MedianEnumerable(source, function);
+	public static MpzT Median<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.MedianEnumerable(source, function);
+	public static MpzT Median<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable(source, function);
 	public static decimal Median(this IEnumerable<decimal> source) => List<decimal>.MedianEnumerable(source);
 	public static double Median(this IEnumerable<double> source) => List<double>.MedianEnumerable(source);
 	public static int Median(this IEnumerable<int> source) => List<int>.MedianEnumerable(source);
 	public static uint Median(this IEnumerable<uint> source) => List<int>.MedianEnumerable(source);
 	public static long Median(this IEnumerable<long> source) => List<long>.MedianEnumerable(source);
-	public static mpz_t Median(this IEnumerable<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
+	public static MpzT Median(this IEnumerable<MpzT> source) => List<MpzT>.MedianEnumerable(source);
 	public static TResult? Median<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => List<T>.MedianEnumerable(source, selector);
 	public static TResult? Median<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> selector) => List<T>.MedianEnumerable(source, selector);
 	public static T? Median<T>(this IEnumerable<T> source) => List<T>.MedianEnumerable(source);
@@ -70007,7 +70011,7 @@ public static class RedStarLinq
 	public static int Median(params int[] source) => List<int>.MedianEnumerable(source.AsSpan());
 	public static uint Median(params uint[] source) => List<uint>.MedianEnumerable(source.AsSpan());
 	public static long Median(params long[] source) => List<long>.MedianEnumerable(source.AsSpan());
-	public static mpz_t Median(params mpz_t[] source) => List<mpz_t>.MedianEnumerable(source.AsSpan());
+	public static MpzT Median(params MpzT[] source) => List<MpzT>.MedianEnumerable(source.AsSpan());
 	public static T? Median<T>(params T?[] source) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan());
 	public static decimal Min<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MinEnumerable(source, function);
@@ -70019,14 +70023,14 @@ public static class RedStarLinq
 	public static uint Min<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.MinEnumerable(source, function);
 	public static long Min<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.MinEnumerable(source, function);
 	public static long Min<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.MinEnumerable(source, function);
-	public static mpz_t Min<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.MinEnumerable(source, function);
-	public static mpz_t Min<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.MinEnumerable(source, function);
+	public static MpzT Min<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.MinEnumerable(source, function);
+	public static MpzT Min<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min(this IEnumerable<decimal> source) => List<decimal>.MinEnumerable(source);
 	public static double Min(this IEnumerable<double> source) => List<double>.MinEnumerable(source);
 	public static int Min(this IEnumerable<int> source) => List<int>.MinEnumerable(source);
 	public static uint Min(this IEnumerable<uint> source) => List<int>.MinEnumerable(source);
 	public static long Min(this IEnumerable<long> source) => List<long>.MinEnumerable(source);
-	public static mpz_t Min(this IEnumerable<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
+	public static MpzT Min(this IEnumerable<MpzT> source) => List<MpzT>.MinEnumerable(source);
 	public static TResult? Min<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => Enumerable.Min(source, selector);
 	public static TResult? Min<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> selector) => List<T>.Min(source, selector);
 	public static T? Min<T>(this IEnumerable<T> source) => Enumerable.Min(source);
@@ -70035,7 +70039,7 @@ public static class RedStarLinq
 	public static int Min(params int[] source) => List<int>.MinEnumerable(source.AsSpan());
 	public static uint Min(params uint[] source) => List<uint>.MinEnumerable(source.AsSpan());
 	public static long Min(params long[] source) => List<long>.MinEnumerable(source.AsSpan());
-	public static mpz_t Min(params mpz_t[] source) => List<mpz_t>.MinEnumerable(source.AsSpan());
+	public static MpzT Min(params MpzT[] source) => List<MpzT>.MinEnumerable(source.AsSpan());
 	public static T? Min<T>(params T?[] source) => Enumerable.Min(source);
 	public static List<TResult> OfType<TResult>(this IEnumerable source) => List<bool>.OfTypeEnumerable<TResult>(source);
 	public static List<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
@@ -70130,14 +70134,14 @@ public static class RedStarLinq
 	public static uint Sum<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.SumEnumerable(source, function);
 	public static long Sum<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.SumEnumerable(source, function);
 	public static long Sum<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.SumEnumerable(source, function);
-	public static mpz_t Sum<T>(this IEnumerable<T> source, Func<T, mpz_t> function) => List<T>.SumEnumerable(source, function);
-	public static mpz_t Sum<T>(this IEnumerable<T> source, Func<T, int, mpz_t> function) => List<T>.SumEnumerable(source, function);
+	public static MpzT Sum<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.SumEnumerable(source, function);
+	public static MpzT Sum<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.SumEnumerable(source, function);
 	public static decimal Sum(this IEnumerable<decimal> source) => List<decimal>.SumEnumerable(source);
 	public static double Sum(this IEnumerable<double> source) => List<double>.SumEnumerable(source);
 	public static int Sum(this IEnumerable<int> source) => List<int>.SumEnumerable(source);
 	public static uint Sum(this IEnumerable<uint> source) => List<int>.SumEnumerable(source);
 	public static long Sum(this IEnumerable<long> source) => List<long>.SumEnumerable(source);
-	public static mpz_t Sum(this IEnumerable<mpz_t> source) => List<mpz_t>.SumEnumerable(source);
+	public static MpzT Sum(this IEnumerable<MpzT> source) => List<MpzT>.SumEnumerable(source);
 	public static Slice<T> Take<T>(this IEnumerable<T> source, int length) => List<T>.TakeEnumerable(source, length);
 	public static Slice<T> Take<T>(this IEnumerable<T> source, Range range) => List<T>.TakeEnumerable(source, range);
 	public static Slice<T> TakeLast<T>(this IEnumerable<T> source, int length) => List<T>.TakeLastEnumerable(source, length);
@@ -70367,12 +70371,12 @@ public static class RedStarLinq
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindAllMaxEnumerable(source, function);
-	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMaxEnumerable(source, function);
-	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
+	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
+	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -70403,12 +70407,12 @@ public static class RedStarLinq
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindAllMeanEnumerable(source, function);
-	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMeanEnumerable(source, function);
-	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
+	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
+	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -70439,12 +70443,12 @@ public static class RedStarLinq
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindAllMedianEnumerable(source, function);
-	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMedianEnumerable(source, function);
-	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
+	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
+	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -70475,12 +70479,12 @@ public static class RedStarLinq
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindAllMinEnumerable(source, function);
-	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMinEnumerable(source, function);
-	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
+	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
+	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLast<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.FindLastEnumerable(source, function);
 	public static T? FindLast<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.FindLastEnumerable(source, function);
 	public static T? FindLast<T>(this Span<T> source, Func<T, bool> function) => List<T>.FindLastEnumerable((ReadOnlySpan<T>)source, function);
@@ -70517,12 +70521,12 @@ public static class RedStarLinq
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxEnumerable(source, function);
-	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxEnumerable(source, function);
-	public static T? FindLastMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
+	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
+	public static T? FindLastMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -70553,12 +70557,12 @@ public static class RedStarLinq
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanEnumerable(source, function);
-	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanEnumerable(source, function);
-	public static T? FindLastMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
+	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
+	public static T? FindLastMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -70589,12 +70593,12 @@ public static class RedStarLinq
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianEnumerable(source, function);
-	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianEnumerable(source, function);
-	public static T? FindLastMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
+	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
+	public static T? FindLastMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -70625,12 +70629,12 @@ public static class RedStarLinq
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindLastMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinEnumerable(source, function);
-	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinEnumerable(source, function);
-	public static T? FindLastMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
+	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
+	public static T? FindLastMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -70661,12 +70665,12 @@ public static class RedStarLinq
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
-	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
-	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
+	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
+	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -70697,12 +70701,12 @@ public static class RedStarLinq
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
-	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
-	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
+	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
+	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -70733,12 +70737,12 @@ public static class RedStarLinq
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
-	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
-	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
+	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
+	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -70769,12 +70773,12 @@ public static class RedStarLinq
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinIndexEnumerable(source, function);
-	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinIndexEnumerable(source, function);
-	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
+	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
+	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
@@ -70805,12 +70809,12 @@ public static class RedStarLinq
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMaxEnumerable(source, function);
-	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxEnumerable(source, function);
-	public static T? FindMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
+	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
+	public static T? FindMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -70841,12 +70845,12 @@ public static class RedStarLinq
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMeanEnumerable(source, function);
-	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanEnumerable(source, function);
-	public static T? FindMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
+	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
+	public static T? FindMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -70877,12 +70881,12 @@ public static class RedStarLinq
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMedianEnumerable(source, function);
-	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianEnumerable(source, function);
-	public static T? FindMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
+	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
+	public static T? FindMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -70913,12 +70917,12 @@ public static class RedStarLinq
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this T[] source, Func<T, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static T? FindMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMinEnumerable(source, function);
-	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinEnumerable(source, function);
-	public static T? FindMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMinEnumerable(source, function);
+	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable(source, function);
+	public static T? FindMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexesEnumerable(source, function);
 	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
@@ -70949,12 +70953,12 @@ public static class RedStarLinq
 	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexesEnumerable(source, function);
-	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexesEnumerable(source, function);
-	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexesEnumerable(source, function);
+	public static List<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexesEnumerable(source, function);
+	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMaxIndexes<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexesEnumerable(source, function);
 	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
@@ -70985,12 +70989,12 @@ public static class RedStarLinq
 	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexesEnumerable(source, function);
-	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexesEnumerable(source, function);
-	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexesEnumerable(source, function);
+	public static List<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexesEnumerable(source, function);
+	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMeanIndexes<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexesEnumerable(source, function);
 	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
@@ -71021,12 +71025,12 @@ public static class RedStarLinq
 	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexesEnumerable(source, function);
-	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexesEnumerable(source, function);
-	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexesEnumerable(source, function);
+	public static List<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexesEnumerable(source, function);
+	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMedianIndexes<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexesEnumerable(source, function);
 	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
@@ -71057,12 +71061,12 @@ public static class RedStarLinq
 	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, long> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexesEnumerable(source, function);
-	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexesEnumerable(source, function);
-	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexesEnumerable(source, function);
+	public static List<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexesEnumerable(source, function);
+	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> FindMinIndexes<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -71093,12 +71097,12 @@ public static class RedStarLinq
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMaxIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexEnumerable(source, function);
-	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexEnumerable(source, function);
-	public static int FindMaxIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
+	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
+	public static int FindMaxIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -71129,12 +71133,12 @@ public static class RedStarLinq
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMeanIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexEnumerable(source, function);
-	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexEnumerable(source, function);
-	public static int FindMeanIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
+	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
+	public static int FindMeanIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -71165,12 +71169,12 @@ public static class RedStarLinq
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMedianIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexEnumerable(source, function);
-	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexEnumerable(source, function);
-	public static int FindMedianIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
+	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
+	public static int FindMedianIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
@@ -71201,12 +71205,12 @@ public static class RedStarLinq
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int FindMinIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexEnumerable(source, function);
-	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexEnumerable(source, function);
-	public static int FindMinIndex<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, mpz_t> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
+	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
+	public static int FindMinIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static void ForEach<T>(this ReadOnlySpan<T> source, Action<T> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this ReadOnlySpan<T> source, Action<T, int> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this Span<T> source, Action<T> action) => List<T>.ForEachEnumerable((ReadOnlySpan<T>)source, action);
@@ -71345,12 +71349,12 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, long> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMaxEnumerable(source, function);
-	public static List<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMaxEnumerable(source, function);
-	public static List<int> IndexesOfMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMaxEnumerable(source, function);
+	public static List<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMaxEnumerable(source, function);
+	public static List<int> IndexesOfMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMax(this ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this Span<decimal> source) => List<decimal>.IndexesOfMaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static List<int> IndexesOfMax(this decimal[] source) => List<decimal>.IndexesOfMaxEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71366,9 +71370,9 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMax(this ReadOnlySpan<long> source) => List<long>.IndexesOfMaxEnumerable(source);
 	public static List<int> IndexesOfMax(this Span<long> source) => List<long>.IndexesOfMaxEnumerable((ReadOnlySpan<long>)source);
 	public static List<int> IndexesOfMax(this long[] source) => List<long>.IndexesOfMaxEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static List<int> IndexesOfMax(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfMaxEnumerable(source);
-	public static List<int> IndexesOfMax(this Span<mpz_t> source) => List<mpz_t>.IndexesOfMaxEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static List<int> IndexesOfMax(this mpz_t[] source) => List<mpz_t>.IndexesOfMaxEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static List<int> IndexesOfMax(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexesOfMaxEnumerable(source);
+	public static List<int> IndexesOfMax(this Span<MpzT> source) => List<MpzT>.IndexesOfMaxEnumerable((ReadOnlySpan<MpzT>)source);
+	public static List<int> IndexesOfMax(this MpzT[] source) => List<MpzT>.IndexesOfMaxEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMeanEnumerable(source, function);
 	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -71399,12 +71403,12 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, long> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMeanEnumerable(source, function);
-	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMeanEnumerable(source, function);
-	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMeanEnumerable(source, function);
+	public static List<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMeanEnumerable(source, function);
+	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMean(this ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this Span<decimal> source) => List<decimal>.IndexesOfMeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static List<int> IndexesOfMean(this decimal[] source) => List<decimal>.IndexesOfMeanEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71420,9 +71424,9 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMean(this ReadOnlySpan<long> source) => List<long>.IndexesOfMeanEnumerable(source);
 	public static List<int> IndexesOfMean(this Span<long> source) => List<long>.IndexesOfMeanEnumerable((ReadOnlySpan<long>)source);
 	public static List<int> IndexesOfMean(this long[] source) => List<long>.IndexesOfMeanEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static List<int> IndexesOfMean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfMeanEnumerable(source);
-	public static List<int> IndexesOfMean(this Span<mpz_t> source) => List<mpz_t>.IndexesOfMeanEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static List<int> IndexesOfMean(this mpz_t[] source) => List<mpz_t>.IndexesOfMeanEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static List<int> IndexesOfMean(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexesOfMeanEnumerable(source);
+	public static List<int> IndexesOfMean(this Span<MpzT> source) => List<MpzT>.IndexesOfMeanEnumerable((ReadOnlySpan<MpzT>)source);
+	public static List<int> IndexesOfMean(this MpzT[] source) => List<MpzT>.IndexesOfMeanEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMedianEnumerable(source, function);
 	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -71453,12 +71457,12 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMedianEnumerable(source, function);
-	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMedianEnumerable(source, function);
-	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMedianEnumerable(source, function);
+	public static List<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMedianEnumerable(source, function);
+	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMedian(this ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this Span<decimal> source) => List<decimal>.IndexesOfMedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static List<int> IndexesOfMedian(this decimal[] source) => List<decimal>.IndexesOfMedianEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71474,9 +71478,9 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMedian(this ReadOnlySpan<long> source) => List<long>.IndexesOfMedianEnumerable(source);
 	public static List<int> IndexesOfMedian(this Span<long> source) => List<long>.IndexesOfMedianEnumerable((ReadOnlySpan<long>)source);
 	public static List<int> IndexesOfMedian(this long[] source) => List<long>.IndexesOfMedianEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static List<int> IndexesOfMedian(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfMedianEnumerable(source);
-	public static List<int> IndexesOfMedian(this Span<mpz_t> source) => List<mpz_t>.IndexesOfMedianEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static List<int> IndexesOfMedian(this mpz_t[] source) => List<mpz_t>.IndexesOfMedianEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static List<int> IndexesOfMedian(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexesOfMedianEnumerable(source);
+	public static List<int> IndexesOfMedian(this Span<MpzT> source) => List<MpzT>.IndexesOfMedianEnumerable((ReadOnlySpan<MpzT>)source);
+	public static List<int> IndexesOfMedian(this MpzT[] source) => List<MpzT>.IndexesOfMedianEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexesOfMinEnumerable(source, function);
 	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -71507,12 +71511,12 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, long> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMinEnumerable(source, function);
-	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMinEnumerable(source, function);
-	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMinEnumerable(source, function);
+	public static List<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMinEnumerable(source, function);
+	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<int> IndexesOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<int> IndexesOfMin(this ReadOnlySpan<decimal> source) => List<decimal>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this Span<decimal> source) => List<decimal>.IndexesOfMinEnumerable((ReadOnlySpan<decimal>)source);
 	public static List<int> IndexesOfMin(this decimal[] source) => List<decimal>.IndexesOfMinEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71528,9 +71532,9 @@ public static class RedStarLinq
 	public static List<int> IndexesOfMin(this ReadOnlySpan<long> source) => List<long>.IndexesOfMinEnumerable(source);
 	public static List<int> IndexesOfMin(this Span<long> source) => List<long>.IndexesOfMinEnumerable((ReadOnlySpan<long>)source);
 	public static List<int> IndexesOfMin(this long[] source) => List<long>.IndexesOfMinEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static List<int> IndexesOfMin(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexesOfMinEnumerable(source);
-	public static List<int> IndexesOfMin(this Span<mpz_t> source) => List<mpz_t>.IndexesOfMinEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static List<int> IndexesOfMin(this mpz_t[] source) => List<mpz_t>.IndexesOfMinEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static List<int> IndexesOfMin(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexesOfMinEnumerable(source);
+	public static List<int> IndexesOfMin(this Span<MpzT> source) => List<MpzT>.IndexesOfMinEnumerable((ReadOnlySpan<MpzT>)source);
+	public static List<int> IndexesOfMin(this MpzT[] source) => List<MpzT>.IndexesOfMinEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int IndexOf<T>(this ReadOnlySpan<T> source, T target) => List<T>.IndexOfEnumerable(source, target);
 	public static int IndexOf<T>(this Span<T> source, T target) => List<T>.IndexOfEnumerable((ReadOnlySpan<T>)source, target);
 	public static int IndexOf<T>(this T[] source, T target) => List<T>.IndexOfEnumerable((ReadOnlySpan<T>)source.AsSpan(), target);
@@ -71564,12 +71568,12 @@ public static class RedStarLinq
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMaxEnumerable(source, function);
-	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMaxEnumerable(source, function);
-	public static int IndexOfMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
+	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
+	public static int IndexOfMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMax(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this Span<decimal> source) => List<decimal>.IndexOfMaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMax(this decimal[] source) => List<decimal>.IndexOfMaxEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71585,9 +71589,9 @@ public static class RedStarLinq
 	public static int IndexOfMax(this ReadOnlySpan<long> source) => List<long>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this Span<long> source) => List<long>.IndexOfMaxEnumerable((ReadOnlySpan<long>)source);
 	public static int IndexOfMax(this long[] source) => List<long>.IndexOfMaxEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int IndexOfMax(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfMaxEnumerable(source);
-	public static int IndexOfMax(this Span<mpz_t> source) => List<mpz_t>.IndexOfMaxEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int IndexOfMax(this mpz_t[] source) => List<mpz_t>.IndexOfMaxEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int IndexOfMax(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexOfMaxEnumerable(source);
+	public static int IndexOfMax(this Span<MpzT> source) => List<MpzT>.IndexOfMaxEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int IndexOfMax(this MpzT[] source) => List<MpzT>.IndexOfMaxEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -71618,12 +71622,12 @@ public static class RedStarLinq
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMeanEnumerable(source, function);
-	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMeanEnumerable(source, function);
-	public static int IndexOfMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
+	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
+	public static int IndexOfMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMean(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this Span<decimal> source) => List<decimal>.IndexOfMeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMean(this decimal[] source) => List<decimal>.IndexOfMeanEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71639,9 +71643,9 @@ public static class RedStarLinq
 	public static int IndexOfMean(this ReadOnlySpan<long> source) => List<long>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this Span<long> source) => List<long>.IndexOfMeanEnumerable((ReadOnlySpan<long>)source);
 	public static int IndexOfMean(this long[] source) => List<long>.IndexOfMeanEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int IndexOfMean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfMeanEnumerable(source);
-	public static int IndexOfMean(this Span<mpz_t> source) => List<mpz_t>.IndexOfMeanEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int IndexOfMean(this mpz_t[] source) => List<mpz_t>.IndexOfMeanEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int IndexOfMean(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexOfMeanEnumerable(source);
+	public static int IndexOfMean(this Span<MpzT> source) => List<MpzT>.IndexOfMeanEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int IndexOfMean(this MpzT[] source) => List<MpzT>.IndexOfMeanEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -71672,12 +71676,12 @@ public static class RedStarLinq
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMedianEnumerable(source, function);
-	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMedianEnumerable(source, function);
-	public static int IndexOfMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
+	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
+	public static int IndexOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMedian(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this Span<decimal> source) => List<decimal>.IndexOfMedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMedian(this decimal[] source) => List<decimal>.IndexOfMedianEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71693,9 +71697,9 @@ public static class RedStarLinq
 	public static int IndexOfMedian(this ReadOnlySpan<long> source) => List<long>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this Span<long> source) => List<long>.IndexOfMedianEnumerable((ReadOnlySpan<long>)source);
 	public static int IndexOfMedian(this long[] source) => List<long>.IndexOfMedianEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int IndexOfMedian(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfMedianEnumerable(source);
-	public static int IndexOfMedian(this Span<mpz_t> source) => List<mpz_t>.IndexOfMedianEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int IndexOfMedian(this mpz_t[] source) => List<mpz_t>.IndexOfMedianEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int IndexOfMedian(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexOfMedianEnumerable(source);
+	public static int IndexOfMedian(this Span<MpzT> source) => List<MpzT>.IndexOfMedianEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int IndexOfMedian(this MpzT[] source) => List<MpzT>.IndexOfMedianEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -71726,12 +71730,12 @@ public static class RedStarLinq
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMinEnumerable(source, function);
-	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMinEnumerable(source, function);
-	public static int IndexOfMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
+	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
+	public static int IndexOfMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int IndexOfMin(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this Span<decimal> source) => List<decimal>.IndexOfMinEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMin(this decimal[] source) => List<decimal>.IndexOfMinEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71747,9 +71751,9 @@ public static class RedStarLinq
 	public static int IndexOfMin(this ReadOnlySpan<long> source) => List<long>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this Span<long> source) => List<long>.IndexOfMinEnumerable((ReadOnlySpan<long>)source);
 	public static int IndexOfMin(this long[] source) => List<long>.IndexOfMinEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int IndexOfMin(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.IndexOfMinEnumerable(source);
-	public static int IndexOfMin(this Span<mpz_t> source) => List<mpz_t>.IndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int IndexOfMin(this mpz_t[] source) => List<mpz_t>.IndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int IndexOfMin(this ReadOnlySpan<MpzT> source) => List<MpzT>.IndexOfMinEnumerable(source);
+	public static int IndexOfMin(this Span<MpzT> source) => List<MpzT>.IndexOfMinEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int IndexOfMin(this MpzT[] source) => List<MpzT>.IndexOfMinEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source) => List<T>.JoinIntoSingleEnumerable(source);
 	public static List<T> JoinIntoSingle<T>(this Span<List<T>> source) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source);
 	public static List<T> JoinIntoSingle<T>(this List<T>[] source) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source.AsSpan());
@@ -71798,12 +71802,12 @@ public static class RedStarLinq
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
-	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
-	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
+	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
+	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMax(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this Span<decimal> source) => List<decimal>.LastIndexOfMaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMax(this decimal[] source) => List<decimal>.LastIndexOfMaxEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71819,9 +71823,9 @@ public static class RedStarLinq
 	public static int LastIndexOfMax(this ReadOnlySpan<long> source) => List<long>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this Span<long> source) => List<long>.LastIndexOfMaxEnumerable((ReadOnlySpan<long>)source);
 	public static int LastIndexOfMax(this long[] source) => List<long>.LastIndexOfMaxEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int LastIndexOfMax(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfMaxEnumerable(source);
-	public static int LastIndexOfMax(this Span<mpz_t> source) => List<mpz_t>.LastIndexOfMaxEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int LastIndexOfMax(this mpz_t[] source) => List<mpz_t>.LastIndexOfMaxEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int LastIndexOfMax(this ReadOnlySpan<MpzT> source) => List<MpzT>.LastIndexOfMaxEnumerable(source);
+	public static int LastIndexOfMax(this Span<MpzT> source) => List<MpzT>.LastIndexOfMaxEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int LastIndexOfMax(this MpzT[] source) => List<MpzT>.LastIndexOfMaxEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -71852,12 +71856,12 @@ public static class RedStarLinq
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
-	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
-	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
+	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
+	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMean(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this Span<decimal> source) => List<decimal>.LastIndexOfMeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMean(this decimal[] source) => List<decimal>.LastIndexOfMeanEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71873,9 +71877,9 @@ public static class RedStarLinq
 	public static int LastIndexOfMean(this ReadOnlySpan<long> source) => List<long>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this Span<long> source) => List<long>.LastIndexOfMeanEnumerable((ReadOnlySpan<long>)source);
 	public static int LastIndexOfMean(this long[] source) => List<long>.LastIndexOfMeanEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int LastIndexOfMean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfMeanEnumerable(source);
-	public static int LastIndexOfMean(this Span<mpz_t> source) => List<mpz_t>.LastIndexOfMeanEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int LastIndexOfMean(this mpz_t[] source) => List<mpz_t>.LastIndexOfMeanEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int LastIndexOfMean(this ReadOnlySpan<MpzT> source) => List<MpzT>.LastIndexOfMeanEnumerable(source);
+	public static int LastIndexOfMean(this Span<MpzT> source) => List<MpzT>.LastIndexOfMeanEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int LastIndexOfMean(this MpzT[] source) => List<MpzT>.LastIndexOfMeanEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -71906,12 +71910,12 @@ public static class RedStarLinq
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
-	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
-	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
+	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
+	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMedian(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this Span<decimal> source) => List<decimal>.LastIndexOfMedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMedian(this decimal[] source) => List<decimal>.LastIndexOfMedianEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71927,9 +71931,9 @@ public static class RedStarLinq
 	public static int LastIndexOfMedian(this ReadOnlySpan<long> source) => List<long>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this Span<long> source) => List<long>.LastIndexOfMedianEnumerable((ReadOnlySpan<long>)source);
 	public static int LastIndexOfMedian(this long[] source) => List<long>.LastIndexOfMedianEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int LastIndexOfMedian(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfMedianEnumerable(source);
-	public static int LastIndexOfMedian(this Span<mpz_t> source) => List<mpz_t>.LastIndexOfMedianEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int LastIndexOfMedian(this mpz_t[] source) => List<mpz_t>.LastIndexOfMedianEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int LastIndexOfMedian(this ReadOnlySpan<MpzT> source) => List<MpzT>.LastIndexOfMedianEnumerable(source);
+	public static int LastIndexOfMedian(this Span<MpzT> source) => List<MpzT>.LastIndexOfMedianEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int LastIndexOfMedian(this MpzT[] source) => List<MpzT>.LastIndexOfMedianEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
@@ -71960,12 +71964,12 @@ public static class RedStarLinq
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMinEnumerable(source, function);
-	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMinEnumerable(source, function);
-	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, mpz_t> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
+	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
+	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static int LastIndexOfMin(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this Span<decimal> source) => List<decimal>.LastIndexOfMinEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMin(this decimal[] source) => List<decimal>.LastIndexOfMinEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -71981,9 +71985,9 @@ public static class RedStarLinq
 	public static int LastIndexOfMin(this ReadOnlySpan<long> source) => List<long>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this Span<long> source) => List<long>.LastIndexOfMinEnumerable((ReadOnlySpan<long>)source);
 	public static int LastIndexOfMin(this long[] source) => List<long>.LastIndexOfMinEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static int LastIndexOfMin(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable(source);
-	public static int LastIndexOfMin(this Span<mpz_t> source) => List<mpz_t>.LastIndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static int LastIndexOfMin(this mpz_t[] source) => List<mpz_t>.LastIndexOfMinEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static int LastIndexOfMin(this ReadOnlySpan<MpzT> source) => List<MpzT>.LastIndexOfMinEnumerable(source);
+	public static int LastIndexOfMin(this Span<MpzT> source) => List<MpzT>.LastIndexOfMinEnumerable((ReadOnlySpan<MpzT>)source);
+	public static int LastIndexOfMin(this MpzT[] source) => List<MpzT>.LastIndexOfMinEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static decimal Max<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.MaxEnumerable(source, function);
 	public static decimal Max<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MaxEnumerable(source, function);
 	public static decimal Max<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
@@ -72014,12 +72018,12 @@ public static class RedStarLinq
 	public static long Max<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Max<T>(this T[] source, Func<T, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static long Max<T>(this T[] source, Func<T, int, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Max<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.MaxEnumerable(source, function);
-	public static mpz_t Max<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.MaxEnumerable(source, function);
-	public static mpz_t Max<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Max<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Max<T>(this T[] source, Func<T, mpz_t> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Max<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Max<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MaxEnumerable(source, function);
+	public static MpzT Max<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable(source, function);
+	public static MpzT Max<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Max<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Max<T>(this T[] source, Func<T, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Max<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static decimal Max(this ReadOnlySpan<decimal> source) => List<decimal>.MaxEnumerable(source);
 	public static decimal Max(this Span<decimal> source) => List<decimal>.MaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Max(this ReadOnlySpan<double> source) => List<double>.MaxEnumerable(source);
@@ -72030,8 +72034,8 @@ public static class RedStarLinq
 	public static uint Max(this Span<uint> source) => List<uint>.MaxEnumerable((ReadOnlySpan<uint>)source);
 	public static long Max(this ReadOnlySpan<long> source) => List<long>.MaxEnumerable(source);
 	public static long Max(this Span<long> source) => List<long>.MaxEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t Max(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MaxEnumerable(source);
-	public static mpz_t Max(this Span<mpz_t> source) => List<mpz_t>.MaxEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static MpzT Max(this ReadOnlySpan<MpzT> source) => List<MpzT>.MaxEnumerable(source);
+	public static MpzT Max(this Span<MpzT> source) => List<MpzT>.MaxEnumerable((ReadOnlySpan<MpzT>)source);
 	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
@@ -72062,12 +72066,12 @@ public static class RedStarLinq
 	public static double Mean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this T[] source, Func<T, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static double Mean<T>(this T[] source, Func<T, int, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.MeanEnumerable(source, function);
-	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.MeanEnumerable(source, function);
-	public static double Mean<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, mpz_t> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MeanEnumerable(source, function);
+	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable(source, function);
+	public static double Mean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static double Mean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static decimal Mean(this ReadOnlySpan<decimal> source) => List<decimal>.MeanEnumerable(source);
 	public static decimal Mean(this Span<decimal> source) => List<decimal>.MeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Mean(this ReadOnlySpan<double> source) => List<double>.MeanEnumerable(source);
@@ -72078,8 +72082,8 @@ public static class RedStarLinq
 	public static double Mean(this Span<uint> source) => List<uint>.MeanEnumerable((ReadOnlySpan<uint>)source);
 	public static double Mean(this ReadOnlySpan<long> source) => List<long>.MeanEnumerable(source);
 	public static double Mean(this Span<long> source) => List<long>.MeanEnumerable((ReadOnlySpan<long>)source);
-	public static double Mean(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MeanEnumerable(source);
-	public static double Mean(this Span<mpz_t> source) => List<mpz_t>.MeanEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static double Mean(this ReadOnlySpan<MpzT> source) => List<MpzT>.MeanEnumerable(source);
+	public static double Mean(this Span<MpzT> source) => List<MpzT>.MeanEnumerable((ReadOnlySpan<MpzT>)source);
 	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.MedianEnumerable(source, function);
 	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MedianEnumerable(source, function);
 	public static decimal Median<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
@@ -72110,12 +72114,12 @@ public static class RedStarLinq
 	public static long Median<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Median<T>(this T[] source, Func<T, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static long Median<T>(this T[] source, Func<T, int, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Median<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.MedianEnumerable(source, function);
-	public static mpz_t Median<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.MedianEnumerable(source, function);
-	public static mpz_t Median<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Median<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Median<T>(this T[] source, Func<T, mpz_t> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Median<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MedianEnumerable(source, function);
+	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable(source, function);
+	public static MpzT Median<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Median<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Median<T>(this T[] source, Func<T, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Median<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static decimal Median(this ReadOnlySpan<decimal> source) => List<decimal>.MedianEnumerable(source);
 	public static decimal Median(this Span<decimal> source) => List<decimal>.MedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Median(this ReadOnlySpan<double> source) => List<double>.MedianEnumerable(source);
@@ -72126,8 +72130,8 @@ public static class RedStarLinq
 	public static uint Median(this Span<uint> source) => List<uint>.MedianEnumerable((ReadOnlySpan<uint>)source);
 	public static long Median(this ReadOnlySpan<long> source) => List<long>.MedianEnumerable(source);
 	public static long Median(this Span<long> source) => List<long>.MedianEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t Median(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MedianEnumerable(source);
-	public static mpz_t Median(this Span<mpz_t> source) => List<mpz_t>.MedianEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static MpzT Median(this ReadOnlySpan<MpzT> source) => List<MpzT>.MedianEnumerable(source);
+	public static MpzT Median(this Span<MpzT> source) => List<MpzT>.MedianEnumerable((ReadOnlySpan<MpzT>)source);
 	public static decimal Min<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
@@ -72158,12 +72162,12 @@ public static class RedStarLinq
 	public static long Min<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Min<T>(this T[] source, Func<T, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static long Min<T>(this T[] source, Func<T, int, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Min<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.MinEnumerable(source, function);
-	public static mpz_t Min<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.MinEnumerable(source, function);
-	public static mpz_t Min<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Min<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Min<T>(this T[] source, Func<T, mpz_t> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Min<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Min<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MinEnumerable(source, function);
+	public static MpzT Min<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MinEnumerable(source, function);
+	public static MpzT Min<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Min<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Min<T>(this T[] source, Func<T, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Min<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static decimal Min(this ReadOnlySpan<decimal> source) => List<decimal>.MinEnumerable(source);
 	public static decimal Min(this Span<decimal> source) => List<decimal>.MinEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Min(this ReadOnlySpan<double> source) => List<double>.MinEnumerable(source);
@@ -72174,8 +72178,8 @@ public static class RedStarLinq
 	public static uint Min(this Span<uint> source) => List<uint>.MinEnumerable((ReadOnlySpan<uint>)source);
 	public static long Min(this ReadOnlySpan<long> source) => List<long>.MinEnumerable(source);
 	public static long Min(this Span<long> source) => List<long>.MinEnumerable((ReadOnlySpan<long>)source);
-	public static mpz_t Min(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.MinEnumerable(source);
-	public static mpz_t Min(this Span<mpz_t> source) => List<mpz_t>.MinEnumerable((ReadOnlySpan<mpz_t>)source);
+	public static MpzT Min(this ReadOnlySpan<MpzT> source) => List<MpzT>.MinEnumerable(source);
+	public static MpzT Min(this Span<MpzT> source) => List<MpzT>.MinEnumerable((ReadOnlySpan<MpzT>)source);
 	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
@@ -72276,12 +72280,12 @@ public static class RedStarLinq
 	public static long Sum<T>(this Span<T> source, Func<T, int, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Sum<T>(this T[] source, Func<T, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static long Sum<T>(this T[] source, Func<T, int, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Sum<T>(this ReadOnlySpan<T> source, Func<T, mpz_t> function) => List<T>.SumEnumerable(source, function);
-	public static mpz_t Sum<T>(this ReadOnlySpan<T> source, Func<T, int, mpz_t> function) => List<T>.SumEnumerable(source, function);
-	public static mpz_t Sum<T>(this Span<T> source, Func<T, mpz_t> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Sum<T>(this Span<T> source, Func<T, int, mpz_t> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static mpz_t Sum<T>(this T[] source, Func<T, mpz_t> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static mpz_t Sum<T>(this T[] source, Func<T, int, mpz_t> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Sum<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.SumEnumerable(source, function);
+	public static MpzT Sum<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.SumEnumerable(source, function);
+	public static MpzT Sum<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Sum<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
+	public static MpzT Sum<T>(this T[] source, Func<T, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Sum<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static decimal Sum(this ReadOnlySpan<decimal> source) => List<decimal>.SumEnumerable(source);
 	public static decimal Sum(this Span<decimal> source) => List<decimal>.SumEnumerable((ReadOnlySpan<decimal>)source);
 	public static decimal Sum(this decimal[] source) => List<decimal>.SumEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -72297,9 +72301,9 @@ public static class RedStarLinq
 	public static long Sum(this ReadOnlySpan<long> source) => List<long>.SumEnumerable(source);
 	public static long Sum(this Span<long> source) => List<long>.SumEnumerable((ReadOnlySpan<long>)source);
 	public static long Sum(this long[] source) => List<long>.SumEnumerable((ReadOnlySpan<long>)source.AsSpan());
-	public static mpz_t Sum(this ReadOnlySpan<mpz_t> source) => List<mpz_t>.SumEnumerable(source);
-	public static mpz_t Sum(this Span<mpz_t> source) => List<mpz_t>.SumEnumerable((ReadOnlySpan<mpz_t>)source);
-	public static mpz_t Sum(this mpz_t[] source) => List<mpz_t>.SumEnumerable((ReadOnlySpan<mpz_t>)source.AsSpan());
+	public static MpzT Sum(this ReadOnlySpan<MpzT> source) => List<MpzT>.SumEnumerable(source);
+	public static MpzT Sum(this Span<MpzT> source) => List<MpzT>.SumEnumerable((ReadOnlySpan<MpzT>)source);
+	public static MpzT Sum(this MpzT[] source) => List<MpzT>.SumEnumerable((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static TResult[] ToArray<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => List<T>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function);

@@ -14,7 +14,7 @@ namespace Corlib.NStar.Tests;
 
 internal static class Global
 {
-	internal static readonly Random random = new();
+	internal static readonly Random random = new(1234567890);
 	internal static readonly G.IEnumerable<string> defaultCollection = new List<string>("AAA", "BBB", "AAA", "BBB", "CCC", "BBB", "CCC", "DDD", "CCC");
 	internal static readonly string defaultString = "XXX";
 	internal static readonly ImmutableArray<string> list = ImmutableArray.Create("MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD");

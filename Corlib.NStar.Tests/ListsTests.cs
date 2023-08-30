@@ -3672,7 +3672,7 @@ public class SumListTests
 		}, () =>
 		{
 			random.NextBytes(bytes);
-			var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
+			var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
 			Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{
@@ -3696,14 +3696,14 @@ public class BigSumListTests
 		var arr = RedStarLinq.FillArray(16, _ =>
 		{
 			random.NextBytes(bytes);
-			return new mpz_t(bytes, 1);
+			return new MpzT(bytes, 1);
 		});
 		BigSumList sl = new(arr);
-		G.List<mpz_t> gl = new(arr);
+		G.List<MpzT> gl = new(arr);
 		var updateActions = new[] { (int key) =>
 		{
 			random.NextBytes(bytes);
-			mpz_t newValue = new(bytes, 1);
+			MpzT newValue = new(bytes, 1);
 			sl.Update(key, newValue);
 			if (newValue <= 0)
 				gl.RemoveAt(key);
@@ -3724,7 +3724,7 @@ public class BigSumListTests
 		var actions = new[] { () =>
 		{
 			random.NextBytes(bytes);
-			mpz_t n = new(bytes, 1);
+			MpzT n = new(bytes, 1);
 			if (random.Next(2) == 0)
 			{
 				sl.Add(n);
@@ -3750,11 +3750,11 @@ public class BigSumListTests
 			var index = random.Next(sl.Length);
 			updateActions.Random(random)(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-			Assert.AreEqual(sl.GetLeftValuesSum(index, out mpz_t value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y));
+			Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y));
 		}, () =>
 		{
 			random.NextBytes(bytes2);
-			var index = sl.IndexOfNotGreaterSum(CreateVar(new mpz_t(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
+			var index = sl.IndexOfNotGreaterSum(CreateVar(new MpzT(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
 			Assert.IsTrue(index == 0 && (gl.Count == 0 || sum < gl[0]) || index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y) || CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{

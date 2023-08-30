@@ -1753,7 +1753,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
 {
-	public virtual T this[mpz_t index]
+	public virtual T this[MpzT index]
 	{
 		get
 		{
@@ -1769,11 +1769,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	public abstract mpz_t Capacity { get; set; }
+	public abstract MpzT Capacity { get; set; }
 
-	public virtual mpz_t Length => Size;
+	public virtual MpzT Length => Size;
 
-	private protected abstract Func<mpz_t, TCertain> CapacityCreator { get; }
+	private protected abstract Func<MpzT, TCertain> CapacityCreator { get; }
 
 	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
 
@@ -1785,7 +1785,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	bool IBigCollection<T>.IsReadOnly => false;
 
-	private protected virtual mpz_t Size { get; set; } = 0;
+	private protected virtual MpzT Size { get; set; } = 0;
 
 	public delegate void ListChangedHandler(TCertain newList);
 
@@ -1818,7 +1818,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 	}
 
-	public virtual void Clear(mpz_t index, mpz_t length)
+	public virtual void Clear(MpzT index, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1831,13 +1831,13 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	private protected abstract void ClearInternal();
 
-	private protected abstract void ClearInternal(mpz_t index, mpz_t length);
+	private protected abstract void ClearInternal(MpzT index, MpzT length);
 
 	public virtual bool Contains(T item) => Contains(item, 0, Size);
 
-	public virtual bool Contains(T item, mpz_t index) => Contains(item, index, Size - index);
+	public virtual bool Contains(T item, MpzT index) => Contains(item, index, Size - index);
 
-	public virtual bool Contains(T item, mpz_t index, mpz_t length)
+	public virtual bool Contains(T item, MpzT index, MpzT length)
 	{
 		if (index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1852,7 +1852,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		catch
 		{
 		}
-		for (mpz_t i = new(index); i < index + length; i++)
+		for (MpzT i = new(index); i < index + length; i++)
 			if (GetInternal(i)?.Equals(item) ?? item == null)
 				return true;
 		return false;
@@ -1860,9 +1860,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, Size);
 
-	public virtual bool Contains(IEnumerable<T> collection, mpz_t index) => Contains(collection, index, Size - index);
+	public virtual bool Contains(IEnumerable<T> collection, MpzT index) => Contains(collection, index, Size - index);
 
-	public virtual bool Contains(IEnumerable<T> collection, mpz_t index, mpz_t length)
+	public virtual bool Contains(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1883,8 +1883,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			return false;
 		if (collection is not IBigList<T> list)
 			list = CollectionCreator(collection);
-		mpz_t j = 0;
-		for (mpz_t i = 0; i - j <= length - list.Length; i++)
+		MpzT j = 0;
+		for (MpzT i = 0; i - j <= length - list.Length; i++)
 		{
 			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
 			{
@@ -1903,15 +1903,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, Size);
 
-	public virtual bool Contains(TCertain list, mpz_t index) => Contains((IEnumerable<T>)list, index, Size - index);
+	public virtual bool Contains(TCertain list, MpzT index) => Contains((IEnumerable<T>)list, index, Size - index);
 
-	public virtual bool Contains(TCertain list, mpz_t index, mpz_t length) => Contains((IEnumerable<T>)list, index, length);
+	public virtual bool Contains(TCertain list, MpzT index, MpzT length) => Contains((IEnumerable<T>)list, index, length);
 
 	public virtual bool ContainsAny(IEnumerable<T> collection) => ContainsAny(collection, 0, Size);
 
-	public virtual bool ContainsAny(IEnumerable<T> collection, mpz_t index) => ContainsAny(collection, index, Size - index);
+	public virtual bool ContainsAny(IEnumerable<T> collection, MpzT index) => ContainsAny(collection, index, Size - index);
 
-	public virtual bool ContainsAny(IEnumerable<T> collection, mpz_t index, mpz_t length)
+	public virtual bool ContainsAny(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1929,7 +1929,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		{
 		}
 		var hs = collection.ToHashSet();
-		for (mpz_t i = new(index); i < index + length; i++)
+		for (MpzT i = new(index); i < index + length; i++)
 			if (hs.Contains(GetInternal(i)))
 				return true;
 		return false;
@@ -1937,15 +1937,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool ContainsAny(TCertain list) => ContainsAny((IEnumerable<T>)list, 0, Size);
 
-	public virtual bool ContainsAny(TCertain list, mpz_t index) => ContainsAny((IEnumerable<T>)list, index, Size - index);
+	public virtual bool ContainsAny(TCertain list, MpzT index) => ContainsAny((IEnumerable<T>)list, index, Size - index);
 
-	public virtual bool ContainsAny(TCertain list, mpz_t index, mpz_t length) => ContainsAny((IEnumerable<T>)list, index, length);
+	public virtual bool ContainsAny(TCertain list, MpzT index, MpzT length) => ContainsAny((IEnumerable<T>)list, index, length);
 
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, Size);
 
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, mpz_t index) => ContainsAnyExcluding(collection, index, Size - index);
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, MpzT index) => ContainsAnyExcluding(collection, index, Size - index);
 
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, mpz_t index, mpz_t length)
+	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1963,7 +1963,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		{
 		}
 		var hs = collection.ToHashSet();
-		for (mpz_t i = new(index); i < index + length; i++)
+		for (MpzT i = new(index); i < index + length; i++)
 			if (!hs.Contains(GetInternal(i)))
 				return true;
 		return false;
@@ -1971,11 +1971,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((IEnumerable<T>)list, 0, Size);
 
-	public virtual bool ContainsAnyExcluding(TCertain list, mpz_t index) => ContainsAnyExcluding((IEnumerable<T>)list, index, Size - index);
+	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index) => ContainsAnyExcluding((IEnumerable<T>)list, index, Size - index);
 
-	public virtual bool ContainsAnyExcluding(TCertain list, mpz_t index, mpz_t length) => ContainsAnyExcluding((IEnumerable<T>)list, index, length);
+	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) => ContainsAnyExcluding((IEnumerable<T>)list, index, length);
 
-	private protected abstract void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length);
+	private protected abstract void Copy(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length);
 
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
@@ -1995,9 +1995,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual void CopyTo(IBigList<T> list) => CopyTo(list, 0);
 
-	public virtual void CopyTo(IBigList<T> list, mpz_t listIndex) => CopyTo(0, list, listIndex, Length);
+	public virtual void CopyTo(IBigList<T> list, MpzT listIndex) => CopyTo(0, list, listIndex, Length);
 
-	public virtual void CopyTo(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t length)
+	public virtual void CopyTo(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2008,7 +2008,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		CopyToInternal(index, list, listIndex, length);
 	}
 
-	public virtual void CopyTo(mpz_t index, T[] array, int arrayIndex, int length)
+	public virtual void CopyTo(MpzT index, T[] array, int arrayIndex, int length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2035,11 +2035,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		CopyToInternal(0, array2, arrayIndex, (int)Length);
 	}
 
-	private protected abstract void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int length);
+	private protected abstract void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length);
 
-	private protected abstract void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t length);
+	private protected abstract void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length);
 
-	private protected virtual void EnsureCapacity(mpz_t min)
+	private protected virtual void EnsureCapacity(MpzT min)
 	{
 		if (Capacity < min)
 		{
@@ -2055,11 +2055,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private protected abstract T GetInternal(mpz_t index, bool invoke = true);
+	private protected abstract T GetInternal(MpzT index, bool invoke = true);
 
-	public virtual TCertain GetRange(mpz_t index, bool alwaysCopy = false) => GetRange(index, Size - index, alwaysCopy);
+	public virtual TCertain GetRange(MpzT index, bool alwaysCopy = false) => GetRange(index, Size - index, alwaysCopy);
 
-	public virtual TCertain GetRange(mpz_t index, mpz_t length, bool alwaysCopy = false)
+	public virtual TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2077,11 +2077,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		return list;
 	}
 
-	public virtual mpz_t IndexOf(T item) => IndexOf(item, 0, Size);
+	public virtual MpzT IndexOf(T item) => IndexOf(item, 0, Size);
 
-	public virtual mpz_t IndexOf(T item, mpz_t index) => IndexOf(item, index, Size - index);
+	public virtual MpzT IndexOf(T item, MpzT index) => IndexOf(item, index, Size - index);
 
-	public virtual mpz_t IndexOf(T item, mpz_t index, mpz_t length)
+	public virtual MpzT IndexOf(T item, MpzT index, MpzT length)
 	{
 		if (index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2093,18 +2093,18 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 		catch
 		{
-			for (mpz_t i = new(index); i < index + length; i++)
+			for (MpzT i = new(index); i < index + length; i++)
 				if (GetInternal(i)?.Equals(item) ?? false)
 					return i;
 			return -1;
 		}
 	}
 
-	void IBigList<T>.Insert(mpz_t index, T item) => Add(item);
+	void IBigList<T>.Insert(MpzT index, T item) => Add(item);
 
-	public virtual TCertain Remove(mpz_t index) => Remove(index, Size - index);
+	public virtual TCertain Remove(MpzT index) => Remove(index, Size - index);
 
-	public virtual TCertain Remove(mpz_t index, mpz_t length)
+	public virtual TCertain Remove(MpzT index, MpzT length)
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2123,7 +2123,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		return this2;
 	}
 
-	public virtual TCertain RemoveAt(mpz_t index)
+	public virtual TCertain RemoveAt(MpzT index)
 	{
 		if ((uint)index >= (uint)Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -2135,7 +2135,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		return this2;
 	}
 
-	void IBigList<T>.RemoveAt(mpz_t index) => RemoveAt(index);
+	void IBigList<T>.RemoveAt(MpzT index) => RemoveAt(index);
 
 	public virtual bool RemoveValue(T item)
 	{
@@ -2157,7 +2157,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		}
 		else
 		{
-			mpz_t i = 0;
+			MpzT i = 0;
 			foreach (var item in collection)
 			{
 				SetInternal(i, item);
@@ -2168,9 +2168,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	private protected abstract void SetInternal(mpz_t index, T value);
+	private protected abstract void SetInternal(MpzT index, T value);
 
-	public virtual TCertain SetRange(mpz_t index, IEnumerable<T> collection)
+	public virtual TCertain SetRange(MpzT index, IEnumerable<T> collection)
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
@@ -2183,21 +2183,21 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		return SetRangeInternal(index, bigList);
 	}
 
-	internal virtual TCertain SetRangeAndSizeInternal(mpz_t index, mpz_t length, TCertain list)
+	internal virtual TCertain SetRangeAndSizeInternal(MpzT index, MpzT length, TCertain list)
 	{
 		SetRangeInternal(index, list);
 		Size = RedStarLinq.Max(Size, length);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	internal virtual TCertain SetRangeAndSizeInternal(mpz_t index, TCertain list)
+	internal virtual TCertain SetRangeAndSizeInternal(MpzT index, TCertain list)
 	{
 		SetRangeInternal(index, list);
 		Size = RedStarLinq.Max(Size, index + list.Length);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	private protected virtual TCertain SetRangeInternal(mpz_t index, TCertain bigList)
+	private protected virtual TCertain SetRangeInternal(MpzT index, TCertain bigList)
 	{
 		var length = bigList.Length;
 		if (length == 0)
@@ -2231,7 +2231,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 	public struct Enumerator : IEnumerator<T>, IEnumerator
 	{
 		private readonly BaseBigList<T, TCertain, TLow> list;
-		private mpz_t index;
+		private MpzT index;
 		private T current;
 
 		internal Enumerator(BaseBigList<T, TCertain, TLow> list)
@@ -2292,8 +2292,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected TLow? low;
 	private protected List<TCertain>? high;
 	private protected BigSumList? highCapacity;
-	private protected mpz_t _capacity = 0;
-	private protected mpz_t fragment = 1;
+	private protected MpzT _capacity = 0;
+	private protected MpzT fragment = 1;
 	private protected bool isHigh;
 
 	public BigList() : this(-1) { }
@@ -2315,7 +2315,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		_capacity = 0;
 	}
 
-	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
@@ -2336,14 +2336,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 		{
 			low = null;
-			fragment = (mpz_t)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			while (ProperFragment * (CapacityStep * 3 >> 2) < capacity)
 				fragment <<= CapacityStepBitLength;
 			var quotient = capacity.Divide(ProperFragment, out var remainder);
 			var highCount = (int)GetArrayLength(capacity, ProperFragment);
 			high = new(highCount);
 			highCapacity = new();
-			for (mpz_t i = 0; i < quotient; i++)
+			for (MpzT i = 0; i < quotient; i++)
 			{
 				high.Add(CapacityCreator(ProperFragment));
 				highCapacity.Add(ProperFragment);
@@ -2366,14 +2366,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Add(en.Current);
 	}
 
-	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
+	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			Add(en.Current);
 	}
 
-	public override mpz_t Capacity
+	public override MpzT Capacity
 	{
 		get => _capacity;
 		set
@@ -2407,13 +2407,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (!isHigh && low != null)
 			{
-				fragment = (mpz_t)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				while (ProperFragment * (CapacityStep * 3 >> 2) < value)
 					fragment <<= CapacityStepBitLength;
 				var highCount = (int)GetArrayLength(value, ProperFragment);
 				high = new(highCount);
 				highCapacity = new();
-				for (mpz_t i = 0; i < value / ProperFragment; i++)
+				for (MpzT i = 0; i < value / ProperFragment; i++)
 				{
 					high.Add(CapacityCreator(ProperFragment));
 					highCapacity.Add(ProperFragment);
@@ -2430,7 +2430,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else if (high != null && highCapacity != null)
 			{
 				var oldFragment = fragment;
-				fragment = (mpz_t)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				while (ProperFragment * (CapacityStep * 3 >> 2) < value)
 					fragment <<= CapacityStepBitLength;
 				if (fragment > oldFragment)
@@ -2458,7 +2458,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					var highCount = (int)RedStarLinq.Min(GetArrayLength(value, oldFragment), CapacityStep);
 					high = new(highCount) { this as TCertain ?? throw new InvalidOperationException() };
 					new Chain(1, high.Capacity - 2).ForEach(_ => high.Add(CapacityCreator(oldFragment)));
-					highCapacity = new(RedStarLinq.FillArray(high.Capacity - 1, _ => new mpz_t(oldFragment)));
+					highCapacity = new(RedStarLinq.FillArray(high.Capacity - 1, _ => new MpzT(oldFragment)));
 					var remainder = (oldFragment < fragment || value % oldFragment == 0) ? oldFragment : value % oldFragment;
 					high.Add(CapacityCreator(remainder));
 					highCapacity.Add(remainder);
@@ -2484,14 +2484,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
 
-	private protected virtual mpz_t ProperFragment
+	private protected virtual MpzT ProperFragment
 	{
 		get
 		{
 			if (fragment == 1)
 				return 1;
 			var steps = ((fragment - 1).BitLength - CapacityFirstStepBitLength) / CapacityStepBitLength;
-			return ((mpz_t)1 << steps * (CapacityStepBitLength - 2) + (CapacityFirstStepBitLength - 2)) * mpz_t.Power(3, steps + 1);
+			return ((MpzT)1 << steps * (CapacityStepBitLength - 2) + (CapacityFirstStepBitLength - 2)) * MpzT.Power(3, steps + 1);
 		}
 	}
 
@@ -2519,7 +2519,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected override void ClearInternal(mpz_t index, mpz_t length)
+	private protected override void ClearInternal(MpzT index, MpzT length)
 	{
 		if (!isHigh && low != null)
 			low.Clear((int)index, (int)length);
@@ -2543,7 +2543,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected override void Copy(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	private protected override void Copy(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length)
 	{
 		CheckParams(sourceBits, sourceIndex, destinationBits, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
@@ -2600,7 +2600,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		destinationBits.Size = RedStarLinq.Max(destinationBits.Size, sourceIndex + length);
 	}
 
-	private protected virtual void Copy(List<TCertain> sourceBits, BigSumList sourceCount, mpz_t sourceIndex, List<TCertain> destinationBits, BigSumList destinationCount, mpz_t destinationIndex, mpz_t length, mpz_t fragment)
+	private protected virtual void Copy(List<TCertain> sourceBits, BigSumList sourceCount, MpzT sourceIndex, List<TCertain> destinationBits, BigSumList destinationCount, MpzT destinationIndex, MpzT length, MpzT fragment)
 	{
 		var sourceIntIndex = sourceCount.IndexOfNotGreaterSum(sourceIndex, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
 		var destinationIntIndex = destinationCount.IndexOfNotGreaterSum(destinationIndex, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
@@ -2685,7 +2685,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private static void CheckParams(TCertain sourceBits, mpz_t sourceIndex, TCertain destinationBits, mpz_t destinationIndex, mpz_t length)
+	private static void CheckParams(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length)
 	{
 		if (sourceBits == null)
 			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
@@ -2707,7 +2707,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void CopyToInternal(mpz_t index, IBigList<T> list, mpz_t listIndex, mpz_t length)
+	private protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -2736,7 +2736,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override void CopyToInternal(mpz_t index, T[] array, int arrayIndex, int length)
+	private protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
 	{
 		for (var i = 0; i < length; i++)
 			array[arrayIndex + i] = GetInternal(index + i);
@@ -2752,7 +2752,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return new();
 	}
 
-	private protected override T GetInternal(mpz_t index, bool invoke = true)
+	private protected override T GetInternal(MpzT index, bool invoke = true)
 	{
 		if (!isHigh && low != null)
 			return low.GetInternal((int)index);
@@ -2762,7 +2762,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override void SetInternal(mpz_t index, T value)
+	private protected override void SetInternal(MpzT index, T value)
 	{
 		if (!isHigh && low != null)
 			low.SetInternal((int)index, value);

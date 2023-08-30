@@ -121,7 +121,7 @@ public class SumSetTests
 		}, () =>
 		{
 			random.NextBytes(bytes);
-			var index = ss.IndexOfNotGreaterSum(CreateVar((long)(new mpz_t(bytes, 1) % (ss.ValuesSum + 1)), out var sum));
+			var index = ss.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (ss.ValuesSum + 1)), out var sum));
 			Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 		}, () =>
 		{

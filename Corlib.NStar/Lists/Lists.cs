@@ -1026,13 +1026,13 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(mpz_t capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(mpz_t capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	private protected override Func<mpz_t, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
 	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 
