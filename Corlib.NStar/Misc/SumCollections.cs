@@ -3,6 +3,8 @@ using System.Numerics;
 
 namespace Corlib.NStar;
 
+internal delegate bool SumWalkPredicate<T>(SumSet<T>.Node node);
+
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 {
@@ -39,24 +41,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 			return;
 		}
-		int length;
-		var elements = collection.ToArray();
-		length = elements.Length;
-		if (length > 0)
+		if (TryToUniqueArray(collection, out var elements, out var length))
 		{
-			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
-			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
-			comparer = Comparer2;
-			Array.Sort(elements, 0, length, Comparer);
-			// Overwrite duplicates while shifting the distinct elements towards
-			// the front of the array.
-			var index = 1;
-			for (var i = 1; i < length; i++)
-			{
-				if (comparer.Compare(elements[i].Key, elements[i - 1].Key) != 0)
-					elements[index++] = elements[i];
-			}
-			length = index;
 			root = ConstructRootFromSortedArray(elements, 0, length - 1, null);
 			_size = length;
 		}
@@ -424,7 +410,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return this;
 	}
 
-	private void FindForRemove(int index2, out SumSet<T>.Node? parent, out SumSet<T>.Node? grandParent, out SumSet<T>.Node? match, out SumSet<T>.Node? parentOfMatch)
+	private void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
@@ -450,9 +436,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				// Fix up 2-node
 				if (parent == null)
 					current.ColorRed();
-				else
+				else if (parent.Left != null && parent.Right != null)
 				{
 					var sibling = parent.GetSibling(current);
+					Debug.Assert(sibling != null, "parent must have two children");
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -465,7 +452,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -494,7 +481,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			parent = current;
 			if (foundMatch)
 				current = current.Left;
-			else if ((current.Left?.LeavesCount ?? 0) == index2)
+			else if ((current.Left?.LeavesCount ?? 0) == index)
 			{
 				// Save the matching node.
 				foundMatch = true;
@@ -504,14 +491,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 			else if (current.Left == null)
 			{
-				index2--;
+				index--;
 				current = current.Right;
 			}
-			else if (current.Left.LeavesCount >= index2)
+			else if (current.Left.LeavesCount >= index)
 				current = current.Left;
 			else
 			{
-				index2 -= current.Left.LeavesCount + 1;
+				index -= current.Left.LeavesCount + 1;
 				current = current.Right;
 			}
 		}
@@ -562,7 +549,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
 		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
@@ -748,7 +735,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		grandParent.ColorRed();
 		newChildOfGreatGrandParent.ColorBlack();
 		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
-#if DEBUG
+#if VERIFY
 		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
 			x?.Verify();
 #endif
@@ -986,10 +973,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		return this;
@@ -1023,9 +1010,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				// Fix up 2-node
 				if (parent == null)
 					current.ColorRed();
-				else
+				else if (parent.Left != null && parent.Right != null)
 				{
 					var sibling = parent.GetSibling(current);
+					Debug.Assert(sibling != null, "parent must have two children");
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -1038,7 +1026,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -1083,10 +1071,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
 		}
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		root?.ColorBlack();
@@ -1148,7 +1136,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
+			Debug.Assert(successor.Right == null ? successor.IsRed : successor.Right.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -1162,8 +1150,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
-#if DEBUG
-		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
+#if VERIFY
+		foreach (var x in new[] { parentOfMatch, successor, parentOfSuccessor })
 			x?.Verify();
 #endif
 	}
@@ -1291,13 +1279,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted))
 			return SymmetricExceptWithSameComparer(asSorted);
-		else
+		else if (TryToUniqueArray(other, out var elements, out var length))
 		{
-			var elements = other.ToArray();
-			var length = elements.Length;
-			Array.Sort(elements, 0, length, Comparer);
-			return SymmetricExceptWithSameComparer(elements, length);
+			foreach (var item in elements.GetSlice(0, length))
+			{
+				var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
+				Debug.Assert(result);
+			}
+			return this;
 		}
+		else
+			return this;
 	}
 
 	private SumSet<T> SymmetricExceptWithSameComparer(SumSet<T> other)
@@ -1308,27 +1300,6 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
 			Debug.Assert(result);
-		}
-		return this;
-	}
-
-	private SumSet<T> SymmetricExceptWithSameComparer((T Key, int Value)[] other, int length)
-	{
-		Debug.Assert(other != null);
-		Debug.Assert(length >= 0 && length <= other.Length);
-		if (length == 0)
-			return this;
-		var previous = other[0];
-		for (var i = 0; i < length; i++)
-		{
-			while (i < length && i != 0 && Comparer2.Compare(other[i].Key, previous.Key) == 0)
-				i++;
-			if (i >= length)
-				break;
-			var current = other[i];
-			var result = Contains(current) ? RemoveValue(current) : TryAdd(current);
-			Debug.Assert(result);
-			previous = current;
 		}
 		return this;
 	}
@@ -1390,7 +1361,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// The new node will be red, so we will need to adjust colors if its parent is also red.
 		if (parent.IsRed)
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
-#if DEBUG
+#if VERIFY
 		if (_size + 1 != root.LeavesCount)
 			throw new InvalidOperationException();
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
@@ -1413,6 +1384,29 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return true;
 		}
 		value = default;
+		return false;
+	}
+
+	private bool TryToUniqueArray(IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
+	{
+		elements = collection is (T Key, int Value)[] array ? array : collection.ToArray();
+		length = elements.Length;
+		if (length > 0)
+		{
+			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
+			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
+			Array.Sort(elements, 0, length, Comparer);
+			// Overwrite duplicates while shifting the distinct elements towards
+			// the front of the array.
+			var index = 1;
+			for (var i = 1; i < length; i++)
+			{
+				if (Comparer2.Compare(elements[i].Key, elements[i - 1].Key) != 0)
+					elements[index++] = elements[i];
+			}
+			length = index;
+			return true;
+		}
 		return false;
 	}
 
@@ -1487,7 +1481,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (node != null)
 		{
 			node.Update(item.Value);
-#if DEBUG
+#if VERIFY
 			foreach (var x in new[] { node, root })
 				x?.Verify();
 #endif
@@ -1518,18 +1512,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		private Node? _left;
 		private Node? _right;
 		private Node? Parent { get; set; }
-		private int _leavesCount;
 		private long _valuesSum;
+		internal (T Key, int Value) Item { get; set; }
+		private int _leavesCount;
 
-		public Node((T Key, int Value) item, NodeColor color)
+		internal Node((T Key, int Value) item, NodeColor color)
 		{
 			Item = item;
 			Color = color;
 			_leavesCount = 1;
 			_valuesSum = item.Value;
 		}
-
-		public (T Key, int Value) Item { get; set; }
 
 		internal Node? Left
 		{
@@ -1599,23 +1592,23 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 		}
 
-		public NodeColor Color { get; set; }
+		internal NodeColor Color { get; set; }
 
-		public bool IsBlack => Color == NodeColor.Black;
+		internal bool IsBlack => Color == NodeColor.Black;
 
-		public bool IsRed => Color == NodeColor.Red;
+		internal bool IsRed => Color == NodeColor.Red;
 
-		public bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
+		internal bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
 
-		public bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
+		internal bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
 
-		public void ColorBlack() => Color = NodeColor.Black;
+		internal void ColorBlack() => Color = NodeColor.Black;
 
-		public void ColorRed() => Color = NodeColor.Red;
+		internal void ColorRed() => Color = NodeColor.Red;
 
-		public Node DeepClone(int length)
+		internal Node DeepClone(int length)
 		{
-#if DEBUG
+#if VERIFY
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
@@ -1651,10 +1644,10 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// <summary>
 		/// Gets the rotation this node should undergo during a removal.
 		/// </summary>
-		public TreeRotation GetRotation(Node current, Node sibling)
+		internal TreeRotation GetRotation(Node current, Node sibling)
 		{
 			Debug.Assert(IsNonNullRed(sibling.Left) || IsNonNullRed(sibling.Right));
-#if DEBUG
+#if VERIFY
 			Debug.Assert(HasChildren(current, sibling));
 #endif
 			var currentIsLeftChild = Left == current;
@@ -1666,18 +1659,18 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// <summary>
 		/// Gets the sibling of one of this node's children.
 		/// </summary>
-		public Node GetSibling(Node node)
+		internal Node GetSibling(Node node)
 		{
 			Debug.Assert(node != null);
 			Debug.Assert(node == Left ^ node == Right);
 			return node == Left ? Right! : Left!;
 		}
 
-		public static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+		internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
 
-		public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
 
-		public static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
 
 		public void Isolate()
 		{
@@ -1690,7 +1683,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// <summary>
 		/// Combines two 2-nodes into a 4-node.
 		/// </summary>
-		public void Merge2Nodes()
+		internal void Merge2Nodes()
 		{
 			Debug.Assert(IsRed);
 			Debug.Assert(Left!.Is2Node);
@@ -1717,7 +1710,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// <summary>
 		/// Does a rotation on this tree. May change the color of a grandchild from red to black.
 		/// </summary>
-		public Node? Rotate(TreeRotation rotation)
+		internal Node? Rotate(TreeRotation rotation)
 		{
 			Node removeRed;
 			switch (rotation)
@@ -1747,7 +1740,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// <summary>
 		/// Does a left rotation on this tree, making this this the new left child of the current right child.
 		/// </summary>
-		public Node RotateLeft()
+		internal Node RotateLeft()
 		{
 			var child = Right!;
 			var parent = Parent;
@@ -1761,13 +1754,18 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a left-right rotation on this tree. The left child is rotated left, then this this is rotated right.
 		/// </summary>
-		public Node RotateLeftRight()
+		internal Node RotateLeftRight()
 		{
 			var child = Left!;
 			var grandChild = child.Right!;
@@ -1784,13 +1782,18 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
 		/// <summary>
 		/// Does a right rotation on this tree, making this this the new right child of the current left child.
 		/// </summary>
-		public Node RotateRight()
+		internal Node RotateRight()
 		{
 			var child = Left!;
 			var parent = Parent;
@@ -1804,13 +1807,18 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a right-left rotation on this tree. The right child is rotated right, then this this is rotated left.
 		/// </summary>
-		public Node RotateRightLeft()
+		internal Node RotateRightLeft()
 		{
 			var child = Right!;
 			var grandChild = child.Left!;
@@ -1827,12 +1835,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
 		public Node ShallowClone() => new(Item, Color);
 
-		public void Split4Node()
+		internal void Split4Node()
 		{
 			Debug.Assert(Left != null);
 			Debug.Assert(Right != null);
@@ -1841,13 +1854,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Right.ColorBlack();
 		}
 
-		public void Update(int value)
+		internal void Update(int value)
 		{
 			ValuesSum += value - Item.Value;
 			Item = (Item.Key, value);
 		}
 
-#if DEBUG
+#if VERIFY
 		private int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
 
 		private bool HasChild(Node child) => child == Left || child == Right;
@@ -2321,8 +2334,8 @@ internal class SumSetEqualityComparer<T> : IEqualityComparer<SumSet<T>>
 		return this.comparer == comparer.comparer;
 	}
 
-	//IMPORTANT: this part uses the fact that GetHashCode() is consistent with the notion of equality in
-	//the set
+	// IMPORTANT: this part uses the fact that GetHashCode() is consistent with the notion of equality in
+	// the set
 	public virtual int GetHashCode(SumSet<T>? obj)
 	{
 		var hashCode = 0;
@@ -2362,7 +2375,7 @@ public class SumList : BaseList<int, SumList>
 			}
 			return;
 		}
-		var elements = collection.ToArray();
+		var elements = collection is int[] array ? array : collection.ToArray();
 		var length = elements.Length;
 		if (length > 0)
 		{
@@ -2574,7 +2587,7 @@ public class SumList : BaseList<int, SumList>
 		GC.SuppressFinalize(this);
 	}
 
-	private void FindForRemove(int index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	private void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the value from the successor to the matching node, and delete the successor.
@@ -2603,6 +2616,7 @@ public class SumList : BaseList<int, SumList>
 				else if (parent.Left != null && parent.Right != null)
 				{
 					var sibling = parent.GetSibling(current);
+					Debug.Assert(sibling != null, "parent must have two children");
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -2615,7 +2629,7 @@ public class SumList : BaseList<int, SumList>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -2644,7 +2658,7 @@ public class SumList : BaseList<int, SumList>
 			parent = current;
 			if (foundMatch)
 				current = current.Left;
-			else if ((current.Left?.LeavesCount ?? 0) == index2)
+			else if ((current.Left?.LeavesCount ?? 0) == index)
 			{
 				// Save the matching node.
 				foundMatch = true;
@@ -2654,14 +2668,14 @@ public class SumList : BaseList<int, SumList>
 			}
 			else if (current.Left == null)
 			{
-				index2--;
+				index--;
 				current = current.Right;
 			}
-			else if (current.Left.LeavesCount >= index2)
+			else if (current.Left.LeavesCount >= index)
 				current = current.Left;
 			else
 			{
-				index2 -= current.Left.LeavesCount + 1;
+				index -= current.Left.LeavesCount + 1;
 				current = current.Right;
 			}
 		}
@@ -2722,10 +2736,10 @@ public class SumList : BaseList<int, SumList>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		return found;
@@ -2927,7 +2941,7 @@ public class SumList : BaseList<int, SumList>
 				current = current.Right;
 			}
 		}
-#if DEBUG
+#if VERIFY
 		if (index != 0)
 			throw new InvalidOperationException();
 #endif
@@ -2941,7 +2955,7 @@ public class SumList : BaseList<int, SumList>
 		// The new node will be red, so we will need to adjust colors if its parent is also red.
 		if (parent.IsRed)
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
-#if DEBUG
+#if VERIFY
 		if (_size + 1 != root.LeavesCount)
 			throw new InvalidOperationException();
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
@@ -2977,7 +2991,7 @@ public class SumList : BaseList<int, SumList>
 		grandParent.ColorRed();
 		newChildOfGreatGrandParent.ColorBlack();
 		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
-#if DEBUG
+#if VERIFY
 		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
 			x?.Verify();
 #endif
@@ -3003,10 +3017,10 @@ public class SumList : BaseList<int, SumList>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		return this;
@@ -3045,7 +3059,7 @@ public class SumList : BaseList<int, SumList>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
+			Debug.Assert(successor.Right == null ? successor.IsRed : successor.Right.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -3059,8 +3073,8 @@ public class SumList : BaseList<int, SumList>
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
-#if DEBUG
-		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
+#if VERIFY
+		foreach (var x in new[] { parentOfMatch, successor, parentOfSuccessor })
 			x?.Verify();
 #endif
 	}
@@ -3108,7 +3122,7 @@ public class SumList : BaseList<int, SumList>
 		if (node != null)
 		{
 			node.Update(value);
-#if DEBUG
+#if VERIFY
 			foreach (var x in new[] { node, root })
 				x?.Verify();
 #endif
@@ -3131,7 +3145,7 @@ public class SumList : BaseList<int, SumList>
 	internal virtual bool VersionUpToDate() => true;
 #endif
 
-	[DebuggerDisplay("{Value.ToString()}, Left = {Left?.Value.ToString()}, Right = {Right?.Value.ToString()}, Parent = {Parent?.Value.ToString()}")]
+	[DebuggerDisplay("{Value.ToString()}, Left = {Left != null ? Left.Value.ToString() : null}, Right = {Right != null ? Right.Value.ToString() : null}, Parent = {Parent != null ? Parent.Value.ToString() : null}")]
 	internal sealed class Node
 	{
 		private Node? _left;
@@ -3140,7 +3154,7 @@ public class SumList : BaseList<int, SumList>
 		private int _leavesCount;
 		private long _valuesSum;
 
-		public Node(int value, NodeColor color)
+		internal Node(int value, NodeColor color)
 		{
 			Value = value;
 			Color = color;
@@ -3148,7 +3162,7 @@ public class SumList : BaseList<int, SumList>
 			_valuesSum = value;
 		}
 
-		public int Value { get; set; }
+		internal int Value { get; set; }
 
 		internal Node? Left
 		{
@@ -3218,23 +3232,23 @@ public class SumList : BaseList<int, SumList>
 			}
 		}
 
-		public NodeColor Color { get; set; }
+		internal NodeColor Color { get; set; }
 
-		public bool IsBlack => Color == NodeColor.Black;
+		internal bool IsBlack => Color == NodeColor.Black;
 
-		public bool IsRed => Color == NodeColor.Red;
+		internal bool IsRed => Color == NodeColor.Red;
 
-		public bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
+		internal bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
 
-		public bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
+		internal bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
 
-		public void ColorBlack() => Color = NodeColor.Black;
+		internal void ColorBlack() => Color = NodeColor.Black;
 
-		public void ColorRed() => Color = NodeColor.Red;
+		internal void ColorRed() => Color = NodeColor.Red;
 
-		public Node DeepClone(int length)
+		internal Node DeepClone(int length)
 		{
-#if DEBUG
+#if VERIFY
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
@@ -3270,13 +3284,12 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Gets the rotation this node should undergo during a removal.
 		/// </summary>
-		public TreeRotation GetRotation(Node current, Node sibling)
+		internal TreeRotation GetRotation(Node current, Node sibling)
 		{
 			Debug.Assert(IsNonNullRed(sibling.Left) || IsNonNullRed(sibling.Right));
-#if DEBUG
+#if VERIFY
 			Debug.Assert(HasChildren(current, sibling));
 #endif
-
 			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
@@ -3286,18 +3299,18 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Gets the sibling of one of this node's children.
 		/// </summary>
-		public Node GetSibling(Node node)
+		internal Node GetSibling(Node node)
 		{
 			Debug.Assert(node != null);
 			Debug.Assert(node == Left ^ node == Right);
 			return node == Left ? Right! : Left!;
 		}
 
-		public static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+		internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
 
-		public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
 
-		public static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
 
 		public void Isolate()
 		{
@@ -3310,7 +3323,7 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Combines two 2-nodes into a 4-node.
 		/// </summary>
-		public void Merge2Nodes()
+		internal void Merge2Nodes()
 		{
 			Debug.Assert(IsRed);
 			Debug.Assert(Left!.Is2Node);
@@ -3337,7 +3350,7 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Does a rotation on this tree. May change the color of a grandchild from red to black.
 		/// </summary>
-		public Node? Rotate(TreeRotation rotation)
+		internal Node? Rotate(TreeRotation rotation)
 		{
 			Node removeRed;
 			switch (rotation)
@@ -3367,7 +3380,7 @@ public class SumList : BaseList<int, SumList>
 		/// <summary>
 		/// Does a left rotation on this tree, making this this the new left child of the current right child.
 		/// </summary>
-		public Node RotateLeft()
+		internal Node RotateLeft()
 		{
 			var child = Right!;
 			var parent = Parent;
@@ -3381,13 +3394,18 @@ public class SumList : BaseList<int, SumList>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a left-right rotation on this tree. The left child is rotated left, then this this is rotated right.
 		/// </summary>
-		public Node RotateLeftRight()
+		internal Node RotateLeftRight()
 		{
 			var child = Left!;
 			var grandChild = child.Right!;
@@ -3404,13 +3422,18 @@ public class SumList : BaseList<int, SumList>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
 		/// <summary>
 		/// Does a right rotation on this tree, making this this the new right child of the current left child.
 		/// </summary>
-		public Node RotateRight()
+		internal Node RotateRight()
 		{
 			var child = Left!;
 			var parent = Parent;
@@ -3424,13 +3447,18 @@ public class SumList : BaseList<int, SumList>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a right-left rotation on this tree. The right child is rotated right, then this this is rotated left.
 		/// </summary>
-		public Node RotateRightLeft()
+		internal Node RotateRightLeft()
 		{
 			var child = Right!;
 			var grandChild = child.Left!;
@@ -3447,12 +3475,17 @@ public class SumList : BaseList<int, SumList>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
-		public Node ShallowClone() => new(Value, Color);
+		internal Node ShallowClone() => new(Value, Color);
 
-		public void Split4Node()
+		internal void Split4Node()
 		{
 			Debug.Assert(Left != null);
 			Debug.Assert(Right != null);
@@ -3461,13 +3494,13 @@ public class SumList : BaseList<int, SumList>
 			Right.ColorBlack();
 		}
 
-		public void Update(int value)
+		internal void Update(int value)
 		{
 			ValuesSum += value - Value;
 			Value = value;
 		}
 
-#if DEBUG
+#if VERIFY
 		private int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
 
 		private bool HasChild(Node child) => child == Left || child == Right;
@@ -3871,7 +3904,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			}
 			return;
 		}
-		var elements = collection.ToArray();
+		var elements = collection is MpzT[] array ? array : collection.ToArray();
 		var length = elements.Length;
 		if (length > 0)
 		{
@@ -4036,7 +4069,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			{
 				var b = en.MoveNext();
 				if (b)
-					node.Value = en.Current;
+					node.Value = new(en.Current);
 				return b;
 			});
 		while (en.MoveNext())
@@ -4083,7 +4116,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		GC.SuppressFinalize(this);
 	}
 
-	private void FindForRemove(int index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	private void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the value from the successor to the matching node, and delete the successor.
@@ -4112,6 +4145,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				else if (parent.Left != null && parent.Right != null)
 				{
 					var sibling = parent.GetSibling(current);
+					Debug.Assert(sibling != null, "parent must have two children");
 					if (sibling.IsRed)
 					{
 						// If parent is a 3-node, flip the orientation of the red link.
@@ -4124,7 +4158,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -4153,7 +4187,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			parent = current;
 			if (foundMatch)
 				current = current.Left;
-			else if ((current.Left?.LeavesCount ?? 0) == index2)
+			else if ((current.Left?.LeavesCount ?? 0) == index)
 			{
 				// Save the matching node.
 				foundMatch = true;
@@ -4163,14 +4197,14 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			}
 			else if (current.Left == null)
 			{
-				index2--;
+				index--;
 				current = current.Right;
 			}
-			else if (current.Left.LeavesCount >= index2)
+			else if (current.Left.LeavesCount >= index)
 				current = current.Left;
 			else
 			{
-				index2 -= current.Left.LeavesCount + 1;
+				index -= current.Left.LeavesCount + 1;
 				current = current.Right;
 			}
 		}
@@ -4231,10 +4265,10 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		return found;
@@ -4440,7 +4474,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				current = current.Right;
 			}
 		}
-#if DEBUG
+#if VERIFY
 		if (index != 0)
 			throw new InvalidOperationException();
 #endif
@@ -4454,7 +4488,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		// The new node will be red, so we will need to adjust colors if its parent is also red.
 		if (parent.IsRed)
 			InsertionBalance(node, ref parent!, grandParent!, greatGrandParent!);
-#if DEBUG
+#if VERIFY
 		if (_size + 1 != root.LeavesCount)
 			throw new InvalidOperationException();
 		foreach (var x in new[] { node, parent, grandParent, greatGrandParent })
@@ -4490,7 +4524,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		grandParent.ColorRed();
 		newChildOfGreatGrandParent.ColorBlack();
 		ReplaceChildOrRoot(greatGrandParent, grandParent, newChildOfGreatGrandParent);
-#if DEBUG
+#if VERIFY
 		foreach (var x in new[] { current, parent, grandParent, greatGrandParent })
 			x?.Verify();
 #endif
@@ -4516,10 +4550,10 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			--_size;
 		}
 		root?.ColorBlack();
-#if DEBUG
+#if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
 			throw new InvalidOperationException();
-		foreach (var x in new[] { match, parentOfMatch, parent, grandParent })
+		foreach (var x in new[] { parentOfMatch, parent, grandParent })
 			x?.Verify();
 #endif
 		return this;
@@ -4558,7 +4592,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		{
 			Debug.Assert(parentOfSuccessor != null);
 			Debug.Assert(successor.Left == null);
-			Debug.Assert(successor.Right == null && successor.IsRed || successor.Right!.IsRed && successor.IsBlack);
+			Debug.Assert(successor.Right == null ? successor.IsRed : successor.Right.IsRed && successor.IsBlack);
 			successor.Right?.ColorBlack();
 			if (parentOfSuccessor != match)
 			{
@@ -4572,8 +4606,8 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
-#if DEBUG
-		foreach (var x in new[] { match, parentOfMatch, successor, parentOfSuccessor })
+#if VERIFY
+		foreach (var x in new[] { parentOfMatch, successor, parentOfSuccessor })
 			x?.Verify();
 #endif
 	}
@@ -4621,7 +4655,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		if (node != null)
 		{
 			node.Update(value);
-#if DEBUG
+#if VERIFY
 			foreach (var x in new[] { node, root })
 				x?.Verify();
 #endif
@@ -4653,15 +4687,15 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		private int _leavesCount;
 		private MpzT _valuesSum;
 
-		public Node(MpzT value, NodeColor color)
+		internal Node(MpzT value, NodeColor color)
 		{
-			Value = value;
+			Value = new(value);
 			Color = color;
 			_leavesCount = 1;
 			_valuesSum = new(value);
 		}
 
-		public MpzT Value { get; set; }
+		internal MpzT Value { get; set; }
 
 		internal Node? Left
 		{
@@ -4731,23 +4765,23 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			}
 		}
 
-		public NodeColor Color { get; set; }
+		internal NodeColor Color { get; set; }
 
-		public bool IsBlack => Color == NodeColor.Black;
+		internal bool IsBlack => Color == NodeColor.Black;
 
-		public bool IsRed => Color == NodeColor.Red;
+		internal bool IsRed => Color == NodeColor.Red;
 
-		public bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
+		internal bool Is2Node => IsBlack && IsNullOrBlack(Left) && IsNullOrBlack(Right);
 
-		public bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
+		internal bool Is4Node => IsNonNullRed(Left) && IsNonNullRed(Right);
 
-		public void ColorBlack() => Color = NodeColor.Black;
+		internal void ColorBlack() => Color = NodeColor.Black;
 
-		public void ColorRed() => Color = NodeColor.Red;
+		internal void ColorRed() => Color = NodeColor.Red;
 
-		public Node DeepClone(int length)
+		internal Node DeepClone(int length)
 		{
-#if DEBUG
+#if VERIFY
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
@@ -4783,13 +4817,12 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		/// <summary>
 		/// Gets the rotation this node should undergo during a removal.
 		/// </summary>
-		public TreeRotation GetRotation(Node current, Node sibling)
+		internal TreeRotation GetRotation(Node current, Node sibling)
 		{
 			Debug.Assert(IsNonNullRed(sibling.Left) || IsNonNullRed(sibling.Right));
-#if DEBUG
+#if VERIFY
 			Debug.Assert(HasChildren(current, sibling));
 #endif
-
 			var currentIsLeftChild = Left == current;
 			return IsNonNullRed(sibling.Left) ?
 				(currentIsLeftChild ? TreeRotation.RightLeft : TreeRotation.Right) :
@@ -4799,18 +4832,18 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		/// <summary>
 		/// Gets the sibling of one of this node's children.
 		/// </summary>
-		public Node GetSibling(Node node)
+		internal Node GetSibling(Node node)
 		{
 			Debug.Assert(node != null);
 			Debug.Assert(node == Left ^ node == Right);
 			return node == Left ? Right! : Left!;
 		}
 
-		public static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
+		internal static bool IsNonNullBlack(Node? node) => node != null && node.IsBlack;
 
-		public static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
+		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
 
-		public static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
 
 		public void Isolate()
 		{
@@ -4823,7 +4856,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		/// <summary>
 		/// Combines two 2-nodes into a 4-node.
 		/// </summary>
-		public void Merge2Nodes()
+		internal void Merge2Nodes()
 		{
 			Debug.Assert(IsRed);
 			Debug.Assert(Left!.Is2Node);
@@ -4850,7 +4883,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		/// <summary>
 		/// Does a rotation on this tree. May change the color of a grandchild from red to black.
 		/// </summary>
-		public Node? Rotate(TreeRotation rotation)
+		internal Node? Rotate(TreeRotation rotation)
 		{
 			Node removeRed;
 			switch (rotation)
@@ -4880,7 +4913,7 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 		/// <summary>
 		/// Does a left rotation on this tree, making this this the new left child of the current right child.
 		/// </summary>
-		public Node RotateLeft()
+		internal Node RotateLeft()
 		{
 			var child = Right!;
 			var parent = Parent;
@@ -4894,13 +4927,18 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a left-right rotation on this tree. The left child is rotated left, then this this is rotated right.
 		/// </summary>
-		public Node RotateLeftRight()
+		internal Node RotateLeftRight()
 		{
 			var child = Left!;
 			var grandChild = child.Right!;
@@ -4917,13 +4955,18 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
 		/// <summary>
 		/// Does a right rotation on this tree, making this this the new right child of the current left child.
 		/// </summary>
-		public Node RotateRight()
+		internal Node RotateRight()
 		{
 			var child = Left!;
 			var parent = Parent;
@@ -4937,13 +4980,18 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				else
 					parent.Left = child;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child })
+				x?.Verify();
+#endif
 			return child;
 		}
 
 		/// <summary>
 		/// Does a right-left rotation on this tree. The right child is rotated right, then this this is rotated left.
 		/// </summary>
-		public Node RotateRightLeft()
+		internal Node RotateRightLeft()
 		{
 			var child = Right!;
 			var grandChild = child.Left!;
@@ -4960,12 +5008,17 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 				else
 					parent.Left = grandChild;
 			}
+#if VERIFY
+			Verify();
+			foreach (var x in new[] { parent, child, grandChild })
+				x?.Verify();
+#endif
 			return grandChild;
 		}
 
-		public Node ShallowClone() => new(Value, Color);
+		internal Node ShallowClone() => new(Value, Color);
 
-		public void Split4Node()
+		internal void Split4Node()
 		{
 			Debug.Assert(Left != null);
 			Debug.Assert(Right != null);
@@ -4974,13 +5027,13 @@ public class BigSumList : BaseList<MpzT, BigSumList>
 			Right.ColorBlack();
 		}
 
-		public void Update(MpzT value)
+		internal void Update(MpzT value)
 		{
 			ValuesSum += value - Value;
 			Value = new(value);
 		}
 
-#if DEBUG
+#if VERIFY
 		private int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
 
 		private bool HasChild(Node child) => child == Left || child == Right;

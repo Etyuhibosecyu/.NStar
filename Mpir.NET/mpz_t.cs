@@ -211,7 +211,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		else
 		{
 			Mpir.MpzAddUi(z, x, (uint)-y);
-
 		}
 
 		return z;
@@ -1755,7 +1754,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 
 	public override readonly string? ToString() => ToString((int)sDefaultStringBase);
 
-	public readonly string? ToString(uint @base) => Mpir.MpzGetString(@base, this);
+	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
 
 	#region IConvertible Members
 

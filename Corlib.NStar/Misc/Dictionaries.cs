@@ -1632,7 +1632,6 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		// We got a span. Add the elements to the dictionary.
 		foreach (var pair in span)
 			TryAdd(pair.Key, pair.Value);
-
 	}
 
 	public virtual void Clear()

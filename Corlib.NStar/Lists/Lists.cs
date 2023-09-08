@@ -1273,6 +1273,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			fixed (T* rightptr = array)
 				return EqualMemory(leftptr, rightptr, array.Length);
 		}
+		if (collection is List<T> list)
+		{
+			if (index > _size - list.Length)
+				return false;
+			if (toEnd && index < _size - list.Length)
+				return false;
+			var leftptr = _items + index;
+			fixed (T* rightptr = list.AsSpan())
+				return EqualMemory(leftptr, rightptr, list.Length);
+		}
 		return base.EqualsInternal(collection, index, toEnd);
 	}
 

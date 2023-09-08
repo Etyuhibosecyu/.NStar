@@ -31387,40 +31387,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31432,40 +31427,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31477,40 +31467,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31522,40 +31507,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31567,40 +31547,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31612,40 +31587,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31657,40 +31627,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31702,40 +31667,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31799,31 +31759,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<int>.IndexesOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<int>.IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<int>.IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31831,31 +31784,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<uint>.IndexesOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<uint>.IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<uint>.IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31863,31 +31809,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			return List<long>.IndexesOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			return List<long>.IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			return List<long>.IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -31895,31 +31834,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<MpzT> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list) / list.Length;
+			return List<MpzT>.IndexesOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(array.AsSpan()) / array.Length;
+			return List<MpzT>.IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list2) / list2.Count;
+			return List<MpzT>.IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexesOfEnumerable(list_, value);
 		}
 	}
 
@@ -37189,40 +37121,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37234,40 +37161,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37279,40 +37201,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37324,40 +37241,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37369,40 +37281,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37414,40 +37321,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37459,40 +37361,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37504,40 +37401,35 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ConvertEnumerable(source, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37593,31 +37485,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<int>.IndexOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<int>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<int>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37625,31 +37510,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<uint>.IndexOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<uint>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<uint>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37657,31 +37535,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			return List<long>.IndexOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			return List<long>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			return List<long>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -37689,31 +37560,24 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<MpzT> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list) / list.Length;
+			return List<MpzT>.IndexOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(array.AsSpan()) / array.Length;
+			return List<MpzT>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list2) / list2.Count;
+			return List<MpzT>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
 
@@ -42352,33 +42216,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42392,33 +42252,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42432,33 +42288,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42472,33 +42324,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42512,33 +42360,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42552,33 +42396,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42592,33 +42432,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42632,33 +42468,29 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ConvertEnumerable(list, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ConvertEnumerable(array.AsSpan(), function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list_) / list_.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<T>(source), function);
@@ -42710,24 +42542,18 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<int> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<int>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<int>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (int)value;
-			return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<int>.LastIndexOfEnumerable(list2, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<int>(source));
@@ -42737,24 +42563,18 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<uint> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			return List<uint>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			return List<uint>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (uint)value;
-			return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			return List<uint>.LastIndexOfEnumerable(list2, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<uint>(source));
@@ -42764,24 +42584,18 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<long> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			return List<long>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			return List<long>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (long)value;
-			return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			return List<long>.LastIndexOfEnumerable(list2, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<long>(source));
@@ -42791,24 +42605,18 @@ public partial class List<T, TCertain>
 	{
 		if (source is List<MpzT> list)
 		{
-			var list_ = ReturnOrConstruct(list);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list) / list.Length;
+			return List<MpzT>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var list_ = ReturnOrConstruct(array);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(array.AsSpan()) / array.Length;
+			return List<MpzT>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var list_ = ReturnOrConstruct(list2);
-			var value = MeanEnumerable(list_);
-			var value2 = (MpzT)value;
-			return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : -1;
+			var value = SumEnumerable(list2) / list2.Count;
+			return List<MpzT>.LastIndexOfEnumerable(list2, value);
 		}
 		else
 			return LastIndexOfMeanEnumerable(new List<MpzT>(source));
@@ -60895,9 +60703,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
@@ -60906,9 +60713,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
@@ -60917,9 +60723,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
@@ -60928,9 +60733,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
@@ -60939,9 +60743,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
@@ -60950,9 +60753,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexesOfEnumerable(list_, value2) : new();
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
@@ -60961,9 +60763,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
@@ -60972,9 +60773,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexesOfEnumerable(list_, value2) : new();
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.IndexesOfEnumerable(list_, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -60991,30 +60791,26 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<int> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexesOfEnumerable(source, value2) : new();
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<int>.IndexesOfEnumerable(source, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<uint> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexesOfEnumerable(source, value2) : new();
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<uint>.IndexesOfEnumerable(source, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<long> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexesOfEnumerable(source, value2) : new();
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		return List<long>.IndexesOfEnumerable(source, value);
 	}
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexesOfEnumerable(source, value2) : new();
+		var value = SumEnumerable(source) / (MpzT)source.Length;
+		return List<MpzT>.IndexesOfEnumerable(source, value);
 	}
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -62180,9 +61976,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
@@ -62191,9 +61986,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
@@ -62202,9 +61996,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
@@ -62213,9 +62006,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
@@ -62224,9 +62016,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
@@ -62235,9 +62026,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexOfEnumerable(list_, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
@@ -62246,9 +62036,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : default;
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
@@ -62257,9 +62046,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexOfEnumerable(list_, value2) : default;
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.IndexOfEnumerable(list_, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -62278,30 +62066,26 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<int> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.IndexOfEnumerable(source, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<int>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<uint> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.IndexOfEnumerable(source, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<uint>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<long> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.IndexOfEnumerable(source, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		return List<long>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.IndexOfEnumerable(source, value2) : default;
+		var value = SumEnumerable(source) / (MpzT)source.Length;
+		return List<MpzT>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
@@ -63416,9 +63200,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
@@ -63427,9 +63210,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
@@ -63438,9 +63220,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
@@ -63449,9 +63230,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
@@ -63460,9 +63240,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
@@ -63471,9 +63250,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.LastIndexOfEnumerable(list_, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
@@ -63482,9 +63260,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : default;
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
@@ -63493,9 +63270,8 @@ public partial class List<T, TCertain>
 			throw new ArgumentNullException(nameof(function));
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
-		var value = MeanEnumerable(list_);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(list_, value2) : default;
+		var value = SumEnumerable(list_) / (MpzT)list_.Length;
+		return List<MpzT>.LastIndexOfEnumerable(list_, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<decimal> source)
@@ -63514,30 +63290,26 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<int> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (int)value;
-		return value == value2 ? List<int>.LastIndexOfEnumerable(source, value2) : -1;
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<int>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<uint> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (uint)value;
-		return value == value2 ? List<uint>.LastIndexOfEnumerable(source, value2) : -1;
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		return List<uint>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<long> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (long)value;
-		return value == value2 ? List<long>.LastIndexOfEnumerable(source, value2) : -1;
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		return List<long>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<MpzT> source)
 	{
-		var value = MeanEnumerable(source);
-		var value2 = (MpzT)value;
-		return value == value2 ? List<MpzT>.LastIndexOfEnumerable(source, value2) : default;
+		var value = SumEnumerable(source) / (MpzT)source.Length;
+		return List<MpzT>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)

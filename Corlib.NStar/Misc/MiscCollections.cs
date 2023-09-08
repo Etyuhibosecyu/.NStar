@@ -1497,7 +1497,6 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			low = new((int)length, defaultValue);
 			high = null;
 			isHigh = false;
-
 		}
 		else
 		{

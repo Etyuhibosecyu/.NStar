@@ -7,6 +7,8 @@ public class SumSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var counter = 0;
+	l1:
 		var arr = RedStarLinq.FillArray(16, _ => (random.Next(16), random.Next(1, 16)));
 		SumSet<int> ss = new(arr);
 		G.SortedSet<int> gs = new(arr.ToArray(x => x.Item1));
@@ -132,6 +134,8 @@ public class SumSetTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		if (counter++ < 10000)
+			goto l1;
 	}
 }
 
@@ -141,6 +145,8 @@ public class TreeSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var counter = 0;
+	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
 		TreeSet<int> ts = new(arr);
 		G.SortedSet<int> gs = new(arr);
@@ -200,5 +206,7 @@ public class TreeSetTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
 	}
 }

@@ -191,8 +191,6 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);
 
-internal delegate bool SumWalkPredicate<T>(SumSet<T>.Node node);
-
 internal enum NodeColor : byte
 {
 	Black,
@@ -2465,8 +2463,8 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 		return this.comparer == comparer.comparer;
 	}
 
-	//IMPORTANT: this part uses the fact that GetHashCode() is consistent with the notion of equality in
-	//the set
+	// IMPORTANT: this part uses the fact that GetHashCode() is consistent with the notion of equality in
+	// the set
 	public virtual int GetHashCode(TreeSet<T>? obj)
 	{
 		var hashCode = 0;

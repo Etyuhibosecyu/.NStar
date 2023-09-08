@@ -163,8 +163,8 @@ type ``MpzT - operations`` () =
     [<Test>]
     static member ``Very big BitLength``() =
         let za = 3Z
-        let actual = za.Power(2147483647).BitLength
-        let expected = 3403681052u
+        let actual = za.Power(2147483647).GetFullBitLength()
+        let expected = 3403681052Z
         Assert.AreEqual(expected, actual)
 [<EntryPoint>]
 let main _ =

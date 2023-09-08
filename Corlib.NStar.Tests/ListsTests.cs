@@ -3616,6 +3616,8 @@ public class SumListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var counter = 0;
+	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
 		SumList sl = new(arr);
 		G.List<int> gl = new(arr);
@@ -3682,6 +3684,8 @@ public class SumListTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
 	}
 }
 
@@ -3691,6 +3695,8 @@ public class BigSumListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var counter = 0;
+	l1:
 		var bytes = new byte[20];
 		var bytes2 = new byte[48];
 		var arr = RedStarLinq.FillArray(16, _ =>
@@ -3764,5 +3770,7 @@ public class BigSumListTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
 	}
 }

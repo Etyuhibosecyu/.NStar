@@ -10,11 +10,6 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private const int _shrinkThreshold = 256;
 
-	// XPerY=n means that n Xs can be stored in 1 Y. 
-	private const int BitsPerInt = sizeof(int) * BitsPerByte;
-	private const int BytesPerInt = sizeof(int);
-	private const int BitsPerByte = 8;
-
 	private static readonly uint* _emptyPointer = null;
 
 	public BitList()
@@ -310,112 +305,128 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return;
 		if (sourceBits == destinationBits && sourceIndex == destinationIndex)
 			return;
-		(var sourceIntIndex, var sourceBitsIndex) = DivRem(sourceIndex, BitsPerInt);               // Целый индекс в исходном массиве.
-		(var destinationIntIndex, var destinationBitsIndex) = DivRem(destinationIndex, BitsPerInt);     // Целый индекс в целевом массиве.
-		var bitsOffset = destinationBitsIndex - sourceBitsIndex;    // Битовое смещение.
-		var intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
-		var sourceStartMask = ~0u << sourceBitsIndex; // Маска "головы" источника
-		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
-		(var sourceEndIntIndex, var sourceEndBitsIndex) = DivRem(sourceEndIndex, BitsPerInt);  // Индекс инта последнего бита.
-		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
-		(var destinationEndIntIndex, var destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);  // Индекс инта последнего бита.
-		if (destinationEndIntIndex == destinationIntIndex)
-		{
-			var buff = sourceBits[sourceIntIndex] & sourceStartMask;
-			var destinationMask = ~(length == BitsPerInt ? 0 : ~0u << length) << destinationBitsIndex;
-			if (bitsOffset >= 0)
-				buff <<= bitsOffset;
-			else
-			{
-				buff >>= -bitsOffset;
-				if (length + sourceBitsIndex > BitsPerInt)
-					buff |= sourceBits[sourceIntIndex + 1] << BitsPerInt + bitsOffset;
-			}
-			buff &= destinationMask;
-			destinationBits[destinationIntIndex] &= ~destinationMask;
-			destinationBits[destinationIntIndex] |= buff;
-		}
+		CopyBitsSide source = (sourceIndex, sourceIndex + length - 1);
+		CopyBitsSide destination = (destinationIndex, destinationIndex + length - 1);
+		CopyBitsIndex offset = new(destination.Start.IntIndex - source.Start.IntIndex, destination.Start.BitsIndex - source.Start.BitsIndex);
+		var sourceStartMask = ~0u << source.Start.BitsIndex; // Маска "головы" источника
+		if (destination.End.IntIndex == destination.Start.IntIndex)
+			CopyBitsOneInt(sourceBits, destinationBits, length, source, destination, offset, sourceStartMask);
 		else if (sourceIndex >= destinationIndex)
+			CopyBitsForward(sourceBits, sourceBound, destinationBits, source, destination, offset, sourceStartMask);
+		else
+			CopyBitsBackward(sourceBits, destinationBits, source, destination, offset);
+	}
+
+	private static void CopyBitsBackward(uint* sourceBits, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset)
+	{
+		var sourceEndMask = (uint)(((ulong)1 << source.End.BitsIndex + 1) - 1); // Маска "хвоста" источника
+		if (offset.BitsIndex < 0)
+			CopyBitsBackwardLeft(sourceBits, destinationBits, source, destination, offset, sourceEndMask);
+		else
+			CopyBitsBackwardRight(sourceBits, destinationBits, source, destination, offset, sourceEndMask);
+	}
+
+	private static void CopyBitsBackwardLeft(uint* sourceBits, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceEndMask)
+	{
+		offset.BitsIndex = -offset.BitsIndex;
+		ulong buff = destinationBits[destination.End.IntIndex];
+		buff &= ~0ul << destination.End.BitsIndex + 1;
+		buff <<= BitsPerInt;
+		buff |= (ulong)(sourceBits[source.End.IntIndex] & sourceEndMask) << (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex ? BitsPerInt * 2 : BitsPerInt) - offset.BitsIndex;
+		for (int sourceCurrentIntIndex = source.End.IntIndex - 1, destinationCurrentIntIndex = destination.End.IntIndex; destinationCurrentIntIndex > destination.Start.IntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
 		{
-			if (bitsOffset < 0)
-			{
-				bitsOffset = -bitsOffset;
-				ulong buff = destinationBits[destinationIntIndex];
-				buff &= ((ulong)1 << destinationBitsIndex) - 1;
-				buff |= (ulong)(sourceBits[sourceIntIndex] & sourceStartMask) >> bitsOffset;
-				for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; destinationCurrentIntIndex < destinationEndIntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
-				{
-					buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - bitsOffset;
-					destinationBits[destinationCurrentIntIndex] = (uint)buff;
-					buff >>= BitsPerInt;
-				}
-				if (sourceEndIntIndex + intOffset != destinationEndIntIndex)
-					buff |= (ulong)sourceBits[sourceEndIntIndex] << BitsPerInt - bitsOffset;
-				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-				buff &= destinationMask;
-				destinationBits[destinationEndIntIndex] &= (uint)~destinationMask;
-				destinationBits[destinationEndIntIndex] |= (uint)buff;
-			}
-			else
-			{
-				ulong buff = destinationBits[destinationIntIndex];
-				buff &= ((ulong)1 << destinationBitsIndex) - 1;
-				buff |= (ulong)(sourceBits[sourceIntIndex] & sourceStartMask) << bitsOffset;
-				for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; destinationCurrentIntIndex < destinationEndIntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
-				{
-					destinationBits[destinationCurrentIntIndex] = (uint)buff;
-					buff >>= BitsPerInt;
-					if (sourceCurrentIntIndex < sourceBound) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << bitsOffset;
-				}
-				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-				buff &= destinationMask;
-				destinationBits[destinationEndIntIndex] &= (uint)~destinationMask;
-				destinationBits[destinationEndIntIndex] |= (uint)buff;
-			}
+			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
+			destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
+			buff <<= BitsPerInt;
+			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
 		}
+		if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex)
+			buff |= (ulong)sourceBits[source.Start.IntIndex] << BitsPerInt - offset.BitsIndex;
+		var destinationMask = ~0ul << BitsPerInt + destination.Start.BitsIndex;
+		buff &= destinationMask;
+		destinationBits[destination.Start.IntIndex] &= (uint)(~destinationMask >> BitsPerInt);
+		destinationBits[destination.Start.IntIndex] |= (uint)(buff >> BitsPerInt);
+	}
+
+	private static void CopyBitsBackwardRight(uint* sourceBits, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceEndMask)
+	{
+		ulong buff = destinationBits[destination.End.IntIndex];
+		buff &= ~0ul << destination.End.BitsIndex + 1;
+		buff <<= BitsPerInt;
+		buff |= (ulong)(sourceBits[source.End.IntIndex] & sourceEndMask) << (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex ? 0 : BitsPerInt) + offset.BitsIndex;
+		for (int sourceCurrentIntIndex = source.End.IntIndex - 1, destinationCurrentIntIndex = destination.End.IntIndex; destinationCurrentIntIndex > destination.Start.IntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
+		{
+			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
+			destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
+			buff <<= BitsPerInt;
+			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex && sourceCurrentIntIndex >= 0) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
+		}
+		var destinationMask = ~0ul << BitsPerInt + destination.Start.BitsIndex;
+		buff &= destinationMask;
+		destinationBits[destination.Start.IntIndex] &= (uint)(~destinationMask >> BitsPerInt);
+		destinationBits[destination.Start.IntIndex] |= (uint)(buff >> BitsPerInt);
+	}
+
+	private static void CopyBitsForward(uint* sourceBits, int sourceBound, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceStartMask)
+	{
+		if (offset.BitsIndex < 0)
+			CopyBitsForwardLeft(sourceBits, destinationBits, source, destination, offset, sourceStartMask);
+		else
+			CopyBitsForwardRight(sourceBits, sourceBound, destinationBits, source, destination, offset, sourceStartMask);
+	}
+
+	private static void CopyBitsForwardLeft(uint* sourceBits, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceStartMask)
+	{
+		offset.BitsIndex = -offset.BitsIndex;
+		ulong buff = destinationBits[destination.Start.IntIndex];
+		buff &= ((ulong)1 << destination.Start.BitsIndex) - 1;
+		buff |= (ulong)(sourceBits[source.Start.IntIndex] & sourceStartMask) >> offset.BitsIndex;
+		for (int sourceCurrentIntIndex = source.Start.IntIndex + 1, destinationCurrentIntIndex = destination.Start.IntIndex; destinationCurrentIntIndex < destination.End.IntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
+		{
+			buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
+			destinationBits[destinationCurrentIntIndex] = (uint)buff;
+			buff >>= BitsPerInt;
+		}
+		if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex)
+			buff |= (ulong)sourceBits[source.End.IntIndex] << BitsPerInt - offset.BitsIndex;
+		var destinationMask = ((ulong)1 << destination.End.BitsIndex + 1) - 1;
+		buff &= destinationMask;
+		destinationBits[destination.End.IntIndex] &= (uint)~destinationMask;
+		destinationBits[destination.End.IntIndex] |= (uint)buff;
+	}
+
+	private static void CopyBitsForwardRight(uint* sourceBits, int sourceBound, uint* destinationBits, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceStartMask)
+	{
+		ulong buff = destinationBits[destination.Start.IntIndex];
+		buff &= ((ulong)1 << destination.Start.BitsIndex) - 1;
+		buff |= (ulong)(sourceBits[source.Start.IntIndex] & sourceStartMask) << offset.BitsIndex;
+		for (int sourceCurrentIntIndex = source.Start.IntIndex + 1, destinationCurrentIntIndex = destination.Start.IntIndex; destinationCurrentIntIndex < destination.End.IntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
+		{
+			destinationBits[destinationCurrentIntIndex] = (uint)buff;
+			buff >>= BitsPerInt;
+			if (sourceCurrentIntIndex < sourceBound) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << offset.BitsIndex;
+		}
+		var destinationMask = ((ulong)1 << destination.End.BitsIndex + 1) - 1;
+		buff &= destinationMask;
+		destinationBits[destination.End.IntIndex] &= (uint)~destinationMask;
+		destinationBits[destination.End.IntIndex] |= (uint)buff;
+	}
+
+	private static void CopyBitsOneInt(uint* sourceBits, uint* destinationBits, int length, CopyBitsSide source, CopyBitsSide destination, CopyBitsIndex offset, uint sourceStartMask)
+	{
+		var buff = sourceBits[source.Start.IntIndex] & sourceStartMask;
+		var destinationMask = ~(length == BitsPerInt ? 0 : ~0u << length) << destination.Start.BitsIndex;
+		if (offset.BitsIndex >= 0)
+			buff <<= offset.BitsIndex;
 		else
 		{
-			var sourceEndMask = (uint)(((ulong)1 << sourceEndBitsIndex + 1) - 1); // Маска "хвоста" источника
-			if (bitsOffset < 0)
-			{
-				bitsOffset = -bitsOffset;
-				ulong buff = destinationBits[destinationEndIntIndex];
-				buff &= ~0ul << destinationEndBitsIndex + 1;
-				buff <<= BitsPerInt;
-				buff |= (ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask) << (sourceEndIntIndex + intOffset != destinationEndIntIndex ? BitsPerInt * 2 : BitsPerInt) - bitsOffset;
-				for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; destinationCurrentIntIndex > destinationIntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
-				{
-					if (sourceEndIntIndex + intOffset != destinationEndIntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - bitsOffset;
-					destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
-					buff <<= BitsPerInt;
-					if (sourceEndIntIndex + intOffset == destinationEndIntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - bitsOffset;
-				}
-				if (sourceEndIntIndex + intOffset != destinationEndIntIndex)
-					buff |= (ulong)sourceBits[sourceIntIndex] << BitsPerInt - bitsOffset;
-				var destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
-				buff &= destinationMask;
-				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
-				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
-			}
-			else
-			{
-				ulong buff = destinationBits[destinationEndIntIndex];
-				buff &= ~0ul << destinationEndBitsIndex + 1;
-				buff <<= BitsPerInt;
-				buff |= (ulong)(sourceBits[sourceEndIntIndex] & sourceEndMask) << (sourceEndIntIndex + intOffset != destinationEndIntIndex ? 0 : BitsPerInt) + bitsOffset;
-				for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; destinationCurrentIntIndex > destinationIntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
-				{
-					if (sourceEndIntIndex + intOffset == destinationEndIntIndex) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
-					destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
-					buff <<= BitsPerInt;
-					if (sourceEndIntIndex + intOffset != destinationEndIntIndex && sourceCurrentIntIndex >= 0) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << bitsOffset;
-				}
-				var destinationMask = ~0ul << BitsPerInt + destinationBitsIndex;
-				buff &= destinationMask;
-				destinationBits[destinationIntIndex] &= (uint)(~destinationMask >> BitsPerInt);
-				destinationBits[destinationIntIndex] |= (uint)(buff >> BitsPerInt);
-			}
+			buff >>= -offset.BitsIndex;
+			if (length + source.Start.BitsIndex > BitsPerInt)
+				buff |= sourceBits[source.Start.IntIndex + 1] << BitsPerInt + offset.BitsIndex;
 		}
+		buff &= destinationMask;
+		destinationBits[destination.Start.IntIndex] &= ~destinationMask;
+		destinationBits[destination.Start.IntIndex] |= buff;
 	}
 
 	private static void CheckParams(uint* sourceBits, int sourceBound, int sourceIndex, uint* destinationBits, int destinationBound, int destinationIndex, int length)
@@ -495,44 +506,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is BitList bitList)
-		{
-			if (index > _size - bitList._size)
-				return false;
-			if (toEnd && index < _size - bitList._size)
-				return false;
-			if (bitList._size == 0)
-				return !toEnd || index == _size;
-			(var intIndex, var bitsIndex) = DivRem(index, BitsPerInt);
-			var startMask = ~0u << bitsIndex;
-			var destinationEndIndex = bitList._size - 1;
-			(var destinationEndIntIndex, var destinationEndBitsIndex) = DivRem(destinationEndIndex, BitsPerInt);
-			if (destinationEndIntIndex == 0)
-			{
-				var buff = _items[intIndex] & startMask;
-				var destinationMask = ~(bitList._size == BitsPerInt ? 0 : ~0u << bitList._size);
-				buff >>= bitsIndex;
-				if (bitList._size + bitsIndex > BitsPerInt)
-					buff |= _items[intIndex + 1] << BitsPerInt - bitsIndex;
-				buff &= destinationMask;
-				return (bitList._items[0] & destinationMask) == buff;
-			}
-			else
-			{
-				var buff = (ulong)(_items[intIndex] & startMask) >> bitsIndex;
-				var sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
-				for (int sourceCurrentIntIndex = intIndex + 1, destinationCurrentIntIndex = 0; destinationCurrentIntIndex < destinationEndIntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
-				{
-					buff |= ((ulong)_items[sourceCurrentIntIndex]) << BitsPerInt - bitsIndex;
-					if (bitList._items[destinationCurrentIntIndex] != (uint)buff) return false;
-					buff >>= BitsPerInt;
-				}
-				if (sourceEndIntIndex - intIndex != destinationEndIntIndex)
-					buff |= (ulong)_items[sourceEndIntIndex] << BitsPerInt - bitsIndex;
-				var destinationMask = ((ulong)1 << destinationEndBitsIndex + 1) - 1;
-				buff &= destinationMask;
-				return (bitList._items[destinationEndIntIndex] & destinationMask) == buff;
-			}
-		}
+			return EqualsToBitList(bitList, index, toEnd);
 		else
 		{
 			if (collection.TryGetLengthEasily(out var length))
@@ -547,6 +521,51 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					return false;
 			return !toEnd || index == _size;
 		}
+	}
+
+	private protected virtual bool EqualsToBitList(BitList bitList, int index, bool toEnd = false)
+	{
+		if (index > _size - bitList._size)
+			return false;
+		if (toEnd && index < _size - bitList._size)
+			return false;
+		if (bitList._size == 0)
+			return !toEnd || index == _size;
+		CopyBitsIndex start = index;
+		var startMask = ~0u << start.BitsIndex;
+		CopyBitsIndex destinationEnd = bitList._size - 1;
+		if (destinationEnd.IntIndex == 0)
+			return EqualsToBitListOneInt(bitList, start, startMask);
+		else
+			return EqualsToBitListSeveralInts(bitList, index, start, startMask, destinationEnd);
+	}
+
+	private protected virtual bool EqualsToBitListOneInt(BitList bitList, CopyBitsIndex start, uint startMask)
+	{
+		var buff = _items[start.IntIndex] & startMask;
+		var destinationMask = ~(bitList._size == BitsPerInt ? 0 : ~0u << bitList._size);
+		buff >>= start.BitsIndex;
+		if (bitList._size + start.BitsIndex > BitsPerInt)
+			buff |= _items[start.IntIndex + 1] << BitsPerInt - start.BitsIndex;
+		buff &= destinationMask;
+		return (bitList._items[0] & destinationMask) == buff;
+	}
+
+	private protected virtual bool EqualsToBitListSeveralInts(BitList bitList, int index, CopyBitsIndex start, uint startMask, CopyBitsIndex destinationEnd)
+	{
+		var buff = (ulong)(_items[start.IntIndex] & startMask) >> start.BitsIndex;
+		var sourceEndIntIndex = (index + bitList._size - 1) / BitsPerInt;
+		for (int sourceCurrentIntIndex = start.IntIndex + 1, destinationCurrentIntIndex = 0; destinationCurrentIntIndex < destinationEnd.IntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
+		{
+			buff |= ((ulong)_items[sourceCurrentIntIndex]) << BitsPerInt - start.BitsIndex;
+			if (bitList._items[destinationCurrentIntIndex] != (uint)buff) return false;
+			buff >>= BitsPerInt;
+		}
+		if (sourceEndIntIndex - start.IntIndex != destinationEnd.IntIndex)
+			buff |= (ulong)_items[sourceEndIntIndex] << BitsPerInt - start.BitsIndex;
+		var destinationMask = ((ulong)1 << destinationEnd.BitsIndex + 1) - 1;
+		buff &= destinationMask;
+		return (bitList._items[destinationEnd.IntIndex] & destinationMask) == buff;
 	}
 
 	public override int GetHashCode() => _capacity < 3 ? 1234567890 : _items[0].GetHashCode() ^ _items[1].GetHashCode() ^ _items[_capacity - 1].GetHashCode();
@@ -605,14 +624,25 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					return index + i;
 		for (var i = startIndex + 1; i < endIndex; i++)
 			if (_items[i] != fillValue)
-				for (var j = 0; j < BitsPerInt; j++)
-					if ((_items[i] & (1 << j)) != 0)
-						return i * BitsPerInt + j;
+				if (IndexOfMainCycle(item, i, out var result))
+					return result;
 		if (endRemainder != 0)
 			for (var i = 0; i < endRemainder; i++)
 				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
 					return endIndex * BitsPerInt + i;
 		return -1;
+	}
+
+	private protected virtual bool IndexOfMainCycle(bool item, int i, out int index)
+	{
+		for (var j = 0; j < BitsPerInt; j++)
+			if ((_items[i] & (1 << j)) == 0 ^ item)
+			{
+				index = i * BitsPerInt + j;
+				return true;
+			}
+		index = -1;
+		return false;
 	}
 
 	public virtual BitList Insert(int index, IEnumerable collection)
@@ -668,9 +698,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					return endIndex * BitsPerInt + i;
 		for (var i = endIndex - 1; i >= startIndex + 1; i--)
 			if (_items[i] != fillValue)
-				for (var j = BitsPerInt; j >= 0; j--)
-					if ((_items[i] & (1 << j)) != 0)
-						return i * BitsPerInt + j;
+				if (LastIndexOfMainCycle(item, i, out var result))
+					return result;
 		var invRemainder = BitsPerInt - startRemainder;
 		var mask = (1 << invRemainder) - 1;
 		var first = _items[startIndex] >> startRemainder;
@@ -679,6 +708,18 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				if ((first & (1 << i)) == 0 ^ item)
 					return index + i;
 		return -1;
+	}
+
+	private protected virtual bool LastIndexOfMainCycle(bool item, int i, out int index)
+	{
+		for (var j = BitsPerInt - 1; j >= 0; j--)
+			if ((_items[i] & (1 << j)) == 0 ^ item)
+			{
+				index = i * BitsPerInt + j;
+				return true;
+			}
+		index = -1;
+		return false;
 	}
 
 	public virtual BitList Not()
@@ -721,6 +762,11 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException(null);
 		if (length == 0)
 			return this;
+		return SetAllInternal(value, index, length);
+	}
+
+	private protected virtual BitList SetAllInternal(bool value, int index, int length)
+	{
 		(var intIndex, var bitsIndex) = DivRem(index, BitsPerInt);
 		(var endIntIndex, var endBitsIndex) = DivRem(index + length - 1, BitsPerInt);
 		if (intIndex == endIntIndex)
@@ -789,6 +835,16 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			_items[i] ^= value._items[i];
 		return this;
 	}
+
+	private protected record struct CopyBitsIndex(int IntIndex, int BitsIndex)
+	{
+		public static implicit operator CopyBitsIndex(int index) => new(index / BitsPerInt, index % BitsPerInt);
+	}
+
+	private protected record struct CopyBitsSide(CopyBitsIndex Start, CopyBitsIndex End)
+	{
+		public static implicit operator CopyBitsSide((CopyBitsIndex Start, CopyBitsIndex End) x) => new(x.Start, x.End);
+	}
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -821,7 +877,6 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			high = null;
 			highCapacity = null;
 			isHigh = false;
-
 		}
 		else
 		{

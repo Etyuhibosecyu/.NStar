@@ -34,6 +34,30 @@ public class IndexesOfOptimumTests
 			ProcessA(a, list3);
 			a = E.SkipWhile(list2, _ => random.Next(10) == -1);
 			ProcessA(a, list3);
+			bytes2.Clear();
+		}
+		{
+			var (list2, list3) = RedStarLinq.FillArray(16, _ =>
+			{
+				if (bytes2.Length != 0)
+					Array.Copy(bytes2.Random(), bytes, 21);
+				else
+					random.NextBytes(bytes.AsSpan(..^1));
+				bytes2.Add(bytes);
+				return (new MpzT(bytes, -1), new BigInteger(bytes));
+			}).Wrap(x => (ImmutableArray.Create(x.ToArray(y => y.Item1)), ImmutableArray.Create(x.ToArray(y => y.Item2))));
+			G.IEnumerable<MpzT> a = list2.ToList();
+			ProcessA(a, list3);
+			a = list2.ToArray();
+			ProcessA(a, list3);
+			a = E.ToList(list2);
+			ProcessA(a, list3);
+			a = list2.ToList().Insert(0, 12345678901234567890).GetSlice(1);
+			ProcessA(a, list3);
+			a = E.Select(list2, x => x);
+			ProcessA(a, list3);
+			a = E.SkipWhile(list2, _ => random.Next(10) == -1);
+			ProcessA(a, list3);
 		}
 		static void ProcessA(G.IEnumerable<MpzT> a, ImmutableArray<BigInteger> list3)
 		{
@@ -139,33 +163,33 @@ public class IndexesOfOptimumTests
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean(x => (int)x);
-			doubleOptimum = E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			longOptimum = E.Aggregate(E.Select(list3, x => (int)(uint)(x % 4294967296)), 0L, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean((x, index) => (int)(x * (index % 5)));
-			doubleOptimum = E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			longOptimum = E.Aggregate(E.Select(list3, (x, index) => (int)(uint)(x * (index % 5) % 4294967296)), 0L, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (int)(uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean(x => (uint)x);
-			doubleOptimum = E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			longOptimum = E.Aggregate(E.Select(list3, x => (uint)(x % 4294967296)), 0L, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean((x, index) => (uint)(x * (index % 5)));
-			doubleOptimum = E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			longOptimum = E.Aggregate(E.Select(list3, (x, index) => (uint)(x * (index % 5) % 4294967296)), 0L, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (uint)(elem * (index % 5) % 4294967296), index)), x => x.elem == longOptimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean(x => (long)x);
-			doubleOptimum = E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			optimum = E.Aggregate(E.Select(list3, x => (long)(ulong)(x / 4294967296 % 4294967296 * 4294967296 + x % 4294967296)), (BigInteger)0, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem / 4294967296 % 4294967296 * 4294967296 + elem % 4294967296), index)), x => x.elem == optimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean((x, index) => (long)(x * (index % 5)));
-			doubleOptimum = E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), (double)0, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == doubleOptimum), x => x.index));
+			optimum = E.Aggregate(E.Select(list3, (x, index) => (long)(ulong)(x * (index % 5) / 4294967296 % 4294967296 * 4294967296 + x * (index % 5) % 4294967296)), (BigInteger)0, (x, y) => x + y) / list3.Length;
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: (long)(ulong)(elem * (index % 5) / 4294967296 % 4294967296 * 4294967296 + elem * (index % 5) % 4294967296), index)), x => x.elem == optimum), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMin();

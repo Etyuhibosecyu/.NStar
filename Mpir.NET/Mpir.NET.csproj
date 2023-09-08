@@ -28,7 +28,6 @@
 		<DebugType>pdbonly</DebugType>
 		<Optimize>true</Optimize>
 		<DefineConstants>TRACE</DefineConstants>
-		<DocumentationFile>..\bin\Mpir.NET.XML</DocumentationFile>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
 		<OutputPath>bin\Debug\</OutputPath>
@@ -52,10 +51,12 @@
 		<PlatformTarget>x86</PlatformTarget>
 		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
-	<ItemGroup>
+	<ItemGroup Condition="'$(Platform)' == 'x86'">
 		<Content Include="xmpir32.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>
+	</ItemGroup>
+	<ItemGroup Condition="'$(Platform)' != 'x86'">
 		<Content Include="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>

@@ -1,5 +1,4 @@
-﻿using Corlib.NStar;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Corlib.NStar;
 
@@ -56,22 +55,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return false;
 		if (collection is not G.IList<T> list)
 			list = collection.ToList();
-		var j = 0;
-		for (var i = 0; i - j <= length - list.Count; i++)
-		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
-			{
-				j++;
-				if (j >= list.Count)
-					return true;
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
-		return false;
+		return ContainsInternal(list, index, length);
 	}
 
 	public virtual bool Contains(T? item) => Contains(item, 0, _size);
@@ -142,6 +126,26 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		for (var i = index; i < index + length; i++)
 			if (!hs.Contains(GetInternal(i)))
 				return true;
+		return false;
+	}
+
+	private protected virtual bool ContainsInternal(G.IList<T> list, int index, int length)
+	{
+		var j = 0;
+		for (var i = 0; i - j <= length - list.Count; i++)
+		{
+			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
+			{
+				j++;
+				if (j >= list.Count)
+					return true;
+			}
+			else if (j != 0)
+			{
+				i -= j;
+				j = 0;
+			}
+		}
 		return false;
 	}
 
@@ -218,30 +222,36 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (collection is G.IList<T> list)
-		{
-			if (index > _size - list.Count)
-				return false;
-			if (toEnd && index < _size - list.Count)
-				return false;
-			for (var i = 0; i < list.Count; i++)
-				if (!(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
-					return false;
-			return true;
-		}
+			return EqualsToList(list, index, toEnd);
 		else
+			return EqualsToNonList(collection, index, toEnd);
+	}
+
+	private protected virtual bool EqualsToList(G.IList<T> list, int index, bool toEnd = false)
+	{
+		if (index > _size - list.Count)
+			return false;
+		if (toEnd && index < _size - list.Count)
+			return false;
+		for (var i = 0; i < list.Count; i++)
+			if (!(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
+				return false;
+		return true;
+	}
+
+	private protected virtual bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd = false)
+	{
+		if (collection.TryGetLengthEasily(out var length))
 		{
-			if (collection.TryGetLengthEasily(out var length))
-			{
-				if (index > _size - length)
-					return false;
-				if (toEnd && index < _size - length)
-					return false;
-			}
-			foreach (var item in collection)
-				if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
-					return false;
-			return !toEnd || index == _size;
+			if (index > _size - length)
+				return false;
+			if (toEnd && index < _size - length)
+				return false;
 		}
+		foreach (var item in collection)
+			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
+				return false;
+		return !toEnd || index == _size;
 	}
 
 	public virtual bool Exists(Predicate<T> match) => FindIndex(match) != -1;
@@ -350,7 +360,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	private Enumerator GetEnumeratorInternal() => new(this);
 
-	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 9 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 9 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
+	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 7 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 7 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
 
 	internal abstract T GetInternal(int index, bool invoke = true);
 
@@ -1260,7 +1270,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		var list = CapacityCreator(length);
 		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
-		list._size = length;
 		return list;
 	}
 
@@ -1448,15 +1457,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
-		if (length > 0)
-		{
-			_size -= length;
-			if (index < _size)
-				Copy(this2, index + length, this2, index, _size - index);
-			ClearInternal(_size, length);
-		}
-		return this2;
+		return RemoveInternal(index, length);
 	}
 
 	public virtual TCertain Remove(Range range)
@@ -1526,6 +1527,19 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return result;
 	}
 
+	private protected virtual TCertain RemoveInternal(int index, int length)
+	{
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (length > 0)
+		{
+			_size -= length;
+			if (index < _size)
+				Copy(this2, index + length, this2, index, _size - index);
+			ClearInternal(_size, length);
+		}
+		return this2;
+	}
+
 	public virtual bool RemoveValue(T item)
 	{
 		var index = IndexOf(item);
@@ -1545,7 +1559,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return result;
 	}
 
-	public virtual TCertain Replace(IEnumerable<T> collection) => ReplaceRangeInternal(0, _size, collection);
+	public virtual TCertain Replace(IEnumerable<T> collection)
+	{
+		Clear();
+		return AddRange(collection);
+	}
 
 	public virtual TCertain Replace(T oldItem, T newItem)
 	{
@@ -1872,33 +1890,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-		if (length == 0 || !collection.Any())
-			return false;
-		if (collection is not IBigList<T> list)
-			list = CollectionCreator(collection);
-		MpzT j = 0;
-		for (MpzT i = 0; i - j <= length - list.Length; i++)
-		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
-			{
-				j++;
-				if (j >= list.Length)
-					return true;
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
-		return false;
+		return ContainsInternal(collection, index, length);
 	}
 
 	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, Size);
@@ -1974,6 +1966,37 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index) => ContainsAnyExcluding((IEnumerable<T>)list, index, Size - index);
 
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) => ContainsAnyExcluding((IEnumerable<T>)list, index, length);
+
+	private protected virtual bool ContainsInternal(IEnumerable<T> collection, MpzT index, MpzT length)
+	{
+		try
+		{
+			throw new SlowOperationException();
+		}
+		catch
+		{
+		}
+		if (length == 0 || !collection.Any())
+			return false;
+		if (collection is not IBigList<T> list)
+			list = CollectionCreator(collection);
+		MpzT j = 0;
+		for (MpzT i = 0; i - j <= length - list.Length; i++)
+		{
+			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
+			{
+				j++;
+				if (j >= list.Length)
+					return true;
+			}
+			else if (j != 0)
+			{
+				i -= j;
+				j = 0;
+			}
+		}
+		return false;
+	}
 
 	private protected abstract void Copy(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length);
 
@@ -2784,6 +2807,8 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
+	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
+
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
 	private protected override void ClearInternal(int index, int length)
@@ -2906,10 +2931,29 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{
-		var temp = CollectionCreator(other);
-		temp.ExceptWith(this);
-		ExceptWith(other);
-		return AddRange(temp);
+		ArgumentNullException.ThrowIfNull(other);
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (Length == 0)
+		{
+			UnionWith(other);
+			return this2;
+		}
+		if (other == this)
+		{
+			Clear();
+			return this2;
+		}
+		return SymmetricExceptInternal(other);
+	}
+
+	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<T> other)
+	{
+		foreach (var item in other is ISet<T> set ? set : other.ToHashSet())
+		{
+			var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
+			Debug.Assert(result);
+		}
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	void ISet<T>.SymmetricExceptWith(IEnumerable<T> other) => SymmetricExceptWith(other);

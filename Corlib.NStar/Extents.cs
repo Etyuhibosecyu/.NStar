@@ -118,8 +118,8 @@ public class ArrayEComparer<T> : IEqualityComparer<T[]>
 	{
 		0 => 1234567890,
 		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
 	};
 }
 
@@ -164,8 +164,8 @@ public class ListEComparer<T> : IEqualityComparer<List<T>>
 	{
 		0 => 1234567890,
 		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
 	};
 }
 
@@ -173,23 +173,34 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 {
 	private readonly Func<T, T, bool> equals;
 	private readonly Func<T, int> hashCode;
+	private readonly bool defaultEquals;
 
 	public NListEComparer()
 	{
-		equals = EqualityComparer<T>.Default.Equals;
+		equals = default!;
 		hashCode = x => x.GetHashCode();
+		defaultEquals = true;
 	}
 
 	public NListEComparer(Func<T, T, bool> equals)
 	{
 		this.equals = equals;
 		hashCode = x => x.GetHashCode();
+		defaultEquals = false;
 	}
 
 	public NListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
 	{
 		this.equals = equals;
 		this.hashCode = hashCode;
+		defaultEquals = false;
+	}
+
+	public NListEComparer(Func<T, int> hashCode)
+	{
+		equals = default!;
+		this.hashCode = hashCode;
+		defaultEquals = true;
 	}
 
 	public bool Equals(NList<T>? x, NList<T>? y)
@@ -198,6 +209,8 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 			return true;
 		else if (x == null || y == null)
 			return false;
+		else if (defaultEquals)
+			return x.Equals(y);
 		if (x.Length != y.Length)
 			return false;
 		for (var i = 0; i < x.Length; i++)
@@ -210,8 +223,8 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 	{
 		0 => 1234567890,
 		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 9 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 9 ^ hashCode(x[1])) << 9 ^ hashCode(x[^1]),
+		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
+		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
 	};
 }
 
@@ -705,6 +718,11 @@ internal static class HashHelpers
 
 public static unsafe partial class Extents
 {
+
+	// XPerY=n means that n Xs can be stored in 1 Y. 
+	public const int BitsPerInt = sizeof(int) * BitsPerByte;
+	public const int BytesPerInt = sizeof(int);
+	public const int BitsPerByte = 8;
 
 	internal static readonly Random random = new();
 
