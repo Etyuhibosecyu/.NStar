@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿
 // Disable warning about missing XML comments.
 
 namespace Mpir.NET;

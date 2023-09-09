@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-
+﻿
 namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]

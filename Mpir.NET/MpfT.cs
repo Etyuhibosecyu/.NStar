@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Mpir.NET;
+﻿namespace Mpir.NET;
 
 public struct MpfT
 {

@@ -22,7 +22,6 @@ Modifications by John Reynolds, to provide disposal of unmanaged resources,
 binary import/export functions etc.
 */
 
-using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 

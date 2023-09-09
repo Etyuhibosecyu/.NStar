@@ -1,12 +1,12 @@
 ﻿global using Mpir.NET;
 global using System;
 global using System.Collections;
+global using System.Diagnostics;
 global using System.Runtime.InteropServices;
 global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static System.Math;
 using System.Runtime.Serialization;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Corlib.NStar;
