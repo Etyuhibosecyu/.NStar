@@ -115,7 +115,7 @@ public class ListTests
 	[TestMethod]
 	public void TestAdd()
 	{
-		var a = new List<string>(list).Add(defaultString);
+		var a = list.ToList().Add(defaultString);
 		var b = new G.List<string>(list) { defaultString };
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -124,12 +124,12 @@ public class ListTests
 	[TestMethod]
 	public void TestAddRange()
 	{
-		var a = new List<string>(list).AddRange(defaultCollection);
+		var a = list.ToList().AddRange(defaultCollection);
 		var b = new G.List<string>(list);
 		b.AddRange(defaultCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3));
+		a = list.ToList().AddRange(defaultCollection.AsSpan(2, 3));
 		b = new G.List<string>(list);
 		b.AddRange(defaultCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
@@ -139,7 +139,7 @@ public class ListTests
 	[TestMethod]
 	public void TestAppend()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Append(defaultString);
 		var c = E.Append(new G.List<string>(list), defaultString);
 		Assert.IsTrue(a.Equals(list));
@@ -151,7 +151,7 @@ public class ListTests
 	[TestMethod]
 	public void TestBinarySearch()
 	{
-		var a = new List<string>(list).Sort();
+		var a = list.ToList().Sort();
 		var b = a.BinarySearch("MMM");
 		var c = new G.List<string>(list);
 		c.Sort();
@@ -165,7 +165,7 @@ public class ListTests
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.BreakFilter(x => x.Length == 3, out var c);
 		var d = new G.List<string>(list);
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -191,7 +191,7 @@ public class ListTests
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.BreakFilterInPlace(x => x.Length == 3, out var c);
 		var d = new G.List<string>(list);
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -205,7 +205,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(c.Equals(e));
 		Assert.IsTrue(E.SequenceEqual(e, c));
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.BreakFilterInPlace(x => x.All(y => y is >= 'A' and <= 'Z'), out c);
 		d = new G.List<string>(list);
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -224,7 +224,7 @@ public class ListTests
 	[TestMethod]
 	public void TestClear()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		a.Clear(2, 4);
 		var b = new G.List<string>(list);
 		for (var i = 0; i < 4; i++)
@@ -270,7 +270,7 @@ public class ListTests
 	[TestMethod]
 	public void TestConcat()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Concat(new(defaultCollection));
 		var c = E.Concat(new G.List<string>(list), defaultCollection);
 		Assert.IsTrue(a.Equals(list));
@@ -282,7 +282,7 @@ public class ListTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Contains("MMM");
 		Assert.IsTrue(b);
 		b = a.Contains("BBB", 2);
@@ -297,7 +297,7 @@ public class ListTests
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
@@ -309,7 +309,7 @@ public class ListTests
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -321,7 +321,7 @@ public class ListTests
 	[TestMethod]
 	public void TestConvert()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Convert((x, index) => (x, index));
 		var c = E.Select(new G.List<string>(list), (x, index) => (x, index));
 		var d = a.Convert(x => x + "A");
@@ -337,7 +337,7 @@ public class ListTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 		var c = (string[])b.Clone();
 		var d = (string[])b.Clone();
@@ -355,7 +355,7 @@ public class ListTests
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.EndsWith("DDD");
 		Assert.IsTrue(b);
 		b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
@@ -369,7 +369,7 @@ public class ListTests
 	[TestMethod]
 	public void TestEquals()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Contains("MMM");
 		Assert.IsTrue(b);
 		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
@@ -385,7 +385,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFilter()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.Filter(x => x.Length == 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -405,7 +405,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.FilterInPlace(x => x.Length == 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -416,7 +416,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FilterInPlace((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -432,7 +432,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFind()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.Find(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -440,7 +440,7 @@ public class ListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -453,7 +453,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFindAll()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.FindAll(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -462,7 +462,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -476,7 +476,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.FindIndex(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -484,7 +484,7 @@ public class ListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -497,7 +497,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFindLast()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.FindLast(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -505,7 +505,7 @@ public class ListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -518,7 +518,7 @@ public class ListTests
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.FindLastIndex(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -526,7 +526,7 @@ public class ListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -539,7 +539,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetAfter("DDD");
 		var c = new G.List<string>() { "MMM", "EEE", "DDD" };
 		Assert.IsTrue(a.Equals(list));
@@ -559,7 +559,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetAfterLast("MMM");
 		var c = new G.List<string>() { "EEE", "DDD" };
 		Assert.IsTrue(a.Equals(list));
@@ -579,7 +579,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetBefore("DDD");
 		var c = new G.List<string>() { "MMM", "BBB", "PPP" };
 		Assert.IsTrue(a.Equals(list));
@@ -599,7 +599,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetBeforeLast("MMM");
 		var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
 		Assert.IsTrue(a.Equals(list));
@@ -619,7 +619,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetBeforeSetAfter("DDD");
 		var c = new G.List<string>() { "MMM", "BBB", "PPP" };
 		var d = new G.List<string>() { "MMM", "EEE", "DDD" };
@@ -632,7 +632,7 @@ public class ListTests
 	[TestMethod]
 	public void TestGetBeforeSetAfterLast()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.GetBeforeSetAfterLast("MMM");
 		var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
 		var d = new G.List<string>() { "EEE", "DDD" };
@@ -645,117 +645,29 @@ public class ListTests
 	[TestMethod]
 	public void TestGetRange()
 	{
-		var a = new List<string>(list);
-		var b = a.GetRange(..);
-		var c = new G.List<string>(list);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(.., true);
+		var a = list.ToList();
+		var b = a.GetRange(.., true);
 		b.Add(defaultString);
-		c = new G.List<string>(list).GetRange(0, list.Length);
+		var c = new G.List<string>(list).GetRange(0, list.Length);
 		c.Add(defaultString);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(..^1);
-		c = new G.List<string>(list).GetRange(0, list.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..);
-		c = new G.List<string>(list).GetRange(1, list.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..^1);
-		c = new G.List<string>(list).GetRange(1, list.Length - 2);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..5);
-		c = new G.List<string>(list).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..^1);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..5);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 10 - list.Length);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+		new BaseIndexableTests<string, List<string>>(a, list, defaultString, defaultCollection).TestGetRange();
 	}
 
 	[TestMethod]
 	public void TestGetSlice()
 	{
-		var a = new List<string>(list);
-		var b = a.GetSlice(..);
-		var c = new G.List<string>(list);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1);
-		c = new G.List<string>(list).GetRange(1, list.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1, 4);
-		c = new G.List<string>(list).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(..^1);
-		c = new G.List<string>(list).GetRange(0, list.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..);
-		c = new G.List<string>(list).GetRange(1, list.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..^1);
-		c = new G.List<string>(list).GetRange(1, list.Length - 2);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..5);
-		c = new G.List<string>(list).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..^1);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..5);
-		c = new G.List<string>(list).GetRange(list.Length - 5, 10 - list.Length);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
+		var a = list.ToList();
+		new BaseIndexableTests<string, List<string>>(a, list, defaultString, defaultCollection).TestGetSlice();
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.IndexOf("MMM");
 		Assert.AreEqual(b, 0);
 		b = a.IndexOf("BBB", 2);
@@ -776,7 +688,7 @@ public class ListTests
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 0);
 		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
@@ -791,7 +703,7 @@ public class ListTests
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 1);
 		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -804,31 +716,31 @@ public class ListTests
 	[TestMethod]
 	public void TestInsert()
 	{
-		var a = new List<string>(list).Insert(3, defaultString);
+		var a = list.ToList().Insert(3, defaultString);
 		var b = new G.List<string>(list);
 		b.Insert(3, defaultString);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).Insert(4, defaultCollection);
+		a = list.ToList().Insert(4, defaultCollection);
 		b = new G.List<string>(list);
 		b.InsertRange(4, defaultCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).Insert(2, defaultCollection.AsSpan(2, 3));
+		a = list.ToList().Insert(2, defaultCollection.AsSpan(2, 3));
 		b = new G.List<string>(list);
 		b.InsertRange(2, defaultCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new List<string>(list).Insert(1000, defaultString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).Insert(-1, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(1, null));
-		Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).Insert(5, (G.IEnumerable<string>)null!));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = list.ToList().Insert(1000, defaultString));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().Insert(-1, defaultCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().Insert(1, null));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().Insert(5, (G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.LastIndexOf("MMM");
 		Assert.AreEqual(b, 4);
 		b = a.LastIndexOf("BBB", 2);
@@ -849,7 +761,7 @@ public class ListTests
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 6);
 		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
@@ -864,7 +776,7 @@ public class ListTests
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 5);
 		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -888,7 +800,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPad()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Pad(10);
 		var c = new G.List<string>(list);
 		c.Insert(0, default!);
@@ -920,7 +832,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPadInPlace()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.PadInPlace(10);
 		var c = new G.List<string>(list);
 		c.Insert(0, default!);
@@ -961,7 +873,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPadLeft()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.PadLeft(10);
 		var c = new G.List<string>(list);
 		c.Insert(0, default!);
@@ -993,7 +905,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPadLeftInPlace()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.PadLeftInPlace(10);
 		var c = new G.List<string>(list);
 		c.Insert(0, default!);
@@ -1034,7 +946,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPadRight()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.PadRight(10);
 		var c = new G.List<string>(list) { default!, default!, default! };
 		Assert.IsTrue(a.Equals(list));
@@ -1060,7 +972,7 @@ public class ListTests
 	[TestMethod]
 	public void TestPadRightInPlace()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.PadRightInPlace(10);
 		var c = new G.List<string>(list) { default!, default!, default! };
 		Assert.IsTrue(a.Equals(b));
@@ -1095,7 +1007,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemove()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = new List<string>(a).Remove(6);
 		var c = new G.List<string>(list);
 		c.RemoveRange(6, 1);
@@ -1179,7 +1091,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.RemoveAll(x => x.Length != 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1187,7 +1099,7 @@ public class ListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.RemoveAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1200,7 +1112,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		for (var i = 0; i < 1000; i++)
 		{
 			var index = random.Next(a.Length);
@@ -1257,13 +1169,13 @@ public class ListTests
 	[TestMethod]
 	public void TestReplace()
 	{
-		var a = new List<string>(list).Replace(defaultCollection);
+		var a = list.ToList().Replace(defaultCollection);
 		var b = new G.List<string>(list);
 		b.Clear();
 		b.AddRange(defaultCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3));
+		a = list.ToList().AddRange(defaultCollection.AsSpan(2, 3));
 		b = new G.List<string>(list);
 		b.AddRange(defaultCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
@@ -1353,38 +1265,38 @@ public class ListTests
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		var a = new List<string>(list).ReplaceRange(2, 3, defaultCollection);
+		var a = list.ToList().ReplaceRange(2, 3, defaultCollection);
 		var b = new G.List<string>(list);
 		b.RemoveRange(2, 3);
 		b.InsertRange(2, defaultCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).Insert(2, defaultCollection.AsSpan(2, 3));
+		a = list.ToList().Insert(2, defaultCollection.AsSpan(2, 3));
 		b = new G.List<string>(list);
 		b.InsertRange(2, defaultCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new List<string>(list).ReplaceRange(1, 1000, defaultString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(-1, 3, defaultCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).ReplaceRange(4, -2, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).ReplaceRange(4, 1, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = list.ToList().ReplaceRange(1, 1000, defaultString));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(-1, 3, defaultCollection));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().ReplaceRange(4, -2, defaultCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().ReplaceRange(4, 1, null!));
 	}
 
 	[TestMethod]
 	public void TestReverse()
 	{
-		var a = new List<string>(list).Reverse();
+		var a = list.ToList().Reverse();
 		var b = new G.List<string>(list);
 		b.Reverse();
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3)).Reverse();
+		a = list.ToList().AddRange(defaultCollection.AsSpan(2, 3)).Reverse();
 		b = new G.List<string>(list);
 		b.AddRange(defaultCollection.Skip(2).Take(3));
 		b.Reverse();
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).AddRange(defaultCollection.AsSpan(2, 3)).Reverse(2, 4);
+		a = list.ToList().AddRange(defaultCollection.AsSpan(2, 3)).Reverse(2, 4);
 		b = new G.List<string>(list);
 		b.AddRange(defaultCollection.Skip(2).Take(3));
 		b.Reverse(2, 4);
@@ -1395,31 +1307,31 @@ public class ListTests
 	[TestMethod]
 	public void TestSetAll()
 	{
-		var a = new List<string>(list).SetAll(defaultString);
+		var a = list.ToList().SetAll(defaultString);
 		var b = new G.List<string>(list);
 		for (var i = 0; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).SetAll(defaultString, 3);
+		a = list.ToList().SetAll(defaultString, 3);
 		b = new G.List<string>(list);
 		for (var i = 3; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).SetAll(defaultString, 2, 4);
+		a = list.ToList().SetAll(defaultString, 2, 4);
 		b = new G.List<string>(list);
 		for (var i = 2; i < 6; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).SetAll(defaultString, ^5);
+		a = list.ToList().SetAll(defaultString, ^5);
 		b = new G.List<string>(list);
 		for (var i = b.Count - 5; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new List<string>(list).SetAll(defaultString, ^6..4);
+		a = list.ToList().SetAll(defaultString, ^6..4);
 		b = new G.List<string>(list);
 		for (var i = b.Count - 6; i < 4; i++)
 			b[i] = defaultString;
@@ -1430,7 +1342,7 @@ public class ListTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = new G.List<string>(list);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1448,43 +1360,43 @@ public class ListTests
 	public void TestSetRange()
 	{
 		var hs = defaultCollection.ToHashSet();
-		var a = new List<string>(list).SetRange(2, hs);
+		var a = list.ToList().SetRange(2, hs);
 		var b = new G.List<string>(list);
 		for (var i = 0; i < hs.Length; i++)
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new List<string>(list).SetRange(5, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(-1, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new List<string>(list).SetRange(1000, hs));
-		Assert.ThrowsException<ArgumentNullException>(() => new List<string>(list).SetRange(4, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = list.ToList().SetRange(5, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().SetRange(-1, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().SetRange(1000, hs));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().SetRange(4, null!));
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Skip(2);
 		var c = E.Skip(new G.List<string>(list), 2);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Skip(0);
 		c = E.Skip(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Skip(1000);
 		c = E.Skip(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Skip(-4);
 		c = E.Skip(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1496,28 +1408,28 @@ public class ListTests
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.SkipLast(2);
 		var c = E.SkipLast(new G.List<string>(list), 2);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.SkipLast(0);
 		c = E.SkipLast(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.SkipLast(1000);
 		c = E.SkipLast(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.SkipLast(-4);
 		c = E.SkipLast(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1529,7 +1441,7 @@ public class ListTests
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.SkipWhile(x => x.Length == 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1538,7 +1450,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1574,7 +1486,7 @@ public class ListTests
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.StartsWith("MMM");
 		Assert.IsTrue(b);
 		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
@@ -1587,28 +1499,28 @@ public class ListTests
 	[TestMethod]
 	public void TestTake()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.Take(2);
 		var c = E.Take(new G.List<string>(list), 2);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Take(0);
 		c = E.Take(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Take(1000);
 		c = E.Take(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.Take(-4);
 		c = E.Take(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1620,28 +1532,28 @@ public class ListTests
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		var a = new List<string>(list);
+		var a = list.ToList();
 		var b = a.TakeLast(2);
 		var c = E.TakeLast(new G.List<string>(list), 2);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.TakeLast(0);
 		c = E.TakeLast(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.TakeLast(1000);
 		c = E.TakeLast(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new List<string>(list);
+		a = list.ToList();
 		b = a.TakeLast(-4);
 		c = E.TakeLast(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1653,7 +1565,7 @@ public class ListTests
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.TakeWhile(x => x.Length == 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1662,7 +1574,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
 		c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1727,7 +1639,7 @@ public class ListTests
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		var a = new List<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToList().Insert(3, new List<string>("$", "###"));
 		var b = a.TrueForAll(x => x.Length == 3);
 		var c = new G.List<string>(list);
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1865,7 +1777,7 @@ public class NListTests
 	[TestMethod]
 	public void TestAdd()
 	{
-		var a = new NList<(char, char, char)>(nList).Add(defaultNString);
+		var a = nList.ToNList().Add(defaultNString);
 		var b = new G.List<(char, char, char)>(nList) { defaultNString };
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
@@ -1874,12 +1786,12 @@ public class NListTests
 	[TestMethod]
 	public void TestAddRange()
 	{
-		var a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection);
+		var a = nList.ToNList().AddRange(defaultNCollection);
 		var b = new G.List<(char, char, char)>(nList);
 		b.AddRange(defaultNCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection.AsSpan(2, 3));
+		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3));
 		b = new G.List<(char, char, char)>(nList);
 		b.AddRange(defaultNCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
@@ -1889,7 +1801,7 @@ public class NListTests
 	[TestMethod]
 	public void TestAppend()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Append(defaultNString);
 		var c = E.Append(new G.List<(char, char, char)>(nList), defaultNString);
 		Assert.IsTrue(a.Equals(nList));
@@ -1901,7 +1813,7 @@ public class NListTests
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.BreakFilter(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0', out var c);
 		var d = new G.List<(char, char, char)>(nList);
 		d.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -1927,7 +1839,7 @@ public class NListTests
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.BreakFilterInPlace(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0', out var c);
 		var d = new G.List<(char, char, char)>(nList);
 		d.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -1941,7 +1853,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.IsTrue(c.Equals(e));
 		Assert.IsTrue(E.SequenceEqual(e, c));
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.BreakFilterInPlace(x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'), out c);
 		d = new G.List<(char, char, char)>(nList);
 		d.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -1960,7 +1872,7 @@ public class NListTests
 	[TestMethod]
 	public void TestClear()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		a.Clear(2, 4);
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < 4; i++)
@@ -2007,7 +1919,7 @@ public class NListTests
 	[TestMethod]
 	public void TestConcat()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Concat(new(defaultNCollection));
 		var c = E.Concat(new G.List<(char, char, char)>(nList), defaultNCollection);
 		Assert.IsTrue(a.Equals(nList));
@@ -2019,7 +1931,7 @@ public class NListTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Contains(('M', 'M', 'M'));
 		Assert.IsTrue(b);
 		b = a.Contains(('B', 'B', 'B'), 2);
@@ -2034,7 +1946,7 @@ public class NListTests
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.ContainsAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('M', 'M', 'M'), ('N', 'N', 'N')));
@@ -2046,7 +1958,7 @@ public class NListTests
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.ContainsAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
@@ -2058,7 +1970,7 @@ public class NListTests
 	[TestMethod]
 	public void TestConvert()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Convert((x, index) => (x, index));
 		var c = E.Select(new G.List<(char, char, char)>(nList), (x, index) => (x, index));
 		var d = a.Convert(x => x + "A");
@@ -2098,7 +2010,7 @@ public class NListTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = RedStarLinq.FillArray(16, x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536)));
 		var c = ((char, char, char)[])b.Clone();
 		var d = ((char, char, char)[])b.Clone();
@@ -2116,7 +2028,7 @@ public class NListTests
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.EndsWith(('D', 'D', 'D'));
 		Assert.IsTrue(b);
 		b = a.EndsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')));
@@ -2236,7 +2148,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFilter()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.Filter(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2256,7 +2168,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.FilterInPlace(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2267,7 +2179,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FilterInPlace((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2283,7 +2195,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFind()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.Find(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2291,7 +2203,7 @@ public class NListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.Find(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2304,7 +2216,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFindAll()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.FindAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2313,7 +2225,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2327,7 +2239,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.FindIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2335,7 +2247,7 @@ public class NListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2348,7 +2260,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFindLast()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.FindLast(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2356,7 +2268,7 @@ public class NListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindLast(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2369,7 +2281,7 @@ public class NListTests
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.FindLastIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2377,7 +2289,7 @@ public class NListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindLastIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -2390,7 +2302,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetAfter(('D', 'D', 'D'));
 		var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D') };
 		Assert.IsTrue(a.Equals(nList));
@@ -2410,7 +2322,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetAfterLast(('M', 'M', 'M'));
 		var c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
 		Assert.IsTrue(a.Equals(nList));
@@ -2430,7 +2342,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetBefore(('D', 'D', 'D'));
 		var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
 		Assert.IsTrue(a.Equals(nList));
@@ -2450,7 +2362,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetBeforeLast(('M', 'M', 'M'));
 		var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D') };
 		Assert.IsTrue(a.Equals(nList));
@@ -2470,7 +2382,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetBeforeSetAfter(('D', 'D', 'D'));
 		var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
 		var d = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D') };
@@ -2483,7 +2395,7 @@ public class NListTests
 	[TestMethod]
 	public void TestGetBeforeSetAfterLast()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.GetBeforeSetAfterLast(('M', 'M', 'M'));
 		var c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D') };
 		var d = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
@@ -2496,117 +2408,29 @@ public class NListTests
 	[TestMethod]
 	public void TestGetRange()
 	{
-		var a = new NList<(char, char, char)>(nList);
-		var b = a.GetRange(..);
-		var c = new G.List<(char, char, char)>(nList);
-		Assert.IsTrue(a.Equals(nList));
-		Assert.IsTrue(E.SequenceEqual(nList, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(.., true);
+		var a = nList.ToNList();
+		var b = a.GetRange(.., true);
 		b.Add(defaultNString);
-		c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length);
+		var c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length);
 		c.Add(defaultNString);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 2);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(1..5);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetRange(^5..5);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 10 - nList.Length);
-		Assert.IsTrue(a.Equals(nList));
-		Assert.IsTrue(E.SequenceEqual(nList, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetRange(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetRange(1..1000));
+		new BaseIndexableTests<(char, char, char), NList<(char, char, char)>>(a, nList, defaultNString, defaultNCollection).TestGetRange();
 	}
 
 	[TestMethod]
 	public void TestGetSlice()
 	{
-		var a = new NList<(char, char, char)>(nList);
-		var b = a.GetSlice(..);
-		var c = new G.List<(char, char, char)>(nList);
-		Assert.IsTrue(a.Equals(nList));
-		Assert.IsTrue(E.SequenceEqual(nList, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1, 4);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(0, nList.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 1);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, nList.Length - 2);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(1..5);
-		c = new G.List<(char, char, char)>(nList).GetRange(1, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 5);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..^1);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 4);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetSlice(^5..5);
-		c = new G.List<(char, char, char)>(nList).GetRange(nList.Length - 5, 10 - nList.Length);
-		Assert.IsTrue(a.Equals(nList));
-		Assert.IsTrue(E.SequenceEqual(nList, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(-1..5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = a.GetSlice(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = a.GetSlice(1..1000));
+		var a = nList.ToNList();
+		new BaseIndexableTests<(char, char, char), NList<(char, char, char)>>(a, nList, defaultNString, defaultNCollection).TestGetSlice();
 	}
 
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.IndexOf(('M', 'M', 'M'));
 		Assert.AreEqual(b, 0);
 		b = a.IndexOf(('B', 'B', 'B'), 2);
@@ -2627,7 +2451,7 @@ public class NListTests
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.IndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.AreEqual(b, 0);
 		b = a.IndexOfAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('N', 'N', 'N'), ('P', 'P', 'P')));
@@ -2642,7 +2466,7 @@ public class NListTests
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.IndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.AreEqual(b, 1);
 		b = a.IndexOfAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
@@ -2655,30 +2479,30 @@ public class NListTests
 	[TestMethod]
 	public void TestInsert()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, defaultNString);
+		var a = nList.ToNList().Insert(3, defaultNString);
 		var b = new G.List<(char, char, char)>(nList);
 		b.Insert(3, defaultNString);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).Insert(4, defaultNCollection);
+		a = nList.ToNList().Insert(4, defaultNCollection);
 		b = new G.List<(char, char, char)>(nList);
 		b.InsertRange(4, defaultNCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).Insert(2, defaultNCollection.AsSpan(2, 3));
+		a = nList.ToNList().Insert(2, defaultNCollection.AsSpan(2, 3));
 		b = new G.List<(char, char, char)>(nList);
 		b.InsertRange(2, defaultNCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new NList<(char, char, char)>(nList).Insert(1000, defaultNString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).Insert(-1, defaultNCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).Insert(5, (G.IEnumerable<(char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nList.ToNList().Insert(1000, defaultNString));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.LastIndexOf(('M', 'M', 'M'));
 		Assert.AreEqual(b, 4);
 		b = a.LastIndexOf(('B', 'B', 'B'), 2);
@@ -2699,7 +2523,7 @@ public class NListTests
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.LastIndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.AreEqual(b, 6);
 		b = a.LastIndexOfAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('N', 'N', 'N'), ('P', 'P', 'P')));
@@ -2714,7 +2538,7 @@ public class NListTests
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.LastIndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.AreEqual(b, 5);
 		b = a.LastIndexOfAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
@@ -2727,7 +2551,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPad()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Pad(10);
 		var c = new G.List<(char, char, char)>(nList);
 		c.Insert(0, default!);
@@ -2759,7 +2583,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPadInPlace()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.PadInPlace(10);
 		var c = new G.List<(char, char, char)>(nList);
 		c.Insert(0, default!);
@@ -2800,7 +2624,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPadLeft()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.PadLeft(10);
 		var c = new G.List<(char, char, char)>(nList);
 		c.Insert(0, default!);
@@ -2832,7 +2656,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPadLeftInPlace()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.PadLeftInPlace(10);
 		var c = new G.List<(char, char, char)>(nList);
 		c.Insert(0, default!);
@@ -2873,7 +2697,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPadRight()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.PadRight(10);
 		var c = new G.List<(char, char, char)>(nList) { default!, default!, default! };
 		Assert.IsTrue(a.Equals(nList));
@@ -2899,7 +2723,7 @@ public class NListTests
 	[TestMethod]
 	public void TestPadRightInPlace()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.PadRightInPlace(10);
 		var c = new G.List<(char, char, char)>(nList) { default!, default!, default! };
 		Assert.IsTrue(a.Equals(b));
@@ -2934,7 +2758,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemove()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = new NList<(char, char, char)>(a).Remove(6);
 		var c = new G.List<(char, char, char)>(nList);
 		c.RemoveRange(6, 1);
@@ -3020,7 +2844,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.RemoveAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3028,7 +2852,7 @@ public class NListTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.RemoveAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3041,7 +2865,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		for (var i = 0; i < 1000; i++)
 		{
 			var index = random.Next(a.Length);
@@ -3098,13 +2922,13 @@ public class NListTests
 	[TestMethod]
 	public void TestReplace()
 	{
-		var a = new NList<(char, char, char)>(nList).Replace(defaultNCollection);
+		var a = nList.ToNList().Replace(defaultNCollection);
 		var b = new G.List<(char, char, char)>(nList);
 		b.Clear();
 		b.AddRange(defaultNCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection.AsSpan(2, 3));
+		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3));
 		b = new G.List<(char, char, char)>(nList);
 		b.AddRange(defaultNCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
@@ -3114,38 +2938,38 @@ public class NListTests
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		var a = new NList<(char, char, char)>(nList).ReplaceRange(2, 3, defaultNCollection);
+		var a = nList.ToNList().ReplaceRange(2, 3, defaultNCollection);
 		var b = new G.List<(char, char, char)>(nList);
 		b.RemoveRange(2, 3);
 		b.InsertRange(2, defaultNCollection);
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).Insert(2, defaultNCollection.AsSpan(2, 3));
+		a = nList.ToNList().Insert(2, defaultNCollection.AsSpan(2, 3));
 		b = new G.List<(char, char, char)>(nList);
 		b.InsertRange(2, defaultNCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new NList<(char, char, char)>(nList).ReplaceRange(1, 1000, defaultNString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).ReplaceRange(-1, 3, defaultNCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).ReplaceRange(4, -2, defaultNCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).ReplaceRange(4, 1, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = nList.ToNList().ReplaceRange(1, 1000, defaultNString));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().ReplaceRange(-1, 3, defaultNCollection));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().ReplaceRange(4, -2, defaultNCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().ReplaceRange(4, 1, null!));
 	}
 
 	[TestMethod]
 	public void TestReverse()
 	{
-		var a = new NList<(char, char, char)>(nList).Reverse();
+		var a = nList.ToNList().Reverse();
 		var b = new G.List<(char, char, char)>(nList);
 		b.Reverse();
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection.AsSpan(2, 3)).Reverse();
+		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3)).Reverse();
 		b = new G.List<(char, char, char)>(nList);
 		b.AddRange(defaultNCollection.Skip(2).Take(3));
 		b.Reverse();
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).AddRange(defaultNCollection.AsSpan(2, 3)).Reverse(2, 4);
+		a = nList.ToNList().AddRange(defaultNCollection.AsSpan(2, 3)).Reverse(2, 4);
 		b = new G.List<(char, char, char)>(nList);
 		b.AddRange(defaultNCollection.Skip(2).Take(3));
 		b.Reverse(2, 4);
@@ -3156,31 +2980,31 @@ public class NListTests
 	[TestMethod]
 	public void TestSetAll()
 	{
-		var a = new NList<(char, char, char)>(nList).SetAll(defaultNString);
+		var a = nList.ToNList().SetAll(defaultNString);
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, 3);
+		a = nList.ToNList().SetAll(defaultNString, 3);
 		b = new G.List<(char, char, char)>(nList);
 		for (var i = 3; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, 2, 4);
+		a = nList.ToNList().SetAll(defaultNString, 2, 4);
 		b = new G.List<(char, char, char)>(nList);
 		for (var i = 2; i < 6; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, ^5);
+		a = nList.ToNList().SetAll(defaultNString, ^5);
 		b = new G.List<(char, char, char)>(nList);
 		for (var i = b.Count - 5; i < b.Count; i++)
 			b[i] = defaultNString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new NList<(char, char, char)>(nList).SetAll(defaultNString, ^6..4);
+		a = nList.ToNList().SetAll(defaultNString, ^6..4);
 		b = new G.List<(char, char, char)>(nList);
 		for (var i = b.Count - 6; i < 4; i++)
 			b[i] = defaultNString;
@@ -3191,7 +3015,7 @@ public class NListTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -3210,43 +3034,43 @@ public class NListTests
 	public void TestSetRange()
 	{
 		var hs = defaultNCollection.ToHashSet();
-		var a = new NList<(char, char, char)>(nList).SetRange(2, hs);
+		var a = nList.ToNList().SetRange(2, hs);
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < hs.Length; i++)
 			b[i + 2] = hs[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new NList<(char, char, char)>(nList).SetRange(5, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).SetRange(-1, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new NList<(char, char, char)>(nList).SetRange(1000, hs));
-		Assert.ThrowsException<ArgumentNullException>(() => new NList<(char, char, char)>(nList).SetRange(4, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = nList.ToNList().SetRange(5, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(-1, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(1000, hs));
+		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().SetRange(4, null!));
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Skip(2);
 		var c = E.Skip(new G.List<(char, char, char)>(nList), 2);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Skip(0);
 		c = E.Skip(new G.List<(char, char, char)>(nList), 0);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Skip(1000);
 		c = E.Skip(new G.List<(char, char, char)>(nList), 1000);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Skip(-4);
 		c = E.Skip(new G.List<(char, char, char)>(nList), -4);
 		Assert.IsTrue(a.Equals(nList));
@@ -3258,28 +3082,28 @@ public class NListTests
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.SkipLast(2);
 		var c = E.SkipLast(new G.List<(char, char, char)>(nList), 2);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.SkipLast(0);
 		c = E.SkipLast(new G.List<(char, char, char)>(nList), 0);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.SkipLast(1000);
 		c = E.SkipLast(new G.List<(char, char, char)>(nList), 1000);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.SkipLast(-4);
 		c = E.SkipLast(new G.List<(char, char, char)>(nList), -4);
 		Assert.IsTrue(a.Equals(nList));
@@ -3291,7 +3115,7 @@ public class NListTests
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.SkipWhile(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3300,7 +3124,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.SkipWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') || index < 1);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3325,7 +3149,7 @@ public class NListTests
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.StartsWith(('M', 'M', 'M'));
 		Assert.IsTrue(b);
 		b = a.StartsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P')));
@@ -3338,28 +3162,28 @@ public class NListTests
 	[TestMethod]
 	public void TestTake()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.Take(2);
 		var c = E.Take(new G.List<(char, char, char)>(nList), 2);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Take(0);
 		c = E.Take(new G.List<(char, char, char)>(nList), 0);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Take(1000);
 		c = E.Take(new G.List<(char, char, char)>(nList), 1000);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.Take(-4);
 		c = E.Take(new G.List<(char, char, char)>(nList), -4);
 		Assert.IsTrue(a.Equals(nList));
@@ -3371,28 +3195,28 @@ public class NListTests
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		var a = new NList<(char, char, char)>(nList);
+		var a = nList.ToNList();
 		var b = a.TakeLast(2);
 		var c = E.TakeLast(new G.List<(char, char, char)>(nList), 2);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.TakeLast(0);
 		c = E.TakeLast(new G.List<(char, char, char)>(nList), 0);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.TakeLast(1000);
 		c = E.TakeLast(new G.List<(char, char, char)>(nList), 1000);
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new NList<(char, char, char)>(nList);
+		a = nList.ToNList();
 		b = a.TakeLast(-4);
 		c = E.TakeLast(new G.List<(char, char, char)>(nList), -4);
 		Assert.IsTrue(a.Equals(nList));
@@ -3404,7 +3228,7 @@ public class NListTests
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.TakeWhile(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3413,7 +3237,7 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.TakeWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index < 10);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });
@@ -3478,7 +3302,7 @@ public class NListTests
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		var a = new NList<(char, char, char)>(nList).Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
+		var a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		var b = a.TrueForAll(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		var c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, new G.List<(char, char, char)>() { ('$', '\0', '\0'), ('#', '#', '#') });

@@ -2,13 +2,13 @@ global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Mpir.NET;
 global using System;
 global using System.Collections;
+global using System.Collections.Immutable;
 global using System.Runtime.InteropServices;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static Corlib.NStar.Tests.Global;
 global using static System.Math;
-using System.Collections.Immutable;
 
 namespace Corlib.NStar.Tests;
 

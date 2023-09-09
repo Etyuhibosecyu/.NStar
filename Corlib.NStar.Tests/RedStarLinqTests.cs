@@ -543,6 +543,90 @@ public class RedStarLinqTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
+
+	[TestMethod]
+	public void TestToList()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
+			ProcessA(original, 1234567890);
+			var original2 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (long)random.Next() << 31 | (uint)random.Next()));
+			ProcessA(original2, 1234567890123456789);
+			var original3 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next().ToString("D3")));
+			ProcessA(original3, "XXX");
+			var original4 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (((MpzT)random.Next() << 31 | random.Next()) << 31 | random.Next()) << 31 | random.Next()));
+			ProcessA(original4, 12345678901234567890);
+			var original5 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (random.Next(), random.Next())));
+			ProcessA(original5, (1234567890, 1234567890));
+			var original6 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => new BitList(new[] { random.Next(), random.Next() })));
+			ProcessA(original6, new BitList(new[] { 1234567890, 1234567890 }));
+		}
+		static void ProcessA<T>(ImmutableArray<T> original, T @default)
+		{
+			G.IEnumerable<T> a = new List<T>(original);
+			ProcessA2(a);
+			a = E.ToArray(original);
+			ProcessA2(a);
+			a = E.ToList(original);
+			ProcessA2(a);
+			a = new List<T>(original).Insert(0, @default).GetSlice(1);
+			ProcessA2(a);
+			a = E.Select(original, x => x);
+			ProcessA2(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA2(a);
+		}
+		static void ProcessA2<T>(G.IEnumerable<T> a)
+		{
+			var b = new List<T>(a);
+			var c = a.ToList();
+			var d = E.ToList(a);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(RedStarLinq.Equals(c, b));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(d, b));
+		}
+	}
+
+	[TestMethod]
+	public void TestToNList()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
+			ProcessA(original, 1234567890);
+			var original2 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (long)random.Next() << 31 | (uint)random.Next()));
+			ProcessA(original2, 1234567890123456789);
+			var original3 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (random.Next(), random.Next())));
+			ProcessA(original3, (1234567890, 1234567890));
+		}
+		static void ProcessA<T>(ImmutableArray<T> original, T @default) where T : unmanaged
+		{
+			G.IEnumerable<T> a = new List<T>(original);
+			ProcessA2(a);
+			a = E.ToArray(original);
+			ProcessA2(a);
+			a = E.ToList(original);
+			ProcessA2(a);
+			a = new List<T>(original).Insert(0, @default).GetSlice(1);
+			ProcessA2(a);
+			a = E.Select(original, x => x);
+			ProcessA2(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA2(a);
+		}
+		static void ProcessA2<T>(G.IEnumerable<T> a) where T : unmanaged
+		{
+			var b = new NList<T>(a);
+			var c = a.ToNList();
+			var d = E.ToList(a);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(RedStarLinq.Equals(c, b));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(d, b));
+		}
+	}
 }
 
 [TestClass]

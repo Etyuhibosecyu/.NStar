@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Corlib.NStar.Tests;
 
@@ -1497,6 +1496,7 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = new Random(Global.random.Next());
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
@@ -1627,7 +1627,7 @@ public class ParallelHashSetTests
 	{
 		for (var i = 0; i < 1000; i++)
 		{
-			var arr = RedStarLinq.FillArray(65536, _ => RandomNumberGenerator.GetInt32(65536));
+			var arr = RedStarLinq.FillArray(65536, _ => random.Next(24576));
 			var phs = new ParallelHashSet<int>(arr);
 			var gs = new G.HashSet<int>(arr);
 			Assert.IsTrue(phs.SetEquals(gs));
@@ -1638,6 +1638,7 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void CrashTest()
 	{
+		var random = new Random(Global.random.Next());
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
