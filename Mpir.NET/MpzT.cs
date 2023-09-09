@@ -132,7 +132,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public static MpzT operator +(MpzT x, int y)
 	{
 		var z = new MpzT();
-
 		if (y >= 0)
 		{
 			Mpir.MpzAddUi(z, x, (uint)y);
@@ -201,7 +200,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public static MpzT operator -(MpzT x, int y)
 	{
 		var z = new MpzT();
-
 		if (y >= 0)
 		{
 			Mpir.MpzSubUi(z, x, (uint)y);
@@ -526,12 +524,10 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public readonly MpzT ChangeBit(int bitIndex, int value)
 	{
 		var z = new MpzT(this);
-
 		if (value == 0)
 			Mpir.MpzClrbit(z, (uint)bitIndex);
 		else
 			Mpir.MpzSetbit(z, (uint)bitIndex);
-
 		return z;
 	}
 
@@ -589,7 +585,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		var quotient = new MpzT();
 		remainder = new MpzT();
-
 		if (x >= 0)
 		{
 			Mpir.MpzTdivQrUi(quotient, remainder, this, (uint)x);
@@ -606,7 +601,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public readonly MpzT Divide(int x, out int remainder)
 	{
 		var quotient = new MpzT();
-
 		if (x >= 0)
 		{
 			remainder = (int)Mpir.MpzTdivQUi(quotient, this, (uint)x);
@@ -635,7 +629,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		// http://Gmplib.org/manual/Integer-Division.html#Integer-Division.
 		//if(this.ChunkCount < 0)
 		//    throw new InvalidOperationException("This method may not be called when the instance represents a negative number.");
-
 		var quotient = new MpzT();
 		remainder = Mpir.MpzTdivQUi(quotient, this, x);
 		return quotient;
@@ -647,12 +640,10 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		var uintRemainder = Mpir.MpzTdivQUi(quotient, this, x);
 		if (uintRemainder > (uint)int.MaxValue)
 			throw new OverflowException();
-
 		if (this >= 0)
 			remainder = (int)uintRemainder;
 		else
 			remainder = -(int)uintRemainder;
-
 		return quotient;
 	}
 
@@ -691,7 +682,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		var z = new MpzT();
 		Mpir.MpzDivexactUi(z, this, (uint)x);
-
 		if (x < 0)
 		{
 			var res = -z;
@@ -813,7 +803,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		var z = new MpzT();
 		var status = Mpir.MpzInvert(z, this, mod);
-
 		if (status == 0)
 		{
 			result = default;
@@ -883,7 +872,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (n < 0)
 			throw new ArgumentOutOfRangeException(nameof(n));
-
 		var z = new MpzT();
 		var result = Mpir.MpzRoot(z, this, (uint)n);
 		isExact = result != 0;
@@ -902,7 +890,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (n < 0)
 			throw new ArgumentOutOfRangeException(nameof(n));
-
 		var z = new MpzT();
 		remainder = new MpzT();
 		Mpir.MpzRootrem(z, remainder, this, (uint)n);
@@ -923,7 +910,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		// There is a known issue with this function for negative inputs in GMP 4.2.4.
 		// Haven't heard of any issues in MPIR 5.x though.
 		Mpir.MpzPerfectPowerP(this) != 0;
-
 	#endregion
 
 	#region Number Theoretic Functions
@@ -931,7 +917,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public readonly bool IsProbablyPrimeRabinMiller(uint repetitions)
 	{
 		var result = Mpir.MpzProbabPrimeP(this, repetitions);
-
 		return result != 0;
 	}
 
@@ -953,24 +938,20 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public static MpzT Gcd(MpzT x, int y)
 	{
 		var z = new MpzT();
-
 		if (y >= 0)
 			Mpir.MpzGcdUi(z, x, (uint)y);
 		else
 			Mpir.MpzGcdUi(z, x, (uint)-y);
-
 		return z;
 	}
 
 	public static MpzT Gcd(int x, MpzT y)
 	{
 		var z = new MpzT();
-
 		if (x >= 0)
 			Mpir.MpzGcdUi(z, y, (uint)x);
 		else
 			Mpir.MpzGcdUi(z, y, (uint)-x);
-
 		return z;
 	}
 
@@ -1015,24 +996,20 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public static MpzT Lcm(MpzT x, int y)
 	{
 		var z = new MpzT();
-
 		if (y >= 0)
 			Mpir.MpzLcmUi(z, x, (uint)y);
 		else
 			Mpir.MpzLcmUi(z, x, (uint)-y);
-
 		return z;
 	}
 
 	public static MpzT Lcm(int x, MpzT y)
 	{
 		var z = new MpzT();
-
 		if (x >= 0)
 			Mpir.MpzLcmUi(z, y, (uint)x);
 		else
 			Mpir.MpzLcmUi(z, y, (uint)-x);
-
 		return z;
 	}
 
@@ -1061,14 +1038,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		//IsEven not yet implemented, so commented out.
 		//if(y.IsEven || y < 0)
 		//    throw new ArgumentException();
-
 		Mpir.MpzJacobi(x, y);
-
 	public static int JacobiSymbol(MpzT x, int y)
 	{
 		if ((y & 1) == 0 || y < 0)
 			throw new ArgumentException(null, nameof(y));
-
 		return Mpir.MpzKroneckerSi(x, y);
 	}
 
@@ -1076,14 +1050,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		//IsEven not yet implemented, so commented out.
 		//if(y.IsEven || y < 0)
 		//	throw new ArgumentException();
-
 		Mpir.MpzSiKronecker(x, y);
-
 	public static int JacobiSymbol(MpzT x, uint y)
 	{
 		if ((y & 1) == 0)
 			throw new ArgumentException(null, nameof(y));
-
 		return Mpir.MpzKroneckerUi(x, y);
 	}
 
@@ -1091,9 +1062,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		//IsEven not yet implemented, so commented out.
 		//if(y.IsEven)
 		//    throw new ArgumentException();
-
 		Mpir.MpzUiKronecker(x, y);
-
 	public static int KroneckerSymbol(MpzT x, MpzT y) => Mpir.MpzKronecker(x, y);
 
 	public static int KroneckerSymbol(MpzT x, int y) => Mpir.MpzKroneckerSi(x, y);
@@ -1122,7 +1091,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (x < 0)
 			throw new ArgumentOutOfRangeException(nameof(x));
-
 		var z = new MpzT();
 		Mpir.MpzFacUi(z, (uint)x);
 		return z;
@@ -1146,7 +1114,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (k < 0)
 			throw new ArgumentOutOfRangeException(nameof(k));
-
 		var z = new MpzT();
 		Mpir.MpzBinUi(z, n, (uint)k);
 		return z;
@@ -1163,9 +1130,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (k < 0)
 			throw new ArgumentOutOfRangeException(nameof(k));
-
 		var z = new MpzT();
-
 		if (n >= 0)
 		{
 			Mpir.MpzBinUiui(z, (uint)n, (uint)k);
@@ -1175,7 +1140,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		{
 			// Use the identity bin(n,k) = (-1)^k * bin(-n+k-1,k)
 			Mpir.MpzBinUiui(z, (uint)(-n + k - 1), (uint)k);
-
 			if ((k & 1) != 0)
 			{
 				var res = -z;
@@ -1192,7 +1156,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (n < 0)
 			throw new ArgumentOutOfRangeException(nameof(n));
-
 		var z = new MpzT();
 		Mpir.MpzFibUi(z, (uint)n);
 		return z;
@@ -1209,7 +1172,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (n < 0)
 			throw new ArgumentOutOfRangeException(nameof(n));
-
 		var z = new MpzT();
 		previous = new MpzT();
 		Mpir.MpzFib2Ui(z, previous, (uint)n);
@@ -1244,7 +1206,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (n < 0)
 			throw new ArgumentOutOfRangeException(nameof(n));
-
 		var z = new MpzT();
 		previous = new MpzT();
 		Mpir.MpzLucnum2Ui(z, previous, (uint)n);
@@ -1273,7 +1234,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		{
 			if (startingIndex < 0)
 				throw new ArgumentOutOfRangeException(nameof(startingIndex));
-
 			// Note that the result might be uint.MaxValue in which case it gets cast to -1, which is what is intended.
 			return (int)Mpir.MpzScan0(this, (uint)startingIndex);
 		}
@@ -1285,7 +1245,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 		{
 			if (startingIndex < 0)
 				throw new ArgumentOutOfRangeException(nameof(startingIndex));
-
 			// Note that the result might be uint.MaxValue in which case it gets cast to -1, which is what is intended.
 			return (int)Mpir.MpzScan1(this, (uint)startingIndex);
 		}
@@ -1298,9 +1257,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	public override readonly int GetHashCode()
 	{
 		uint hash = 0;
-
 		var bytes = ToByteArray(-1);
-
 		var len = bytes.Length;  // Make sure it's only evaluated once.
 		var shift = 0;
 		for (var i = 0; i < len; i++)
@@ -1314,39 +1271,22 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 
 	public readonly bool Equals(MpzT other) => Compare(this, other) == 0;
 
-	public override readonly bool Equals(object? obj)
+	public override readonly bool Equals(object? obj) => obj switch
 	{
-		if (obj == null)
-			return false;
-		if (obj is not MpzT objAsBigInt)
-		{
-			if (obj is int i)
-				return this == i;
-			else if (obj is uint ui)
-				return this == ui;
-			else if (obj is long li)
-				return this == li;
-			else if (obj is ulong uli)
-				return this == uli;
-			else if (obj is double d)
-				return this == d;
-			else if (obj is float f)
-				return this == f;
-			else if (obj is short si)
-				return this == si;
-			else if (obj is ushort usi)
-				return this == usi;
-			else if (obj is byte y)
-				return this == y;
-			else if (obj is sbyte sy)
-				return this == sy;
-			//else if(obj is decimal)
-			//    return this == (decimal)obj;
-			return false;
-		}
-
-		return CompareTo(objAsBigInt) == 0;
-	}
+		null => false,
+		MpzT objAsBigInt => CompareTo(objAsBigInt) == 0,
+		int i => this == i,
+		uint ui => this == ui,
+		long li => this == li,
+		ulong uli => this == uli,
+		double d => this == d,
+		float f => this == f,
+		short si => this == si,
+		ushort usi => this == usi,
+		byte y => this == y,
+		sbyte sy => this == sy,
+		_ => false
+	};
 
 	public readonly bool Equals(int other) => CompareTo(other) == 0;
 
@@ -1369,7 +1309,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (mod < 0)
 			throw new ArgumentOutOfRangeException(nameof(mod));
-
 		if (x >= 0)
 		{
 			return Mpir.MpzCongruentUiP(this, (uint)x, (uint)mod) != 0;
@@ -1417,7 +1356,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	//{
 	//    if(y == null)
 	//        return false;
-
 	//    return y.CompareTo(x) == 0;
 	//}
 
@@ -1425,7 +1363,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	//{
 	//    if(x == null)
 	//        return false;
-
 	//    return x.CompareTo(y) == 0;
 	//}
 
@@ -1463,7 +1400,6 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	//{
 	//    if(y == null)
 	//        return true;
-
 	//    return y.CompareTo(x) != 0;
 	//}
 
@@ -1471,43 +1407,25 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	//{
 	//    if(x == null)
 	//        return true;
-
 	//    return x.CompareTo(y) != 0;
 	//}
 
-	public readonly int CompareTo(object? obj)
+	public readonly int CompareTo(object? obj) => obj switch
 	{
-		if (obj is not MpzT objAsBigInt)
-		{
-			if (obj is int i)
-				return CompareTo(i);
-			else if (obj is uint ui)
-				return CompareTo(ui);
-			else if (obj is long li)
-				return CompareTo(li);
-			else if (obj is ulong uli)
-				return CompareTo(uli);
-			else if (obj is double d)
-				return CompareTo(d);
-			else if (obj is float f)
-				return CompareTo(f);
-			else if (obj is short si)
-				return CompareTo(si);
-			else if (obj is ushort usi)
-				return CompareTo(usi);
-			else if (obj is byte y)
-				return CompareTo(y);
-			else if (obj is sbyte sy)
-				return CompareTo(sy);
-			//else if(obj is decimal)
-			//    return this.CompareTo((decimal)obj);
-			else if (obj is string s)
-				return CompareTo(new MpzT(s));
-			else
-				throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"));
-		}
-		return CompareTo(objAsBigInt);
-	}
+		MpzT objAsBigInt => CompareTo(objAsBigInt),
+		int i => CompareTo(i),
+		uint ui => CompareTo(ui),
+		long li => CompareTo(li),
+		ulong uli => CompareTo(uli),
+		double d => CompareTo(d),
+		float f => CompareTo(f),
+		short si => CompareTo(si),
+		ushort usi => CompareTo(usi),
+		byte y => CompareTo(y),
+		sbyte sy => CompareTo(sy),
+		string s => CompareTo(new MpzT(s)),
+		_ => throw new ArgumentException("Cannot compare to " + (obj?.GetType()?.ToString() ?? "null"))
+	};
 
 	public readonly int CompareTo(MpzT other) => Mpir.MpzCmp(this, other);
 
@@ -1786,65 +1704,61 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		if (targetType == null)
 			throw new ArgumentNullException(nameof(targetType));
-
 		if (targetType == typeof(MpzT))
 			return this;
-
 		IConvertible value = this;
-
 		if (targetType == typeof(sbyte))
 		{
 			return value.ToSByte(provider);
 		}
-		if (targetType == typeof(byte))
+		else if (targetType == typeof(byte))
 		{
 			return value.ToByte(provider);
 		}
-		if (targetType == typeof(short))
+		else if (targetType == typeof(short))
 		{
 			return value.ToInt16(provider);
 		}
-		if (targetType == typeof(ushort))
+		else if (targetType == typeof(ushort))
 		{
 			return value.ToUInt16(provider);
 		}
-		if (targetType == typeof(int))
+		else if (targetType == typeof(int))
 		{
 			return value.ToInt32(provider);
 		}
-		if (targetType == typeof(uint))
+		else if (targetType == typeof(uint))
 		{
 			return value.ToUInt32(provider);
 		}
-		if (targetType == typeof(long))
+		else if (targetType == typeof(long))
 		{
 			return value.ToInt64(provider);
 		}
-		if (targetType == typeof(ulong))
+		else if (targetType == typeof(ulong))
 		{
 			return value.ToUInt64(provider);
 		}
-		if (targetType == typeof(float))
+		else if (targetType == typeof(float))
 		{
 			return value.ToSingle(provider);
 		}
-		if (targetType == typeof(double))
+		else if (targetType == typeof(double))
 		{
 			return value.ToDouble(provider);
 		}
-		if (targetType == typeof(decimal))
+		else if (targetType == typeof(decimal))
 		{
 			return value.ToDecimal(provider);
 		}
-		if (targetType == typeof(string))
+		else if (targetType == typeof(string))
 		{
 			return value.ToString(provider);
 		}
-		if (targetType == typeof(object))
+		else if (targetType == typeof(object))
 		{
 			return value;
 		}
-
 		throw new InvalidCastException();
 	}
 

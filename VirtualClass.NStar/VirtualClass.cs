@@ -14,5 +14,4 @@ public enum ClassAttributes
 
 public class VirtualClass
 {
-
 }

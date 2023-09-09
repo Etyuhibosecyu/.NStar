@@ -659,11 +659,9 @@ internal static class HashHelpers
 		// We use modified Daniel Lemire's fastmod algorithm (https://github.com/dotnet/runtime/pull/406),
 		// which allows to avoid the long multiplication if the divisor is less than 2**31.
 		Debug.Assert(divisor <= int.MaxValue);
-
 		// This is equivalent of (uint)Math.BigMul(multiplier * value, divisor, out _). This version
 		// is faster than BigMul currently because we only need the high bits.
 		var highbits = (uint)(((((multiplier * value) >> 32) + 1) * divisor) >> 32);
-
 		Debug.Assert(highbits == value % divisor);
 		return highbits;
 	}
@@ -718,7 +716,6 @@ internal static class HashHelpers
 
 public static unsafe partial class Extents
 {
-
 	// XPerY=n means that n Xs can be stored in 1 Y. 
 	public const int BitsPerInt = sizeof(int) * BitsPerByte;
 	public const int BytesPerInt = sizeof(int);

@@ -296,13 +296,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			span = array;
 		else if (enumerable.GetType() == typeof(List<KeyValuePair<TKey, TValue>>))
 			span = ((List<KeyValuePair<TKey, TValue>>)enumerable).AsSpan();
-
 		else
 		{
 			// Fallback path for all other enumerables
 			foreach (var pair in enumerable)
 				TryAdd(pair.Key, pair.Value);
-
 			return;
 		}
 		// We got a span. Add the elements to the dictionary.
