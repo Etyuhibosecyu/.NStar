@@ -42,672 +42,389 @@ public class SliceTests
 	public void TestContains()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Contains("BBB", 2);
-		Assert.IsTrue(!b);
-		b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Contains("BBB", 2);
-		Assert.IsTrue(!b);
-		b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Contains("BBB", 2);
-		Assert.IsTrue(!b);
-		b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.Contains("MMM");
+			Assert.IsTrue(b);
+			b = a.Contains("BBB", 2);
+			Assert.IsTrue(!b);
+			b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
+			Assert.IsTrue(b);
+			b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
+			Assert.IsTrue(!b);
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestContainsAny()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
-		Assert.IsTrue(b);
-		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
+			Assert.IsTrue(b);
+			b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
+			Assert.IsTrue(b);
+			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.IsTrue(!b);
+		}
 	}
 
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(b);
-		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
+			Assert.IsTrue(b);
+			b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.IsTrue(b);
+			b = a.ContainsAnyExcluding(a);
+			Assert.IsTrue(!b);
+		}
 	}
 
 	[TestMethod]
 	public void TestCopyTo()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
-		var c = (string[])b.Clone();
-		var d = (string[])b.Clone();
-		var e = (string[])b.Clone();
-		a.CopyTo(b);
-		new G.List<string>(list).CopyTo(c);
-		a.CopyTo(d, 3);
-		new G.List<string>(list).CopyTo(e, 3);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
-		c = (string[])b.Clone();
-		d = (string[])b.Clone();
-		e = (string[])b.Clone();
-		a.CopyTo(b);
-		new G.List<string>(list).CopyTo(c);
-		a.CopyTo(d, 3);
-		new G.List<string>(list).CopyTo(e, 3);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
-		c = (string[])b.Clone();
-		d = (string[])b.Clone();
-		e = (string[])b.Clone();
-		a.CopyTo(b);
-		new G.List<string>(list).CopyTo(c);
-		a.CopyTo(d, 3);
-		new G.List<string>(list).CopyTo(e, 3);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.IsTrue(E.SequenceEqual(e, d));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
+			var c = (string[])b.Clone();
+			var d = (string[])b.Clone();
+			var e = (string[])b.Clone();
+			a.CopyTo(b);
+			new G.List<string>(list).CopyTo(c);
+			a.CopyTo(d, 3);
+			new G.List<string>(list).CopyTo(e, 3);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(E.SequenceEqual(e, d));
+		}
 	}
 
 	[TestMethod]
 	public void TestEndsWith()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.EndsWith("DDD");
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsTrue(!b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.EndsWith("DDD");
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsTrue(!b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.EndsWith("DDD");
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsTrue(!b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.EndsWith("DDD");
+			Assert.IsTrue(b);
+			b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
+			Assert.IsTrue(b);
+			b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
+			Assert.IsTrue(!b);
+			b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
+			Assert.IsTrue(!b);
+		}
 	}
 
 	[TestMethod]
 	public void TestEquals()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsTrue(!b);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsTrue(!b);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.Contains("MMM");
+			Assert.IsTrue(b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
+			Assert.IsTrue(b);
+			b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
+			Assert.IsTrue(!b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
+			Assert.IsTrue(!b);
+			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
+			Assert.IsTrue(!b);
+		}
 	}
 
 	[TestMethod]
 	public void TestFind()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.Find(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = c.Find(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.Find(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.Find(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.Find(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.Find(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.Find(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.Find(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
 	}
 
 	[TestMethod]
 	public void TestFindAll()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.FindAll(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = c.FindAll(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.FindAll(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindAll(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.FindAll(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindAll(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.FindAll(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindAll(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestFindIndex()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.FindIndex(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = c.FindIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.FindIndex(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.FindIndex(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.FindIndex(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindIndex(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
 	}
 
 	[TestMethod]
 	public void TestFindLast()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.FindLast(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = c.FindLast(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.FindLast(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLast(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.FindLast(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLast(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.FindLast(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindLast(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
 	}
 
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.FindLastIndex(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = c.FindLastIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.FindLastIndex(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLastIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.FindLastIndex(x => x.Length != 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLastIndex(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.FindLastIndex(x => x.Length != 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = c.FindLastIndex(x => x.Length != 3);
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.AreEqual(b, d);
+		}
 	}
 
 	[TestMethod]
 	public void TestGetAfter()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.GetAfter(new List<string>("DDD"));
-		var c = new G.List<string>() { "MMM", "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.GetAfter(new List<string>("DDD"));
-		c = new G.List<string>() { "MMM", "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.GetAfter(new List<string>("DDD"));
-		c = new G.List<string>() { "MMM", "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.GetAfter(new List<string>("DDD"));
+			var c = new G.List<string>() { "MMM", "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfter(new());
+			c = new();
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfter(new List<string>("DDD", "MMM"));
+			c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestGetAfterLast()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.GetAfterLast(new List<string>("MMM"));
-		var c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.GetAfterLast(new List<string>("MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.GetAfterLast(new List<string>("MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.GetAfterLast(new List<string>("MMM"));
+			var c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfterLast(new());
+			c = new();
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetAfterLast(new List<string>("DDD", "MMM"));
+			c = new G.List<string>() { "EEE", "DDD" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestGetBefore()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.GetBefore(new List<string>("DDD"));
-		var c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.GetBefore(new List<string>("DDD"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.GetBefore(new List<string>("DDD"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.GetBefore(new List<string>("DDD"));
+			var c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBefore(new());
+			c = new(list);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBefore(new List<string>("DDD", "MMM"));
+			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestGetBeforeLast()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.GetBeforeLast(new List<string>("MMM"));
-		var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.GetBeforeLast(new List<string>("MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.GetBeforeLast(new List<string>("MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
-		c = new(list);
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new List<string>("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.GetBeforeLast(new List<string>("MMM"));
+			var c = new G.List<string>() { "MMM", "BBB", "PPP", "DDD" };
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBeforeLast(new());
+			c = new(list);
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.GetBeforeLast(new List<string>("DDD", "MMM"));
+			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
@@ -736,737 +453,343 @@ public class SliceTests
 	public void TestIndexOf()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
-		b = a.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 4);
-		Assert.AreEqual(b, 4);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
-		b = a.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 4);
-		Assert.AreEqual(b, 4);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
-		b = a.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 4);
-		Assert.AreEqual(b, 4);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 	}
 
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 0);
+			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
+			Assert.AreEqual(b, 2);
+			b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
+			Assert.AreEqual(b, -1);
+			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 1);
-		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 1);
-		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 1);
-		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 0);
-		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 1);
+			b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, 0);
+			b = a.IndexOfAnyExcluding(a);
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.LastIndexOf("MMM");
-		Assert.AreEqual(b, 4);
-		b = a.LastIndexOf("BBB", 2);
-		Assert.AreEqual(b, 1);
-		b = a.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
-		Assert.AreEqual(b, 4);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.LastIndexOf("MMM");
-		Assert.AreEqual(b, 4);
-		b = a.LastIndexOf("BBB", 2);
-		Assert.AreEqual(b, 1);
-		b = a.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
-		Assert.AreEqual(b, 4);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.LastIndexOf("MMM");
-		Assert.AreEqual(b, 4);
-		b = a.LastIndexOf("BBB", 2);
-		Assert.AreEqual(b, 1);
-		b = a.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
-		Assert.AreEqual(b, 4);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 6);
+			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
+			Assert.AreEqual(b, 2);
+			b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 5);
-		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 5);
-		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 5);
-		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 6);
-		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
+			Assert.AreEqual(b, 5);
+			b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
+			Assert.AreEqual(b, 6);
+			b = a.LastIndexOfAnyExcluding(a);
+			Assert.AreEqual(b, -1);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.Skip(2);
-		var c = E.Skip(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(0);
-		c = E.Skip(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(1000);
-		c = E.Skip(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(-4);
-		c = E.Skip(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.Skip(2);
-		c = E.Skip(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(0);
-		c = E.Skip(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(1000);
-		c = E.Skip(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(-4);
-		c = E.Skip(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.Skip(2);
-		c = E.Skip(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(0);
-		c = E.Skip(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(1000);
-		c = E.Skip(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Skip(-4);
-		c = E.Skip(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.Skip(2);
+			var c = E.Skip(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Skip(0);
+			c = E.Skip(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Skip(1000);
+			c = E.Skip(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Skip(-4);
+			c = E.Skip(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestSkipLast()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.SkipLast(2);
-		var c = E.SkipLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(0);
-		c = E.SkipLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(1000);
-		c = E.SkipLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(-4);
-		c = E.SkipLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.SkipLast(2);
-		c = E.SkipLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(0);
-		c = E.SkipLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(1000);
-		c = E.SkipLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(-4);
-		c = E.SkipLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.SkipLast(2);
-		c = E.SkipLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(0);
-		c = E.SkipLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(1000);
-		c = E.SkipLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.SkipLast(-4);
-		c = E.SkipLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.SkipLast(2);
+			var c = E.SkipLast(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.SkipLast(0);
+			c = E.SkipLast(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.SkipLast(1000);
+			c = E.SkipLast(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.SkipLast(-4);
+			c = E.SkipLast(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestSkipWhile()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.SkipWhile(x => x.Length == 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = E.ToList(E.SkipWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.SkipWhile(x => x.Length == 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.SkipWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.SkipWhile(x => x.Length == 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.SkipWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.SkipWhile(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = E.ToList(E.SkipWhile(c, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestStartsWith()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.StartsWith("MMM");
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.StartsWith("MMM");
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.StartsWith("MMM");
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.StartsWith("MMM");
+			Assert.IsTrue(b);
+			b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
+			Assert.IsTrue(b);
+			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
+			Assert.IsTrue(!b);
+			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		}
 	}
 
 	[TestMethod]
 	public void TestTake()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.Take(2);
-		var c = E.Take(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(0);
-		c = E.Take(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(1000);
-		c = E.Take(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(-4);
-		c = E.Take(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.Take(2);
-		c = E.Take(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(0);
-		c = E.Take(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(1000);
-		c = E.Take(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(-4);
-		c = E.Take(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.Take(2);
-		c = E.Take(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(0);
-		c = E.Take(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(1000);
-		c = E.Take(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.Take(-4);
-		c = E.Take(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.Take(2);
+			var c = E.Take(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Take(0);
+			c = E.Take(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Take(1000);
+			c = E.Take(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.Take(-4);
+			c = E.Take(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestTakeLast()
 	{
 		var a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		var b = a.TakeLast(2);
-		var c = E.TakeLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(0);
-		c = E.TakeLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(1000);
-		c = E.TakeLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(-4);
-		c = E.TakeLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(0, "XXX").ToArray(), 1);
-		b = a.TakeLast(2);
-		c = E.TakeLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(0);
-		c = E.TakeLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(1000);
-		c = E.TakeLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(-4);
-		c = E.TakeLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
-		b = a.TakeLast(2);
-		c = E.TakeLast(new G.List<string>(list), 2);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(0);
-		c = E.TakeLast(new G.List<string>(list), 0);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(1000);
-		c = E.TakeLast(new G.List<string>(list), 1000);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		b = a.TakeLast(-4);
-		c = E.TakeLast(new G.List<string>(list), -4);
-		Assert.IsTrue(a.Equals(list));
-		Assert.IsTrue(E.SequenceEqual(list, a));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.TakeLast(2);
+			var c = E.TakeLast(new G.List<string>(list), 2);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.TakeLast(0);
+			c = E.TakeLast(new G.List<string>(list), 0);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.TakeLast(1000);
+			c = E.TakeLast(new G.List<string>(list), 1000);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			b = a.TakeLast(-4);
+			c = E.TakeLast(new G.List<string>(list), -4);
+			Assert.IsTrue(a.Equals(list));
+			Assert.IsTrue(E.SequenceEqual(list, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
 	public void TestTakeWhile()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		var b = a.TakeWhile(x => x.Length == 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		var d = E.ToList(E.TakeWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").ToArray(), 1);
-		b = a.TakeWhile(x => x.Length == 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.TakeWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
-		b = a.TakeWhile(x => x.Length == 3);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.TakeWhile(c, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX").GetSlice(1);
-		b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
-		c = new G.List<string>(list);
-		c.InsertRange(3, new G.List<string>() { "$", "###" });
-		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		ProcessA(a);
+		static void ProcessA(Slice<string> a)
+		{
+			var b = a.TakeWhile(x => x.Length == 3);
+			var c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			var d = E.ToList(E.TakeWhile(c, x => x.Length == 3));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+			b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
+			c = new G.List<string>(list);
+			c.InsertRange(3, new G.List<string>() { "$", "###" });
+			d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(x, y => y is >= 'A' and <= 'Z')));
+			Assert.IsTrue(a.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, a));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
 	}
 
 	[TestMethod]

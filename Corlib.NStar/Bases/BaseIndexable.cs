@@ -496,7 +496,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index >= _size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
+			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		if (_size == 0 || length == 0 || !collection.Any())
@@ -529,7 +529,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index >= _size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
+			throw new ArgumentException(null);
 		return LastIndexOfInternal(item, index, length);
 	}
 
@@ -546,7 +546,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index >= _size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
+			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		var hs = collection.ToHashSet();
@@ -570,7 +570,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index >= _size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
+			throw new ArgumentException(null);
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
 		var hs = collection.ToHashSet();

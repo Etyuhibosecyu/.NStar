@@ -668,21 +668,7 @@ public class ListTests
 	public void TestIndexOf()
 	{
 		var a = list.ToList();
-		var b = a.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
-		b = a.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 4);
-		Assert.AreEqual(b, 4);
-		b = a.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestIndexOf();
 	}
 
 	[TestMethod]
@@ -741,21 +727,7 @@ public class ListTests
 	public void TestLastIndexOf()
 	{
 		var a = list.ToList();
-		var b = a.LastIndexOf("MMM");
-		Assert.AreEqual(b, 4);
-		b = a.LastIndexOf("BBB", 2);
-		Assert.AreEqual(b, 1);
-		b = a.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
-		Assert.AreEqual(b, 4);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestLastIndexOf();
 	}
 
 	[TestMethod]
