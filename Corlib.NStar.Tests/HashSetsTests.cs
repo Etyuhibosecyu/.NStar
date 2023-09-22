@@ -227,7 +227,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestAdd()
 	{
-		var a = new ListHashSet<string>(list).Add(defaultString);
+		var a = list.ToHashSet().Add(defaultString);
 		var b = E.ToHashSet(new G.List<string>(list) { defaultString });
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
@@ -237,7 +237,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestAddRange()
 	{
-		var a = new ListHashSet<string>(list).AddRange(defaultCollection);
+		var a = list.ToHashSet().AddRange(defaultCollection);
 		var b = new G.List<string>(list);
 		b.AddRange(defaultCollection);
 		var bhs = E.ToHashSet(b);
@@ -248,7 +248,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestAppend()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Append(defaultString);
 		var c = E.Append(new G.List<string>(E.Distinct(list)), defaultString);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -260,7 +260,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.BreakFilter(x => x.Length == 3, out var c);
 		var d = new G.List<string>(E.Distinct(list));
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -286,42 +286,26 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.BreakFilterInPlace(x => x.Length == 3, out var c);
 		var d = new G.List<string>(E.Distinct(list));
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
 		var e = E.ToList(E.Where(d, x => x.Length != 3));
 		d = E.ToList(E.Where(d, x => x.Length == 3));
-		Assert.IsTrue(a.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		var bhs = E.ToHashSet(b);
-		Assert.IsTrue(a.Equals(bhs));
-		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.IsTrue(c.Equals(e));
-		Assert.IsTrue(E.SequenceEqual(e, c));
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		BaseListTests<string, ListHashSet<string>>.BreakFilterInPlaceAsserts(a, b, c, d, e);
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.BreakFilterInPlace(x => x.All(y => y is >= 'A' and <= 'Z'), out c);
 		d = new G.List<string>(E.Distinct(list));
 		d.InsertRange(3, new G.List<string>() { "$", "###" });
 		e = E.ToList(E.Where(d, x => !E.All(x, y => y is >= 'A' and <= 'Z')));
 		d = E.ToList(E.Where(d, x => E.All(x, y => y is >= 'A' and <= 'Z')));
-		Assert.IsTrue(a.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		bhs = E.ToHashSet(b);
-		Assert.IsTrue(a.Equals(bhs));
-		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.IsTrue(c.Equals(e));
-		Assert.IsTrue(E.SequenceEqual(e, c));
+		BaseListTests<string, ListHashSet<string>>.BreakFilterInPlaceAsserts(a, b, c, d, e);
 	}
 
 	[TestMethod]
 	public void TestClear()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		a.Clear(2, 3);
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < 3; i++)
@@ -367,7 +351,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestConcat()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Concat(new(defaultCollection));
 		var c = E.ToHashSet(E.Concat(new G.List<string>(list), defaultCollection));
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -379,7 +363,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Contains("MMM");
 		Assert.IsTrue(b);
 		b = a.Contains("BBB", 2);
@@ -394,7 +378,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestContainsAny()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.ContainsAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
@@ -406,7 +390,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestContainsAnyExcluding()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.ContainsAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -418,7 +402,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestConvert()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Convert((x, index) => (x, index));
 		var c = E.Select(E.ToHashSet(new G.List<string>(list)), (x, index) => (x, index));
 		var d = a.Convert(x => x + "A");
@@ -434,7 +418,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 		var c = (string[])b.Clone();
 		var d = (string[])b.Clone();
@@ -452,7 +436,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.EndsWith("EEE");
 		Assert.IsTrue(b);
 		b = a.EndsWith(new List<string>("PPP", "DDD", "EEE"));
@@ -466,7 +450,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestEquals()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Contains("MMM");
 		Assert.IsTrue(b);
 		b = a.Equals(new List<string>("BBB", "PPP", "DDD"), 1);
@@ -482,7 +466,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFilter()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.Filter(x => x.Length == 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -504,7 +488,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.FilterInPlace(x => x.Length == 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -517,7 +501,7 @@ public class ListHashSetTests
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.FilterInPlace((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -535,7 +519,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFind()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.Find(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -543,7 +527,7 @@ public class ListHashSetTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -556,7 +540,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFindAll()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.FindAll(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -565,7 +549,7 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -579,7 +563,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.FindIndex(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -587,7 +571,7 @@ public class ListHashSetTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -600,7 +584,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFindLast()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.FindLast(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -608,7 +592,7 @@ public class ListHashSetTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -621,7 +605,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.FindLastIndex(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -629,7 +613,7 @@ public class ListHashSetTests
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(b, d);
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -642,7 +626,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestGetAfter()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.GetAfter(new("PPP"));
 		var c = new G.List<string>() { "DDD", "EEE" };
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -662,7 +646,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestGetBefore()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.GetBefore(new("DDD"));
 		var c = new G.List<string>() { "MMM", "BBB", "PPP" };
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -682,7 +666,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestGetBeforeSetAfter()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.GetBeforeSetAfter(new("DDD"));
 		var c = new G.List<string>() { "MMM", "BBB", "PPP" };
 		var d = new G.List<string>() { "EEE" };
@@ -696,7 +680,7 @@ public class ListHashSetTests
 	public void TestGetRange()
 	{
 		var length = E.ToHashSet(list).Count;
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.GetRange(..);
 		var c = new G.List<string>(E.Distinct(list));
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -750,7 +734,7 @@ public class ListHashSetTests
 	public void TestGetSlice()
 	{
 		var length = E.ToHashSet(list).Count;
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.GetSlice(..);
 		var c = new G.List<string>(E.Distinct(list));
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -807,7 +791,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.IndexOf("MMM");
 		Assert.AreEqual(b, 0);
 		b = a.IndexOf("BBB", 2);
@@ -828,7 +812,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestIndexOfAny()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 0);
 		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
@@ -843,7 +827,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestIndexOfAnyExcluding()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 1);
 		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -856,27 +840,27 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestInsert()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, defaultString);
+		var a = list.ToHashSet().Insert(3, defaultString);
 		var b = new G.List<string>(E.Distinct(list));
 		b.Insert(3, defaultString);
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		a = new ListHashSet<string>(list).Insert(3, defaultCollection);
+		a = list.ToHashSet().Insert(3, defaultCollection);
 		b = new G.List<string>(E.Distinct(list));
 		b.InsertRange(3, defaultCollection);
 		bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new ListHashSet<string>(list).Insert(1000, defaultString));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListHashSet<string>(list).Insert(-1, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new ListHashSet<string>(list).Insert(4, (G.IEnumerable<string>)null!));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = list.ToHashSet().Insert(1000, defaultString));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToHashSet().Insert(-1, defaultCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToHashSet().Insert(4, (G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAny()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
 		Assert.AreEqual(b, 3);
 		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
@@ -891,7 +875,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.LastIndexOfAnyExcluding(new List<string>("BBB", "EEE", "DDD"));
 		Assert.AreEqual(b, 2);
 		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
@@ -916,7 +900,7 @@ public class ListHashSetTests
 	public void TestRemove()
 	{
 		var length = E.ToHashSet(list).Count;
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = new List<string>(a).Remove(4);
 		var c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(4, 1);
@@ -1000,7 +984,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.RemoveAll(x => x.Length != 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1009,7 +993,7 @@ public class ListHashSetTests
 		Assert.IsTrue(a.Equals(chs));
 		Assert.IsTrue(E.SequenceEqual(chs, a));
 		Assert.AreEqual(b, d);
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.RemoveAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1023,7 +1007,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		for (var i = 0; i < 1000; i++)
 		{
 			var index = random.Next(a.Length);
@@ -1042,10 +1026,10 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).ToList();
+		var a = new Chain(15, 10).ToHashSet();
 		for (var i = 0; i < 1000; i++)
 		{
-			var value = a[random.Next(a.Length)];
+			var value = a.Random(random);
 			var b = new List<int>(a);
 			b.RemoveValue(value);
 			var c = new G.List<int>(a);
@@ -1060,7 +1044,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestReplace()
 	{
-		var a = new ListHashSet<string>(list).Replace(defaultCollection);
+		var a = list.ToHashSet().Replace(defaultCollection);
 		var b = new G.List<string>(E.Distinct(list));
 		b.Clear();
 		b.AddRange(defaultCollection);
@@ -1112,54 +1096,54 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestReplaceRange()
 	{
-		var a = new ListHashSet<string>(list).ReplaceRange(2, 1, defaultCollection);
+		var a = list.ToHashSet().ReplaceRange(2, 1, defaultCollection);
 		var b = new G.List<string>(E.Distinct(list));
 		b.RemoveRange(2, 1);
 		b.InsertRange(2, defaultCollection);
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		a = new ListHashSet<string>(list).ReplaceRange(1, 3, defaultCollection);
+		a = list.ToHashSet().ReplaceRange(1, 3, defaultCollection);
 		b = new G.List<string>(E.Distinct(list));
 		b.RemoveRange(1, 3);
 		b.InsertRange(1, defaultCollection);
 		bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new ListHashSet<string>(list).ReplaceRange(1, 1000, new(defaultString)));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListHashSet<string>(list).ReplaceRange(-1, 3, defaultCollection));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListHashSet<string>(list).ReplaceRange(3, -2, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => new ListHashSet<string>(list).ReplaceRange(3, 1, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = list.ToHashSet().ReplaceRange(1, 1000, new(defaultString)));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToHashSet().ReplaceRange(-1, 3, defaultCollection));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToHashSet().ReplaceRange(3, -2, defaultCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToHashSet().ReplaceRange(3, 1, null!));
 	}
 
 	[TestMethod]
 	public void TestSetAll()
 	{
-		var a = new ListHashSet<string>(list).SetAll(defaultString);
+		var a = list.ToHashSet().SetAll(defaultString);
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new ListHashSet<string>(list).SetAll(defaultString, 3);
+		a = list.ToHashSet().SetAll(defaultString, 3);
 		b = new G.List<string>(E.Distinct(list));
 		for (var i = 3; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new ListHashSet<string>(list).SetAll(defaultString, 2, 2);
+		a = list.ToHashSet().SetAll(defaultString, 2, 2);
 		b = new G.List<string>(E.Distinct(list));
 		for (var i = 2; i < 4; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new ListHashSet<string>(list).SetAll(defaultString, ^4);
+		a = list.ToHashSet().SetAll(defaultString, ^4);
 		b = new G.List<string>(E.Distinct(list));
 		for (var i = b.Count - 4; i < b.Count; i++)
 			b[i] = defaultString;
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new ListHashSet<string>(list).SetAll(defaultString, ^4..3);
+		a = list.ToHashSet().SetAll(defaultString, ^4..3);
 		b = new G.List<string>(E.Distinct(list));
 		for (var i = b.Count - 4; i < 3; i++)
 			b[i] = defaultString;
@@ -1170,7 +1154,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1189,44 +1173,44 @@ public class ListHashSetTests
 	{
 		var hs = defaultCollection.ToHashSet().GetSlice(..3);
 		var hs2 = E.Except(hs, list).ToHashSet().GetSlice();
-		var a = new ListHashSet<string>(list).SetRange(2, hs);
+		var a = list.ToHashSet().SetRange(2, hs);
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < hs2.Length; i++)
 			b[i + 2] = hs2[i];
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-		Assert.ThrowsException<ArgumentException>(() => a = new ListHashSet<string>(list).SetRange(4, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListHashSet<string>(list).SetRange(-1, hs));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new ListHashSet<string>(list).SetRange(1000, hs));
-		Assert.ThrowsException<ArgumentNullException>(() => new ListHashSet<string>(list).SetRange(3, null!));
+		Assert.ThrowsException<ArgumentException>(() => a = list.ToHashSet().SetRange(4, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToHashSet().SetRange(-1, hs));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToHashSet().SetRange(1000, hs));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToHashSet().SetRange(3, null!));
 	}
 
 	[TestMethod]
 	public void TestSkip()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Skip(2);
 		var c = E.Skip(new G.List<string>(E.Distinct(list)), 2);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Skip(0);
 		c = E.Skip(new G.List<string>(E.Distinct(list)), 0);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Skip(1000);
 		c = E.Skip(new G.List<string>(E.Distinct(list)), 1000);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Skip(-3);
 		c = E.Skip(new G.List<string>(E.Distinct(list)), -3);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -1238,28 +1222,28 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestSkipLast()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.SkipLast(2);
 		var c = E.SkipLast(new G.List<string>(E.Distinct(list)), 2);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.SkipLast(0);
 		c = E.SkipLast(new G.List<string>(E.Distinct(list)), 0);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.SkipLast(1000);
 		c = E.SkipLast(new G.List<string>(E.Distinct(list)), 1000);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.SkipLast(-3);
 		c = E.SkipLast(new G.List<string>(E.Distinct(list)), -3);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -1271,7 +1255,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.SkipWhile(x => x.Length == 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1280,7 +1264,7 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.SkipWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') || index < 1);
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1316,7 +1300,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.StartsWith("MMM");
 		Assert.IsTrue(b);
 		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
@@ -1329,28 +1313,28 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestTake()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.Take(2);
 		var c = E.Take(new G.List<string>(E.Distinct(list)), 2);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Take(0);
 		c = E.Take(new G.List<string>(E.Distinct(list)), 0);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Take(1000);
 		c = E.Take(new G.List<string>(E.Distinct(list)), 1000);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.Take(-3);
 		c = E.Take(new G.List<string>(E.Distinct(list)), -3);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -1362,28 +1346,28 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestTakeLast()
 	{
-		var a = new ListHashSet<string>(list);
+		var a = list.ToHashSet();
 		var b = a.TakeLast(2);
 		var c = E.TakeLast(new G.List<string>(E.Distinct(list)), 2);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.TakeLast(0);
 		c = E.TakeLast(new G.List<string>(E.Distinct(list)), 0);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.TakeLast(1000);
 		c = E.TakeLast(new G.List<string>(E.Distinct(list)), 1000);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = new ListHashSet<string>(list);
+		a = list.ToHashSet();
 		b = a.TakeLast(-3);
 		c = E.TakeLast(new G.List<string>(E.Distinct(list)), -3);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
@@ -1395,7 +1379,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.TakeWhile(x => x.Length == 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1404,7 +1388,7 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		b = a.TakeWhile((x, index) => x.All(y => y is >= 'A' and <= 'Z') && index < 10);
 		c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });
@@ -1416,15 +1400,15 @@ public class ListHashSetTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => new BaseListTests<string, HashList<string>>(new(), list, defaultString, defaultCollection).TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestToArray() => BaseListTests<string, HashList<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
-	public void TestTrimExcess() => new BaseListTests<string, HashList<string>>(new(), list, defaultString, defaultCollection).TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestTrimExcess() => BaseListTests<string, HashList<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		var a = new ListHashSet<string>(list).Insert(3, new List<string>("$", "###"));
+		var a = list.ToHashSet().Insert(3, new List<string>("$", "###"));
 		var b = a.TrueForAll(x => x.Length == 3);
 		var c = new G.List<string>(E.Distinct(list));
 		c.InsertRange(3, new G.List<string>() { "$", "###" });

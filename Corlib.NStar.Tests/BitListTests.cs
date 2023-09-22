@@ -9,28 +9,22 @@ public class BitListTests
 	{
 		var bytes = new byte[40];
 		random.NextBytes(bytes);
-		BitList bitList = new(bytes);
-		BitList bitList2 = new(bitList);
 		var length = 10;
 		var sourceIndex = 36;
 		var destinationIndex = 61;
-		bitList.SetRange(destinationIndex, bitList.GetRange(sourceIndex, length));
-		Assert.IsTrue(bitList[..destinationIndex].Equals(bitList2[..destinationIndex]));
-		Assert.IsTrue(E.SequenceEqual(bitList[..destinationIndex], E.Take(bitList2, destinationIndex)));
-		Assert.IsTrue(bitList[destinationIndex..(destinationIndex + length)].Equals(bitList2[sourceIndex..(sourceIndex + length)]));
-		Assert.IsTrue(E.SequenceEqual(bitList[destinationIndex..(destinationIndex + length)], E.Take(E.Skip(bitList2, sourceIndex), length)));
-		if (sourceIndex >= 1 && destinationIndex >= 1)
-			Assert.AreEqual(bitList[(destinationIndex - 1)..(destinationIndex + length)].Equals(bitList2[(sourceIndex - 1)..(sourceIndex + length)]), E.SequenceEqual(bitList[(destinationIndex - 1)..(destinationIndex + length)], E.Take(E.Skip(bitList2, sourceIndex - 1), length + 1)));
-		if (sourceIndex + length < bytes.Length * 8 - 1 && destinationIndex + length < bytes.Length * 8 - 1)
-			Assert.AreEqual(bitList[destinationIndex..(destinationIndex + length + 1)].Equals(bitList2[sourceIndex..(sourceIndex + length + 1)]), E.SequenceEqual(bitList[destinationIndex..(destinationIndex + length + 1)], E.Take(E.Skip(bitList2, sourceIndex), length + 1)));
-		Assert.IsTrue(bitList[(destinationIndex + length)..].Equals(bitList2[(destinationIndex + length)..]));
-		Assert.IsTrue(E.SequenceEqual(bitList[(destinationIndex + length)..], E.Skip(bitList2, destinationIndex + length)));
+		BitList bitList;
+		BitList bitList2;
+		PerformIteration();
 		for (var i = 0; i < 1000; i++)
 		{
 			random.NextBytes(bytes);
 			length = random.Next(97);
 			sourceIndex = random.Next(bytes.Length * 8 - length + 1);
 			destinationIndex = random.Next(bytes.Length * 8 - length + 1);
+			PerformIteration();
+		}
+		void PerformIteration()
+		{
 			bitList = new(bytes);
 			bitList2 = new(bitList);
 			bitList.SetRange(destinationIndex, bitList.GetRange(sourceIndex, length));
@@ -118,28 +112,14 @@ public class BitListTests
 		d.InsertRange(3, new G.List<bool>() { false, true });
 		var e = E.ToList(E.Where(d, x => !x ^ bitList[25]));
 		d = E.ToList(E.Where(d, x => x ^ bitList[25]));
-		Assert.IsTrue(a.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.IsTrue(c.Equals(e));
-		Assert.IsTrue(E.SequenceEqual(e, c));
+		BaseListTests<bool, BitList>.BreakFilterInPlaceAsserts(a, b, c, d, e);
 		a = new BitList(bitList).Insert(3, new G.List<bool>() { false, true });
 		b = a.BreakFilterInPlace((x, index) => index >= 11, out c);
 		d = new G.List<bool>(bitList);
 		d.InsertRange(3, new G.List<bool>() { false, true });
 		e = E.ToList(E.Where(d, (x, index) => index < 11));
 		d = E.ToList(E.Where(d, (x, index) => index >= 11));
-		Assert.IsTrue(a.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.IsTrue(c.Equals(e));
-		Assert.IsTrue(E.SequenceEqual(e, c));
+		BaseListTests<bool, BitList>.BreakFilterInPlaceAsserts(a, b, c, d, e);
 	}
 
 	[TestMethod]
@@ -1159,16 +1139,14 @@ public class BitListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).ToList();
 		for (var i = 0; i < 1000; i++)
 		{
-			var value = a[random.Next(a.Length)];
-			var b = new List<int>(a);
+			var a = new Chain(15, 10).ToBitList();
+			var value = a.Random(random);
+			var b = new BitList(a);
 			b.RemoveValue(value);
-			var c = new G.List<int>(a);
+			var c = new G.List<bool>(a);
 			c.Remove(value);
-			foreach (var x in a)
-				Assert.AreEqual(b.Contains(x), x != value);
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -1504,10 +1482,10 @@ public class BitListTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => new BaseListTests<bool, BitList>(new(), bitList, defaultBit, defaultBitCollection).TestToArray(() => random.Next(2) == 1);
+	public void TestToArray() => BaseListTests<bool, BitList>.TestToArray(() => random.Next(2) == 1);
 
 	[TestMethod]
-	public void TestTrimExcess() => new BaseListTests<bool, BitList>(new(), bitList, defaultBit, defaultBitCollection).TestTrimExcess(() => random.Next(2) == 1);
+	public void TestTrimExcess() => BaseListTests<bool, BitList>.TestTrimExcess(() => random.Next(2) == 1);
 
 	[TestMethod]
 	public void TestTrueForAll()

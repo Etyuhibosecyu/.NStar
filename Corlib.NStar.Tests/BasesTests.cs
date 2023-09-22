@@ -104,7 +104,19 @@ public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, Imm
 
 public record class BaseListTests<T, TCertain>(TCertain TestCollection, ImmutableArray<T> OriginalCollection, T DefaultString, G.IEnumerable<T> DefaultCollection) where TCertain : BaseList<T, TCertain>, new()
 {
-	public void TestToArray(Func<T> randomizer)
+	public static void BreakFilterInPlaceAsserts(TCertain a, TCertain b, TCertain c, G.List<T> d, G.List<T> e)
+	{
+		Assert.IsTrue(a.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, a));
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.IsTrue(c.Equals(e));
+		Assert.IsTrue(E.SequenceEqual(e, c));
+	}
+
+	public static void TestToArray(Func<T> randomizer)
 	{
 		int length, capacity;
 		G.List<T> b;
@@ -130,7 +142,7 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 		}
 	}
 
-	public void TestTrimExcess(Func<T> randomizer)
+	public static void TestTrimExcess(Func<T> randomizer)
 	{
 		int length, capacity;
 		G.List<T> b;
