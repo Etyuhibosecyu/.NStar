@@ -1060,53 +1060,9 @@ public static unsafe partial class Extents
 
 	public static T[] NSort<T>(this T[] array, Func<T, byte> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, byte> function, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > array.Length)
-			throw new ArgumentException(null);
-		var converted = (byte*)Marshal.AllocHGlobal(sizeof(byte) * length);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
-		for (var i = 0; i < length; i++)
-		{
-			converted[i] = function(array[index + i]);
-			indexes[i] = i;
-		}
-		RadixSort(converted, indexes, length);
-		Marshal.FreeHGlobal((nint)converted);
-		var oldItems = array[index..(index + length)];
-		for (var i = 0; i < length; i++)
-			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((nint)indexes);
-		return array;
-	}
+	public static T[] NSort<T>(this T[] array, Func<T, byte> function, int index, int length) => NSort<T, byte>(array, function, index, length);
 
-	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		var converted = (byte*)Marshal.AllocHGlobal(sizeof(byte) * length);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
-		for (var i = 0; i < length; i++)
-		{
-			converted[i] = function(array[index + i]);
-			indexes[i] = i;
-		}
-		RadixSort(converted, indexes, length);
-		Marshal.FreeHGlobal((nint)converted);
-		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
-		CopyMemory(array + index, oldItems, length);
-		for (var i = 0; i < length; i++)
-			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((nint)oldItems);
-		Marshal.FreeHGlobal((nint)indexes);
-		return array;
-	}
+	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged => NSort<T, byte>(array, function, index, length);
 
 	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
 
@@ -1128,53 +1084,9 @@ public static unsafe partial class Extents
 
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > array.Length)
-			throw new ArgumentException(null);
-		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * length);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
-		for (var i = 0; i < length; i++)
-		{
-			converted[i] = function(array[index + i]);
-			indexes[i] = i;
-		}
-		RadixSort(converted, indexes, length);
-		Marshal.FreeHGlobal((nint)converted);
-		var oldItems = array[index..(index + length)];
-		for (var i = 0; i < length; i++)
-			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((nint)indexes);
-		return array;
-	}
+	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length) => NSort<T, uint>(array, function, index, length);
 
-	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		var converted = (uint*)Marshal.AllocHGlobal(sizeof(uint) * length);
-		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
-		for (var i = 0; i < length; i++)
-		{
-			converted[i] = function(array[index + i]);
-			indexes[i] = i;
-		}
-		RadixSort(converted, indexes, length);
-		Marshal.FreeHGlobal((nint)converted);
-		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
-		CopyMemory(array + index, oldItems, length);
-		for (var i = 0; i < length; i++)
-			array[index + i] = oldItems[indexes[i]];
-		Marshal.FreeHGlobal((nint)oldItems);
-		Marshal.FreeHGlobal((nint)indexes);
-		return array;
-	}
+	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged => NSort<T, uint>(array, function, index, length);
 
 	public static ushort[] NSort(this ushort[] array) => NSort(array, 0, array.Length);
 
@@ -1196,7 +1108,11 @@ public static unsafe partial class Extents
 
 	public static T[] NSort<T>(this T[] array, Func<T, ushort> function) => NSort(array, function, 0, array.Length);
 
-	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length)
+	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length) => NSort<T, ushort>(array, function, index, length);
+
+	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged => NSort<T, ushort>(array, function, index, length);
+
+	public static T[] NSort<T, T2>(this T[] array, Func<T, T2> function, int index, int length) where T2 : unmanaged
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -1204,7 +1120,7 @@ public static unsafe partial class Extents
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (index + length > array.Length)
 			throw new ArgumentException(null);
-		var converted = (ushort*)Marshal.AllocHGlobal(sizeof(ushort) * length);
+		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
 		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
 		for (var i = 0; i < length; i++)
 		{
@@ -1220,13 +1136,13 @@ public static unsafe partial class Extents
 		return array;
 	}
 
-	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged
+	private static T* NSort<T, T2>(T* array, Func<T, T2> function, int index, int length) where T : unmanaged where T2 : unmanaged
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		var converted = (ushort*)Marshal.AllocHGlobal(sizeof(ushort) * length);
+		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
 		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
 		for (var i = 0; i < length; i++)
 		{
