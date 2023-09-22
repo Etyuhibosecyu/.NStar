@@ -1586,55 +1586,10 @@ public class ListTests
 	}
 
 	[TestMethod]
-	public void TestToArray()
-	{
-		int length, capacity;
-		List<string> a;
-		G.List<string> b;
-		string[] array;
-		string[] array2;
-		string elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(151);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
-				b.Add(elem);
-			}
-			array = a.ToArray();
-			array2 = b.ToArray();
-			Assert.IsTrue(RedStarLinq.Equals(array, array2));
-			Assert.IsTrue(E.SequenceEqual(array, array2));
-		}
-	}
+	public void TestToArray() => new BaseListTests<string, List<string>>(new(), list, defaultString, defaultCollection).TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
-	public void TestTrimExcess()
-	{
-		int length, capacity;
-		List<string> a;
-		G.List<string> b;
-		string elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(9951);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
-				b.Add(elem);
-			}
-			a.TrimExcess();
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(a, b));
-		}
-	}
+	public void TestTrimExcess() => new BaseListTests<string, List<string>>(new(), list, defaultString, defaultCollection).TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
 	public void TestTrueForAll()
@@ -3249,55 +3204,10 @@ public class NListTests
 	}
 
 	[TestMethod]
-	public void TestToArray()
-	{
-		int length, capacity;
-		NList<(char, char, char)> a;
-		G.List<(char, char, char)> b;
-		(char, char, char)[] array;
-		(char, char, char)[] array2;
-		(char, char, char) elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(151);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
-				b.Add(elem);
-			}
-			array = a.ToArray();
-			array2 = b.ToArray();
-			Assert.IsTrue(RedStarLinq.Equals(array, array2));
-			Assert.IsTrue(E.SequenceEqual(array, array2));
-		}
-	}
+	public void TestToArray() => new BaseListTests<(char, char, char), NList<(char, char, char)>>(new(), nList, defaultNString, defaultNCollection).TestToArray(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
 
 	[TestMethod]
-	public void TestTrimExcess()
-	{
-		int length, capacity;
-		NList<(char, char, char)> a;
-		G.List<(char, char, char)> b;
-		(char, char, char) elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(9951);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
-				b.Add(elem);
-			}
-			a.TrimExcess();
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(a, b));
-		}
-	}
+	public void TestTrimExcess() => new BaseListTests<(char, char, char), NList<(char, char, char)>>(new(), nList, defaultNString, defaultNCollection).TestTrimExcess(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
 
 	[TestMethod]
 	public void TestTrueForAll()

@@ -1416,55 +1416,10 @@ public class ListHashSetTests
 	}
 
 	[TestMethod]
-	public void TestToArray()
-	{
-		int length, capacity;
-		List<string> a;
-		G.List<string> b;
-		string[] array;
-		string[] array2;
-		string elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(151);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
-				b.Add(elem);
-			}
-			array = a.ToArray();
-			array2 = b.ToArray();
-			Assert.IsTrue(RedStarLinq.Equals(array, array2));
-			Assert.IsTrue(E.SequenceEqual(array, array2));
-		}
-	}
+	public void TestToArray() => new BaseListTests<string, HashList<string>>(new(), list, defaultString, defaultCollection).TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
-	public void TestTrimExcess()
-	{
-		int length, capacity;
-		List<string> a;
-		G.List<string> b;
-		string elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(9951);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
-				b.Add(elem);
-			}
-			a.TrimExcess();
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(a, b));
-		}
-	}
+	public void TestTrimExcess() => new BaseListTests<string, HashList<string>>(new(), list, defaultString, defaultCollection).TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
 
 	[TestMethod]
 	public void TestTrueForAll()

@@ -101,3 +101,55 @@ public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, Imm
 		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.GetSlice(1..1000));
 	}
 }
+
+public record class BaseListTests<T, TCertain>(TCertain TestCollection, ImmutableArray<T> OriginalCollection, T DefaultString, G.IEnumerable<T> DefaultCollection) where TCertain : BaseList<T, TCertain>, new()
+{
+	public void TestToArray(Func<T> randomizer)
+	{
+		int length, capacity;
+		G.List<T> b;
+		T[] array;
+		T[] array2;
+		T elem;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			capacity = length + random.Next(151);
+			var method = typeof(TCertain).GetConstructor(new[] { typeof(int) });
+			var a = method?.Invoke(new object[] { capacity }) as TCertain ?? throw new InvalidOperationException();
+			b = new(capacity);
+			for (var j = 0; j < length; j++)
+			{
+				a.Add(elem = randomizer());
+				b.Add(elem);
+			}
+			array = a.ToArray();
+			array2 = b.ToArray();
+			Assert.IsTrue(RedStarLinq.Equals(array, array2));
+			Assert.IsTrue(E.SequenceEqual(array, array2));
+		}
+	}
+
+	public void TestTrimExcess(Func<T> randomizer)
+	{
+		int length, capacity;
+		G.List<T> b;
+		T elem;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			capacity = length + random.Next(9951);
+			var method = typeof(TCertain).GetConstructor(new[] { typeof(int) });
+			var a = method?.Invoke(new object[] { capacity }) as TCertain ?? throw new InvalidOperationException();
+			b = new(capacity);
+			for (var j = 0; j < length; j++)
+			{
+				a.Add(elem = randomizer());
+				b.Add(elem);
+			}
+			a.TrimExcess();
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(a, b));
+		}
+	}
+}

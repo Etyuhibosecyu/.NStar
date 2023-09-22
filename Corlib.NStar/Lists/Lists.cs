@@ -1524,14 +1524,9 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public virtual NList<T> Sort(int index, int length)
 	{
-		if (this is NList<uint> uintList)
-		{
-			var shiftedItems = uintList._items + index;
-			RadixSort(&shiftedItems, length);
-			return this;
-		}
-		else
-			throw new NotSupportedException();
+		var shiftedItems = _items + index;
+		RadixSort(shiftedItems, length);
+		return this;
 	}
 
 	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);

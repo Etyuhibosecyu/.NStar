@@ -1504,55 +1504,10 @@ public class BitListTests
 	}
 
 	[TestMethod]
-	public void TestToArray()
-	{
-		int length, capacity;
-		BitList a;
-		G.List<bool> b;
-		bool[] array;
-		bool[] array2;
-		bool elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(151);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = random.Next(2) == 1);
-				b.Add(elem);
-			}
-			array = a.ToArray();
-			array2 = b.ToArray();
-			Assert.IsTrue(RedStarLinq.Equals(array, array2));
-			Assert.IsTrue(E.SequenceEqual(array, array2));
-		}
-	}
+	public void TestToArray() => new BaseListTests<bool, BitList>(new(), bitList, defaultBit, defaultBitCollection).TestToArray(() => random.Next(2) == 1);
 
 	[TestMethod]
-	public void TestTrimExcess()
-	{
-		int length, capacity;
-		BitList a;
-		G.List<bool> b;
-		bool elem;
-		for (var i = 0; i < 1000; i++)
-		{
-			length = random.Next(51);
-			capacity = length + random.Next(9951);
-			a = new(capacity);
-			b = new(capacity);
-			for (var j = 0; j < length; j++)
-			{
-				a.Add(elem = random.Next(2) == 1);
-				b.Add(elem);
-			}
-			a.TrimExcess();
-			Assert.IsTrue(RedStarLinq.Equals(a, b));
-			Assert.IsTrue(E.SequenceEqual(a, b));
-		}
-	}
+	public void TestTrimExcess() => new BaseListTests<bool, BitList>(new(), bitList, defaultBit, defaultBitCollection).TestTrimExcess(() => random.Next(2) == 1);
 
 	[TestMethod]
 	public void TestTrueForAll()

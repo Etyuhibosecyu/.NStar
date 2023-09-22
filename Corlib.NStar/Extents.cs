@@ -1040,6 +1040,74 @@ public static unsafe partial class Extents
 			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
 	}
 
+	public static byte[] NSort(this byte[] array) => NSort(array, 0, array.Length);
+
+	public static byte[] NSort(this byte[] array, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
+			throw new ArgumentException(null);
+		fixed (byte* items = array)
+		{
+			var shiftedItems = items + index;
+			RadixSort(shiftedItems, length);
+		}
+		return array;
+	}
+
+	public static T[] NSort<T>(this T[] array, Func<T, byte> function) => NSort(array, function, 0, array.Length);
+
+	public static T[] NSort<T>(this T[] array, Func<T, byte> function, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
+			throw new ArgumentException(null);
+		var converted = (byte*)Marshal.AllocHGlobal(sizeof(byte) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort(converted, indexes, length);
+		Marshal.FreeHGlobal((nint)converted);
+		var oldItems = array[index..(index + length)];
+		for (var i = 0; i < length; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((nint)indexes);
+		return array;
+	}
+
+	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var converted = (byte*)Marshal.AllocHGlobal(sizeof(byte) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort(converted, indexes, length);
+		Marshal.FreeHGlobal((nint)converted);
+		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
+		CopyMemory(array + index, oldItems, length);
+		for (var i = 0; i < length; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((nint)oldItems);
+		Marshal.FreeHGlobal((nint)indexes);
+		return array;
+	}
+
 	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
 
 	public static uint[] NSort(this uint[] array, int index, int length)
@@ -1053,7 +1121,7 @@ public static unsafe partial class Extents
 		fixed (uint* items = array)
 		{
 			var shiftedItems = items + index;
-			RadixSort(&shiftedItems, length);
+			RadixSort(shiftedItems, length);
 		}
 		return array;
 	}
@@ -1075,7 +1143,7 @@ public static unsafe partial class Extents
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
-		RadixSort(&converted, &indexes, length);
+		RadixSort(converted, indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
 		var oldItems = array[index..(index + length)];
 		for (var i = 0; i < length; i++)
@@ -1097,7 +1165,75 @@ public static unsafe partial class Extents
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
 		}
-		RadixSort(&converted, &indexes, length);
+		RadixSort(converted, indexes, length);
+		Marshal.FreeHGlobal((nint)converted);
+		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
+		CopyMemory(array + index, oldItems, length);
+		for (var i = 0; i < length; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((nint)oldItems);
+		Marshal.FreeHGlobal((nint)indexes);
+		return array;
+	}
+
+	public static ushort[] NSort(this ushort[] array) => NSort(array, 0, array.Length);
+
+	public static ushort[] NSort(this ushort[] array, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
+			throw new ArgumentException(null);
+		fixed (ushort* items = array)
+		{
+			var shiftedItems = items + index;
+			RadixSort(shiftedItems, length);
+		}
+		return array;
+	}
+
+	public static T[] NSort<T>(this T[] array, Func<T, ushort> function) => NSort(array, function, 0, array.Length);
+
+	public static T[] NSort<T>(this T[] array, Func<T, ushort> function, int index, int length)
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (index + length > array.Length)
+			throw new ArgumentException(null);
+		var converted = (ushort*)Marshal.AllocHGlobal(sizeof(ushort) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort(converted, indexes, length);
+		Marshal.FreeHGlobal((nint)converted);
+		var oldItems = array[index..(index + length)];
+		for (var i = 0; i < length; i++)
+			array[index + i] = oldItems[indexes[i]];
+		Marshal.FreeHGlobal((nint)indexes);
+		return array;
+	}
+
+	public static T* NSort<T>(T* array, Func<T, ushort> function, int index, int length) where T : unmanaged
+	{
+		if (index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		var converted = (ushort*)Marshal.AllocHGlobal(sizeof(ushort) * length);
+		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
+		for (var i = 0; i < length; i++)
+		{
+			converted[i] = function(array[index + i]);
+			indexes[i] = i;
+		}
+		RadixSort(converted, indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
 		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
 		CopyMemory(array + index, oldItems, length);
@@ -1149,90 +1285,107 @@ public static unsafe partial class Extents
 		return n + lo;
 	}
 
-	internal static void RadixSort<T>(T** @in, int n) where T : unmanaged
+	internal static void RadixSort<T>(T* @in, int n) where T : unmanaged
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), length;
-		CreateCounters(*@in, counters, n);
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		CreateCounters(@in, counters, n);
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			length = counters + 256 * i;
-			if (length[0] == n) continue;
-			RadixPass(i, n, *@in, @out, length);
-			var temp = *@in;
-			*@in = @out;
-			@out = temp;
+			count = counters + 256 * i;
+			if (count[0] != n)
+				RadixPass(i, n, @in, @out, count);
+			if (i == sizeof(T) - 1 && (i & 1) == 0)
+				CopyMemory(@out, @in, n);
+			else
+			{
+				var temp = @in;
+				@in = @out;
+				@out = temp;
+			}
 		}
 		Marshal.FreeHGlobal((nint)@out);
 		Marshal.FreeHGlobal((nint)counters);
 	}
 
-	internal static void RadixSort<T, T2>(T** @in, T2** in2, int n) where T : unmanaged where T2 : unmanaged
+	internal static void RadixSort<T, T2>(T* @in, T2* in2, int n) where T : unmanaged where T2 : unmanaged
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
 		var @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), length;
-		CreateCounters(*@in, counters, n);
+		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		CreateCounters(@in, counters, n);
+		var countPasses = 0;
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			length = counters + 256 * i;
-			if (length[0] == n) continue;
-			RadixPass(i, n, *@in, *in2, @out, out2, length);
-			var temp = *@in;
-			*@in = @out;
-			@out = temp;
-			var temp2 = *@in2;
-			*@in2 = @out2;
-			@out2 = temp2;
+			count = counters + 256 * i;
+			if (count[0] != n)
+			{
+				RadixPass(i, n, @in, in2, @out, out2, count);
+				countPasses++;
+			}
+			if (i != sizeof(T) - 1 || (i & 1) != 0)
+			{
+				var temp = @in;
+				@in = @out;
+				@out = temp;
+				var temp2 = in2;
+				in2 = @out2;
+				@out2 = temp2;
+			}
+		}
+		if ((countPasses & 1) != 0)
+		{
+			CopyMemory(@out, @in, n);
+			CopyMemory(out2, in2, n);
 		}
 		Marshal.FreeHGlobal((nint)@out);
 		Marshal.FreeHGlobal((nint)out2);
 		Marshal.FreeHGlobal((nint)counters);
 	}
 
-	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* length) where T : unmanaged
+	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* count) where T : unmanaged
 	{
 		T* sp;
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		var cp = length;
+		var cp = count;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
 			*cp = s;
 			s += c;
 		}
-		bp = (byte*)@in +offset;
+		bp = (byte*)@in + offset;
 		sp = @in;
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
 		{
-			cp = length + *bp;
+			cp = count + *bp;
 			@out[*cp] = *sp;
 			++*cp;
 		}
 	}
 
-	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* length) where T : unmanaged where T2 : unmanaged
+	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
 	{
 		T* sp;
 		T2* sp2;
 		int s, c, i;
 		byte* bp;
 		s = 0;
-		var cp = length;
+		var cp = count;
 		for (i = 256; i > 0; --i, ++cp)
 		{
 			c = *cp;
 			*cp = s;
 			s += c;
 		}
-		bp = (byte*)@in +offset;
+		bp = (byte*)@in + offset;
 		sp = @in;
 		sp2 = in2;
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
 		{
-			cp = length + *bp;
+			cp = count + *bp;
 			@out[*cp] = *sp;
 			out2[*cp] = *sp2;
 			++*cp;

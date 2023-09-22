@@ -1537,7 +1537,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				_left = value;
 				if (_left != null)
 					_left.Parent = this;
-#if DEBUG
+#if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
 #endif
@@ -1558,7 +1558,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				_right = value;
 				if (_right != null)
 					_right.Parent = this;
-#if DEBUG
+#if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
 #endif
@@ -2964,7 +2964,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 				_left = value;
 				if (_left != null)
 					_left.Parent = this;
-#if DEBUG
+#if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
 #endif
@@ -2985,7 +2985,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 				_right = value;
 				if (_right != null)
 					_right.Parent = this;
-#if DEBUG
+#if VERIFY
 				foreach (var x in new[] { this, _left, _right, Parent })
 					x?.Verify();
 #endif
