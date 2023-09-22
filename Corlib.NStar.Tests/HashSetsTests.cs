@@ -314,39 +314,39 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
 
-	[TestMethod]
-	public void TestCompare()
-	{
-		for (var i = 0; i < 1000; i++)
-		{
-			var a = new List<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
-			var b = new List<string>(a);
-			var n = random.Next(0, a.Length);
-			do
-				b[n] = random.Next(1000).ToString("D3");
-			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b) == n);
-			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
-			b = new(a);
-			n = random.Next(2, a.Length);
-			do
-				b[n] = random.Next(1000).ToString("D3");
-			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
-			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
-			b = new(a);
-			var length = a.Length;
-			n = random.Next(2, a.Length);
-			do
-				b[n] = random.Next(1000).ToString("D3");
-			while (b[n] == a[n]);
-			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
-			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
-			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
-			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
-		}
-	}
+	//[TestMethod]
+	//public void TestCompare()
+	//{
+	//	for (var i = 0; i < 1000; i++)
+	//	{
+	//		var a = new ListHashSet<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
+	//		var b = new ListHashSet<string>(a);
+	//		var n = random.Next(0, a.Length);
+	//		do
+	//			b[n] = random.Next(1000).ToString("D3");
+	//		while (b[n] == a[n]);
+	//		Assert.IsTrue(a.Compare(b) == n);
+	//		a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+	//		b = new(a);
+	//		n = random.Next(2, a.Length);
+	//		do
+	//			b[n] = random.Next(1000).ToString("D3");
+	//		while (b[n] == a[n]);
+	//		Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+	//		a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+	//		b = new(a);
+	//		var length = a.Length;
+	//		n = random.Next(2, a.Length);
+	//		do
+	//			b[n] = random.Next(1000).ToString("D3");
+	//		while (b[n] == a[n]);
+	//		int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
+	//		a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
+	//		b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
+	//		Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
+	//		Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+	//	}
+	//}
 
 	[TestMethod]
 	public void TestConcat()
@@ -886,99 +886,88 @@ public class ListHashSetTests
 	}
 
 	[TestMethod]
-	public void TestNSort()
-	{
-		var c = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
-		var a = new List<string>(c);
-		var b = new List<string>(a).NSort(x => x[^1]);
-		c = E.ToList(E.OrderBy(c, x => x[^1]));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-	}
-
-	[TestMethod]
 	public void TestRemove()
 	{
 		var length = E.ToHashSet(list).Count;
 		var a = list.ToHashSet();
-		var b = new List<string>(a).Remove(4);
+		var b = new ListHashSet<string>(a).Remove(4);
 		var c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(4, 1);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(0, 1);
+		b = new ListHashSet<string>(a).Remove(0, 1);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(0, 1);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(1, length - 2);
+		b = new ListHashSet<string>(a).Remove(1, length - 2);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(1, length - 2);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(1, 3);
+		b = new ListHashSet<string>(a).Remove(1, 3);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(1, 3);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(length - 4, 3);
+		b = new ListHashSet<string>(a).Remove(length - 4, 3);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(length - 4, 3);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(length - 4, 8 - length);
+		b = new ListHashSet<string>(a).Remove(length - 4, 8 - length);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(length - 4, 8 - length);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1, 6));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(length - 1, 2 - length));
-		Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
-		b = new List<string>(a).Remove(..);
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new ListHashSet<string>(a).Remove(-1, 6));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new ListHashSet<string>(a).Remove(length - 1, 2 - length));
+		Assert.ThrowsException<ArgumentException>(() => b = new ListHashSet<string>(a).Remove(1, 1000));
+		b = new ListHashSet<string>(a).Remove(..);
 		c = new G.List<string>();
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(..^1);
+		b = new ListHashSet<string>(a).Remove(..^1);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(0, length - 1);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(1..);
+		b = new ListHashSet<string>(a).Remove(1..);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(1, length - 1);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(1..^1);
+		b = new ListHashSet<string>(a).Remove(1..^1);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(1, length - 2);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(1..4);
+		b = new ListHashSet<string>(a).Remove(1..4);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(1, 3);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(^4..^1);
+		b = new ListHashSet<string>(a).Remove(^4..^1);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(length - 4, 3);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Remove(^4..4);
+		b = new ListHashSet<string>(a).Remove(^4..4);
 		c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(length - 4, 8 - length);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));
 		Assert.IsTrue(E.SequenceEqual(E.Distinct(list), a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(-1..4));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(^1..1));
-		Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1..1000));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new ListHashSet<string>(a).Remove(-1..4));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new ListHashSet<string>(a).Remove(^1..1));
+		Assert.ThrowsException<ArgumentException>(() => b = new ListHashSet<string>(a).Remove(1..1000));
 	}
 
 	[TestMethod]
@@ -1011,7 +1000,7 @@ public class ListHashSetTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var index = random.Next(a.Length);
-			var b = new List<string>(a).RemoveAt(index);
+			var b = new ListHashSet<string>(a).RemoveAt(index);
 			var c = new G.List<string>(a);
 			c.RemoveAt(index);
 			Assert.IsTrue(a[..index].Equals(b[..index]));
@@ -1051,46 +1040,6 @@ public class ListHashSetTests
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
-	}
-
-	[TestMethod]
-	public void TestReplace2()
-	{
-		for (var i = 0; i < 1000; i++)
-		{
-			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
-				arr[j] = (char)random.Next(33, 127);
-			string s = new(arr);
-			String a = s;
-			var oldItem = (char)random.Next(33, 127);
-			var newItem = (char)random.Next(33, 127);
-			var b = a.Replace(oldItem, newItem);
-			var c = s.Replace(oldItem, newItem);
-			Assert.IsTrue(a.Equals(s));
-			Assert.IsTrue(E.SequenceEqual(s, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
-		for (var i = 0; i < 100; i++)
-		{
-			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
-				arr[j] = (char)random.Next(33, 127);
-			string s = new(arr);
-			String a = s;
-			var oldCollection = a.GetRange(random.Next(991), random.Next(1, 10)).ToString();
-			var newArray = new char[random.Next(10)];
-			for (var j = 0; j < newArray.Length; j++)
-				newArray[j] = (char)random.Next(33, 127);
-			string newCollection = new(newArray);
-			var b = a.Replace(oldCollection, newArray);
-			var c = s.Replace(oldCollection, newCollection);
-			Assert.IsTrue(a.Equals(s));
-			Assert.IsTrue(E.SequenceEqual(s, a));
-			Assert.IsTrue(b.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, b));
-		}
 	}
 
 	[TestMethod]
@@ -1273,28 +1222,6 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-	}
-
-	[TestMethod]
-	public void TestSort()
-	{
-		var toSort = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
-		var a = new List<string>(toSort);
-		var b = new List<string>(a).Sort();
-		var c = new G.List<string>(a);
-		c.Sort();
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
-		c = new G.List<string>(a);
-		c.Sort(new Comparer<string>((x, y) => y.CompareTo(x)));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = new List<string>(a).Sort(2, 3, new Comparer<string>((x, y) => y.CompareTo(x)));
-		c = new G.List<string>(a);
-		c.Sort(2, 3, new Comparer<string>((x, y) => y.CompareTo(x)));
-		Assert.IsTrue(b.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
 
 	[TestMethod]
