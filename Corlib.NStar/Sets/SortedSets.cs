@@ -535,14 +535,6 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			destination.TryAdd(en.Current);
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is T[] array2)
-			CopyToInternal(0, array2, arrayIndex, _size);
-		else
-			throw new ArgumentException(null, nameof(array));
-	}
-
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
@@ -1090,7 +1082,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
 			return false;
-		if (other is ICollection<T> c && c.Length == 0)
+		if (other is G.ICollection<T> c && c.Count == 0)
 			return false;
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted) && (Comparer.Compare(Min, asSorted.Max) > 0 || Comparer.Compare(Max, asSorted.Min) < 0))
 			return false;

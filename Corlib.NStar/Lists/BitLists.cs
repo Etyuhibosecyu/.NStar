@@ -48,24 +48,28 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		if (values == null)
 			throw new ArgumentNullException(nameof(values));
+		var uints = values.Length;
 		// this value is chosen to prevent overflow when computing m_length
-		if (values.Length > int.MaxValue / BitsPerInt)
+		if (uints > int.MaxValue / BitsPerInt)
 			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
-		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = values.Length));
-		_size = values.Length * BitsPerInt;
-		fixed (uint* values2 = values)
-			CopyMemory(values2, _items, values.Length);
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		_size = uints * BitsPerInt;
+		fixed (uint* ptr = values)
+			CopyMemory(ptr, _items, uints);
 	}
 
 	public BitList(int length, params uint[] values)
 	{
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		var uints = GetArrayLength(length, BitsPerInt);
+		var uints = Max(GetArrayLength(length, BitsPerInt), values.Length);
+		// this value is chosen to prevent overflow when computing m_length
+		if (uints > int.MaxValue / BitsPerInt)
+			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
 		fixed (uint* ptr = values)
-			CopyMemory(ptr, _items, uints);
+			CopyMemory(ptr, _items, values.Length);
 	}
 
 	public BitList(ReadOnlySpan<uint> values)
@@ -85,11 +89,14 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		var uints = GetArrayLength(length, BitsPerInt);
+		var uints = Max(GetArrayLength(length, BitsPerInt), values.Length);
+		// this value is chosen to prevent overflow when computing m_length
+		if (uints > int.MaxValue / BitsPerInt)
+			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
 		fixed (uint* ptr = values)
-			CopyMemory(ptr, _items, uints);
+			CopyMemory(ptr, _items, values.Length);
 	}
 
 	public BitList(IEnumerable bits)
@@ -168,8 +175,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<byte> bytes)
 		{
-			if (!List<byte>.TryGetLengthEasilyEnumerable(bytes, out var length))
-				length = bytes.Length();
+			var length = bytes.Length();
 			if (length > int.MaxValue / BitsPerByte)
 				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
 			var arrayLength = _capacity = GetArrayLength(length, BytesPerInt);
@@ -186,8 +192,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<bool> bools)
 		{
-			if (!List<bool>.TryGetLengthEasilyEnumerable(bools, out var length))
-				length = bools.Length();
+			var length = bools.Length();
 			var arrayLength = _capacity = GetArrayLength(length, BitsPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);

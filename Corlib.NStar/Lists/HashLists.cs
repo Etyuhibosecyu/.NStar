@@ -490,13 +490,6 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		freeList = 0;
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
-	}
-
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		var skipped = 0;
@@ -865,13 +858,6 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 	protected HashList(ReadOnlySpan<T> span) : base(span) { }
 
 	protected HashList(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
-
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
-	}
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{

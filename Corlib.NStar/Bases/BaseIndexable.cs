@@ -189,7 +189,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		if (array is not T[] array2)
 			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, Length);
+		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
 	private protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int length);
@@ -220,7 +220,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is G.IList<T> list)
+		if (collection is G.IList<T> list && list is not (FastDelHashSet<T> or ParallelHashSet<T>))
 			return EqualsToList(list, index, toEnd);
 		else
 			return EqualsToNonList(collection, index, toEnd);

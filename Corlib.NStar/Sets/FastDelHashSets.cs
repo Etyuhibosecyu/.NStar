@@ -117,25 +117,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		freeList = 0;
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
-	}
-
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
-	{
-		var skipped = 0;
-		for (var i = 0; i < index; i++)
-			if (entries[i].hashCode >= 0)
-				skipped++;
-		for (var i = 0; i < length; i++)
-			if (entries[i].hashCode < 0)
-				array[arrayIndex++] = entries[index + i + skipped].item;
-			else
-				length++;
-	}
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -145,30 +127,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
-	{
-		try
-		{
-			throw new ExperimentalException();
-		}
-		catch
-		{
-		}
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (collection is G.IList<T> list)
-			return EqualsToList(list, index, toEnd);
-		else
-			return EqualsToNonList(collection, index, toEnd);
-	}
-
 	private protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd)
 	{
 		if (index > _size - list.Count)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		for (var i = 0; i < list.Count; i++)
 		{
-			while (entries[index].hashCode >= 0)
+			while (index < _size && entries[index].hashCode >= 0)
 				index++;
 			if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
 				return false;
@@ -182,7 +147,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			throw new ArgumentOutOfRangeException(nameof(index));
 		foreach (var item in collection)
 		{
-			while (entries[index].hashCode >= 0)
+			while (index < _size && entries[index].hashCode >= 0)
 				index++;
 			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
 				return false;
@@ -722,7 +687,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return true;
 	}
 
-	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, UnsafeResize, newSize, forceNewHashCodes);
+	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
 
 	public override bool SetEquals(IEnumerable<T> other)
 	{
@@ -909,31 +874,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	private protected virtual void UnsafeResize() => UnsafeResize(HashHelpers.ExpandPrime(_size), false);
-
-	private protected virtual void UnsafeResize(int newSize, bool forceNewHashCodes)
-	{
-		var newBuckets = new int[newSize];
-		var newEntries = new Entry[newSize];
-		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
-		if (forceNewHashCodes)
-			for (var i = 0; i < _size; i++)
-			{
-				ref var t = ref newEntries[i];
-				if (t.hashCode != 0)
-					t.hashCode = ~Comparer.GetHashCode(t.item ?? throw new InvalidOperationException()) & 0x7FFFFFFF;
-			}
-		for (var i = 0; i < _size; i++)
-			if (newEntries[i].hashCode < 0)
-			{
-				var bucket = ~newEntries[i].hashCode % newSize;
-				ref var t = ref newEntries[i];
-				t.next = newBuckets[bucket];
-				newBuckets[bucket] = ~i;
-			}
-		buckets = newBuckets;
-		entries = newEntries;
-	}
+	private protected virtual void UnsafeResize() => base.Resize(HashHelpers.ExpandPrime(_size), false);
 
 	private protected virtual bool UnsafeTryAdd(T item, out int index, int hashCode)
 	{

@@ -80,7 +80,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public readonly byte[] ToByteArray(int order) => Mpir.MpirMpzExport(order, (uint)sizeof(byte), 0, 0u, this);
+	public readonly byte[] ToByteArray(int order) => Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
 	// Almost everything below is copied from Emil Stefanov's BigInt 
@@ -638,7 +638,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	{
 		var quotient = new MpzT();
 		var uintRemainder = Mpir.MpzTdivQUi(quotient, this, x);
-		if (uintRemainder > (uint)int.MaxValue)
+		if (uintRemainder > int.MaxValue)
 			throw new OverflowException();
 		if (this >= 0)
 			remainder = (int)uintRemainder;

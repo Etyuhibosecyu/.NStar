@@ -87,6 +87,19 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		}
 	}
 
+	private protected virtual void CopyToCommon(int index, T[] array, int arrayIndex, int length)
+	{
+		var skipped = 0;
+		for (var i = 0; i < index; i++)
+			if (entries[i].hashCode >= 0)
+				skipped++;
+		for (var i = 0; i < length; i++)
+			if (entries[i].hashCode < 0)
+				array[arrayIndex++] = entries[index + i + skipped].item;
+			else
+				length++;
+	}
+
 	public override void Dispose()
 	{
 		buckets = default!;
@@ -249,28 +262,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		ref var t = ref entries[index];
 		if (t.hashCode >= 0)
 			return;
-		uint collisionCount = 0;
-		var bucket = ~t.hashCode % buckets.Length;
-		var last = -1;
-		for (var i = ~buckets[bucket]; i >= 0; last = i, i = ~entries[i].next)
-		{
-			if (~entries[i].next == i || ~entries[i].next == last && last != -1)
-				throw new InvalidOperationException();
-			if (i == index)
-			{
-				if (last < 0)
-					buckets[bucket] = entries[i].next;
-				else
-					entries[last].next = entries[i].next;
-				break;
-			}
-			collisionCount++;
-			if (collisionCount > entries.Length)
-				throw new InvalidOperationException();
-		}
-		t.hashCode = 0;
+		RemoveAtCommon(index, ref t);
 		t.next = 0;
-		t.item = default!;
 		Debug.Assert(entries[index].hashCode >= 0);
 	}
 
@@ -363,13 +356,6 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 				throw new ArgumentException(null, nameof(value));
 			SetInternal(index2, value);
 		}
-	}
-
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
@@ -587,76 +573,13 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		destination.Changed();
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
-		CopyToInternal(0, array2, arrayIndex, _size);
-	}
-
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
-	{
-		var skipped = 0;
-		for (var i = 0; i < index; i++)
-			if (entries[i].hashCode >= 0)
-				skipped++;
-		for (var i = 0; i < length; i++)
-			if (entries[i].hashCode < 0)
-				array[arrayIndex++] = entries[index + i + skipped].item;
-			else
-				length++;
-	}
+	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(IndexGetDirect(index), array, arrayIndex, length);
 
 	public override void Dispose()
 	{
 		deleted.Dispose();
 		base.Dispose();
 		GC.SuppressFinalize(this);
-	}
-
-	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
-	{
-		try
-		{
-			throw new ExperimentalException();
-		}
-		catch
-		{
-		}
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
-		if (collection is G.IList<T> list)
-			return EqualsToList(list, index, toEnd);
-		else
-			return EqualsToNonList(collection, index, toEnd);
-	}
-
-	private protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd)
-	{
-		if (index > _size - list.Count)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		for (var i = 0; i < list.Count; i++)
-		{
-			while (entries[index].hashCode >= 0)
-				index++;
-			if (index >= _size || !(GetInternal(index++)?.Equals(list[i]) ?? list[i] == null))
-				return false;
-		}
-		return !toEnd || index == _size;
-	}
-
-	private protected override bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd)
-	{
-		if (collection.TryGetLengthEasily(out var length) && index > _size - length)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		foreach (var item in collection)
-		{
-			while (entries[index].hashCode >= 0)
-				index++;
-			if (index >= _size || !(GetInternal(index++)?.Equals(item) ?? item == null))
-				return false;
-		}
-		return !toEnd || index == _size;
 	}
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
@@ -838,7 +761,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		{
 			if (fixes != hashSet.fixes)
 				throw new InvalidOperationException();
-			while ((uint)index < (uint)hashSet.entries.Length)
+			while ((uint)index < (uint)hashSet._size)
 			{
 				if (hashSet.entries[index].hashCode < 0)
 				{

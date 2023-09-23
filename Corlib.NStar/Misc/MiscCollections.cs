@@ -486,7 +486,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			_array = new T[length];

@@ -20,7 +20,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			if (length == 0)
@@ -425,7 +425,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			if (length == 0)
@@ -440,7 +440,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		else
 		{
 			_size = 0;
-			_items = _emptyArray;
+			_items = collection.TryGetLengthEasily(out var length) ? new T[length] : _emptyArray;
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
@@ -451,7 +451,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			if (length == 0)
@@ -1060,7 +1060,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			if (length == 0)
@@ -1076,7 +1076,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		else
 		{
 			_size = 0;
-			_items = _emptyArray;
+			_items = collection.TryGetLengthEasily(out var length) ? (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length)) : _emptyArray;
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
@@ -1087,13 +1087,16 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (collection == null)
 			throw new ArgumentNullException(nameof(collection));
-		if (collection is ICollection<T> c)
+		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
 			if (length == 0)
 				return;
 			if (length > capacity)
+			{
+				Marshal.FreeHGlobal((nint)_items);
 				_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = length));
+			}
 			fixed (T* ptr = c.AsSpan())
 				CopyMemory(ptr, _items, c.Count);
 			_size = length;
@@ -1110,25 +1113,20 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
-		_size = _capacity = array.Length;
-		fixed (T* ptr = array.ToArray())
-			_items = ptr;
+		_capacity = _size = array.Length;
+		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
+		fixed (T* ptr = array)
+			CopyMemory(ptr, _items, _size);
 	}
 
 	public NList(int capacity, params T[] array)
 	{
 		if (array == null)
 			throw new ArgumentNullException(nameof(array));
-		_size = array.Length;
-		if (array.Length > (_capacity = capacity))
-			fixed (T* ptr = array)
-				_items = ptr;
-		else
-		{
-			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
-			fixed (T* ptr = array)
-				CopyMemory(ptr, _items, array.Length);
-		}
+		_capacity = Max(capacity, _size = array.Length);
+		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
+		fixed (T* ptr = array)
+			CopyMemory(ptr, _items, _size);
 	}
 
 	public NList(int capacity, T* ptr)
@@ -1144,25 +1142,20 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	{
 		if (span == null)
 			throw new ArgumentNullException(nameof(span));
-		_size = _capacity = span.Length;
-		fixed (T* ptr = span.ToArray())
-			_items = ptr;
+		_capacity = _size = span.Length;
+		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
+		fixed (T* ptr = span)
+			CopyMemory(ptr, _items, _size);
 	}
 
 	public NList(int capacity, ReadOnlySpan<T> span)
 	{
 		if (span == null)
 			throw new ArgumentNullException(nameof(span));
-		_size = span.Length;
-		if (span.Length > capacity)
-			fixed (T* ptr = span.ToArray())
-				_items = ptr;
-		else
-		{
-			_items = (T*)Marshal.AllocHGlobal(sizeof(T) * capacity);
-			fixed (T* ptr = span)
-				CopyMemory(ptr, _items, span.Length);
-		}
+		_capacity = Max(capacity, _size = span.Length);
+		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
+		fixed (T* ptr = span)
+			CopyMemory(ptr, _items, _size);
 	}
 
 	public override int Capacity
@@ -1342,6 +1335,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			newItems[index] = item;
 			Marshal.FreeHGlobal((nint)_items);
 			_items = newItems;
+			_capacity = newCapacity;
+			_size++;
 		}
 		else
 		{
@@ -1372,6 +1367,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			span.CopyTo(new(newItems + index, newCapacity - index));
 			Marshal.FreeHGlobal((nint)_items);
 			_items = newItems;
+			_capacity = newCapacity;
 		}
 		else
 		{
@@ -1459,7 +1455,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			_size += length;
 			return this;
 		}
-		else if (collection is ICollection<T> list2)
+		else if (collection is G.ICollection<T> list2)
 		{
 			var length = list2.Count;
 			if (length == 0)

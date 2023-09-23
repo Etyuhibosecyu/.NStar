@@ -1,4 +1,6 @@
-﻿namespace Corlib.NStar.Tests;
+﻿using System.Threading;
+
+namespace Corlib.NStar.Tests;
 
 [TestClass]
 public class BufferTests
@@ -1688,10 +1690,32 @@ public class ListTests
 public class NListTests
 {
 	[TestMethod]
+	public void ConstructionTest()
+	{
+		var array = new NList<int>[1000];
+		for (var i = 0; i < array.Length; i++)
+		{
+			array[i] = new[] { () => new NList<int>(), () => new(500), () => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next()).AsSpan()), () => new((G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(RedStarLinq.Fill(random.Next(500), _ => random.Next())), () => new(RedStarLinq.NFill(random.Next(500), _ => random.Next())), () => new(E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next()), x => x)), () => new(E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next()), _ => random.Next(10) == -1)), () => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next()).AsSpan()), () => new(500, (G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.Fill(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.NFill(random.Next(500), _ => random.Next())), () => new(500, E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next()), x => x)), () => new(500, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next()), _ => random.Next(10) == -1)) }.Random(random)();
+			for (var j = 0; j < 1000; j++)
+			{
+				array[i].Add(random.Next());
+				Assert.IsTrue(array[i].Capacity >= array[i].Length);
+			}
+		}
+		Thread.Sleep(50);
+		for (var i = 0; i < array.Length; i++)
+			array[i].Add(random.Next());
+	}
+
+	[TestMethod]
 	public void TestAdd()
 	{
 		var a = nList.ToNList().Add(defaultNString);
 		var b = new G.List<(char, char, char)>(nList) { defaultNString };
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new NList<(char, char, char)>(10, nList).Add(defaultNString);
+		b = new G.List<(char, char, char)>(nList) { defaultNString };
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
@@ -2389,6 +2413,21 @@ public class NListTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = nList.ToNList().Insert(2, defaultNCollection.AsSpan(2, 3));
+		b = new G.List<(char, char, char)>(nList);
+		b.InsertRange(2, defaultNCollection.Skip(2).Take(3));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new NList<(char, char, char)>(10, nList).Insert(3, defaultNString);
+		b = new G.List<(char, char, char)>(nList);
+		b.Insert(3, defaultNString);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new NList<(char, char, char)>(10, nList).Insert(4, defaultNCollection);
+		b = new G.List<(char, char, char)>(nList);
+		b.InsertRange(4, defaultNCollection);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new NList<(char, char, char)>(10, nList).Insert(2, defaultNCollection.AsSpan(2, 3));
 		b = new G.List<(char, char, char)>(nList);
 		b.InsertRange(2, defaultNCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));

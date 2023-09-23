@@ -327,14 +327,6 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			destination.TryAdd(en.Current);
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is (T Key, int Value)[] array2)
-			CopyToInternal(0, array2, arrayIndex, _size);
-		else
-			throw new ArgumentException(null, nameof(array));
-	}
-
 	private protected override void CopyToInternal(int index, (T Key, int Value)[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
@@ -939,7 +931,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
 			return false;
-		if (other is ICollection<T> c && c.Length == 0)
+		if (other is G.ICollection<T> c && c.Count == 0)
 			return false;
 		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted) && (Comparer2.Compare(Min, asSorted.Max) > 0 || Comparer2.Compare(Max, asSorted.Min) < 0))
 			return false;
