@@ -159,6 +159,66 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestConvert()
+	{
+		G.IEnumerable<string> a = list.ToList();
+		ProcessA(a);
+		a = list.ToArray();
+		ProcessA(a);
+		a = E.ToList(list);
+		ProcessA(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			var c = a.Convert(x => x[1..]);
+			var d = E.Select(a, x => x[1..]);
+			Assert.IsTrue(E.SequenceEqual(c, d));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+			c = a.Convert((x, index) => x[1..] + index.ToString("D2"));
+			d = E.Select(a, (x, index) => x[1..] + index.ToString("D2"));
+			Assert.IsTrue(E.SequenceEqual(c, d));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+		}
+	}
+
+	[TestMethod]
+	public void TestConvertAndJoin()
+	{
+		G.IEnumerable<string> a = list.ToList();
+		ProcessA(a);
+		a = list.ToArray();
+		ProcessA(a);
+		a = E.ToList(list);
+		ProcessA(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			var c = a.ConvertAndJoin(x => x[1..]);
+			var d = E.SelectMany(a, x => x[1..]);
+			Assert.IsTrue(E.SequenceEqual(c, d));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+			c = a.ConvertAndJoin((x, index) => x[1..] + index.ToString("D2"));
+			d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+			Assert.IsTrue(E.SequenceEqual(c, d));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+		}
+	}
+
+	[TestMethod]
 	public void TestEquals()
 	{
 		for (var i = 0; i < 1000; i++)

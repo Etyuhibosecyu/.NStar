@@ -3316,7 +3316,7 @@ public class SumList : BaseSumList<int, SumList>
 			return;
 		if (length == 1)
 		{
-			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
