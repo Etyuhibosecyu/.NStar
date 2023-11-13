@@ -1360,66 +1360,66 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			}
 		}
 
-		public Enumerator GetEnumerator() => new(_dictionary);
+		public KeyEnumerator GetEnumerator() => new(_dictionary);
 
 		IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
 
 		bool ICollection<TKey>.RemoveValue(TKey item) => throw new NotSupportedException();
+	}
 
-		public struct Enumerator : IEnumerator<TKey>, IEnumerator
+	public struct KeyEnumerator : IEnumerator<TKey>, IEnumerator
+	{
+		private readonly Mirror<TKey, TValue> _dictionary;
+		private int _index;
+		private readonly int _version;
+
+		internal KeyEnumerator(Mirror<TKey, TValue> dictionary)
 		{
-			private readonly Mirror<TKey, TValue> _dictionary;
-			private int _index;
-			private readonly int _version;
+			_dictionary = dictionary;
+			_version = dictionary._version;
+			_index = 0;
+			Current = default!;
+		}
 
-			internal Enumerator(Mirror<TKey, TValue> dictionary)
+		public TKey Current { get; private set; }
+
+		readonly object? IEnumerator.Current
+		{
+			get
 			{
-				_dictionary = dictionary;
-				_version = dictionary._version;
-				_index = 0;
-				Current = default!;
+				if (_index == 0 || _index == _dictionary._count + 1)
+					throw new InvalidOperationException();
+				return Current;
 			}
+		}
 
-			public TKey Current { get; private set; }
+		public readonly void Dispose() { }
 
-			readonly object? IEnumerator.Current
+		public bool MoveNext()
+		{
+			if (_version != _dictionary._version)
+				throw new InvalidOperationException();
+			while ((uint)_index < (uint)_dictionary._count)
 			{
-				get
+				ref var entry = ref _dictionary._entries![_index++];
+				if (entry.next >= -1 && entry.nextM >= -1)
 				{
-					if (_index == 0 || _index == _dictionary._count + 1)
-						throw new InvalidOperationException();
-					return Current;
+					Current = entry.key;
+					return true;
 				}
 			}
-
-			public readonly void Dispose() { }
-
-			public bool MoveNext()
-			{
-				if (_version != _dictionary._version)
-					throw new InvalidOperationException();
-				while ((uint)_index < (uint)_dictionary._count)
-				{
-					ref var entry = ref _dictionary._entries![_index++];
-					if (entry.next >= -1 && entry.nextM >= -1)
-					{
-						Current = entry.key;
-						return true;
-					}
-				}
-				_index = _dictionary._count + 1;
-				Current = default!;
-				return false;
-			}
-			void IEnumerator.Reset()
-			{
-				if (_version != _dictionary._version)
-					throw new InvalidOperationException();
-				_index = 0;
-				Current = default!;
-			}
+			_index = _dictionary._count + 1;
+			Current = default!;
+			return false;
+		}
+		void IEnumerator.Reset()
+		{
+			if (_version != _dictionary._version)
+				throw new InvalidOperationException();
+			_index = 0;
+			Current = default!;
 		}
 	}
 
@@ -1484,66 +1484,66 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			}
 		}
 
-		public Enumerator GetEnumerator() => new(_dictionary);
+		public ValueEnumerator GetEnumerator() => new(_dictionary);
 
 		IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
 
 		bool ICollection<TValue>.RemoveValue(TValue item) => throw new NotSupportedException();
+	}
 
-		public struct Enumerator : IEnumerator<TValue>, IEnumerator
+	public struct ValueEnumerator : IEnumerator<TValue>, IEnumerator
+	{
+		private readonly Mirror<TKey, TValue> _dictionary;
+		private int _index;
+		private readonly int _version;
+
+		internal ValueEnumerator(Mirror<TKey, TValue> dictionary)
 		{
-			private readonly Mirror<TKey, TValue> _dictionary;
-			private int _index;
-			private readonly int _version;
+			_dictionary = dictionary;
+			_version = dictionary._version;
+			_index = 0;
+			Current = default!;
+		}
 
-			internal Enumerator(Mirror<TKey, TValue> dictionary)
+		public TValue Current { get; private set; }
+
+		readonly object? IEnumerator.Current
+		{
+			get
 			{
-				_dictionary = dictionary;
-				_version = dictionary._version;
-				_index = 0;
-				Current = default!;
+				if (_index == 0 || _index == _dictionary._count + 1)
+					throw new InvalidOperationException();
+				return Current;
 			}
+		}
 
-			public TValue Current { get; private set; }
+		public readonly void Dispose() { }
 
-			readonly object? IEnumerator.Current
+		public bool MoveNext()
+		{
+			if (_version != _dictionary._version)
+				throw new InvalidOperationException();
+			while ((uint)_index < (uint)_dictionary._count)
 			{
-				get
+				ref var entry = ref _dictionary._entries![_index++];
+				if (entry.next >= -1 && entry.nextM >= -1)
 				{
-					if (_index == 0 || _index == _dictionary._count + 1)
-						throw new InvalidOperationException();
-					return Current;
+					Current = entry.value;
+					return true;
 				}
 			}
-
-			public readonly void Dispose() { }
-
-			public bool MoveNext()
-			{
-				if (_version != _dictionary._version)
-					throw new InvalidOperationException();
-				while ((uint)_index < (uint)_dictionary._count)
-				{
-					ref var entry = ref _dictionary._entries![_index++];
-					if (entry.next >= -1 && entry.nextM >= -1)
-					{
-						Current = entry.value;
-						return true;
-					}
-				}
-				_index = _dictionary._count + 1;
-				Current = default!;
-				return false;
-			}
-			void IEnumerator.Reset()
-			{
-				if (_version != _dictionary._version)
-					throw new InvalidOperationException();
-				_index = 0;
-				Current = default!;
-			}
+			_index = _dictionary._count + 1;
+			Current = default!;
+			return false;
+		}
+		void IEnumerator.Reset()
+		{
+			if (_version != _dictionary._version)
+				throw new InvalidOperationException();
+			_index = 0;
+			Current = default!;
 		}
 	}
 }

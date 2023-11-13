@@ -114,11 +114,20 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	private protected virtual void AddAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
-		foreach (var item in collection)
+		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
-			if (!Contains(item))
+			foreach (var item in collection)
 				TryAdd(item);
+			return;
 		}
+		// Outside range, no point in doing anything
+		var min = Min;
+		var max = Max;
+		asSorted.InOrderTreeWalk(node =>
+		{
+			TryAdd(node.Item);
+			return true;
+		});
 	}
 
 	/// <summary>
@@ -296,10 +305,26 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	private protected virtual bool ContainsAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
-		foreach (var item in collection)
+		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
-			if (!Contains(item))
-				return false;
+			foreach (var item in collection)
+				if (!Contains(item))
+					return false;
+			return true;
+		}
+		// Outside range, no point in doing anything
+		if (Comparer2.Compare(asSorted.Max, Min) >= 0 && Comparer2.Compare(asSorted.Min, Max) <= 0)
+		{
+			var min = Min;
+			var max = Max;
+			return asSorted.InOrderTreeWalk(node =>
+			{
+				if (Comparer2.Compare(node.Item.Key, min) < 0)
+					return true;
+				if (Comparer2.Compare(node.Item.Key, max) > 0)
+					return false;
+				return Contains(node.Item);
+			});
 		}
 		return true;
 	}
@@ -310,7 +335,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return;
 		if (length == 1)
 		{
-			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source, source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + length - 1).Key, true, true);
@@ -386,19 +411,45 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			{
 				var min = Min;
 				var max = Max;
-				foreach (var item in other)
+				asSorted.InOrderTreeWalk(node =>
 				{
-					if (Comparer2.Compare(item.Key, min) < 0)
-						continue;
-					if (Comparer2.Compare(item.Key, max) > 0)
-						break;
-					RemoveValue(item);
-				}
+					if (Comparer2.Compare(node.Item.Key, min) < 0)
+						return true;
+					if (Comparer2.Compare(node.Item.Key, max) > 0)
+						return false;
+					RemoveValue(node.Item);
+					return true;
+				});
 			}
 		}
 		else
 			RemoveAllElements(other);
 		return this;
+	}
+
+	public override SumSet<T> Filter(Func<(T Key, int Value), bool> match)
+	{
+		var result = CapacityCreator(_size / 2);
+		InOrderTreeWalk(node =>
+		{
+			if (match(node.Item))
+				result.Add(node.Item);
+			return true;
+		});
+		return result;
+	}
+
+	public override SumSet<T> Filter(Func<(T Key, int Value), int, bool> match)
+	{
+		var result = CapacityCreator(_size / 2);
+		var i = 0;
+		InOrderTreeWalk(node =>
+		{
+			if (match(node.Item, i++))
+				result.Add(node.Item);
+			return true;
+		});
+		return result;
 	}
 
 	private protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
@@ -443,7 +494,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -615,10 +666,24 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="SumSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	private protected virtual bool HasEqualComparer(SumSet<T> other) => Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	private protected virtual bool HasEqualComparer(SumSet<T> other) => Comparer2 == other.Comparer2 || Comparer2.Equals(other.Comparer2);
 	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
 
-	public virtual bool Increase(T key) => TryGetValue(key, out var value) ? Update(key, value + 1) : TryAdd(key, 1);
+	public virtual bool Increase(T key)
+	{
+		var node = FindNode(key);
+		if (node != null)
+		{
+			node.Update(node.Item.Value + 1);
+#if VERIFY
+			foreach (var x in new[] { node, root })
+				x?.Verify();
+#endif
+			return true;
+		}
+		else
+			return TryAdd(key, 1);
+	}
 
 	public virtual int IndexOf(T item) => IndexOf(item, 0, _size);
 
@@ -856,10 +921,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				return false;
 			var pruned = GetViewBetween(asSorted.Min, asSorted.Max);
 			foreach (var item in asSorted)
-			{
 				if (!pruned.Contains(item))
 					return false;
-			}
 			return true;
 		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
@@ -892,10 +955,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		var prunedOther = asSorted.GetViewBetween(Min, Max);
 		foreach (var item in this)
-		{
 			if (!prunedOther.Contains(item))
 				return false;
-		}
 		return true;
 	}
 
@@ -1017,7 +1078,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 							parent.RotateRight();
 						parent.ColorRed();
 						sibling.ColorBlack(); // The red parent can't have black children.
-											   // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
+											  // `sibling` becomes the child of `grandParent` or `root` after rotation. Update the link from that node.
 						ReplaceChildOrRoot(grandParent, parent, sibling);
 						// `sibling` will become the grandparent of `current`.
 						grandParent = sibling;
@@ -1199,6 +1260,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
+				current.ValuesSum += value.Value - current.Item.Value;
 				current.Item = value;
 				Changed();
 				return;
@@ -1624,7 +1686,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return newRoot;
 		}
 
-		public void FixUp()
+		internal void FixUp()
 		{
 			if (Left != null)
 				Left.Parent = this;
@@ -1663,7 +1725,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
 
-		public void Isolate()
+		internal void Isolate()
 		{
 			if (Parent != null && Parent.Left == this)
 				Parent.Left = null;
@@ -1690,7 +1752,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		/// </summary>
 		/// <param name="child">The child to replace.</param>
 		/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
-		public void ReplaceChild(Node child, Node newChild)
+		internal void ReplaceChild(Node child, Node newChild)
 		{
 			if (Left == child)
 				Left = newChild;
@@ -1834,7 +1896,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return grandChild;
 		}
 
-		public Node ShallowClone() => new(Item, Color);
+		internal Node ShallowClone() => new(Item, Color);
 
 		internal void Split4Node()
 		{
@@ -3975,7 +4037,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return;
 		if (length == 1)
 		{
-			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);

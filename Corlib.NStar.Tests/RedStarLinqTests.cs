@@ -159,6 +159,72 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestBreakFilter()
+	{
+		G.IEnumerable<string> a = list.ToList();
+		ProcessA(a);
+		a = list.ToArray();
+		ProcessA(a);
+		a = E.ToList(list);
+		ProcessA(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			var c = a.BreakFilter(x => x.Length > 0, out var c2);
+			var d = E.Where(a, x => x.Length > 0);
+			var d2 = E.Where(a, x => x.Length <= 0);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			c = a.BreakFilter(x => x.StartsWith("#"), out c2);
+			d = E.Where(a, x => x.StartsWith("#"));
+			d2 = E.Where(a, x => !x.StartsWith("#"));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			c = a.BreakFilter(x => x.StartsWith("M"), out c2);
+			d = E.Where(a, x => x.StartsWith("M"));
+			d2 = E.Where(a, x => !x.StartsWith("M"));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, bool>)null!, out c2));
+			c = a.BreakFilter((x, index) => x.Length > 0 && index >= 0, out c2);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.Length > 0 && x.index >= 0)), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			c = a.BreakFilter((x, index) => index < 0, out c2);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index >= 0), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			c = a.BreakFilter((x, index) => x.StartsWith("M") && index > 0, out c2);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith("M") && x.index > 0), x => x.elem);
+			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.StartsWith("M") && x.index > 0)), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, int, bool>)null!, out c2));
+		}
+	}
+
+	[TestMethod]
 	public void TestConvert()
 	{
 		G.IEnumerable<string> a = list.ToList();
@@ -279,6 +345,54 @@ public class RedStarLinqTests
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
 			c = E.SkipWhile(b, _ => random.Next(10) != -1);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
+		}
+	}
+
+	[TestMethod]
+	public void TestFilter()
+	{
+		G.IEnumerable<string> a = list.ToList();
+		ProcessA(a);
+		a = list.ToArray();
+		ProcessA(a);
+		a = E.ToList(list);
+		ProcessA(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			var c = a.Filter(x => x.Length > 0);
+			var d = E.Where(a, x => x.Length > 0);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Filter(x => x.StartsWith("#"));
+			d = E.Where(a, x => x.StartsWith("#"));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Filter(x => x.StartsWith("M"));
+			d = E.Where(a, x => x.StartsWith("M"));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, bool>)null!));
+			c = a.Filter((x, index) => x.Length > 0 && index >= 0);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Filter((x, index) => index < 0);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Filter((x, index) => x.StartsWith("M") && index > 0);
+			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith("M") && x.index > 0), x => x.elem);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
 		}
 	}
 

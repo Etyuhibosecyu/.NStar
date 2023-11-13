@@ -667,9 +667,9 @@ public static unsafe partial class Extents
 			return function(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
 	}
 
-	public static byte[] NSort(this byte[] array) => NSort(array, 0, array.Length);
+	public static T[] NSort<T>(this T[] array) where T : unmanaged => NSort(array, 0, array.Length);
 
-	public static byte[] NSort(this byte[] array, int index, int length)
+	public static T[] NSort<T>(this T[] array, int index, int length) where T : unmanaged
 	{
 		if (index < 0)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -677,7 +677,7 @@ public static unsafe partial class Extents
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (index + length > array.Length)
 			throw new ArgumentException(null);
-		fixed (byte* items = array)
+		fixed (T* items = array)
 		{
 			var shiftedItems = items + index;
 			RadixSort(shiftedItems, length);
@@ -691,47 +691,11 @@ public static unsafe partial class Extents
 
 	public static T* NSort<T>(T* array, Func<T, byte> function, int index, int length) where T : unmanaged => NSort<T, byte>(array, function, index, length);
 
-	public static uint[] NSort(this uint[] array) => NSort(array, 0, array.Length);
-
-	public static uint[] NSort(this uint[] array, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > array.Length)
-			throw new ArgumentException(null);
-		fixed (uint* items = array)
-		{
-			var shiftedItems = items + index;
-			RadixSort(shiftedItems, length);
-		}
-		return array;
-	}
-
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function) => NSort(array, function, 0, array.Length);
 
 	public static T[] NSort<T>(this T[] array, Func<T, uint> function, int index, int length) => NSort<T, uint>(array, function, index, length);
 
 	public static T* NSort<T>(T* array, Func<T, uint> function, int index, int length) where T : unmanaged => NSort<T, uint>(array, function, index, length);
-
-	public static ushort[] NSort(this ushort[] array) => NSort(array, 0, array.Length);
-
-	public static ushort[] NSort(this ushort[] array, int index, int length)
-	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index + length > array.Length)
-			throw new ArgumentException(null);
-		fixed (ushort* items = array)
-		{
-			var shiftedItems = items + index;
-			RadixSort(shiftedItems, length);
-		}
-		return array;
-	}
 
 	public static T[] NSort<T>(this T[] array, Func<T, ushort> function) => NSort(array, function, 0, array.Length);
 
@@ -839,9 +803,14 @@ public static unsafe partial class Extents
 			if (count[0] != n)
 				RadixPass(i, n, @in, @out, count);
 			if (i == sizeof(T) - 1 && (i & 1) == 0)
-				CopyMemory(@out, @in, n);
+			{
+				if (count[0] != n)
+					CopyMemory(@out, @in, n);
+			}
 			else
 			{
+				if (count[0] == n)
+					CopyMemory(@in, @out, n);
 				var temp = @in;
 				@in = @out;
 				@out = temp;
@@ -1005,4 +974,13 @@ public static unsafe partial class Extents
 		PrimitiveType.ULongType => (uint)(ulong)(object)item,
 		_ => default,
 	};
+
+	public static T[] TryNSort<T>(this T[] array, IComparer<T>? comparer = null) => TryNSort(array, 0, array.Length, comparer);
+
+	public static T[] TryNSort<T>(this T[] array, int index, int length, IComparer<T>? comparer = null)
+	{
+		if (typeof(Extents).GetMethods().Find(x => x.Name == "NSort" && x.GetParameters().Wrap(y => y.Length == 3 && y[0].ParameterType.IsArray && y[1].ParameterType == typeof(int) && y[2].ParameterType == typeof(int)))?.MakeGenericMethod(typeof(T))?.Invoke(null, new object[] { array, index, length }) == null)
+			Array.Sort(array, index, length, comparer);
+		return array;
+	}
 }
