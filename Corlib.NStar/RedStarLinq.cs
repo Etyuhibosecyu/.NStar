@@ -6,8 +6,7 @@ public partial class List<T, TCertain>
 {
 	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -54,8 +53,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -122,8 +120,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AnyEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -170,8 +167,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AnyEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -230,10 +226,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -315,10 +309,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -453,8 +445,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -531,8 +522,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -609,12 +599,9 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -712,12 +699,9 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -877,8 +861,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -966,8 +949,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(IEnumerable<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -1055,8 +1037,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> BreakFilterEnumerable(IEnumerable<T> source, Func<T, bool> function, out List<T> result2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -1145,8 +1126,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> BreakFilterEnumerable(IEnumerable<T> source, Func<T, int, bool> function, out List<T> result2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -1235,8 +1215,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -1310,8 +1289,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -1458,8 +1436,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
@@ -1539,8 +1516,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
@@ -1941,8 +1917,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -1996,8 +1971,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2063,8 +2037,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(IEnumerable<T> source, Func<T, IEnumerable<TResult>> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2111,8 +2084,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(IEnumerable<T> source, Func<T, int, IEnumerable<TResult>> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2171,8 +2143,7 @@ public partial class List<T, TCertain>
 
 	internal static int CountEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2220,8 +2191,7 @@ public partial class List<T, TCertain>
 
 	internal static int CountEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2335,8 +2305,7 @@ public partial class List<T, TCertain>
 
 	internal static bool EqualsEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -2409,8 +2378,7 @@ public partial class List<T, TCertain>
 
 	internal static bool EqualsEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			if (list._size != list2._size)
@@ -2570,8 +2538,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> FillEnumerable<TResult>(Func<int, TResult> function, int length)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(i);
@@ -2589,8 +2556,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] FillArrayEnumerable<TResult>(Func<int, TResult> function, int length)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
 			result[i] = function(i);
@@ -2599,8 +2565,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FilterEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2669,8 +2634,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FilterEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2739,8 +2703,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2799,8 +2762,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2859,8 +2821,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2929,8 +2890,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -2999,8 +2959,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3129,8 +3088,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3259,8 +3217,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3389,8 +3346,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3519,8 +3475,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3649,8 +3604,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3779,8 +3733,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -3909,8 +3862,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4039,8 +3991,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4169,8 +4120,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4299,8 +4249,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4429,8 +4378,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4559,8 +4507,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4594,8 +4541,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4629,8 +4575,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4664,8 +4609,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -4699,328 +4643,319 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (int)value;
-			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (uint)value;
-			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (long)value;
-			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var value = MeanEnumerable(list2, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var value = MeanEnumerable(list3, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (MpzT)value;
-			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5054,8 +4989,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5089,8 +5023,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5124,8 +5057,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5159,8 +5091,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5194,8 +5125,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5229,8 +5159,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5264,8 +5193,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5299,8 +5227,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5334,8 +5261,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5369,8 +5295,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5404,8 +5329,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5439,8 +5363,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5569,8 +5492,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5699,8 +5621,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5829,8 +5750,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -5959,8 +5879,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6089,8 +6008,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6219,8 +6137,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6349,8 +6266,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6479,8 +6395,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6609,8 +6524,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6739,8 +6653,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6869,8 +6782,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -6999,8 +6911,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindIndexesEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7065,8 +6976,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindIndexesEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7143,8 +7053,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindIndexEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7191,8 +7100,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindIndexEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7251,8 +7159,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7303,8 +7210,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7355,8 +7261,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastIndexEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7395,8 +7300,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastIndexEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7447,8 +7351,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7543,8 +7446,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7639,8 +7541,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7735,8 +7636,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7831,8 +7731,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -7927,8 +7826,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8023,8 +7921,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8119,8 +8016,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8215,8 +8111,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8311,8 +8206,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8407,8 +8301,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8503,8 +8396,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8599,8 +8491,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8631,8 +8522,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8663,8 +8553,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8695,8 +8584,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8727,8 +8615,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8763,8 +8650,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8799,8 +8685,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8835,8 +8720,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8871,8 +8755,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8907,8 +8790,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8943,8 +8825,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -8979,8 +8860,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9015,8 +8895,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9047,8 +8926,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9079,8 +8957,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9111,8 +8988,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9143,8 +9019,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9175,8 +9050,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9207,8 +9081,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9239,8 +9112,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9271,8 +9143,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9303,8 +9174,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9335,8 +9205,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9367,8 +9236,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9399,8 +9267,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9495,8 +9362,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9591,8 +9457,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9687,8 +9552,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9783,8 +9647,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9879,8 +9742,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -9975,8 +9837,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10071,8 +9932,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10167,8 +10027,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10263,8 +10122,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10359,8 +10217,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10455,8 +10312,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10551,8 +10407,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10647,8 +10502,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10743,8 +10597,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10839,8 +10692,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -10935,8 +10787,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11031,8 +10882,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11127,8 +10977,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11223,8 +11072,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11319,8 +11167,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11415,8 +11262,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11511,8 +11357,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11607,8 +11452,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11703,8 +11547,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11739,8 +11582,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11775,8 +11617,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11811,8 +11652,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11847,8 +11687,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11887,8 +11726,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11927,8 +11765,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -11967,8 +11804,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12007,8 +11843,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12047,8 +11882,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12087,8 +11921,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12127,8 +11960,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12167,8 +11999,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12203,8 +12034,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12239,8 +12069,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12275,8 +12104,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12311,8 +12139,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12347,8 +12174,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12383,8 +12209,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12419,8 +12244,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12455,8 +12279,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12491,8 +12314,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12527,8 +12349,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12563,8 +12384,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12599,8 +12419,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12695,8 +12514,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12791,8 +12609,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12887,8 +12704,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -12983,8 +12799,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13079,8 +12894,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13175,8 +12989,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13271,8 +13084,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13367,8 +13179,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13463,8 +13274,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13559,8 +13369,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13655,8 +13464,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13751,8 +13559,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13866,8 +13673,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -13981,8 +13787,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14096,8 +13901,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14211,8 +14015,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14326,8 +14129,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14441,8 +14243,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14556,8 +14357,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14671,8 +14471,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14786,8 +14585,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -14901,8 +14699,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15016,8 +14813,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15131,8 +14927,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15166,8 +14961,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15201,8 +14995,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15236,8 +15029,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15271,8 +15063,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15311,8 +15102,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15351,8 +15141,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15391,8 +15180,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15431,8 +15219,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15471,8 +15258,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15511,8 +15297,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15551,8 +15336,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15591,8 +15375,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15626,8 +15409,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15661,8 +15443,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15696,8 +15477,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15731,8 +15511,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15766,8 +15545,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15801,8 +15579,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15836,8 +15613,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15871,8 +15647,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15906,8 +15681,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15941,8 +15715,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -15976,8 +15749,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16011,8 +15783,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16126,8 +15897,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16241,8 +16011,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16356,8 +16125,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16471,8 +16239,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16586,8 +16353,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16701,8 +16467,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16816,8 +16581,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -16931,8 +16695,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17046,8 +16809,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17161,8 +16923,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17276,8 +17037,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17391,8 +17151,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17534,8 +17293,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17677,8 +17435,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17820,8 +17577,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -17963,8 +17719,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18106,8 +17861,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18249,8 +18003,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18392,8 +18145,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18535,8 +18287,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18678,8 +18429,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18821,8 +18571,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -18964,8 +18713,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19107,8 +18855,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19147,8 +18894,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19187,8 +18933,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19227,8 +18972,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19267,15 +19011,14 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19283,7 +19026,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19291,7 +19034,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19299,28 +19042,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19328,7 +19070,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19336,7 +19078,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19344,28 +19086,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (int)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19373,7 +19114,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19381,7 +19122,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19389,28 +19130,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19418,7 +19158,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19426,7 +19166,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19434,28 +19174,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (uint)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19463,7 +19202,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19471,7 +19210,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19479,28 +19218,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19508,7 +19246,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19516,7 +19254,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19524,28 +19262,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (long)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x) => function(x) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19553,7 +19290,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19561,7 +19298,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x) => function(x) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19569,28 +19306,27 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x) => function(x) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
 			var value = MeanEnumerable(list, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is T[] array)
 		{
@@ -19598,7 +19334,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(array.AsSpan(), function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(array.AsSpan(), (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IList<T> list2)
 		{
@@ -19606,7 +19342,7 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list2, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list2, (x, index) => function(x, index) == value2) : [];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
@@ -19614,21 +19350,20 @@ public partial class List<T, TCertain>
 			var value = MeanEnumerable(list3, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(list3, (x, index) => function(x, index) == value2) : [];
 		}
 		else
 		{
 			var value = MeanEnumerable(source, function);
 			var value2 = (MpzT)value;
 			indicator = value2;
-			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+			return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 		}
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19667,8 +19402,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19707,8 +19441,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19747,8 +19480,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19787,8 +19519,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19827,8 +19558,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19867,8 +19597,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19907,8 +19636,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19947,8 +19675,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -19987,8 +19714,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20027,8 +19753,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20067,8 +19792,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20107,8 +19831,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20250,8 +19973,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20393,8 +20115,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20536,8 +20257,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20679,8 +20399,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20822,8 +20541,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -20965,8 +20683,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21108,8 +20825,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21251,8 +20967,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21394,8 +21109,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21537,8 +21251,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21680,8 +21393,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21823,8 +21535,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -21938,8 +21649,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22053,8 +21763,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22168,8 +21877,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22283,8 +21991,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22398,8 +22105,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22513,8 +22219,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22628,8 +22333,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22743,8 +22447,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22858,8 +22561,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -22973,8 +22675,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23088,8 +22789,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23203,8 +22903,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23243,8 +22942,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23283,8 +22981,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23323,8 +23020,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23363,8 +23059,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23408,8 +23103,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23453,8 +23147,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23498,8 +23191,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23543,8 +23235,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23588,8 +23279,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23633,8 +23323,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23678,8 +23367,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23723,8 +23411,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23763,8 +23450,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23803,8 +23489,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23843,8 +23528,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23883,8 +23567,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23923,8 +23606,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -23963,8 +23645,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24003,8 +23684,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24043,8 +23723,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24083,8 +23762,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24123,8 +23801,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24163,8 +23840,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24203,8 +23879,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24318,8 +23993,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24433,8 +24107,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24548,8 +24221,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24663,8 +24335,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24778,8 +24449,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -24893,8 +24563,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25008,8 +24677,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25123,8 +24791,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25238,8 +24905,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25353,8 +25019,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25468,8 +25133,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25583,8 +25247,7 @@ public partial class List<T, TCertain>
 
 	internal static void ForEachEnumerable(IEnumerable<T> source, Action<T> action)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25617,8 +25280,7 @@ public partial class List<T, TCertain>
 
 	internal static void ForEachEnumerable(IEnumerable<T> source, Action<T, int> action)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25655,9 +25317,8 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25751,9 +25412,8 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25847,7 +25507,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(T Key, int Count)> FrequencyTableEnumerable(IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -25941,8 +25601,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -26037,8 +25696,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -26227,8 +25885,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -26323,8 +25980,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -26513,8 +26169,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -26609,8 +26264,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -26799,9 +26453,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -26895,9 +26548,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -26991,7 +26643,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, T>> GroupEnumerable(IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -27085,8 +26737,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -27181,8 +26832,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -27371,8 +27021,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -27467,8 +27116,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -27657,8 +27305,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -27753,8 +27400,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -27943,9 +27589,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -28039,9 +27684,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -28135,7 +27779,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, T>> GroupIndexesEnumerable(IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -28229,8 +27873,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -28325,8 +27968,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		if (source is List<T> list)
 		{
@@ -28515,8 +28157,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -28611,8 +28252,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -28801,8 +28441,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -28897,8 +28536,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -29163,8 +28801,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -29306,8 +28943,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -29449,8 +29085,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -29592,8 +29227,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -29735,8 +29369,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -29878,8 +29511,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30021,8 +29653,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30164,8 +29795,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30307,8 +29937,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30450,8 +30079,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30593,8 +30221,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -30736,8 +30363,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31557,8 +31183,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31597,8 +31222,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31637,8 +31261,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31677,8 +31300,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31717,8 +31339,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31757,8 +31378,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31797,8 +31417,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31837,8 +31456,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31877,8 +31495,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31917,8 +31534,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31957,8 +31573,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -31997,8 +31612,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32193,8 +31807,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32228,8 +31841,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32263,8 +31875,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32298,8 +31909,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32333,8 +31943,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32368,8 +31977,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32403,8 +32011,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32438,8 +32045,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32473,8 +32079,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32508,8 +32113,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32543,8 +32147,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32578,8 +32181,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32757,8 +32359,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -32900,8 +32501,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33043,8 +32643,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33186,8 +32785,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33329,8 +32927,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33472,8 +33069,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33615,8 +33211,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33758,8 +33353,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -33901,8 +33495,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -34044,8 +33637,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -34187,8 +33779,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -34330,8 +33921,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35385,8 +34975,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35500,8 +35089,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35615,8 +35203,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35730,8 +35317,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35845,8 +35431,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -35960,8 +35545,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36075,8 +35659,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36190,8 +35773,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36305,8 +35887,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36420,8 +36001,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36535,8 +36115,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -36650,8 +36229,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37311,8 +36889,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37346,8 +36923,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37381,8 +36957,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37416,8 +36991,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37451,8 +37025,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37491,8 +37064,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37531,8 +37103,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37571,8 +37142,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37611,8 +37181,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37651,8 +37220,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37691,8 +37259,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37731,8 +37298,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37919,8 +37485,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37954,8 +37519,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -37989,8 +37553,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38024,8 +37587,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38059,8 +37621,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38094,8 +37655,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38129,8 +37689,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38164,8 +37723,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38199,8 +37757,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38234,8 +37791,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38269,8 +37825,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38304,8 +37859,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38483,8 +38037,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38598,8 +38151,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38713,8 +38265,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38828,8 +38379,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -38943,8 +38493,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39058,8 +38607,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39173,8 +38721,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39288,8 +38835,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39403,8 +38949,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39518,8 +39063,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39633,8 +39177,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -39748,8 +39291,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -40834,8 +40376,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -40930,8 +40471,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41026,8 +40566,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41122,8 +40661,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41218,8 +40756,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41314,8 +40851,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41410,8 +40946,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41506,8 +41041,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41602,8 +41136,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41698,8 +41231,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41794,8 +41326,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -41890,8 +41421,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42418,8 +41948,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42450,8 +41979,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42482,8 +42010,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42514,8 +42041,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42546,8 +42072,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42582,8 +42107,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42618,8 +42142,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42654,8 +42177,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42690,8 +42212,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42726,8 +42247,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42762,8 +42282,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42798,8 +42317,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42960,8 +42478,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -42992,8 +42509,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43024,8 +42540,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43056,8 +42571,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43088,8 +42602,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43120,8 +42633,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43152,8 +42664,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43184,8 +42695,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43216,8 +42726,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43248,8 +42757,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43280,8 +42788,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43312,8 +42819,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43470,8 +42976,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43566,8 +43071,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43662,8 +43166,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43758,8 +43261,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43854,8 +43356,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -43950,8 +43451,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44046,8 +43546,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44142,8 +43641,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44238,8 +43736,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44334,8 +43831,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44430,8 +43926,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -44526,8 +44021,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45067,8 +44561,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45147,8 +44640,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MaxEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45227,8 +44719,7 @@ public partial class List<T, TCertain>
 
 	internal static double MaxEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45307,8 +44798,7 @@ public partial class List<T, TCertain>
 
 	internal static double MaxEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45387,8 +44877,7 @@ public partial class List<T, TCertain>
 
 	internal static int MaxEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45467,8 +44956,7 @@ public partial class List<T, TCertain>
 
 	internal static int MaxEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45547,8 +45035,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MaxEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45627,8 +45114,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MaxEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45707,8 +45193,7 @@ public partial class List<T, TCertain>
 
 	internal static long MaxEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45787,8 +45272,7 @@ public partial class List<T, TCertain>
 
 	internal static long MaxEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45867,8 +45351,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MaxEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -45947,8 +45430,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MaxEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46405,8 +45887,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MeanEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46453,8 +45934,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MeanEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46513,8 +45993,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46561,8 +46040,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46621,8 +46099,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46669,8 +46146,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46729,8 +46205,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46777,8 +46252,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46837,8 +46311,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46885,8 +46358,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46945,8 +46417,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -46993,8 +46464,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47335,8 +46805,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MedianEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47363,8 +46832,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47391,8 +46859,7 @@ public partial class List<T, TCertain>
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47419,8 +46886,7 @@ public partial class List<T, TCertain>
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47447,8 +46913,7 @@ public partial class List<T, TCertain>
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47475,8 +46940,7 @@ public partial class List<T, TCertain>
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47503,8 +46967,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47531,8 +46994,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47559,8 +47021,7 @@ public partial class List<T, TCertain>
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47587,8 +47048,7 @@ public partial class List<T, TCertain>
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47615,8 +47075,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47643,8 +47102,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47737,8 +47195,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult? MedianEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47766,8 +47223,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult? MedianEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47808,8 +47264,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MinEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47888,8 +47343,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MinEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -47968,8 +47422,7 @@ public partial class List<T, TCertain>
 
 	internal static double MinEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48048,8 +47501,7 @@ public partial class List<T, TCertain>
 
 	internal static double MinEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48128,8 +47580,7 @@ public partial class List<T, TCertain>
 
 	internal static int MinEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48208,8 +47659,7 @@ public partial class List<T, TCertain>
 
 	internal static int MinEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48288,8 +47738,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MinEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48368,8 +47817,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MinEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48448,8 +47896,7 @@ public partial class List<T, TCertain>
 
 	internal static long MinEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48528,8 +47975,7 @@ public partial class List<T, TCertain>
 
 	internal static long MinEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48608,8 +48054,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MinEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -48688,8 +48133,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MinEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -49146,7 +48590,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> OfTypeEnumerable<TResult>(IEnumerable source)
 	{
-		List<TResult> result = new();
+		List<TResult> result = [];
 		foreach (var item in source)
 			if (item is TResult resultElement)
 				result.Add(resultElement);
@@ -49155,15 +48599,13 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
 		{
 			var length = list._size - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49178,7 +48620,7 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49193,7 +48635,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49208,7 +48650,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49245,15 +48687,13 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
 		{
 			var length = list._size - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49268,7 +48708,7 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49283,7 +48723,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49298,7 +48738,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49335,13 +48775,12 @@ public partial class List<T, TCertain>
 
 	internal static List<(T, T)> PairsEnumerable(IEnumerable<T> source, int offset = 1)
 	{
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
 		{
 			var length = list._size - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49356,7 +48795,7 @@ public partial class List<T, TCertain>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49371,7 +48810,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49386,7 +48825,7 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			List<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -49528,9 +48967,8 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		FastDelHashSet<TResult> hs = new();
+		ArgumentNullException.ThrowIfNull(function);
+		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -49599,9 +49037,8 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		FastDelHashSet<TResult> hs = new();
+		ArgumentNullException.ThrowIfNull(function);
+		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -49670,7 +49107,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable(IEnumerable<T> source)
 	{
-		FastDelHashSet<T> hs = new();
+		FastDelHashSet<T> hs = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -49739,8 +49176,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
@@ -49810,8 +49246,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list)
 		{
@@ -49950,8 +49385,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -50021,8 +49455,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list)
 		{
@@ -50161,8 +49594,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -50232,8 +49664,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list)
 		{
@@ -50372,9 +49803,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		FastDelHashSet<TResult> hs = new();
+		ArgumentNullException.ThrowIfNull(function);
+		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -50469,9 +49899,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		FastDelHashSet<TResult> hs = new();
+		ArgumentNullException.ThrowIfNull(function);
+		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -50566,7 +49995,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2)
 	{
-		FastDelHashSet<T> hs = new();
+		FastDelHashSet<T> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -50661,8 +50090,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -50758,8 +50186,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -50950,8 +50377,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -51047,8 +50473,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -51239,8 +50664,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -51336,8 +50760,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<T>, List<T2>) RemoveDoublesEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -51528,7 +50951,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable(IEnumerable<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -51929,7 +51352,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> SetInnerTypeEnumerable<TResult>(IEnumerable source)
 	{
-		List<TResult> result = new();
+		List<TResult> result = [];
 		foreach (var item in source)
 			result.Add((TResult)item);
 		return result;
@@ -51937,8 +51360,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> SetInnerTypeEnumerable<TResult>(IEnumerable source, Func<object?, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is ArrayList list)
 		{
 			var length = list.Count;
@@ -51979,7 +51401,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new();
+			List<TResult> result = [];
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -51993,8 +51415,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> SetInnerTypeEnumerable<TResult>(IEnumerable source, Func<object?, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is ArrayList list)
 		{
 			var length = list.Count;
@@ -52035,7 +51456,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<TResult> result = new();
+			List<TResult> result = [];
 			var i = 0;
 			foreach (var item in source)
 			{
@@ -52085,7 +51506,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			List<T> result = new();
+			List<T> result = [];
 			LimitedQueue<T> queue = new(length);
 			var en = source.GetEnumerator();
 			while (en.MoveNext())
@@ -52100,7 +51521,7 @@ public partial class List<T, TCertain>
 			return list.SkipWhile(function);
 		else
 		{
-			List<T> result = new();
+			List<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
@@ -52115,7 +51536,7 @@ public partial class List<T, TCertain>
 			return list.SkipWhile(function);
 		else
 		{
-			List<T> result = new();
+			List<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
@@ -52227,7 +51648,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			if (!source.Any())
-				return new();
+				return [];
 			List<List<T>> result = new(64);
 			int i = 0, j = 0, k = 0;
 			result.Add(new(fragmentLength));
@@ -52250,8 +51671,7 @@ public partial class List<T, TCertain>
 
 	internal static bool StartsWithEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			if (list._size < list2._size)
@@ -52325,8 +51745,7 @@ public partial class List<T, TCertain>
 
 	internal static bool StartsWithEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			if (list._size < list2._size)
@@ -52475,8 +51894,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal SumEnumerable(IEnumerable<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52523,8 +51941,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal SumEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52583,8 +52000,7 @@ public partial class List<T, TCertain>
 
 	internal static double SumEnumerable(IEnumerable<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52631,8 +52047,7 @@ public partial class List<T, TCertain>
 
 	internal static double SumEnumerable(IEnumerable<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52691,8 +52106,7 @@ public partial class List<T, TCertain>
 
 	internal static int SumEnumerable(IEnumerable<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52739,8 +52153,7 @@ public partial class List<T, TCertain>
 
 	internal static int SumEnumerable(IEnumerable<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52799,8 +52212,7 @@ public partial class List<T, TCertain>
 
 	internal static uint SumEnumerable(IEnumerable<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52847,8 +52259,7 @@ public partial class List<T, TCertain>
 
 	internal static uint SumEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52907,8 +52318,7 @@ public partial class List<T, TCertain>
 
 	internal static long SumEnumerable(IEnumerable<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -52955,8 +52365,7 @@ public partial class List<T, TCertain>
 
 	internal static long SumEnumerable(IEnumerable<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -53015,8 +52424,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT SumEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -53063,8 +52471,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT SumEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -53473,7 +52880,7 @@ public partial class List<T, TCertain>
 			for (; i < index; i++)
 				if (!en.MoveNext())
 					return new();
-			List<T> result = new();
+			List<T> result = [];
 			LimitedQueue<T> queue = new(index2);
 			while (en.MoveNext())
 				queue.Enqueue(en.Current, result);
@@ -53549,7 +52956,7 @@ public partial class List<T, TCertain>
 			return list.TakeWhile(function);
 		else
 		{
-			List<T> result = new();
+			List<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			T item;
@@ -53564,7 +52971,7 @@ public partial class List<T, TCertain>
 			return list.TakeWhile(function);
 		else
 		{
-			List<T> result = new();
+			List<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			T item;
@@ -53575,8 +52982,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] ToArrayEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -53625,8 +53031,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] ToArrayEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -53688,7 +53093,7 @@ public partial class List<T, TCertain>
 	internal static T[] ToArrayEnumerable(IEnumerable<T> source)
 	{
 		if (source is List<T> list)
-			return list.ToArray();
+			return [.. list];
 		else if (source is T[] array)
 		{
 			var result = new T[array.Length];
@@ -53905,8 +53310,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AllEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (!function(source[i]))
@@ -53916,8 +53320,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AllEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (!function(source[i], i))
@@ -53933,8 +53336,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AnyEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (function(source[i]))
@@ -53944,8 +53346,7 @@ public partial class List<T, TCertain>
 
 	internal static bool AnyEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (function(source[i], i))
@@ -53955,10 +53356,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -53975,10 +53374,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54007,8 +53404,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54024,8 +53420,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54041,12 +53436,9 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54066,10 +53458,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54103,8 +53493,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54122,8 +53511,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -54141,8 +53529,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> BreakFilterEnumerable(ReadOnlySpan<T> source, Func<T, bool> function, out List<T> result2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(length / 2);
 		result2 = new(length / 2);
@@ -54161,8 +53548,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> BreakFilterEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function, out List<T> result2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(length / 2);
 		result2 = new(length / 2);
@@ -54181,8 +53567,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Length, source2.Length);
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54193,8 +53578,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Length, source2.Length);
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54215,8 +53599,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54227,8 +53610,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Length, source2.Length, source3.Length }.AsSpan());
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54249,8 +53631,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54261,8 +53642,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -54273,8 +53653,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, IEnumerable<TResult>> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(1024);
 		for (var i = 0; i < length; i++)
@@ -54284,8 +53663,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, IEnumerable<TResult>> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<TResult> result = new(1024);
 		for (var i = 0; i < length; i++)
@@ -54295,8 +53673,7 @@ public partial class List<T, TCertain>
 
 	internal static int CountEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = 0;
 		for (var i = 0; i < length; i++)
@@ -54307,8 +53684,7 @@ public partial class List<T, TCertain>
 
 	internal static int CountEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = 0;
 		for (var i = 0; i < length; i++)
@@ -54329,8 +53705,7 @@ public partial class List<T, TCertain>
 
 	internal static bool EqualsEnumerable<T2>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length != source2.Length)
 			return false;
 		var length = Math.Min(source.Length, source2.Length);
@@ -54342,8 +53717,7 @@ public partial class List<T, TCertain>
 
 	internal static bool EqualsEnumerable<T2>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length != source2.Length)
 			return false;
 		var length = Math.Min(source.Length, source2.Length);
@@ -54369,8 +53743,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FilterEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(length / 2);
 		for (var i = 0; i < length; i++)
@@ -54385,8 +53758,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FilterEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(length / 2);
 		for (var i = 0; i < length; i++)
@@ -54401,8 +53773,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 		{
@@ -54415,8 +53786,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 		{
@@ -54429,8 +53799,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		for (var i = 0; i < length; i++)
@@ -54445,8 +53814,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		for (var i = 0; i < length; i++)
@@ -54461,8 +53829,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		decimal indicator = 0;
@@ -54489,8 +53856,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		decimal indicator = 0;
@@ -54517,8 +53883,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		double indicator = 0;
@@ -54545,8 +53910,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		double indicator = 0;
@@ -54573,8 +53937,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		var indicator = 0;
@@ -54601,8 +53964,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		var indicator = 0;
@@ -54629,8 +53991,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		uint indicator = 0;
@@ -54657,8 +54018,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		uint indicator = 0;
@@ -54685,8 +54045,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		long indicator = 0;
@@ -54713,8 +54072,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		long indicator = 0;
@@ -54741,8 +54099,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		MpzT indicator = 0;
@@ -54769,8 +54126,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		MpzT indicator = 0;
@@ -54797,8 +54153,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54806,8 +54161,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54815,8 +54169,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54824,8 +54177,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54833,88 +54185,79 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
-		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
-		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
-		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
-		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
-		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
-		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
-		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<T> FindAllMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
-		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindAllEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54922,8 +54265,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54931,8 +54273,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54940,8 +54281,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54949,8 +54289,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54958,8 +54297,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54967,8 +54305,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54976,8 +54313,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -54985,8 +54321,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -54994,8 +54329,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -55003,8 +54337,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x) => function(x) == value);
@@ -55012,8 +54345,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindAllEnumerable(source, (x, index) => function(x, index) == value);
@@ -55021,8 +54353,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		decimal indicator = 0;
@@ -55049,8 +54380,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		decimal indicator = 0;
@@ -55077,8 +54407,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		double indicator = 0;
@@ -55105,8 +54434,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		double indicator = 0;
@@ -55133,8 +54461,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		var indicator = 0;
@@ -55161,8 +54488,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		var indicator = 0;
@@ -55189,8 +54515,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		uint indicator = 0;
@@ -55217,8 +54542,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		uint indicator = 0;
@@ -55245,8 +54569,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		long indicator = 0;
@@ -55273,8 +54596,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		long indicator = 0;
@@ -55301,8 +54623,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		MpzT indicator = 0;
@@ -55329,8 +54650,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> FindAllMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<T> result = new(1024);
 		MpzT indicator = 0;
@@ -55357,8 +54677,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindIndexesEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var j = 0;
@@ -55372,8 +54691,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var j = 0;
@@ -55387,8 +54705,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindIndexEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (function(source[i]))
@@ -55398,8 +54715,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			if (function(source[i], i))
@@ -55409,8 +54725,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastIndexEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 			if (function(source[i]))
@@ -55420,8 +54735,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 			if (function(source[i], i))
@@ -55431,8 +54745,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -55445,8 +54758,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastEnumerable(ReadOnlySpan<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		for (var i = length - 1; i >= 0; i--)
 		{
@@ -55459,8 +54771,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -55484,8 +54795,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -55509,8 +54819,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -55534,8 +54843,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -55559,8 +54867,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -55584,8 +54891,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -55609,8 +54915,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -55634,8 +54939,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -55659,8 +54963,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -55684,8 +54987,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -55709,8 +55011,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -55734,8 +55035,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -55759,8 +55059,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55768,8 +55067,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55777,8 +55075,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55786,8 +55083,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55795,8 +55091,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -55805,8 +55100,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -55815,8 +55109,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -55825,8 +55118,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -55835,8 +55127,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -55845,8 +55136,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -55855,8 +55145,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -55865,8 +55154,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -55875,8 +55163,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55884,8 +55171,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55893,8 +55179,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55902,8 +55187,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55911,8 +55195,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55920,8 +55203,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55929,8 +55211,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55938,8 +55219,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55947,8 +55227,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55956,8 +55235,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55965,8 +55243,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x) => function(x) == value);
@@ -55974,8 +55251,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastEnumerable(source, (x, index) => function(x, index) == value);
@@ -55983,8 +55259,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -56008,8 +55283,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -56033,8 +55307,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -56058,8 +55331,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -56083,8 +55355,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -56108,8 +55379,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -56133,8 +55403,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -56158,8 +55427,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -56183,8 +55451,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -56208,8 +55475,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -56233,8 +55499,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -56258,8 +55523,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindLastMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -56283,8 +55547,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -56308,8 +55571,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -56333,8 +55595,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -56358,8 +55619,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -56383,8 +55643,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -56408,8 +55667,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -56433,8 +55691,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -56458,8 +55715,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -56483,8 +55739,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -56508,8 +55763,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -56533,8 +55787,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -56558,8 +55811,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -56583,8 +55835,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56592,8 +55843,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56601,8 +55851,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56610,8 +55859,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56619,8 +55867,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -56629,8 +55876,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -56639,8 +55885,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -56649,8 +55894,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -56659,8 +55903,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -56669,8 +55912,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -56679,8 +55921,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -56689,8 +55930,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -56699,8 +55939,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56708,8 +55947,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56717,8 +55955,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56726,8 +55963,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56735,8 +55971,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56744,8 +55979,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56753,8 +55987,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56762,8 +55995,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56771,8 +56003,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56780,8 +56011,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56789,8 +56019,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x) => function(x) == value);
@@ -56798,8 +56027,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindLastIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -56807,8 +56035,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -56832,8 +56059,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -56857,8 +56083,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -56882,8 +56107,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -56907,8 +56131,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -56932,8 +56155,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -56957,8 +56179,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -56982,8 +56203,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -57007,8 +56227,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -57032,8 +56251,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -57057,8 +56275,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -57082,8 +56299,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindLastMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -57107,8 +56323,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -57132,8 +56347,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -57157,8 +56371,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -57182,8 +56395,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -57207,8 +56419,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -57232,8 +56443,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -57257,8 +56467,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -57282,8 +56491,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -57307,8 +56515,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -57332,8 +56539,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -57357,8 +56563,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -57382,8 +56587,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -57407,8 +56611,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57416,8 +56619,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57425,8 +56627,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57434,8 +56635,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57443,8 +56643,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -57453,8 +56652,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -57463,8 +56661,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -57473,8 +56670,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -57483,8 +56679,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -57493,8 +56688,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -57503,8 +56697,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -57513,8 +56706,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -57523,8 +56715,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57532,8 +56723,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57541,8 +56731,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57550,8 +56739,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57559,8 +56747,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57568,8 +56755,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57577,8 +56763,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57586,8 +56771,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57595,8 +56779,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57604,8 +56787,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57613,8 +56795,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x) => function(x) == value);
@@ -57622,8 +56803,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindEnumerable(source, (x, index) => function(x, index) == value);
@@ -57631,8 +56811,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -57656,8 +56835,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		decimal indicator = 0;
@@ -57681,8 +56859,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -57706,8 +56883,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		double indicator = 0;
@@ -57731,8 +56907,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -57756,8 +56931,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		var indicator = 0;
@@ -57781,8 +56955,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -57806,8 +56979,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		uint indicator = 0;
@@ -57831,8 +57003,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -57856,8 +57027,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		long indicator = 0;
@@ -57881,8 +57051,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -57906,8 +57075,7 @@ public partial class List<T, TCertain>
 
 	internal static T? FindMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		T? result = default;
 		MpzT indicator = 0;
@@ -57931,8 +57099,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -57962,8 +57129,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -57993,8 +57159,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -58024,8 +57189,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -58055,8 +57219,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -58086,8 +57249,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -58117,8 +57279,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -58148,8 +57309,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -58179,8 +57339,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -58210,8 +57369,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -58241,8 +57399,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -58272,8 +57429,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMaxIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -58303,8 +57459,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58312,8 +57467,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58321,8 +57475,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58330,8 +57483,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58339,88 +57491,79 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x) => function(x) == value2) : [];
 	}
 
 	internal static List<int> FindMeanIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
-		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : new();
+		return value == value2 ? FindIndexesEnumerable(source, (x, index) => function(x, index) == value2) : [];
 	}
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58428,8 +57571,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58437,8 +57579,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58446,8 +57587,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58455,8 +57595,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58464,8 +57603,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58473,8 +57611,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58482,8 +57619,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58491,8 +57627,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58500,8 +57635,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58509,8 +57643,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x) => function(x) == value);
@@ -58518,8 +57651,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMedianIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexesEnumerable(source, (x, index) => function(x, index) == value);
@@ -58527,8 +57659,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -58558,8 +57689,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -58589,8 +57719,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -58620,8 +57749,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -58651,8 +57779,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -58682,8 +57809,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -58713,8 +57839,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -58744,8 +57869,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -58775,8 +57899,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -58806,8 +57929,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -58837,8 +57959,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -58868,8 +57989,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> FindMinIndexesEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -58899,8 +58019,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -58924,8 +58043,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -58949,8 +58067,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -58974,8 +58091,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -58999,8 +58115,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -59024,8 +58139,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -59049,8 +58163,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -59074,8 +58187,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -59099,8 +58211,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -59124,8 +58235,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -59149,8 +58259,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -59174,8 +58283,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMaxIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -59199,8 +58307,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59208,8 +58315,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59217,8 +58323,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59226,8 +58331,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59235,8 +58339,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -59245,8 +58348,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (int)value;
@@ -59255,8 +58357,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -59265,8 +58366,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (uint)value;
@@ -59275,8 +58375,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -59285,8 +58384,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (long)value;
@@ -59295,8 +58393,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -59305,8 +58402,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMeanIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MeanEnumerable(source, function);
 		var value2 = (MpzT)value;
@@ -59315,8 +58411,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59324,8 +58419,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59333,8 +58427,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59342,8 +58435,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59351,8 +58443,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59360,8 +58451,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59369,8 +58459,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59378,8 +58467,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59387,8 +58475,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59396,8 +58483,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59405,8 +58491,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x) => function(x) == value);
@@ -59414,8 +58499,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMedianIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var value = MedianEnumerable(source, function);
 		return FindIndexEnumerable(source, (x, index) => function(x, index) == value);
@@ -59423,8 +58507,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -59448,8 +58531,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -59473,8 +58555,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -59498,8 +58579,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -59523,8 +58603,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -59548,8 +58627,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -59573,8 +58651,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -59598,8 +58675,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -59623,8 +58699,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -59648,8 +58723,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -59673,8 +58747,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -59698,8 +58771,7 @@ public partial class List<T, TCertain>
 
 	internal static int FindMinIndexEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -59723,8 +58795,7 @@ public partial class List<T, TCertain>
 
 	internal static void ForEachEnumerable(ReadOnlySpan<T> source, Action<T> action)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			action(source[i]);
@@ -59732,8 +58803,7 @@ public partial class List<T, TCertain>
 
 	internal static void ForEachEnumerable(ReadOnlySpan<T> source, Action<T, int> action)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		var length = source.Length;
 		for (var i = 0; i < length; i++)
 			action(source[i], i);
@@ -59741,9 +58811,8 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		var j = 0;
@@ -59762,9 +58831,8 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
 		var j = 0;
@@ -59783,7 +58851,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(T Key, int Count)> FrequencyTableEnumerable(ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		var length = source.Length;
 		List<(T Key, int Count)> result = new(length);
 		var j = 0;
@@ -59802,8 +58870,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
@@ -59823,8 +58890,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
@@ -59863,8 +58929,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
@@ -59884,8 +58949,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(TResult Key, int Count)> FrequencyTableEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<(TResult Key, int Count)> result = new(length);
@@ -59924,9 +58988,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		var j = 0;
@@ -59946,9 +59009,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
 		var j = 0;
@@ -59968,7 +59030,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, T>> GroupEnumerable(ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
 		var j = 0;
@@ -59988,8 +59050,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60010,8 +59071,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60052,8 +59112,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60074,8 +59133,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60116,8 +59174,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60138,8 +59195,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<T, TResult>> GroupEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
@@ -60180,9 +59236,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		var j = 0;
@@ -60202,9 +59257,8 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		ListHashSet<TResult> dic = new();
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
 		var j = 0;
@@ -60224,7 +59278,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, T>> GroupIndexesEnumerable(ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		var length = source.Length;
 		List<Group<int, T>> result = new(length);
 		var j = 0;
@@ -60244,8 +59298,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60266,8 +59319,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60308,8 +59360,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60330,8 +59381,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60372,8 +59422,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60394,8 +59443,7 @@ public partial class List<T, TCertain>
 
 	internal static List<Group<int, TResult>> GroupIndexesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<int, TResult>> result = new(length);
@@ -60449,8 +59497,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -60480,8 +59527,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -60511,8 +59557,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -60542,8 +59587,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -60573,8 +59617,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -60604,8 +59647,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -60635,8 +59677,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -60666,8 +59707,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -60697,8 +59737,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -60728,8 +59767,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -60759,8 +59797,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -60790,8 +59827,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -60995,8 +60031,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -61005,8 +60040,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -61015,8 +60049,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -61025,8 +60058,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -61035,8 +60067,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -61045,8 +60076,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -61055,8 +60085,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -61065,8 +60094,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -61075,8 +60103,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -61085,8 +60112,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -61095,8 +60121,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -61105,8 +60130,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -61151,8 +60175,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61160,8 +60183,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61169,8 +60191,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61178,8 +60199,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61187,8 +60207,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61196,8 +60215,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61205,8 +60223,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61214,8 +60231,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61223,8 +60239,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61232,8 +60247,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61241,8 +60255,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61250,8 +60263,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.IndexesOfEnumerable(list_, MedianEnumerable(list_));
@@ -61271,8 +60283,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -61302,8 +60313,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		decimal indicator = 0;
@@ -61333,8 +60343,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -61364,8 +60373,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		double indicator = 0;
@@ -61395,8 +60403,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -61426,8 +60433,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		var indicator = 0;
@@ -61457,8 +60463,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -61488,8 +60493,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		uint indicator = 0;
@@ -61519,8 +60523,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -61550,8 +60553,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		long indicator = 0;
@@ -61581,8 +60583,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -61612,8 +60613,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> IndexesOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		List<int> result = new(length);
 		MpzT indicator = 0;
@@ -61826,8 +60826,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -61851,8 +60850,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -61876,8 +60874,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -61901,8 +60898,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -61926,8 +60922,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -61951,8 +60946,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -61976,8 +60970,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -62001,8 +60994,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -62026,8 +61018,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -62051,8 +61042,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -62076,8 +61066,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -62101,8 +61090,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -62264,8 +61252,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -62275,8 +61262,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -62286,8 +61272,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -62297,8 +61282,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -62308,8 +61292,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -62318,8 +61301,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -62328,8 +61310,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -62338,8 +61319,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -62348,8 +61328,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -62358,8 +61337,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -62368,8 +61346,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -62378,8 +61355,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -62426,8 +61402,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62435,8 +61410,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62444,8 +61418,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62453,8 +61426,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62462,8 +61434,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62471,8 +61442,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62480,8 +61450,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62489,8 +61458,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62498,8 +61466,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62507,8 +61474,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62516,8 +61482,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62525,8 +61490,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -62546,8 +61510,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -62571,8 +61534,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -62596,8 +61558,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -62621,8 +61582,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -62646,8 +61606,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -62671,8 +61630,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -62696,8 +61654,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -62721,8 +61678,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -62746,8 +61702,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -62771,8 +61726,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -62796,8 +61750,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -62821,8 +61774,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -63050,8 +62002,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -63075,8 +62026,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -63100,8 +62050,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -63125,8 +62074,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -63150,8 +62098,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -63175,8 +62122,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -63200,8 +62146,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -63225,8 +62170,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -63250,8 +62194,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -63275,8 +62218,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -63300,8 +62242,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -63325,8 +62266,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -63488,8 +62428,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -63499,8 +62438,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -63510,8 +62448,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -63521,8 +62458,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = MeanEnumerable(list_);
@@ -63532,8 +62468,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -63542,8 +62477,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -63552,8 +62486,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -63562,8 +62495,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
@@ -63572,8 +62504,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -63582,8 +62513,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
@@ -63592,8 +62522,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -63602,8 +62531,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
@@ -63650,8 +62578,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63659,8 +62586,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63668,8 +62594,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63677,8 +62602,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63686,8 +62610,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63695,8 +62618,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63704,8 +62626,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63713,8 +62634,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63722,8 +62642,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63731,8 +62650,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63740,8 +62658,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63749,8 +62666,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ConvertEnumerable(source, function);
 		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
@@ -63770,8 +62686,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -63795,8 +62710,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		decimal indicator = 0;
@@ -63820,8 +62734,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -63845,8 +62758,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		double indicator = 0;
@@ -63870,8 +62782,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -63895,8 +62806,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		var indicator = 0;
@@ -63920,8 +62830,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -63945,8 +62854,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		uint indicator = 0;
@@ -63970,8 +62878,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -63995,8 +62902,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		long indicator = 0;
@@ -64020,8 +62926,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -64045,8 +62950,7 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = -1;
 		MpzT indicator = 0;
@@ -64208,8 +63112,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MaxEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal indicator = 0;
 		decimal f;
@@ -64226,8 +63129,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal indicator = 0;
 		decimal f;
@@ -64244,8 +63146,7 @@ public partial class List<T, TCertain>
 
 	internal static double MaxEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double indicator = 0;
 		double f;
@@ -64262,8 +63163,7 @@ public partial class List<T, TCertain>
 
 	internal static double MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double indicator = 0;
 		double f;
@@ -64280,8 +63180,7 @@ public partial class List<T, TCertain>
 
 	internal static int MaxEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var indicator = 0;
 		int f;
@@ -64298,8 +63197,7 @@ public partial class List<T, TCertain>
 
 	internal static int MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var indicator = 0;
 		int f;
@@ -64316,8 +63214,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MaxEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint indicator = 0;
 		uint f;
@@ -64334,8 +63231,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint indicator = 0;
 		uint f;
@@ -64352,8 +63248,7 @@ public partial class List<T, TCertain>
 
 	internal static long MaxEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long indicator = 0;
 		long f;
@@ -64370,8 +63265,7 @@ public partial class List<T, TCertain>
 
 	internal static long MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long indicator = 0;
 		long f;
@@ -64388,8 +63282,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MaxEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT indicator = 0;
 		MpzT f;
@@ -64406,8 +63299,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MaxEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT indicator = 0;
 		MpzT f;
@@ -64520,8 +63412,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MeanEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal result = 0;
 		for (var i = 0; i < length; i++)
@@ -64531,8 +63422,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal result = 0;
 		for (var i = 0; i < length; i++)
@@ -64542,8 +63432,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64553,8 +63442,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64564,8 +63452,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64575,8 +63462,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64586,8 +63472,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64597,8 +63482,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64608,8 +63492,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64619,8 +63502,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64630,8 +63512,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64641,8 +63522,7 @@ public partial class List<T, TCertain>
 
 	internal static double MeanEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -64786,8 +63666,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal indicator = 0;
 		decimal f;
@@ -64804,8 +63683,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal MinEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal indicator = 0;
 		decimal f;
@@ -64822,8 +63700,7 @@ public partial class List<T, TCertain>
 
 	internal static double MinEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double indicator = 0;
 		double f;
@@ -64840,8 +63717,7 @@ public partial class List<T, TCertain>
 
 	internal static double MinEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double indicator = 0;
 		double f;
@@ -64858,8 +63734,7 @@ public partial class List<T, TCertain>
 
 	internal static int MinEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var indicator = 0;
 		int f;
@@ -64876,8 +63751,7 @@ public partial class List<T, TCertain>
 
 	internal static int MinEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var indicator = 0;
 		int f;
@@ -64894,8 +63768,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MinEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint indicator = 0;
 		uint f;
@@ -64912,8 +63785,7 @@ public partial class List<T, TCertain>
 
 	internal static uint MinEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint indicator = 0;
 		uint f;
@@ -64930,8 +63802,7 @@ public partial class List<T, TCertain>
 
 	internal static long MinEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long indicator = 0;
 		long f;
@@ -64948,8 +63819,7 @@ public partial class List<T, TCertain>
 
 	internal static long MinEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long indicator = 0;
 		long f;
@@ -64966,8 +63836,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MinEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT indicator = 0;
 		MpzT f;
@@ -64984,8 +63853,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT MinEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT indicator = 0;
 		MpzT f;
@@ -65098,13 +63966,11 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PairsEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -65118,13 +63984,11 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PairsEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		List<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -65138,11 +64002,10 @@ public partial class List<T, TCertain>
 
 	internal static List<(T, T)> PairsEnumerable(ReadOnlySpan<T> source, int offset = 1)
 	{
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		List<(T, T)> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -65180,8 +64043,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65197,8 +64059,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65229,8 +64090,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65246,8 +64106,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65278,8 +64137,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65295,8 +64153,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> RemoveDoublesEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<T> result = new(1024);
@@ -65327,7 +64184,7 @@ public partial class List<T, TCertain>
 
 	internal static List<int> RepresentIntoNumbersEnumerable(ReadOnlySpan<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		var length = source.Length;
 		List<int> result = new(length);
 		var j = 0;
@@ -65389,8 +64246,7 @@ public partial class List<T, TCertain>
 
 	internal static bool StartsWithEnumerable<T2>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length < source2.Length)
 			return false;
 		var length = source2.Length;
@@ -65402,8 +64258,7 @@ public partial class List<T, TCertain>
 
 	internal static bool StartsWithEnumerable<T2>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length < source2.Length)
 			return false;
 		var length = source2.Length;
@@ -65429,8 +64284,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal SumEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal result = 0;
 		for (var i = 0; i < length; i++)
@@ -65440,8 +64294,7 @@ public partial class List<T, TCertain>
 
 	internal static decimal SumEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		decimal result = 0;
 		for (var i = 0; i < length; i++)
@@ -65451,8 +64304,7 @@ public partial class List<T, TCertain>
 
 	internal static double SumEnumerable(ReadOnlySpan<T> source, Func<T, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -65462,8 +64314,7 @@ public partial class List<T, TCertain>
 
 	internal static double SumEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		double result = 0;
 		for (var i = 0; i < length; i++)
@@ -65473,8 +64324,7 @@ public partial class List<T, TCertain>
 
 	internal static int SumEnumerable(ReadOnlySpan<T> source, Func<T, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = 0;
 		for (var i = 0; i < length; i++)
@@ -65484,8 +64334,7 @@ public partial class List<T, TCertain>
 
 	internal static int SumEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = 0;
 		for (var i = 0; i < length; i++)
@@ -65495,8 +64344,7 @@ public partial class List<T, TCertain>
 
 	internal static uint SumEnumerable(ReadOnlySpan<T> source, Func<T, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint result = 0;
 		for (var i = 0; i < length; i++)
@@ -65506,8 +64354,7 @@ public partial class List<T, TCertain>
 
 	internal static uint SumEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		uint result = 0;
 		for (var i = 0; i < length; i++)
@@ -65517,8 +64364,7 @@ public partial class List<T, TCertain>
 
 	internal static long SumEnumerable(ReadOnlySpan<T> source, Func<T, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long result = 0;
 		for (var i = 0; i < length; i++)
@@ -65528,8 +64374,7 @@ public partial class List<T, TCertain>
 
 	internal static long SumEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		long result = 0;
 		for (var i = 0; i < length; i++)
@@ -65539,8 +64384,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT SumEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT result = 0;
 		for (var i = 0; i < length; i++)
@@ -65550,8 +64394,7 @@ public partial class List<T, TCertain>
 
 	internal static MpzT SumEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		MpzT result = 0;
 		for (var i = 0; i < length; i++)
@@ -65633,8 +64476,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] ToArrayEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
@@ -65644,8 +64486,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] ToArrayEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
@@ -65655,10 +64496,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65675,10 +64514,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65706,8 +64543,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65723,8 +64559,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65740,12 +64575,9 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65765,10 +64597,8 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65801,8 +64631,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65820,8 +64649,7 @@ public partial class List<T, TCertain>
 
 	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		List<TResult2> result2 = new(length);
@@ -65839,8 +64667,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Count, source2.Count);
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -65855,8 +64682,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Count, source2.Count);
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -65885,8 +64711,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -65902,8 +64727,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -66000,8 +64824,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i => result._items[i] = function(source[i]));
@@ -66011,8 +64834,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i => result._items[i] = function(source[i], i));
@@ -66030,8 +64852,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> PFillEnumerable<TResult>(Func<int, TResult> function, int length)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		List<TResult> result = new(length);
 		Parallel.For(0, length, i => result._items[i] = function(i));
 		result._size = length;
@@ -66047,8 +64868,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] PFillArrayEnumerable<TResult>(Func<int, TResult> function, int length)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var result = new TResult[length];
 		Parallel.For(0, length, i => result[i] = function(i));
 		return result;
@@ -66056,8 +64876,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> PFilterEnumerable(G.IList<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<bool> values = new(length);
 		Parallel.For(0, length, i => values._items[i] = function(source[i]));
@@ -66071,8 +64890,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> PFilterEnumerable(G.IList<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		List<bool> values = new(length);
 		Parallel.For(0, length, i => values._items[i] = function(source[i], i));
@@ -66086,8 +64904,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] PToArrayEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = new TResult[length];
 		Parallel.For(0, length, i => result[i] = function(source[i]));
@@ -66096,8 +64913,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] PToArrayEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = new TResult[length];
 		Parallel.For(0, length, i => result[i] = function(source[i], i));
@@ -66291,10 +65107,8 @@ public unsafe partial class NList<T>
 {
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66374,10 +65188,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66508,8 +65320,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66584,8 +65395,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66660,12 +65470,9 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66760,10 +65567,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -66917,8 +65722,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -67003,8 +65807,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(IEnumerable<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -67089,10 +65892,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67109,10 +65910,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67141,8 +65940,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67158,8 +65956,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(ReadOnlySpan<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67175,12 +65972,9 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67200,10 +65994,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67237,8 +66029,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67256,8 +66047,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<T_, TResult, TResult2, TResult3>(ReadOnlySpan<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67275,10 +66065,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67295,10 +66083,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67327,8 +66113,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(NList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67344,8 +66129,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<TResult, TResult2>(NList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67361,12 +66145,9 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67386,10 +66167,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67423,8 +66202,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(NList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67442,8 +66220,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) BreakEnumerable<TResult, TResult2, TResult3>(NList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -67461,8 +66238,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2)
 		{
 			var length = Min(list.Length, list2.Length);
@@ -67521,8 +66297,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2)
 		{
 			var length = Min(list.Length, list2.Length);
@@ -67639,8 +66414,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
@@ -67703,8 +66477,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
@@ -67829,8 +66602,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, Func<T_, T2, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Length, source2.Length);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67841,8 +66613,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, Func<T_, T2, int, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Length, source2.Length);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67863,8 +66634,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67875,8 +66645,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67897,8 +66666,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, TResult>(NList<T> source, NList<T2> source2, Func<T, T2, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source._size, source2._size);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67909,8 +66677,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, TResult>(NList<T> source, NList<T2> source2, Func<T, T2, int, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source._size, source2._size);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67931,8 +66698,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67943,8 +66709,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67965,8 +66730,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -68020,8 +66784,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
@@ -68087,8 +66850,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68099,8 +66861,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68111,8 +66872,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<TResult>(NList<T> source, Func<T, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68123,8 +66883,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68138,8 +66897,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertAndJoinEnumerable<TResult>(NList<T> source, Func<T, IEnumerable<TResult>> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68149,8 +66907,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> ConvertAndJoinEnumerable<TResult>(NList<T> source, Func<T, int, IEnumerable<TResult>> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -68171,8 +66928,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> FillEnumerable<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(i);
@@ -68182,8 +66938,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> FilterEnumerable(NList<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<T> result = new(length);
 		var j = 0;
@@ -68200,8 +66955,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> FilterEnumerable(NList<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<T> result = new(length);
 		var j = 0;
@@ -68218,8 +66972,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> FindAllEnumerable(NList<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<T> result = new(length);
 		var j = 0;
@@ -68236,8 +66989,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> FindAllEnumerable(NList<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source._size;
 		NList<T> result = new(length);
 		var j = 0;
@@ -68267,15 +67019,13 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PairsEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, T_, TResult> function, int offset = 1) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T_> list)
 		{
 			var length = list.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68290,7 +67040,7 @@ public unsafe partial class NList<T>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68305,7 +67055,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68320,7 +67070,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68357,15 +67107,13 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PairsEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, T_, int, TResult> function, int offset = 1) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T_> list)
 		{
 			var length = list.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68380,7 +67128,7 @@ public unsafe partial class NList<T>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68395,7 +67143,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68410,7 +67158,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68447,13 +67195,12 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T)> PairsEnumerable(IEnumerable<T> source, int offset = 1)
 	{
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		if (source is List<T> list)
 		{
 			var length = list.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68468,7 +67215,7 @@ public unsafe partial class NList<T>
 		{
 			var length = array.Length - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68483,7 +67230,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list2.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68498,7 +67245,7 @@ public unsafe partial class NList<T>
 		{
 			var length = list3.Count - offset;
 			if (length <= 0)
-				return new();
+				return [];
 			NList<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -68536,13 +67283,11 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PairsEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, T_, TResult> function, int offset = 1) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -68556,13 +67301,11 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PairsEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, T_, int, TResult> function, int offset = 1) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -68576,11 +67319,10 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T)> PairsEnumerable(ReadOnlySpan<T> source, int offset = 1)
 	{
-		if (offset < 1)
-			throw new ArgumentOutOfRangeException(nameof(offset));
+		ArgumentOutOfRangeException.ThrowIfLessThan(offset, 1);
 		var length = source.Length - offset;
 		if (length <= 0)
-			return new();
+			return [];
 		NList<(T, T)> result = new(length);
 		for (var i = 0; i < length; i++)
 		{
@@ -68594,8 +67336,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68613,8 +67354,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(EqualityComparer<TResult>.Default);
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68649,8 +67389,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68668,8 +67407,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68704,8 +67442,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68723,8 +67460,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source._size;
 		NList<T> result = new(length);
@@ -68759,7 +67495,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<int> RepresentIntoNumbersEnumerable(NList<T> source)
 	{
-		ListHashSet<T> dic = new();
+		ListHashSet<T> dic = [];
 		var length = source._size;
 		NList<int> result = new(length);
 		var j = 0;
@@ -68818,7 +67554,7 @@ public unsafe partial class NList<T>
 			return list.SkipWhile(function);
 		else
 		{
-			NList<T> result = new();
+			NList<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
@@ -68833,7 +67569,7 @@ public unsafe partial class NList<T>
 			return list.SkipWhile(function);
 		else
 		{
-			NList<T> result = new();
+			NList<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
@@ -68895,7 +67631,7 @@ public unsafe partial class NList<T>
 			return list.TakeWhile(function);
 		else
 		{
-			NList<T> result = new();
+			NList<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			T item;
@@ -68910,7 +67646,7 @@ public unsafe partial class NList<T>
 			return list.TakeWhile(function);
 		else
 		{
-			NList<T> result = new();
+			NList<T> result = [];
 			var en = source.GetEnumerator();
 			var i = 0;
 			T item;
@@ -68921,10 +67657,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -68941,10 +67675,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -68972,8 +67704,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -68989,8 +67720,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -69006,12 +67736,9 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
-		if (function3 == null)
-			throw new ArgumentNullException(nameof(function3));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -69031,10 +67758,8 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
-		if (function2 == null)
-			throw new ArgumentNullException(nameof(function2));
+		ArgumentNullException.ThrowIfNull(function);
+		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -69067,8 +67792,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -69086,8 +67810,7 @@ public unsafe partial class NList<T>
 
 	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
@@ -69105,8 +67828,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -69121,8 +67843,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -69151,8 +67872,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -69168,8 +67888,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -69266,8 +67985,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i => result._items[i] = function(source[i]));
@@ -69277,8 +67995,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i =>
@@ -69300,8 +68017,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> PFillEnumerable<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		NList<TResult> result = new(length);
 		Parallel.For(0, length, i => result._items[i] = function(i));
 		result._size = length;
@@ -69310,8 +68026,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> PFilterEnumerable(G.IList<T> source, Func<T, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<bool> values = new(length);
 		Parallel.For(0, length, i => values._items[i] = function(source[i]));
@@ -69325,8 +68040,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<T> PFilterEnumerable(G.IList<T> source, Func<T, int, bool> function)
 	{
-		if (function == null)
-			throw new ArgumentNullException(nameof(function));
+		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		NList<bool> values = new(length);
 		Parallel.For(0, length, i => values._items[i] = function(source[i], i));

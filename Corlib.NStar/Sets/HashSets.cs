@@ -15,20 +15,19 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	private protected Entry[] entries = default!;
 	internal const int HashPrime = 101;
 	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
-	internal static readonly int[] primes = {
+	internal static readonly int[] primes = [
 			3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
 			1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
 			17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
 			187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
-			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
+			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369];
 
 	public override int Capacity
 	{
 		get => buckets.Length;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			Resize(value, false);
 			Changed();
 		}
@@ -302,8 +301,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(int capacity, IEqualityComparer<T>? comparer)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
 			Initialize(capacity, out buckets, out entries);
 		else
@@ -318,8 +316,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
@@ -328,8 +325,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
@@ -476,7 +472,7 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where TCertain : TreeHashSet<T, TCertain>, new()
 {
-	private protected readonly TreeSet<int> deleted = new();
+	private protected readonly TreeSet<int> deleted = [];
 	private protected byte fixes = 0;
 
 	public TreeHashSet() : this(0, (IEqualityComparer<T>?)null) { }
@@ -487,8 +483,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
 			Initialize(capacity, out buckets, out entries);
 		else
@@ -503,8 +498,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
@@ -513,8 +507,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}

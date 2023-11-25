@@ -1,10 +1,12 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Numerics;
 
 // Disable warning about missing XML comments.
 
 namespace Mpir.NET;
 
-public struct MpzT : ICloneable, IConvertible, IComparable
+public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 {
 	#region Data
 	private const uint sDefaultStringBase = 10u;
@@ -94,19 +96,24 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 
 	#region Predefined Values
 
-	public static readonly MpzT NegativeTen = new(-10);
-	public static readonly MpzT NegativeThree = new(-3);
-	public static readonly MpzT NegativeTwo = new(-2);
-	public static readonly MpzT NegativeOne = new(-1);
-	public static readonly MpzT Zero = new(0);
-	public static readonly MpzT One = new(1);
-	public static readonly MpzT Two = new(2);
-	public static readonly MpzT Three = new(3);
-	public static readonly MpzT Ten = new(10);
+	public static MpzT NegativeTen => new(-10);
+	public static MpzT NegativeThree => new(-3);
+	public static MpzT NegativeTwo => new(-2);
+	public static MpzT NegativeOne => new(-1);
+	public static MpzT Zero => new(0);
+	public static MpzT One => new(1);
+	public static MpzT Two => new(2);
+	public static MpzT Three => new(3);
+	public static MpzT Ten => new(10);
+	public static MpzT AdditiveIdentity => Zero;
+	public static MpzT MultiplicativeIdentity => One;
+	public static int Radix => 2;
 
 	#endregion
 
 	#region Operators
+
+	public static MpzT operator +(MpzT value) => new(value);
 
 	public static MpzT operator -(MpzT x)
 	{
@@ -1252,6 +1259,101 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 
 	#endregion
 
+	#region Static Methods
+
+	public static MpzT Abs(MpzT value) => value.Abs();
+	public static bool IsCanonical(MpzT value) => true;
+	public static bool IsComplexNumber(MpzT value) => true;
+	public static bool IsEvenInteger(MpzT value) => (value & 1) == 0;
+	public static bool IsFinite(MpzT value) => true;
+	public static bool IsImaginaryNumber(MpzT value) => false;
+	public static bool IsInfinity(MpzT value) => false;
+	public static bool IsInteger(MpzT value) => true;
+	public static bool IsNaN(MpzT value) => false;
+	public static bool IsNegative(MpzT value) => value < 0;
+	public static bool IsNegativeInfinity(MpzT value) => false;
+	public static bool IsNormal(MpzT value) => true;
+	public static bool IsOddInteger(MpzT value) => !IsEvenInteger(value);
+	public static bool IsPositive(MpzT value) => value > 0;
+	public static bool IsPositiveInfinity(MpzT value) => false;
+	public static bool IsRealNumber(MpzT value) => true;
+	public static bool IsSubnormal(MpzT value) => true;
+	public static bool IsZero(MpzT value) => value == 0;
+	public static MpzT Max(MpzT x, MpzT y) => x > y ? x : y;
+	public static MpzT MaxMagnitude(MpzT x, MpzT y) => Max(x, y);
+	public static MpzT MaxMagnitudeNumber(MpzT x, MpzT y) => Max(x, y);
+	public static MpzT Min(MpzT x, MpzT y) => x < y ? x : y;
+	public static MpzT MinMagnitude(MpzT x, MpzT y) => Min(x, y);
+	public static MpzT MinMagnitudeNumber(MpzT x, MpzT y) => Min(x, y);
+	public static MpzT Parse(ReadOnlySpan<char> s, IFormatProvider? provider) => Parse(s.ToString(), provider);
+	public static MpzT Parse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider) => Parse(s.ToString(), style, provider);
+	public static MpzT Parse(string s) => new(s);
+	public static MpzT Parse(string s, IFormatProvider? provider) => new(s);
+	public static MpzT Parse(string s, NumberStyles style, IFormatProvider? provider) => new(s);
+
+	private static bool TryConvertFromChecked<TOther>(TOther value, out MpzT result)
+	{
+		try
+		{
+			result = value switch
+			{
+				MpzT z => z,
+				byte y => y,
+				sbyte sy => sy,
+				short si => si,
+				ushort usi => usi,
+				int i => i,
+				uint ui => ui,
+				long li => li,
+				ulong uli => uli,
+				float f => f,
+				double d => d,
+				string s => new(s),
+				_ => throw new InvalidCastException(),
+			};
+			return true;
+		}
+		catch
+		{
+			result = default;
+			return false;
+		}
+	}
+
+	private static bool TryConvertToChecked<TOther>(MpzT value, out TOther result)
+	{
+		try
+		{
+			result = (TOther)((IConvertible)value).ToType(typeof(TOther), new CultureInfo("en-US"));
+			return true;
+		}
+		catch
+		{
+			result = default!;
+			return false;
+		}
+	}
+
+	public static bool TryParse(ReadOnlySpan<char> s, NumberStyles style, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) => TryParse(s.ToString(), out result);
+	public static bool TryParse(ReadOnlySpan<char> s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) => TryParse(s.ToString(), out result);
+	public static bool TryParse([NotNullWhen(true)] string? s, [MaybeNullWhen(false)] out MpzT result)
+	{
+		try
+		{
+			result = Parse(s ?? "");
+			return true;
+		}
+		catch
+		{
+			result = default;
+			return false;
+		}
+	}
+	public static bool TryParse([NotNullWhen(true)] string? s, NumberStyles style, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) => TryParse(s, out result);
+	public static bool TryParse([NotNullWhen(true)] string? s, IFormatProvider? provider, [MaybeNullWhen(false)] out MpzT result) => TryParse(s, out result);
+
+	#endregion
+
 	#region Comparing
 
 	public override readonly int GetHashCode()
@@ -1672,6 +1774,10 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 
 	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
 
+	public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider) => throw new NotImplementedException();
+
+	public string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "", ToString());
+
 	#region IConvertible Members
 
 	readonly TypeCode IConvertible.GetTypeCode() => TypeCode.Object;
@@ -1769,6 +1875,45 @@ public struct MpzT : ICloneable, IConvertible, IComparable
 	readonly ulong IConvertible.ToUInt64(IFormatProvider? provider) => (ulong)this;
 
 	#endregion
+
+	static bool INumberBase<MpzT>.TryConvertFromChecked<TOther>(TOther value, out MpzT result) => TryConvertFromChecked(value, out result);
+
+	static bool INumberBase<MpzT>.TryConvertFromSaturating<TOther>(TOther value, out MpzT result)
+	{
+		try
+		{
+			result = value switch
+			{
+				MpzT z => z,
+				byte y => y,
+				sbyte sy => sy,
+				short si => si,
+				ushort usi => usi,
+				int i => i,
+				uint ui => ui,
+				long li => li,
+				ulong uli => uli,
+				float f => MathF.Ceiling(MathF.Abs(f)) * MathF.Sign(f),
+				double d => Math.Ceiling(Math.Abs(d)) * Math.Sign(d),
+				string s => new(s),
+				_ => throw new InvalidCastException(),
+			};
+			return true;
+		}
+		catch
+		{
+			result = default;
+			return false;
+		}
+	}
+
+	static bool INumberBase<MpzT>.TryConvertFromTruncating<TOther>(TOther value, out MpzT result) => TryConvertFromChecked(value, out result);
+
+	static bool INumberBase<MpzT>.TryConvertToChecked<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
+
+	static bool INumberBase<MpzT>.TryConvertToSaturating<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
+
+	static bool INumberBase<MpzT>.TryConvertToTruncating<TOther>(MpzT value, out TOther result) => TryConvertToChecked(value, out result);
 
 	#endregion Conversions
 }

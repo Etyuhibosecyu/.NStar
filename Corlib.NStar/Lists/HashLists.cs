@@ -13,16 +13,16 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected int[] buckets = default!;
 	private protected Entry[] entries = default!;
-	private protected readonly FastDelHashSet<T> uniqueElements = new();
+	private protected readonly FastDelHashSet<T> uniqueElements = [];
 	internal const int HashPrime = 101;
 	internal const int MaxPrimeArrayLength = 0x7FEFFFFD;
 	internal const int HashSearchMultiplier = 32, AnyHashIndexThreshold = HashSearchMultiplier << 1;
-	internal static readonly int[] primes = {
+	internal static readonly int[] primes = [
 			3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
 			1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
 			17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
 			187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
-			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369};
+			1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369];
 
 	public BaseHashList() : this(0, (IEqualityComparer<T>?)null) { }
 
@@ -32,8 +32,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public BaseHashList(int capacity, IEqualityComparer<T>? comparer)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
 			Initialize(capacity, out buckets, out entries);
 		else
@@ -48,8 +47,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public BaseHashList(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection.TryGetLengthEasily(out var length) ? length : 0, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			Add(item);
 	}
@@ -58,8 +56,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public BaseHashList(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			Add(item);
 	}
@@ -77,8 +74,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		get => buckets.Length;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			Resize(value, false);
 			Changed();
 		}
@@ -156,10 +152,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		var endIndex = index + length;
@@ -185,7 +179,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		List<int> result = new();
+		List<int> result = [];
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
@@ -212,10 +206,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (buckets != null)
@@ -305,10 +297,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (_size == 0)
 			return -1;
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length > index + 1)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, index + 1);
 		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
 			if (Comparer.Equals(entries[i].item, item))
@@ -324,13 +314,11 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		List<int> result = new();
+		List<int> result = [];
 		var endIndex = index + length;
 		for (var i = index; i < endIndex; i++)
 			if (Comparer.Equals(entries[i].item, item))
@@ -521,12 +509,10 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		catch
 		{
 		}
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.IList<T> list)
 		{
-			if (index > _size - list.Count)
-				throw new ArgumentOutOfRangeException(nameof(index));
+			ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _size - list.Count);
 			for (var i = 0; i < list.Count; i++)
 			{
 				while (entries[index].hashCode >= 0)

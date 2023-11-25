@@ -16,8 +16,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public BigQueue(MpzT capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity <= CapacityFirstStep)
 		{
 			low = new((int)capacity);
@@ -190,7 +189,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	public virtual T[] ToArray()
 	{
 		if (!isHigh && low != null)
-			return low.ToArray();
+			return [.. low];
 		else
 			throw new InvalidOperationException("Слишком большая очередь для преобразования в массив!");
 	}
@@ -306,8 +305,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length <= CapacityFirstStep)
 		{
 			low = CapacityLowCreator((int)length);
@@ -411,10 +409,8 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public override bool Contains(T item, MpzT index, MpzT length)
 	{
-		if (index > Size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Size);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		try
@@ -679,10 +675,8 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public override TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -759,8 +753,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length <= CapacityFirstStep)
 		{
 			low = new((int)length, defaultValue);
@@ -965,14 +958,13 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public virtual BigBitArray And(BigBitArray value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.And(value.low);
 		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.And(y)).ToArray();
+			high = [.. high.Combine(value.high, (x, y) => x.And(y))];
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
@@ -980,10 +972,8 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public virtual uint GetSmallRange(MpzT index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -1023,14 +1013,13 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public virtual BigBitArray Or(BigBitArray value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Or(value.low);
 		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.Or(y)).ToArray();
+			high = [.. high.Combine(value.high, (x, y) => x.Or(y))];
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
@@ -1058,14 +1047,13 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public virtual BigBitArray Xor(BigBitArray value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Xor(value.low);
 		else if (high != null && value.high != null)
-			high = high.Combine(value.high, (x, y) => x.Xor(y)).ToArray();
+			high = [.. high.Combine(value.high, (x, y) => x.Xor(y))];
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;

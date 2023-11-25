@@ -28,15 +28,14 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public SortedDictionary()
 	{
-		keys = new();
-		values = new();
+		keys = [];
+		values = [];
 		comparer = G.Comparer<TKey>.Default;
 	}
 
 	public SortedDictionary(int capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		keys = new(capacity);
 		values = new(capacity);
 		comparer = G.Comparer<TKey>.Default;
@@ -210,8 +209,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
+		ArgumentNullException.ThrowIfNull(key);
 		try
 		{
 			var tempKey = (TKey)key;
@@ -259,8 +257,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < Length)
@@ -274,8 +271,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new ArgumentException(null);
 		if (array.GetLowerBound(0) != 0)
@@ -358,8 +354,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	private static bool IsCompatibleKey(object key)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
+		ArgumentNullException.ThrowIfNull(key);
 		return key is TKey;
 	}
 
@@ -655,8 +650,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
 				throw new ArgumentException(null);
 			try
@@ -717,8 +711,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
 				throw new ArgumentException(null);
 			try

@@ -10,16 +10,14 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public Buffer(int capacity)
 	{
-		if (capacity <= 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(capacity);
 		_items = new T[capacity];
 		_start = 0;
 	}
 
 	public Buffer(IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -45,8 +43,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public Buffer(int capacity, IEnumerable<T> collection) : this(capacity)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.IList<T> list)
 		{
 			var length = list.Count;
@@ -67,17 +64,15 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public Buffer(params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
-		_items = array.ToArray();
+		_items = [.. array];
 		_start = 0;
 	}
 
 	public Buffer(int capacity, params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = Min(capacity, array.Length);
 		_items = new T[capacity];
 		Array.Copy(array, Max(0, array.Length - _size), _items, 0, _size);
@@ -108,12 +103,10 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		get => _items.Length;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			if (value == _items.Length)
 				return;
-			if (value == 0)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfZero(value);
 			var newItems = new T[value];
 			if (_size > 0)
 			{
@@ -417,14 +410,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public List(int capacity)
 	{
-		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_items = capacity == 0 ? _emptyArray : (new T[capacity]);
 	}
 
 	public List(IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -449,8 +441,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public List(int capacity, IEnumerable<T> collection) : this(capacity)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -471,19 +462,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public List(params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
-		_items = array.ToArray();
+		_items = [.. array];
 	}
 
 	public List(int capacity, params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
 		if (array.Length > capacity)
-			_items = array.ToArray();
+			_items = [.. array];
 		else
 		{
 			_items = new T[capacity];
@@ -518,8 +507,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		get => _items.Length;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			if (value == _items.Length)
 				return;
 			if (value > 0)
@@ -539,10 +527,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public override Span<T> AsSpan(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -556,10 +542,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual int BinarySearch(int index, int length, T item, IComparer<T> comparer)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		return Array.BinarySearch(_items, index, length, item, comparer);
@@ -691,13 +675,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 					Array.Copy(_items, 0, newItems, 0, index);
 				if (index < _size)
 					Array.Copy(_items, index, newItems, index + length, _size - index);
-				if (this == list)
-				{
-					Array.Copy(_items, 0, newItems, index, index);
-					Array.Copy(_items, index + length, newItems, index * 2, _size - index);
-				}
-				else
-					Array.Copy(list._items, 0, newItems, index, length);
+				Array.Copy(list._items, 0, newItems, index, length);
 				_items = newItems;
 			}
 			else
@@ -782,10 +760,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public unsafe virtual TCertain NSort(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (this is List<uint> uintList)
@@ -801,10 +777,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public unsafe virtual TCertain NSort(Func<T, uint> function, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		_items.NSort(function, index, length);
@@ -832,10 +806,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain Sort(int index, int length, IComparer<T> comparer)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		Array.Sort(_items, index, length, comparer);
@@ -863,10 +835,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain Sort<TValue, TValueCertain>(List<TValue, TValueCertain> values, int index, int length, IComparer<T>? comparer) where TValueCertain : List<TValue, TValueCertain>, new()
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (index + length > values._size)
@@ -1052,14 +1022,13 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public NList(int capacity)
 	{
-		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_items = capacity == 0 ? _emptyArray : (T*)Marshal.AllocHGlobal(sizeof(T) * (_capacity = capacity));
 	}
 
 	public NList(IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -1085,8 +1054,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public NList(int capacity, IEnumerable<T> collection) : this(capacity)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -1111,8 +1079,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public NList(params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_capacity = _size = array.Length;
 		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
 		fixed (T* ptr = array)
@@ -1121,8 +1088,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public NList(int capacity, params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_capacity = Max(capacity, _size = array.Length);
 		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
 		fixed (T* ptr = array)
@@ -1163,8 +1129,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		get => _capacity;
 		set
 		{
-			if (value < _size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			if (value == _capacity)
 				return;
 			if (value > 0)
@@ -1193,10 +1158,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public override Span<T> AsSpan(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -1240,10 +1203,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not G.IList<T>)
 			return base.EqualsInternal(collection, index, toEnd);
 		if (collection is NList<T> nList)
@@ -1288,14 +1249,12 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public override NList<T> GetRange(int index, int length, bool alwaysCopy = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
-			return new();
+			return [];
 		else if (!alwaysCopy && index == 0 && length == _size)
 			return this;
 		if (!alwaysCopy)

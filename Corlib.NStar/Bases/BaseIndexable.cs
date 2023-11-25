@@ -42,14 +42,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool Contains(IEnumerable<T> collection, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (length == 0 || !collection.Any())
 			return false;
 		if (collection is not G.IList<T> list)
@@ -63,10 +60,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool Contains(T? item, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (item == null)
@@ -92,14 +87,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool ContainsAny(IEnumerable<T> collection, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
 			if (hs.Contains(GetInternal(i)))
@@ -113,14 +105,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
 			if (!hs.Contains(GetInternal(i)))
@@ -152,8 +141,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		if (array != null && array.Rank != 1)
 			throw new ArgumentException(null);
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		try
 		{
 			CopyToInternal(array, arrayIndex);
@@ -166,16 +154,12 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void CopyTo(int index, T[] array, int arrayIndex, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
-		if (arrayIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		ArgumentNullException.ThrowIfNull(array);
+		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
 		if (arrayIndex + length > array.Length)
 			throw new ArgumentException(null);
 		CopyToInternal(index, array, arrayIndex, length);
@@ -216,10 +200,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.IList<T> list && list is not (FastDelHashSet<T> or ParallelHashSet<T>))
 			return EqualsToList(list, index, toEnd);
 		else
@@ -257,8 +239,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual T? Find(Predicate<T> match)
 	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		for (var i = 0; i < _size; i++)
 			if (match(this[i]))
 				return this[i];
@@ -267,9 +248,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual List<T> FindAll(Predicate<T> match)
 	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
-		List<T> list = new();
+		ArgumentNullException.ThrowIfNull(match);
+		List<T> list = [];
 		for (var i = 0; i < _size; i++)
 			if (match(this[i]))
 				list.Add(this[i]);
@@ -282,8 +262,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(startIndex));
 		if (length < 0 || startIndex > _size - length)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		var endIndex = startIndex + length;
 		for (var i = startIndex; i < endIndex; i++)
 			if (match(this[i]))
@@ -297,8 +276,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual T? FindLast(Predicate<T> match)
 	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		for (var i = _size - 1; i >= 0; i--)
 			if (match(this[i]))
 				return this[i];
@@ -311,11 +289,9 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(startIndex));
 		if (length < 0 || startIndex - length + 1 < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		if (_size == 0)
-			if (startIndex != -1)
-				throw new ArgumentOutOfRangeException(nameof(startIndex));
+			ArgumentOutOfRangeException.ThrowIfNotEqual(startIndex, -1);
 		var endIndex = startIndex - length;
 		for (var i = startIndex; i > endIndex; i--)
 			if (match(this[i]))
@@ -333,8 +309,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void ForEach(Action<T> action, int index, int count)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		for (var i = index; i < index + count; i++)
 			action(this[i]);
 	}
@@ -345,8 +320,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void ForEach(Action<T, int> action, int index, int count)
 	{
-		if (action == null)
-			throw new ArgumentNullException(nameof(action));
+		ArgumentNullException.ThrowIfNull(action);
 		for (var i = index; i < index + count; i++)
 			action(this[i], i);
 	}
@@ -371,10 +345,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual Slice<T> GetSlice(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -400,14 +372,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (_size == 0 || length == 0 || !collection.Any())
 		{
 			collectionLength = 0;
@@ -428,10 +397,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int IndexOf(T item, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		return IndexOfInternal(item, index, length);
@@ -443,14 +410,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int IndexOfAny(IEnumerable<T> collection, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
 			if (hs.Contains(GetInternal(i)))
@@ -464,14 +428,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int IndexOfAnyExcluding(IEnumerable<T> collection, int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
 			if (!hs.Contains(GetInternal(i)))
@@ -493,12 +454,10 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size != 0 && length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (_size == 0 || length == 0 || !collection.Any())
 		{
 			collectionLength = 0;
@@ -526,8 +485,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(length));
 		if (_size == 0)
 			return -1;
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
 			throw new ArgumentException(null);
 		return LastIndexOfInternal(item, index, length);
@@ -543,12 +501,10 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size != 0 && length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		var startIndex = index + 1 - length;
 		for (var i = index; i >= startIndex; i--)
@@ -567,12 +523,10 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size != 0 && length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
-		if (index >= _size)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		var startIndex = index + 1 - length;
 		for (var i = index; i >= startIndex; i--)
@@ -636,8 +590,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool TrueForAll(Predicate<T> match)
 	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		for (var i = 0; i < _size; i++)
 			if (!match(this[i]))
 				return false;
@@ -709,16 +662,12 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 
 	public virtual int Compare(int index, TCertain other, int otherIndex, int length)
 	{
-		if (other == null)
-			throw new ArgumentNullException(nameof(other));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentNullException.ThrowIfNull(other);
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (otherIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(otherIndex));
+		ArgumentOutOfRangeException.ThrowIfNegative(otherIndex);
 		if (otherIndex + length > other._size)
 			throw new ArgumentException(null);
 		return CompareInternal(index, other, otherIndex, length);
@@ -848,10 +797,8 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 
 	public virtual TCertain GetRange(int index, int length, bool alwaysCopy = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)

@@ -355,10 +355,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	private protected override void CopyToInternal(int index, (T Key, int Value)[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
 			throw new ArgumentException(null);
 		length += index; // Make `length` the upper bound.
@@ -2162,7 +2160,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			if (Length == 0)
 				return;
-			List<T> toRemove = new();
+			List<T> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Item.Key); return true; });
 			while (toRemove.Length != 0)
 			{
@@ -3398,10 +3396,8 @@ public class SumList : BaseSumList<int, SumList>
 	private protected override void CopyToInternal(int index, int[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
 			throw new ArgumentException(null);
 		length += index; // Make `length` the upper bound.
@@ -3483,8 +3479,7 @@ public class SumList : BaseSumList<int, SumList>
 
 	public virtual int IndexOfNotGreaterSum(long sum, out int sumExceedsBy)
 	{
-		if (sum < 0)
-			throw new ArgumentOutOfRangeException(nameof(sum));
+		ArgumentOutOfRangeException.ThrowIfNegative(sum);
 		if (sum >= ValuesSum)
 		{
 			sumExceedsBy = (int)Min(sum - ValuesSum, int.MaxValue);
@@ -3833,7 +3828,7 @@ public class SumList : BaseSumList<int, SumList>
 		{
 			if (Length == 0)
 				return;
-			List<int> toRemove = new();
+			List<int> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
 			{
@@ -4057,10 +4052,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	private protected override void CopyToInternal(int index, MpzT[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
 			throw new ArgumentException(null);
 		length += index; // Make `length` the upper bound.
@@ -4150,8 +4143,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public virtual int IndexOfNotGreaterSum(MpzT sum, out MpzT sumExceedsBy)
 	{
-		if (sum < 0)
-			throw new ArgumentOutOfRangeException(nameof(sum));
+		ArgumentOutOfRangeException.ThrowIfNegative(sum);
 		if (sum >= ValuesSum)
 		{
 			sumExceedsBy = sum - ValuesSum;
@@ -4531,7 +4523,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			if (Length == 0)
 				return;
-			List<int> toRemove = new();
+			List<int> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
 			{

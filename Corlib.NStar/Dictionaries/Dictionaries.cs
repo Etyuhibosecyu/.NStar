@@ -50,8 +50,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 	{
 		comparer ??= EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity <= _hashThreshold)
 			low = new(capacity, new Comparer<TKey>((x, y) => comparer.Equals(x, y) ? 0 : -1));
 		else
@@ -278,8 +277,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
+		ArgumentNullException.ThrowIfNull(key);
 		try
 		{
 			var tempKey = (TKey)key;
@@ -380,8 +378,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	private static bool IsCompatibleKey(object key)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
+		ArgumentNullException.ThrowIfNull(key);
 		return key is TKey;
 	}
 
@@ -534,19 +531,12 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		}
 	}
 
-	public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>
+	public struct Enumerator(UnsortedDictionary<TKey, TValue> dictionary) : IEnumerator<KeyValuePair<TKey, TValue>>
 	{
-		private readonly UnsortedDictionary<TKey, TValue> _dict;
-		private int index;
+		private readonly UnsortedDictionary<TKey, TValue> _dict = dictionary;
+		private int index = 0;
 
-		public Enumerator(UnsortedDictionary<TKey, TValue> dictionary)
-		{
-			_dict = dictionary;
-			index = 0;
-			Current = default!;
-		}
-
-		public KeyValuePair<TKey, TValue> Current { get; private set; }
+		public KeyValuePair<TKey, TValue> Current { get; private set; } = default!;
 
 		readonly object IEnumerator.Current => Current;
 

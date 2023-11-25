@@ -48,8 +48,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual TCertain AddRange(IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not TCertain bigList)
 			bigList = CollectionCreator(collection);
 		var length = bigList.Length;
@@ -71,10 +70,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual void Clear(MpzT index, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		ClearInternal(index, length);
@@ -90,10 +87,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool Contains(T item, MpzT index, MpzT length)
 	{
-		if (index > Size)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Size);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		try
@@ -115,14 +110,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool Contains(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		return ContainsInternal(collection, index, length);
 	}
 
@@ -138,14 +130,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool ContainsAny(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		try
 		{
 			throw new SlowOperationException();
@@ -172,14 +161,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, MpzT index, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		try
 		{
 			throw new SlowOperationException();
@@ -237,8 +223,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 	{
 		if (array != null && array.Rank != 1)
 			throw new ArgumentException(null);
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		try
 		{
 			CopyToInternal(array, arrayIndex);
@@ -255,10 +240,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual void CopyTo(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		CopyToInternal(index, list, listIndex, length);
@@ -266,10 +249,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual void CopyTo(MpzT index, T[] array, int arrayIndex, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		CopyToInternal(index, array, arrayIndex, length);
@@ -317,10 +298,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -339,8 +318,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual MpzT IndexOf(T item, MpzT index, MpzT length)
 	{
-		if (index > Size)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Size);
 		if (length < 0 || index > Size - length)
 			throw new ArgumentOutOfRangeException(nameof(length));
 		try
@@ -362,10 +340,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual TCertain Remove(MpzT index, MpzT length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
@@ -428,8 +404,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 
 	public virtual TCertain SetRange(MpzT index, IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (index < 0 || index > Size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is not TCertain bigList)
@@ -579,8 +554,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity <= CapacityFirstStep)
 		{
 			low = CapacityLowCreator((int)capacity);
@@ -598,7 +572,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var quotient = capacity.Divide(ProperFragment, out var remainder);
 			var highCount = (int)GetArrayLength(capacity, ProperFragment);
 			high = new(highCount);
-			highCapacity = new();
+			highCapacity = [];
 			for (MpzT i = 0; i < quotient; i++)
 			{
 				high.Add(CapacityCreator(ProperFragment));
@@ -634,8 +608,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		get => _capacity;
 		set
 		{
-			if (value < Size)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, Size);
 			if (value == _capacity)
 				return;
 			if (value <= 0)
@@ -668,7 +641,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					fragment <<= CapacityStepBitLength;
 				var highCount = (int)GetArrayLength(value, ProperFragment);
 				high = new(highCount);
-				highCapacity = new();
+				highCapacity = [];
 				for (MpzT i = 0; i < value / ProperFragment; i++)
 				{
 					high.Add(CapacityCreator(ProperFragment));

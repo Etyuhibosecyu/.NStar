@@ -23,8 +23,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		get => this[index];
 		set
 		{
-			if (value == null)
-				throw new ArgumentNullException(nameof(value));
+			ArgumentNullException.ThrowIfNull(value);
 			try
 			{
 				this[index] = (T)value;
@@ -180,10 +179,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual void Clear(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		ClearInternal(index, length);
@@ -207,8 +204,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
 	{
-		if (converter == null)
-			throw new ArgumentNullException(nameof(converter));
+		ArgumentNullException.ThrowIfNull(converter);
 		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
 		for (var i = 0; i < _size; i++)
 			list.SetInternal(i, converter(GetInternal(i)));
@@ -218,8 +214,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
 	{
-		if (converter == null)
-			throw new ArgumentNullException(nameof(converter));
+		ArgumentNullException.ThrowIfNull(converter);
 		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
 		for (var i = 0; i < _size; i++)
 			list.SetInternal(i, converter(GetInternal(i), i));
@@ -400,8 +395,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		return InsertInternal(index, collection);
 	}
 
@@ -431,8 +425,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain Pad(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -450,8 +443,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain PadInPlace(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -469,8 +461,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain PadLeft(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -486,8 +477,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain PadLeftInPlace(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -503,8 +493,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain PadRight(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -519,8 +508,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain PadRightInPlace(int length, T value)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length <= _size)
 			return this2;
@@ -537,10 +525,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain Remove(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		return RemoveInternal(index, length);
@@ -563,8 +549,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual int RemoveAll(Predicate<T> match)
 	{
-		if (match == null)
-			throw new ArgumentNullException(nameof(match));
+		ArgumentNullException.ThrowIfNull(match);
 		var freeIndex = 0;
 		while (freeIndex < _size && !match(GetInternal(freeIndex))) freeIndex++;
 		if (freeIndex >= _size) return 0;
@@ -699,14 +684,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		return ReplaceRangeInternal(index, length, collection);
 	}
 
@@ -732,10 +714,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain Reverse(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		return ReverseInternal(index, length);
@@ -753,10 +733,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		var endIndex = index + length;
@@ -773,8 +751,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		return SetOrAddInternal(index, value);
 	}
 
@@ -790,8 +767,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
 		var length = list._size;
@@ -830,7 +806,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		if (list._size == 0)
 			throw new ArgumentException(null, nameof(list));
 		var yCount = widen ? list.Max(x => x._size) : list.Min(x => x._size);
-		List<TCertain> new_list = new();
+		List<TCertain> new_list = [];
 		for (var i = 0; i < yCount; i++)
 		{
 			new_list.Add(list[0].CapacityCreator(list._size));
@@ -892,9 +868,10 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public virtual TCertain ExceptWith(IEnumerable<T> other)
 	{
-		if (other is not ISet<T> set)
-			set = other.ToHashSet();
-		return FilterInPlace(x => !set.Contains(x));
+		if (other is ISet<T> set)
+			return FilterInPlace(x => !set.Contains(x));
+		var set2 = other.ToHashSet();
+		return FilterInPlace(x => !set2.Contains(x));
 	}
 
 	void ISet<T>.ExceptWith(IEnumerable<T> other) => ExceptWith(other);

@@ -19,14 +19,13 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(int capacity)
 	{
-		if (capacity < 0) throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_items = capacity == 0 ? _emptyPointer : (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(capacity, BitsPerInt)));
 	}
 
 	public BitList(int length, bool defaultValue)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(length, BitsPerInt)));
 		_size = length;
 		var fillValue = defaultValue ? 0xffffffff : 0;
@@ -36,8 +35,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(int length, uint* ptr)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var uints = GetArrayLength(length, BitsPerInt);
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
 		_size = length;
@@ -46,8 +44,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(uint[] values)
 	{
-		if (values == null)
-			throw new ArgumentNullException(nameof(values));
+		ArgumentNullException.ThrowIfNull(values);
 		var uints = values.Length;
 		// this value is chosen to prevent overflow when computing m_length
 		if (uints > int.MaxValue / BitsPerInt)
@@ -60,8 +57,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(int length, params uint[] values)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var uints = Max(GetArrayLength(length, BitsPerInt), values.Length);
 		// this value is chosen to prevent overflow when computing m_length
 		if (uints > int.MaxValue / BitsPerInt)
@@ -87,8 +83,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(int length, ReadOnlySpan<uint> values)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var uints = Max(GetArrayLength(length, BitsPerInt), values.Length);
 		// this value is chosen to prevent overflow when computing m_length
 		if (uints > int.MaxValue / BitsPerInt)
@@ -215,8 +210,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		get => _capacity * BitsPerInt;
 		set
 		{
-			if (value < 0)
-				throw new ArgumentOutOfRangeException(nameof(value));
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
 			var newints = GetArrayLength(value, BitsPerInt);
 			if (newints == _capacity)
 				return;
@@ -264,8 +258,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList And(BitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
@@ -507,8 +500,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override bool EqualsInternal(IEnumerable<bool>? collection, int index, bool toEnd = false)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is BitList bitList)
 			return EqualsToBitList(bitList, index, toEnd);
 		else
@@ -584,10 +576,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual uint GetSmallRange(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -651,8 +641,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList Insert(int index, IEnumerable collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is BitList bitList)
@@ -736,8 +725,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList Or(BitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
@@ -758,10 +746,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -802,8 +788,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList SetRange(int index, IEnumerable collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (collection is BitList bitList)
@@ -830,8 +815,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public virtual BitList Xor(BitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
 			throw new ArgumentException(null, nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
@@ -873,8 +857,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length <= CapacityFirstStep)
 		{
 			low = new((int)length, defaultValue);
@@ -887,7 +870,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low = null;
 			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			high = new((int)GetArrayLength(length, fragment));
-			highCapacity = new();
+			highCapacity = [];
 			for (MpzT i = 0; i < length / fragment; i++)
 			{
 				high.Add(new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
@@ -955,7 +938,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 				var fragment2 = (int)ProperFragment;
 				high = new(GetArrayLength(bitList.Length, fragment2));
-				highCapacity = new();
+				highCapacity = [];
 				var index = 0;
 				for (; index <= bitList.Length - fragment2; index += fragment2)
 				{
@@ -990,7 +973,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				var fragment2 = (int)ProperFragment;
 				var uintsFragment = fragment2 / BitsPerInt;
 				high = new((int)((length + uintsFragment - 1) / uintsFragment));
-				highCapacity = new();
+				highCapacity = [];
 				var index = 0;
 				for (; index <= length - uintsFragment; index += uintsFragment)
 				{
@@ -1033,7 +1016,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			var b = true;
 			var en = bytes.GetEnumerator();
-			BigList<uint> values = new();
+			BigList<uint> values = [];
 			var n = 0;
 			while (b)
 			{
@@ -1106,8 +1089,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual BigBitList And(BigBitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
@@ -1120,10 +1102,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual uint GetSmallRange(MpzT index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Size)
 			throw new ArgumentException(null);
 		if (length == 0)
@@ -1163,8 +1143,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual BigBitList Or(BigBitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
@@ -1193,8 +1172,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public virtual BigBitList Xor(BigBitList value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		if (Size != value.Size)
 			throw new ArgumentException(null, nameof(value));
 		if (!isHigh && low != null && !value.isHigh && value.low != null)

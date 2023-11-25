@@ -21,11 +21,9 @@ public enum PrimitiveType : byte
 	ULongType,
 }
 
-public class Comparer<T> : IComparer<T>
+public class Comparer<T>(Func<T, T, int> comparer) : IComparer<T>
 {
-	private readonly Func<T, T, int> comparer;
-
-	public Comparer(Func<T, T, int> comparer) => this.comparer = comparer;
+	private readonly Func<T, T, int> comparer = comparer;
 
 	public int Compare(T? x, T? y)
 	{
@@ -235,8 +233,6 @@ public class ExperimentalException : Exception
 	public ExperimentalException(string? message) : base(message) { }
 
 	public ExperimentalException(string? message, Exception? innerException) : base(message, innerException) { }
-
-	protected ExperimentalException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 [Serializable]
@@ -247,8 +243,6 @@ public class FakeIndexesException : Exception
 	public FakeIndexesException(string? message) : base(message) { }
 
 	public FakeIndexesException(string? message, Exception? innerException) : base(message, innerException) { }
-
-	protected FakeIndexesException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 [Serializable]
@@ -259,8 +253,6 @@ public class SlowOperationException : Exception
 	public SlowOperationException(string? message) : base(message) { }
 
 	public SlowOperationException(string? message, Exception? innerException) : base(message, innerException) { }
-
-	protected SlowOperationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 [Serializable]
@@ -271,8 +263,6 @@ public class ValueNotFoundException : SystemException
 	public ValueNotFoundException(string? message) : base(message) { }
 
 	public ValueNotFoundException(string? message, Exception? innerException) : base(message, innerException) { }
-
-	protected ValueNotFoundException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
 public interface IBigCollection<T> : IEnumerable<T>
@@ -671,10 +661,8 @@ public static unsafe partial class Extents
 
 	public static T[] NSort<T>(this T[] array, int index, int length) where T : unmanaged
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > array.Length)
 			throw new ArgumentException(null);
 		fixed (T* items = array)
@@ -705,10 +693,8 @@ public static unsafe partial class Extents
 
 	public static T[] NSort<T, T2>(this T[] array, Func<T, T2> function, int index, int length) where T2 : unmanaged
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > array.Length)
 			throw new ArgumentException(null);
 		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
@@ -729,10 +715,8 @@ public static unsafe partial class Extents
 
 	private static T* NSort<T, T2>(T* array, Func<T, T2> function, int index, int length) where T : unmanaged where T2 : unmanaged
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
 		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
 		for (var i = 0; i < length; i++)
@@ -753,8 +737,7 @@ public static unsafe partial class Extents
 
 	public static int NthAbsent<TCertain>(this BaseSortedSet<int, TCertain> set, int n) where TCertain : BaseSortedSet<int, TCertain>, new()
 	{
-		if (set == null)
-			throw new ArgumentNullException(nameof(set));
+		ArgumentNullException.ThrowIfNull(set);
 		if (set.Comparer != G.Comparer<int>.Default)
 			throw new ArgumentException("Множество должно иметь стандартный для int компаратор.", nameof(set));
 		if (set.Length == 0)

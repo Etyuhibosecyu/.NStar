@@ -73,7 +73,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(IComparer<T>? comparer)
 	{
-		items = new();
+		items = [];
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
 
@@ -81,8 +81,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(int capacity, IComparer<T>? comparer)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		items = new(capacity);
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
@@ -93,8 +92,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		items.AddRange(collection).Sort(Comparer);
 	}
 
@@ -102,8 +100,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : this(capacity, comparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		items.AddRange(collection).Sort(Comparer);
 	}
 
@@ -538,10 +535,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
 			throw new ArgumentException(null);
 		length += index; // Make `length` the upper bound.
@@ -1664,21 +1659,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 #endif
 
 	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()}, Parent = {Parent?.Item.ToString()}")]
-	internal sealed class Node
+	internal sealed class Node(T item, NodeColor color)
 	{
 		private Node? _left;
 		private Node? _right;
 		internal Node? Parent { get; private set; }
-		private int _leavesCount;
+		private int _leavesCount = 1;
 
-		public Node(T item, NodeColor color)
-		{
-			Item = item;
-			Color = color;
-			_leavesCount = 1;
-		}
-
-		public T Item { get; set; }
+		public T Item { get; set; } = item;
 
 		internal Node? Left
 		{
@@ -1751,7 +1739,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			}
 		}
 
-		public NodeColor Color { get; set; }
+		public NodeColor Color { get; set; } = color;
 
 		public bool IsBlack => Color == NodeColor.Black;
 
@@ -2229,7 +2217,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			if (Length == 0)
 				return;
-			List<T> toRemove = new();
+			List<T> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Item); return true; });
 			while (toRemove.Length != 0)
 			{

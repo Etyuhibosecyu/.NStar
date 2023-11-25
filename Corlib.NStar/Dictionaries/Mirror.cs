@@ -59,8 +59,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public Mirror(int capacity, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
 			Initialize(capacity);
 		if (!typeof(TKey).IsValueType)
@@ -91,8 +90,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public Mirror(G.IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer) : this(dictionary?.Count ?? 0, keyComparer, valueComparer)
 	{
-		if (dictionary == null)
-			throw new ArgumentNullException(nameof(dictionary));
+		ArgumentNullException.ThrowIfNull(dictionary);
 		AddRange(dictionary);
 	}
 
@@ -110,8 +108,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public Mirror(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? keyComparer, IEqualityComparer<TValue>? valueComparer) : this(collection != null && collection.TryGetLengthEasily(out var length) ? length : 0, keyComparer, valueComparer)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		AddRange(collection);
 	}
 
@@ -191,10 +188,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 		set
 		{
-			if (key == null)
-				throw new ArgumentNullException(nameof(key));
-			if (value == null)
-				throw new ArgumentNullException(nameof(value));
+			ArgumentNullException.ThrowIfNull(key);
+			ArgumentNullException.ThrowIfNull(value);
 			try
 			{
 				var tempKey = (TKey)key;
@@ -236,10 +231,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(key);
+		ArgumentNullException.ThrowIfNull(value);
 		try
 		{
 			var tempKey = (TKey)key;
@@ -376,8 +369,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	private protected virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if ((uint)index > (uint)array.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
@@ -395,8 +387,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	void System.Collections.ICollection.CopyTo(Array array, int index)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new RankException();
 		if (array.GetLowerBound(0) != 0)
@@ -432,8 +423,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	/// </summary>
 	private protected virtual int EnsureCapacity(int capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		var currentCapacity = _entries == null ? 0 : _entries.Length;
 		if (currentCapacity >= capacity)
 			return currentCapacity;
@@ -656,15 +646,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	private protected static bool IsCompatibleKey(object key)
 	{
-		if (key == null)
-			throw new ArgumentNullException(nameof(key));
+		ArgumentNullException.ThrowIfNull(key);
 		return key is TKey;
 	}
 
 	private protected static bool IsCompatibleValue(object value)
 	{
-		if (value == null)
-			throw new ArgumentNullException(nameof(value));
+		ArgumentNullException.ThrowIfNull(value);
 		return value is TValue;
 	}
 
@@ -984,8 +972,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	/// </remarks>
 	public virtual void TrimExcess(int capacity)
 	{
-		if (capacity < Length)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfLessThan(capacity, Length);
 		var newSize = HashHelpers.GetPrime(capacity);
 		var oldEntries = _entries;
 		var currentCapacity = oldEntries == null ? 0 : oldEntries.Length;
@@ -1300,11 +1287,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class KeyCollection : ICollection<TKey>, ICollection, IReadOnlyCollection<TKey>
+	public sealed class KeyCollection(Mirror<TKey, TValue> dictionary) : ICollection<TKey>, ICollection, IReadOnlyCollection<TKey>
 	{
-		private readonly Mirror<TKey, TValue> _dictionary;
-
-		public KeyCollection(Mirror<TKey, TValue> dictionary) => _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
 		bool G.ICollection<TKey>.IsReadOnly => true;
 
@@ -1322,8 +1307,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		public void CopyTo(TKey[] array, int index)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if (index < 0 || index > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
@@ -1337,8 +1321,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		void System.Collections.ICollection.CopyTo(Array array, int index)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
 				throw new RankException();
 			if (array.GetLowerBound(0) != 0)
@@ -1424,11 +1407,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
-	public sealed class ValueCollection : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
+	public sealed class ValueCollection(Mirror<TKey, TValue> dictionary) : ICollection<TValue>, ICollection, IReadOnlyCollection<TValue>
 	{
-		private readonly Mirror<TKey, TValue> _dictionary;
-
-		public ValueCollection(Mirror<TKey, TValue> dictionary) => _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+		private readonly Mirror<TKey, TValue> _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
 		bool G.ICollection<TValue>.IsReadOnly => true;
 
@@ -1446,8 +1427,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		public void CopyTo(TValue[] array, int index)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if ((uint)index > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
@@ -1461,8 +1441,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		void System.Collections.ICollection.CopyTo(Array array, int index)
 		{
-			if (array == null)
-				throw new ArgumentNullException(nameof(array));
+			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
 				throw new RankException();
 			if (array.GetLowerBound(0) != 0)

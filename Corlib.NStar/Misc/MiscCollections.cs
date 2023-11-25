@@ -10,8 +10,7 @@ public class Chain : IReadOnlyCollection<int>
 
 	public Chain(int start, int length)
 	{
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		this.start = start;
 		Length = length;
 	}
@@ -32,19 +31,12 @@ public class Chain : IReadOnlyCollection<int>
 		return list;
 	}
 
-	public struct Enumerator : IEnumerator<int>
+	public struct Enumerator(Chain chain) : IEnumerator<int>
 	{
-		private readonly Chain chain;
-		private int index;
+		private readonly Chain chain = chain;
+		private int index = 0;
 
-		public Enumerator(Chain chain)
-		{
-			this.chain = chain;
-			index = 0;
-			Current = chain.start;
-		}
-
-		public int Current { get; private set; }
+		public int Current { get; private set; } = chain.start;
 
 		readonly object IEnumerator.Current => Current;
 
@@ -102,8 +94,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	public Queue(int capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_array = new T[capacity];
 		_head = 0;
 		_tail = 0;
@@ -145,12 +136,10 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 
 	public virtual void CopyTo(Array array, int index)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new RankException();
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		var arrayLen = array.Length;
 		if (arrayLen - index < _size)
 			throw new ArgumentException(null);
@@ -359,14 +348,11 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(G.IList<T> @base, int start, int length)
 	{
-		if (start < 0)
-			throw new ArgumentOutOfRangeException(nameof(start));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(start);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (start + length > @base.Count)
 			throw new ArgumentException(null);
-		if (@base is null)
-			throw new ArgumentNullException(nameof(@base));
+		ArgumentNullException.ThrowIfNull(@base);
 		if (@base is Slice<T> slice)
 		{
 			_base = slice._base;
@@ -397,10 +383,8 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public override Span<T> AsSpan(int index, int length)
 	{
-		if (index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		return _base.AsSpan(_start + index, length);
@@ -475,8 +459,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 
 	public Stack(int capacity)
 	{
-		if (capacity < 0)
-			throw new ArgumentOutOfRangeException(nameof(capacity));
+		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_array = new T[capacity];
 		_size = 0;
 	}
@@ -484,8 +467,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 	//
 	public Stack(IEnumerable<T> collection)
 	{
-		if (collection == null)
-			throw new ArgumentNullException(nameof(collection));
+		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.ICollection<T> c)
 		{
 			var length = c.Count;
@@ -505,19 +487,17 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 
 	public Stack(params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
-		_array = array.ToArray();
+		_array = [.. array];
 	}
 
 	public Stack(int capacity, params T[] array)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		_size = array.Length;
 		if (array.Length > capacity)
-			_array = array.ToArray();
+			_array = [.. array];
 		else
 		{
 			_array = new T[capacity];
@@ -564,8 +544,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 
 	public virtual void CopyTo(T[] array, int arrayIndex)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < _size)
@@ -576,8 +555,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 
 	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
 	{
-		if (array == null)
-			throw new ArgumentNullException(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
 			throw new ArgumentException(null);
 		if (array.GetLowerBound(0) != 0)
