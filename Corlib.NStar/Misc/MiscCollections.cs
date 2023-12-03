@@ -71,11 +71,11 @@ public class Group<T, TKey> : List<T>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable
+public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable, IDisposable
 {
 	private T[] _array;
-	private int _head;
-	private int _tail;
+	private int _start;
+	private int _end;
 	private int _size;
 	private const int _MinimumGrow = 4;
 	[NonSerialized]
@@ -96,42 +96,42 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		_array = new T[capacity];
-		_head = 0;
-		_tail = 0;
+		_start = 0;
+		_end = 0;
 		_size = 0;
 	}
 
 	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
 	{
-		var en = col.GetEnumerator();
+		using var en = col.GetEnumerator();
 		while (en.MoveNext())
 			Enqueue(en.Current);
+	}
+
+	public virtual void Clear()
+	{
+		if (_start < _end)
+			Array.Clear(_array, _start, _size);
+		else
+		{
+			Array.Clear(_array, _start, _array.Length - _start);
+			Array.Clear(_array, 0, _end);
+		}
+		_start = 0;
+		_end = 0;
+		_size = 0;
 	}
 
 	public virtual object Clone()
 	{
 		Queue<T> q = new(_size) { _size = _size };
 		var numToCopy = _size;
-		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
-		Array.Copy(_array, _head, q._array, 0, firstPart);
+		var firstPart = (_array.Length - _start < numToCopy) ? _array.Length - _start : numToCopy;
+		Array.Copy(_array, _start, q._array, 0, firstPart);
 		numToCopy -= firstPart;
 		if (numToCopy > 0)
-			Array.Copy(_array, 0, q._array, _array.Length - _head, numToCopy);
+			Array.Copy(_array, 0, q._array, _array.Length - _start, numToCopy);
 		return q;
-	}
-
-	public virtual void Clear()
-	{
-		if (_head < _tail)
-			Array.Clear(_array, _head, _size);
-		else
-		{
-			Array.Clear(_array, _head, _array.Length - _head);
-			Array.Clear(_array, 0, _tail);
-		}
-		_head = 0;
-		_tail = 0;
-		_size = 0;
 	}
 
 	public virtual void CopyTo(Array array, int index)
@@ -146,11 +146,20 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		var numToCopy = _size;
 		if (numToCopy == 0)
 			return;
-		var firstPart = (_array.Length - _head < numToCopy) ? _array.Length - _head : numToCopy;
-		Array.Copy(_array, _head, array, index, firstPart);
+		var firstPart = (_array.Length - _start < numToCopy) ? _array.Length - _start : numToCopy;
+		Array.Copy(_array, _start, array, index, firstPart);
 		numToCopy -= firstPart;
 		if (numToCopy > 0)
-			Array.Copy(_array, 0, array, index + _array.Length - _head, numToCopy);
+			Array.Copy(_array, 0, array, index + _array.Length - _start, numToCopy);
+	}
+
+	public virtual void Dispose()
+	{
+		_array = default!;
+		_start = 0;
+		_end = 0;
+		_size = 0;
+		GC.SuppressFinalize(this);
 	}
 
 	public virtual void Enqueue(T obj)
@@ -162,38 +171,25 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 				newCapacity = _array.Length + _MinimumGrow;
 			SetCapacity(newCapacity);
 		}
-		_array[_tail] = obj;
-		_tail = (_tail + 1) % _array.Length;
+		_array[_end] = obj;
+		_end = (_end + 1) % _array.Length;
 		_size++;
 	}
-
-	public virtual Enumerator GetEnumerator() => new(this);
-
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 	public virtual T Dequeue()
 	{
 		if (_size == 0)
 			throw new InvalidOperationException();
-		var removed = _array[_head];
-		_array[_head] = default!;
-		_head = (_head + 1) % _array.Length;
+		var removed = _array[_start];
+		_array[_start] = default!;
+		_start = (_start + 1) % _array.Length;
 		_size--;
 		return removed;
 	}
 
-	public virtual T Peek()
-	{
-		if (_size == 0)
-			throw new InvalidOperationException();
-		return _array[_head];
-	}
-
 	public virtual bool Contains(T? obj)
 	{
-		var index = _head;
+		var index = _start;
 		var length = _size;
 		while (length-- > 0)
 		{
@@ -206,21 +202,19 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		return false;
 	}
 
-	internal T GetElement(int i) => _array[(_head + i) % _array.Length];
+	internal T GetElement(int i) => _array[(_start + i) % _array.Length];
 
-	public virtual T[] ToArray()
+	public virtual Enumerator GetEnumerator() => new(this);
+
+	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public virtual T Peek()
 	{
-		var arr = new T[_size];
 		if (_size == 0)
-			return arr;
-		if (_head < _tail)
-			Array.Copy(_array, _head, arr, 0, _size);
-		else
-		{
-			Array.Copy(_array, _head, arr, 0, _array.Length - _head);
-			Array.Copy(_array, 0, arr, _array.Length - _head, _tail);
-		}
-		return arr;
+			throw new InvalidOperationException();
+		return _array[_start];
 	}
 
 	private protected void SetCapacity(int capacity)
@@ -230,20 +224,63 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		var newArray = new T[capacity];
 		if (_size > 0)
 		{
-			if (_head < _tail)
-				Array.Copy(_array, _head, newArray, 0, _size);
+			if (_start < _end)
+				Array.Copy(_array, _start, newArray, 0, _size);
 			else
 			{
-				Array.Copy(_array, _head, newArray, 0, _array.Length - _head);
-				Array.Copy(_array, 0, newArray, _array.Length - _head, _tail);
+				Array.Copy(_array, _start, newArray, 0, _array.Length - _start);
+				Array.Copy(_array, 0, newArray, _array.Length - _start, _end);
 			}
 		}
 		_array = newArray;
-		_head = 0;
-		_tail = (_size == capacity) ? 0 : _size;
+		_start = 0;
+		_end = (_size == capacity) ? 0 : _size;
+	}
+
+	public virtual T[] ToArray()
+	{
+		var arr = new T[_size];
+		if (_size == 0)
+			return arr;
+		if (_start < _end)
+			Array.Copy(_array, _start, arr, 0, _size);
+		else
+		{
+			Array.Copy(_array, _start, arr, 0, _array.Length - _start);
+			Array.Copy(_array, 0, arr, _array.Length - _start, _end);
+		}
+		return arr;
 	}
 
 	public virtual void TrimExcess() => SetCapacity(_size);
+
+	public virtual bool TryDequeue(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Dequeue();
+			return true;
+		}
+	}
+
+	public virtual bool TryPeek(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Peek();
+			return true;
+		}
+	}
 
 	[Serializable]
 	public struct Enumerator : IEnumerator<T>
@@ -259,6 +296,16 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 				if (index == 0 || index == queue._size + 1)
 					throw new InvalidOperationException();
 				return current;
+			}
+		}
+
+		readonly object IEnumerator.Current
+		{
+			get
+			{
+				if (index == 0 || index == queue._size + 1)
+					throw new InvalidOperationException();
+				return Current!;
 			}
 		}
 
@@ -288,16 +335,6 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 			index = queue._size + 1;
 			current = default!;
 			return false;
-		}
-
-		readonly object IEnumerator.Current
-		{
-			get
-			{
-				if (index == 0 || index == queue._size + 1)
-					throw new InvalidOperationException();
-				return Current!;
-			}
 		}
 
 		void IEnumerator.Reset()
@@ -441,21 +478,18 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
+public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDisposable
 {
 	private T[] _array;     // Storage for stack elements
 	private int _size;           // Number of items in the stack.
+	private static readonly Queue<Stack<T>> pool = new(256);
+	private static readonly object globalLockObj = new();
 	[NonSerialized]
 	private object _syncRoot = new();
 
-	private const int _defaultCapacity = 4;
-	private static readonly T[] _emptyArray = Array.Empty<T>();
+	private const int _defaultCapacity = 32;
 
-	public Stack()
-	{
-		_array = _emptyArray;
-		_size = 0;
-	}
+	public Stack() : this(_defaultCapacity) { }
 
 	public Stack(int capacity)
 	{
@@ -464,7 +498,6 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		_size = 0;
 	}
 
-	//
 	public Stack(IEnumerable<T> collection)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
@@ -575,11 +608,26 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 		}
 	}
 
+	public virtual void Dispose()
+	{
+		if (_size != 0)
+			Clear();
+		lock (globalLockObj)
+			pool.Enqueue(this);
+		GC.SuppressFinalize(this);
+	}
+
 	public virtual Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	internal static Stack<T> GetNew(int capacity)
+	{
+		lock (globalLockObj)
+			return pool.TryDequeue(out var stack) ? stack! : new(capacity);
+	}
 
 	public virtual T Peek()
 	{
@@ -678,6 +726,10 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 			current = default!;
 		}
 
+		public readonly T Current => current;
+
+		readonly object IEnumerator.Current => Current!;
+
 		public void Dispose() => index = stack._size + 1;
 
 		public bool MoveNext()
@@ -696,10 +748,6 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>
 			current = default!;
 			return false;
 		}
-
-		public readonly T Current => current;
-
-		readonly object IEnumerator.Current => Current!;
 
 		void IEnumerator.Reset()
 		{

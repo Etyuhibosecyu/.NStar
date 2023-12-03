@@ -9,16 +9,16 @@ internal static class HashHelpers
 	public const int MaxPrimeArrayLength = 0x7FFFFFC3;
 	public const int HashPrime = 101;
 
-	internal static ReadOnlySpan<int> Primes => new int[]
-	{
+	internal static ReadOnlySpan<int> Primes =>
+	[
 		3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
 		1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
 		17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
 		187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
 		1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
-	};
-	internal static ReadOnlySpan<int> PrimesList => new int[]
-	{
+	];
+	internal static ReadOnlySpan<int> PrimesList =>
+	[
 		3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67,
 		71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181,
 		191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311,
@@ -309,7 +309,7 @@ internal static class HashHelpers
 		45943, 45949, 45953, 45959, 45971, 45979, 45989, 46021, 46027, 46049, 46051, 46061, 46073, 46091, 46093, 46099,
 		46103, 46133, 46141, 46147, 46153, 46171, 46181, 46183, 46187, 46199, 46219, 46229, 46237, 46261, 46271, 46273,
 		46279, 46301, 46307, 46309, 46327, 46337
-	};
+	];
 
 	/// <summary>Performs a mod operation using the multiplier pre-computed with <see cref="GetFastModMultiplier"/>.</summary>
 	/// <remarks>This should only be used on 64-bit.</remarks>

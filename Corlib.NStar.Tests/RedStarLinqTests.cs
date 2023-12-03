@@ -309,6 +309,143 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestConcat()
+	{
+		G.IEnumerable<string> a = list2.ToList();
+		ProcessA(a);
+		a = list2.ToArray();
+		ProcessA(a);
+		a = E.ToList(list2);
+		ProcessA(a);
+		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
+			ProcessB(a, b);
+			b = E.Skip(list2, 1).ToArray();
+			ProcessB(a, b);
+			b = E.ToList(E.Skip(list2, 1));
+			ProcessB(a, b);
+			b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
+			ProcessB(a, b);
+			b = E.Skip(enumerable, 1);
+			ProcessB(a, b);
+			b = E.Skip(enumerable2, 1);
+			ProcessB(a, b);
+			b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
+			ProcessB(a, b);
+		}
+		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
+		{
+			var c = a.Concat(b);
+			var d = E.Concat(a, b);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var array = new[] { a, b };
+			c = a.Concat(array);
+			d = E.Concat(a, E.Concat(a, b));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Concat((G.IEnumerable<string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Concat((G.IEnumerable<string>[])null!));
+			G.IEnumerable<string> b2 = E.Skip(list2, 2).ToList();
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(list2, 2).ToArray();
+			ProcessB2(a, b, b2);
+			b2 = E.ToList(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(list2, 2).ToList().Insert(0, "XXX").GetSlice(1);
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(enumerable, 2);
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(enumerable2, 2);
+			ProcessB2(a, b, b2);
+			b2 = E.SkipWhile(E.Skip(list2, 2), _ => random.Next(10) != -1);
+			ProcessB2(a, b, b2);
+		}
+		static void ProcessB2(G.IEnumerable<string> a, G.IEnumerable<string> b, G.IEnumerable<string> b2)
+		{
+			var c = a.Concat(b, b2);
+			var d = E.Concat(E.Concat(a, b), b2);
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var array = new[] { a, b, b2 };
+			c = a.Concat(array);
+			d = E.Concat(a, E.Concat(E.Concat(a, b), b2));
+			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Concat(b, (G.IEnumerable<string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Concat(b, b2, (G.IEnumerable<string>)null!));
+		}
+	}
+
+	[TestMethod]
+	public void TestContains()
+	{
+		G.IEnumerable<string> a = list.ToList();
+		ProcessA(a);
+		a = list.ToArray();
+		ProcessA(a);
+		a = E.ToList(list);
+		ProcessA(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessA(a);
+		a = enumerable;
+		ProcessA(a);
+		a = enumerable2;
+		ProcessA(a);
+		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		ProcessA(a);
+		static void ProcessA(G.IEnumerable<string> a)
+		{
+			ProcessString(a, "MMM");
+			ProcessString(a, "#");
+			ProcessString(a, null!);
+		}
+		static void ProcessString(G.IEnumerable<string> a, string s)
+		{
+			var c = a.Contains(s);
+			var d = E.Contains(a, s);
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, new EComparer<string>((x, y) => x == y));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, (x, y) => x == y);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, new EComparer<string>((x, y) => x == y, x => 42));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, (x, y) => x == y, x => 42);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, new EComparer<string>((x, y) => false));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, (x, y) => false);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, new EComparer<string>((x, y) => false, x => 42));
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
+			Assert.AreEqual(c, d);
+			c = a.Contains(s, (x, y) => false, x => 42);
+			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
+			Assert.AreEqual(c, d);
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (G.IEqualityComparer<string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (Func<string, string, bool>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (x, y) => x == y, null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (Func<string, string, bool>)null!, null!));
+		}
+	}
+
+	[TestMethod]
 	public void TestConvert()
 	{
 		G.IEnumerable<string> a = list2.ToList();

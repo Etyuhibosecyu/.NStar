@@ -333,11 +333,11 @@ public class SliceTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfter(new());
-			c = new();
+			c = [];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfter(new List<string>("DDD", "MMM"));
-			c = new G.List<string>() { "EEE", "DDD" };
+			c = ["EEE", "DDD"];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -361,11 +361,11 @@ public class SliceTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfterLast(new());
-			c = new();
+			c = [];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfterLast(new List<string>("DDD", "MMM"));
-			c = new G.List<string>() { "EEE", "DDD" };
+			c = ["EEE", "DDD"];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -393,7 +393,7 @@ public class SliceTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetBefore(new List<string>("DDD", "MMM"));
-			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			c = ["MMM", "BBB", "PPP"];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -421,7 +421,7 @@ public class SliceTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetBeforeLast(new List<string>("DDD", "MMM"));
-			c = new G.List<string>() { "MMM", "BBB", "PPP" };
+			c = ["MMM", "BBB", "PPP"];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
@@ -812,8 +812,8 @@ public class SliceTests
 				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
 				b.Add(elem);
 			}
-			array = a.Insert(0, "XXX").GetSlice(1).ToArray();
-			array2 = b.ToArray();
+			array = [.. a.Insert(0, "XXX").GetSlice(1)];
+			array2 = [.. b];
 			Assert.IsTrue(RedStarLinq.Equals(array, array2));
 			Assert.IsTrue(E.SequenceEqual(array, array2));
 		}

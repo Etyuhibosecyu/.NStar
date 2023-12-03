@@ -9,6 +9,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 {
 	private protected Node? root;
 	private protected int version;
+	private protected static readonly Queue<Node> nodePool = new(256);
+	private protected static readonly object globalLockObj = new();
 
 	private protected const string ComparerName = "Comparer"; // Do not rename (binary serialization)
 	private protected const string CountName = "Length"; // Do not rename (binary serialization)
@@ -142,7 +144,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	{
 		if (root == null)
 			return true;
-		var processQueue = new Queue<Node>();
+		using Queue<Node> processQueue = [];
 		processQueue.Enqueue(root);
 		Node current;
 		while (processQueue.Length != 0)
@@ -234,6 +236,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public override void Clear()
 	{
+		root?.Dispose();
 		root = null;
 		_size = 0;
 		++version;
@@ -265,37 +268,31 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			case 0:
 			return null;
 			case 1:
-			root = new Node(arr[startIndex], NodeColor.Black);
+			root = Node.GetNew(arr[startIndex], NodeColor.Black);
 			if (redNode != null)
 				root.Left = redNode;
 			break;
 			case 2:
-			root = new Node(arr[startIndex], NodeColor.Black)
-			{
-				Right = new Node(arr[endIndex], NodeColor.Black)
-			};
+			root = Node.GetNew(arr[startIndex], NodeColor.Black);
+			root.Right = Node.GetNew(arr[endIndex], NodeColor.Black);
 			root.Right.ColorRed();
 			if (redNode != null)
 				root.Left = redNode;
 			break;
 			case 3:
-			root = new Node(arr[startIndex + 1], NodeColor.Black)
-			{
-				Left = new Node(arr[startIndex], NodeColor.Black),
-				Right = new Node(arr[endIndex], NodeColor.Black)
-			};
+			root = Node.GetNew(arr[startIndex + 1], NodeColor.Black);
+			root.Left = Node.GetNew(arr[startIndex], NodeColor.Black);
+			root.Right = Node.GetNew(arr[endIndex], NodeColor.Black);
 			if (redNode != null)
 				root.Left.Left = redNode;
 			break;
 			default:
 			var midpt = (startIndex + endIndex) / 2;
-			root = new Node(arr[midpt], NodeColor.Black)
-			{
-				Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
-				Right = size % 2 == 0 ?
-				ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(arr[midpt + 1], NodeColor.Red)) :
-				ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null)
-			};
+			root = Node.GetNew(arr[midpt], NodeColor.Black);
+			root.Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode);
+			root.Right = size % 2 == 0 ?
+			ConstructRootFromSortedArray(arr, midpt + 2, endIndex, Node.GetNew(arr[midpt + 1], NodeColor.Red)) :
+			ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null);
 			break;
 		}
 		return root;
@@ -339,7 +336,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return;
 		}
 		TreeSubSet subset = new(source, source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + length - 1).Key, true, true);
-		var en = subset.GetEnumerator();
+		using var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + length, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
 			{
@@ -386,6 +383,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public override void Dispose()
 	{
+		root?.Dispose();
 		root = null;
 		_size = 0;
 		version = 0;
@@ -423,31 +421,6 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		else
 			RemoveAllElements(other);
 		return this;
-	}
-
-	public override SumSet<T> Filter(Func<(T Key, int Value), bool> match)
-	{
-		var result = CapacityCreator(_size / 2);
-		InOrderTreeWalk(node =>
-		{
-			if (match(node.Item))
-				result.Add(node.Item);
-			return true;
-		});
-		return result;
-	}
-
-	public override SumSet<T> Filter(Func<(T Key, int Value), int, bool> match)
-	{
-		var result = CapacityCreator(_size / 2);
-		var i = 0;
-		InOrderTreeWalk(node =>
-		{
-			if (match(node.Item, i++))
-				result.Add(node.Item);
-			return true;
-		});
-		return result;
 	}
 
 	private protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
@@ -741,7 +714,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		var stack = new Stack<Node>(2 * Log2(Length + 1));
+		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
 		var current = root;
 		while (current != null)
 		{
@@ -841,8 +814,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// First do a merge sort to an array.
 			var merged = new (T Key, int Value)[Length];
 			var c = 0;
-			var mine = GetEnumerator();
-			var theirs = asSorted.GetEnumerator();
+			using var mine = GetEnumerator();
+			using var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			var max = Max;
 			while (!mineEnded && !theirsEnded && Comparer2.Compare(theirs.Current.Key, max) <= 0)
@@ -861,6 +834,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 			// now merged has all c elements
 			// safe to gc the root, we  have all the elements
+			root?.Dispose();
 			root = null;
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
@@ -1200,6 +1174,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (successor != null)
 			successor.Color = match.Color;
 		ReplaceChildOrRoot(parentOfMatch, match, successor!);
+		lock (globalLockObj)
+			nodePool.Enqueue(match);
 #if VERIFY
 		foreach (var x in new[] { parentOfMatch, successor, parentOfSuccessor })
 			x?.Verify();
@@ -1233,8 +1209,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted))
 		{
-			var mine = GetEnumerator();
-			var theirs = asSorted.GetEnumerator();
+			using var mine = GetEnumerator();
+			using var theirs = asSorted.GetEnumerator();
 			var mineEnded = !mine.MoveNext();
 			var theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
@@ -1363,7 +1339,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		if (root == null)
 		{
 			// The tree is empty and this is the first item.
-			root = new Node(item, NodeColor.Black);
+			root = Node.GetNew(item, NodeColor.Black);
 			_size = 1;
 			version++;
 			return true;
@@ -1404,7 +1380,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 		Debug.Assert(parent != null);
 		// We're ready to insert the new node.
-		Node node = new(item, NodeColor.Red);
+		var node = Node.GetNew(item, NodeColor.Red);
 		if (order < 0)
 			parent.Left = node;
 		else
@@ -1470,9 +1446,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			VersionCheck();
 		if (asSorted != null && treeSubset == null && Length == 0)
 		{
-			SumSet<T> dummy = new(asSorted, Comparer2);
-			root = dummy.root;
-			_size = dummy._size;
+			root = asSorted.root?.DeepClone(_size);
+			_size = asSorted._size;
 			version++;
 			return this;
 		}
@@ -1482,8 +1457,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			// First do a merge sort to an array.
 			var merged = new (T Key, int Value)[asSorted.Length + Length];
 			var c = 0;
-			var mine = GetEnumerator();
-			var theirs = asSorted.GetEnumerator();
+			using var mine = GetEnumerator();
+			using var theirs = asSorted.GetEnumerator();
 			bool mineEnded = !mine.MoveNext(), theirsEnded = !theirs.MoveNext();
 			while (!mineEnded && !theirsEnded)
 			{
@@ -1514,6 +1489,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			}
 			// now merged has all c elements
 			// safe to gc the root, we  have all the elements
+			root?.Dispose();
 			root = null;
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
@@ -1558,7 +1534,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 #endif
 
 	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()}, Parent = {Parent?.Item.ToString()}")]
-	internal sealed class Node
+	internal sealed class Node : IDisposable
 	{
 		private Node? _left;
 		private Node? _right;
@@ -1567,7 +1543,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		internal (T Key, int Value) Item { get; set; }
 		private int _leavesCount;
 
-		internal Node((T Key, int Value) item, NodeColor color)
+		private Node((T Key, int Value) item, NodeColor color)
 		{
 			Item = item;
 			Color = color;
@@ -1663,7 +1639,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
+			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -1684,12 +1660,32 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return newRoot;
 		}
 
+		public void Dispose()
+		{
+			lock (globalLockObj)
+				DisposeLocked();
+			GC.SuppressFinalize(this);
+		}
+
+		private void DisposeLocked()
+		{
+			nodePool.Enqueue(this);
+			Left?.DisposeLocked();
+			Right?.DisposeLocked();
+		}
+
 		internal void FixUp()
 		{
 			if (Left != null)
 				Left.Parent = this;
 			if (Right != null)
 				Right.Parent = this;
+		}
+
+		internal static Node GetNew((T Key, int Value) item, NodeColor color)
+		{
+			lock (globalLockObj)
+				return nodePool.TryDequeue(out var node) ? node!.Reconstruct(item, color) : new(item, color);
 		}
 
 		/// <summary>
@@ -1756,6 +1752,18 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				Left = newChild;
 			else if (Right == child)
 				Right = newChild;
+		}
+
+		private Node Reconstruct((T Key, int Value) item, NodeColor color)
+		{
+			Item = item;
+			Color = color;
+			_left = null;
+			_right = null;
+			Parent = null;
+			_leavesCount = 1;
+			_valuesSum = item.Value;
+			return this;
 		}
 
 		/// <summary>
@@ -1894,7 +1902,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return grandChild;
 		}
 
-		internal Node ShallowClone() => new(Item, Color);
+		internal Node ShallowClone() => GetNew(Item, Color);
 
 		internal void Split4Node()
 		{
@@ -1959,7 +1967,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			set.VersionCheck();
 			_version = set.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = new Stack<Node>(2 * Log2(set.TotalCount() + 1));
+			_stack = Stack<Node>.GetNew(2 * Log2(set.TotalCount() + 1));
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -1987,7 +1995,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public readonly void Dispose() { }
+		public readonly void Dispose() => _stack?.Dispose();
 
 		private void Initialize()
 		{
@@ -2140,7 +2148,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			VersionCheck();
 			if (root == null)
 				return true;
-			Queue<Node> processQueue = new();
+			using Queue<Node> processQueue = [];
 			processQueue.Enqueue(root);
 			Node current;
 			while (processQueue.Length != 0)
@@ -2211,7 +2219,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
 			while (current != null)
 			{
@@ -2453,7 +2461,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 	{
 		if (root == null)
 			return true;
-		var processQueue = new Queue<Node>();
+		using Queue<Node> processQueue = [];
 		processQueue.Enqueue(root);
 		Node current;
 		while (processQueue.Length != 0)
@@ -2728,7 +2736,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		var stack = new Stack<Node>(2 * Log2(Length + 1));
+		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
 		var current = root;
 		while (current != null)
 		{
@@ -3567,7 +3575,7 @@ public class SumList : BaseSumList<int, SumList>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
+			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -3633,7 +3641,7 @@ public class SumList : BaseSumList<int, SumList>
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = new Stack<Node>(2 * Log2(list.TotalCount() + 1));
+			_stack = Stack<Node>.GetNew(2 * Log2(list.TotalCount() + 1));
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -3661,7 +3669,7 @@ public class SumList : BaseSumList<int, SumList>
 
 		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public readonly void Dispose() { }
+		public readonly void Dispose() => _stack?.Dispose();
 
 		private void Initialize()
 		{
@@ -3808,7 +3816,7 @@ public class SumList : BaseSumList<int, SumList>
 			VersionCheck();
 			if (root == null)
 				return true;
-			Queue<Node> processQueue = new();
+			using Queue<Node> processQueue = [];
 			processQueue.Enqueue(root as Node ?? throw new InvalidOperationException());
 			Node current;
 			while (processQueue.Length != 0)
@@ -3870,7 +3878,7 @@ public class SumList : BaseSumList<int, SumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
 			while (current != null)
 			{
@@ -4235,7 +4243,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
+			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -4328,7 +4336,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = new Stack<Node>(2 * Log2(list.TotalCount() + 1));
+			_stack = Stack<Node>.GetNew(2 * Log2(list.TotalCount() + 1));
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -4356,7 +4364,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public readonly void Dispose() { }
+		public readonly void Dispose() => _stack?.Dispose();
 
 		private void Initialize()
 		{
@@ -4503,7 +4511,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			VersionCheck();
 			if (root == null)
 				return true;
-			Queue<Node> processQueue = new();
+			using Queue<Node> processQueue = [];
 			processQueue.Enqueue(root as Node ?? throw new InvalidOperationException());
 			Node current;
 			while (processQueue.Length != 0)
@@ -4565,7 +4573,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
 			while (current != null)
 			{

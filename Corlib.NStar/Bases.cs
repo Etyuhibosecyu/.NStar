@@ -650,7 +650,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		if (length == 0 || length > _size)
 			return CollectionCreator(this);
 		var result = CapacityCreator(_size);
-		LimitedQueue<T> queue = new(length);
+		using LimitedQueue<T> queue = new(length);
 		for (var i = 0; i < length - 1; i++)
 			queue.Enqueue(GetInternal(i));
 		for (var i = length - 1; i < _size; i++)

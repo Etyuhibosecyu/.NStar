@@ -7,8 +7,8 @@ public class FastDelHashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		FastDelHashList<int> fhs = new();
-		G.List<int> gs = new();
+		FastDelHashList<int> fhs = [];
+		G.List<int> gs = [];
 		for (var i = 0; i < 100; i++)
 		{
 			var n = random.Next(16);

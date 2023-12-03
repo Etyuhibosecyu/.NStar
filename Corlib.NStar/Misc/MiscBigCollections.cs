@@ -39,7 +39,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
 	{
-		var en = col.GetEnumerator();
+		using var en = col.GetEnumerator();
 		while (en.MoveNext())
 			Enqueue(en.Current);
 	}
@@ -331,7 +331,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		var en = collection.GetEnumerator();
+		using var en = collection.GetEnumerator();
 		MpzT i = 0;
 		while (en.MoveNext())
 		{
@@ -342,7 +342,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public BigArray(MpzT length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		var en = collection.GetEnumerator();
+		using var en = collection.GetEnumerator();
 		MpzT i = 0;
 		while (en.MoveNext())
 		{
@@ -905,7 +905,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		else if (bits is IEnumerable<byte> bytes)
 		{
 			var b = true;
-			var en = bytes.GetEnumerator();
+			using var en = bytes.GetEnumerator();
 			BigArray<uint> values = new(length: GetArrayLength(bytes.Length(), 4));
 			var n = 0;
 			while (b)
@@ -940,7 +940,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 		else if (bits is IEnumerable<bool> bools)
 		{
-			var en = bools.GetEnumerator();
+			using var en = bools.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}

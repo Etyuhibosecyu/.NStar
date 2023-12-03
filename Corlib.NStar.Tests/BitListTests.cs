@@ -466,12 +466,12 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
+		b = a.GetAfter([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new G.List<bool>() { true, true }, 65);
-		c = new G.List<bool>() { true, true, true, true };
+		c = [true, true, true, true];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -486,12 +486,12 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
+		b = a.GetAfterLast([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new G.List<bool>() { true, true }, 65);
-		c = new G.List<bool>() { true, true, true, true, true };
+		c = [true, true, true, true, true];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -506,12 +506,12 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
+		b = a.GetBefore([]);
 		c = new(bitList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new G.List<bool>() { false, false }, 3, 2);
-		c = new G.List<bool>() { false, false, false };
+		c = [false, false, false];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -526,12 +526,12 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
+		b = a.GetBeforeLast([]);
 		c = new(bitList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new G.List<bool>() { false, false }, 3, 2);
-		c = new G.List<bool>() { false, false };
+		c = [false, false];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -1073,7 +1073,7 @@ public class BitListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new BitList(a).Remove(bitList.Length - 1, 2 - bitList.Length));
 		Assert.ThrowsException<ArgumentException>(() => b = new BitList(a).Remove(1, 1000));
 		b = new BitList(a).Remove(..);
-		c = new G.List<bool>();
+		c = [];
 		Assert.IsTrue(a.Equals(bitList));
 		Assert.IsTrue(E.SequenceEqual(bitList, a));
 		Assert.IsTrue(b.Equals(c));

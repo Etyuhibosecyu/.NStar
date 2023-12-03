@@ -340,7 +340,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	{
 		if (root == null)
 			return true;
-		var processQueue = new Queue<Node>();
+		using Queue<Node> processQueue = [];
 		processQueue.Enqueue(root);
 		Node current;
 		while (processQueue.Length != 0)
@@ -461,40 +461,40 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		switch (size)
 		{
 			case 0:
-				return null;
+			return null;
 			case 1:
-				root = new Node(arr[startIndex], NodeColor.Black);
-				if (redNode != null)
-					root.Left = redNode;
-				break;
+			root = new Node(arr[startIndex], NodeColor.Black);
+			if (redNode != null)
+				root.Left = redNode;
+			break;
 			case 2:
-				root = new Node(arr[startIndex], NodeColor.Black)
-				{
-					Right = new Node(arr[endIndex], NodeColor.Black)
-				};
-				root.Right.ColorRed();
-				if (redNode != null)
-					root.Left = redNode;
-				break;
+			root = new Node(arr[startIndex], NodeColor.Black)
+			{
+				Right = new Node(arr[endIndex], NodeColor.Black)
+			};
+			root.Right.ColorRed();
+			if (redNode != null)
+				root.Left = redNode;
+			break;
 			case 3:
-				root = new Node(arr[startIndex + 1], NodeColor.Black)
-				{
-					Left = new Node(arr[startIndex], NodeColor.Black),
-					Right = new Node(arr[endIndex], NodeColor.Black)
-				};
-				if (redNode != null)
-					root.Left.Left = redNode;
-				break;
+			root = new Node(arr[startIndex + 1], NodeColor.Black)
+			{
+				Left = new Node(arr[startIndex], NodeColor.Black),
+				Right = new Node(arr[endIndex], NodeColor.Black)
+			};
+			if (redNode != null)
+				root.Left.Left = redNode;
+			break;
 			default:
-				var midpt = (startIndex + endIndex) / 2;
-				root = new Node(arr[midpt], NodeColor.Black)
-				{
-					Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
-					Right = size % 2 == 0 ?
-					ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(arr[midpt + 1], NodeColor.Red)) :
-					ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null)
-				};
-				break;
+			var midpt = (startIndex + endIndex) / 2;
+			root = new Node(arr[midpt], NodeColor.Black)
+			{
+				Left = ConstructRootFromSortedArray(arr, startIndex, midpt - 1, redNode),
+				Right = size % 2 == 0 ?
+				ConstructRootFromSortedArray(arr, midpt + 2, endIndex, new Node(arr[midpt + 1], NodeColor.Red)) :
+				ConstructRootFromSortedArray(arr, midpt + 1, endIndex, null)
+			};
+			break;
 		}
 		return root;
 	}
@@ -819,7 +819,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		var stack = new Stack<Node>(2 * Log2(Length + 1));
+		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
 		var current = root;
 		while (current != null)
 		{
@@ -1759,7 +1759,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			var pendingNodes = new Stack<(Node source, Node target)>(2 * Log2(length) + 2);
+			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -1864,24 +1864,24 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			switch (rotation)
 			{
 				case TreeRotation.Right:
-					removeRed = Left!.Left!;
-					Debug.Assert(removeRed.IsRed);
-					removeRed.ColorBlack();
-					return RotateRight();
+				removeRed = Left!.Left!;
+				Debug.Assert(removeRed.IsRed);
+				removeRed.ColorBlack();
+				return RotateRight();
 				case TreeRotation.Left:
-					removeRed = Right!.Right!;
-					Debug.Assert(removeRed.IsRed);
-					removeRed.ColorBlack();
-					return RotateLeft();
+				removeRed = Right!.Right!;
+				Debug.Assert(removeRed.IsRed);
+				removeRed.ColorBlack();
+				return RotateLeft();
 				case TreeRotation.RightLeft:
-					Debug.Assert(Right!.Left!.IsRed);
-					return RotateRightLeft();
+				Debug.Assert(Right!.Left!.IsRed);
+				return RotateRightLeft();
 				case TreeRotation.LeftRight:
-					Debug.Assert(Left!.Right!.IsRed);
-					return RotateLeftRight();
+				Debug.Assert(Left!.Right!.IsRed);
+				return RotateLeftRight();
 				default:
-					Debug.Fail($"{nameof(rotation)}: {rotation} is not a defined {nameof(TreeRotation)} value.");
-					return null;
+				Debug.Fail($"{nameof(rotation)}: {rotation} is not a defined {nameof(TreeRotation)} value.");
+				return null;
 			}
 		}
 
@@ -2016,7 +2016,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			set.VersionCheck();
 			_version = set.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = new Stack<Node>(2 * Log2(set.TotalCount() + 1));
+			_stack = Stack<Node>.GetNew(2 * Log2(set.TotalCount() + 1));
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -2044,7 +2044,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 		internal readonly bool NotStartedOrEnded => _current == null;
 
-		public readonly void Dispose() { }
+		public readonly void Dispose() => _stack?.Dispose();
 
 		private void Initialize()
 		{
@@ -2197,7 +2197,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			VersionCheck();
 			if (root == null)
 				return true;
-			Queue<Node> processQueue = new();
+			using Queue<Node> processQueue = [];
 			processQueue.Enqueue(root);
 			Node current;
 			while (processQueue.Length != 0)
@@ -2268,7 +2268,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			Stack<Node> stack = new(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
 			while (current != null)
 			{

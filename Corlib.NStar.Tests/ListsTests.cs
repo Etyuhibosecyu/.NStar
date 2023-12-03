@@ -534,12 +534,12 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
+		b = a.GetAfter([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
+		c = ["EEE", "DDD"];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -554,12 +554,12 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
+		b = a.GetAfterLast([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new("DDD", "MMM"));
-		c = new G.List<string>() { "EEE", "DDD" };
+		c = ["EEE", "DDD"];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -574,12 +574,12 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
+		b = a.GetBefore([]);
 		c = new(list);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
+		c = ["MMM", "BBB", "PPP"];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -594,12 +594,12 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
+		b = a.GetBeforeLast([]);
 		c = new(list);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new("DDD", "MMM"));
-		c = new G.List<string>() { "MMM", "BBB", "PPP" };
+		c = ["MMM", "BBB", "PPP"];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -667,7 +667,7 @@ public class ListTests
 		Assert.AreEqual(b, 0);
 		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
 		Assert.AreEqual(b, 2);
-		b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
+		b = a.IndexOfAny(["LLL", "NNN", "PPP"], 4);
 		Assert.AreEqual(b, -1);
 		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.AreEqual(b, -1);
@@ -726,7 +726,7 @@ public class ListTests
 		Assert.AreEqual(b, 6);
 		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
 		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
+		b = a.LastIndexOfAny(["LLL", "NNN", "EEE"], 4);
 		Assert.AreEqual(b, -1);
 		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.AreEqual(b, -1);
@@ -1006,7 +1006,7 @@ public class ListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new List<string>(a).Remove(list.Length - 1, 2 - list.Length));
 		Assert.ThrowsException<ArgumentException>(() => b = new List<string>(a).Remove(1, 1000));
 		b = new List<string>(a).Remove(..);
-		c = new G.List<string>();
+		c = [];
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
@@ -1342,21 +1342,21 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Skip(0);
 		c = E.Skip(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Skip(1000);
 		c = E.Skip(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Skip(-4);
 		c = E.Skip(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1375,21 +1375,21 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.SkipLast(0);
 		c = E.SkipLast(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.SkipLast(1000);
 		c = E.SkipLast(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.SkipLast(-4);
 		c = E.SkipLast(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1466,21 +1466,21 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Take(0);
 		c = E.Take(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Take(1000);
 		c = E.Take(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.Take(-4);
 		c = E.Take(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1499,21 +1499,21 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.TakeLast(0);
 		c = E.TakeLast(new G.List<string>(list), 0);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.TakeLast(1000);
 		c = E.TakeLast(new G.List<string>(list), 1000);
 		Assert.IsTrue(a.Equals(list));
 		Assert.IsTrue(E.SequenceEqual(list, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		a = list.ToList();
+		a = [.. list];
 		b = a.TakeLast(-4);
 		c = E.TakeLast(new G.List<string>(list), -4);
 		Assert.IsTrue(a.Equals(list));
@@ -1836,7 +1836,7 @@ public class NListTests
 			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
 			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
 		}
-		static (char, char, char) Next() => ((char, char, char))random.Next(1000).ToString("D3").ToList();
+		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
 	}
 
 	[TestMethod]
@@ -2065,7 +2065,7 @@ public class NListTests
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 		}
-		static (char, char, char) Next() => ((char, char, char))random.Next(1000).ToString("D3").ToList();
+		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
 	}
 
 	[TestMethod]
@@ -2232,12 +2232,12 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfter(new());
-		c = new();
+		b = a.GetAfter([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new(('D', 'D', 'D'), ('M', 'M', 'M')));
-		c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
+		c = [('E', 'E', 'E'), ('D', 'D', 'D')];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -2252,12 +2252,12 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetAfterLast(new());
-		c = new();
+		b = a.GetAfterLast([]);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfterLast(new(('D', 'D', 'D'), ('M', 'M', 'M')));
-		c = new G.List<(char, char, char)>() { ('E', 'E', 'E'), ('D', 'D', 'D') };
+		c = [('E', 'E', 'E'), ('D', 'D', 'D')];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -2272,12 +2272,12 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBefore(new());
+		b = a.GetBefore([]);
 		c = new(nList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new(('D', 'D', 'D'), ('M', 'M', 'M')));
-		c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
+		c = [('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P')];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -2292,12 +2292,12 @@ public class NListTests
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
-		b = a.GetBeforeLast(new());
+		b = a.GetBeforeLast([]);
 		c = new(nList);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBeforeLast(new(('D', 'D', 'D'), ('M', 'M', 'M')));
-		c = new G.List<(char, char, char)>() { ('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P') };
+		c = [('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P')];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
@@ -2737,7 +2737,7 @@ public class NListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = new NList<(char, char, char)>(a).Remove(nList.Length - 1, 2 - nList.Length));
 		Assert.ThrowsException<ArgumentException>(() => b = new NList<(char, char, char)>(a).Remove(1, 1000));
 		b = new NList<(char, char, char)>(a).Remove(..);
-		c = new G.List<(char, char, char)>();
+		c = [];
 		Assert.IsTrue(a.Equals(nList));
 		Assert.IsTrue(E.SequenceEqual(nList, a));
 		Assert.IsTrue(b.Equals(c));

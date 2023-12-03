@@ -136,7 +136,7 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 				b.Add(elem);
 			}
 			array = a.ToArray();
-			array2 = b.ToArray();
+			array2 = [.. b];
 			Assert.IsTrue(RedStarLinq.Equals(array, array2));
 			Assert.IsTrue(E.SequenceEqual(array, array2));
 		}

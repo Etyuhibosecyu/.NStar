@@ -591,14 +591,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : List<T>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : 0, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		var en = collection.GetEnumerator();
+		using var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			Add(en.Current);
 	}
 
 	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
 	{
-		var en = collection.GetEnumerator();
+		using var en = collection.GetEnumerator();
 		while (en.MoveNext())
 			Add(en.Current);
 	}

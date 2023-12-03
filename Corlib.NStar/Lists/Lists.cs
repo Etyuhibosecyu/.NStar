@@ -254,7 +254,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if (index2 == 0)
 			_start = (_start + Max(_size, Capacity - length + toSkip)) % Capacity;
 		var i = 0;
-		var en = collection.GetEnumerator();
+		using var en = collection.GetEnumerator();
 		while (i < toSkip && en.MoveNext())
 			i++;
 		i = index2;
@@ -404,7 +404,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 {
 	private protected T[] _items;
 
-	private static readonly T[] _emptyArray = Array.Empty<T>();
+	private static readonly T[] _emptyArray = [];
 
 	public List() => _items = _emptyArray;
 

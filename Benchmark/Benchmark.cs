@@ -7,14 +7,14 @@ public class Benchmark
 	private static readonly List<int> list7 = RedStarLinq.Fill(x => random.Next(0, 65536), 10000000);
 	private static readonly List<int> list8 = RedStarLinq.Fill(x => random.Next(0, 65536), 100000000);
 
-	public G.HashSet<int> GHashSet { get; set; } = new();
-	public ParallelHashSet<int> ParallelHashSet { get; set; } = new();
+	public G.HashSet<int> GHashSet { get; set; } = [];
+	public ParallelHashSet<int> ParallelHashSet { get; set; } = [];
 	public double OldComplex { get; set; }
 	public double MyComplex { get; set; }
-	public G.List<int> OldIndexesOfMax { get; set; } = new();
-	public List<int> MyIndexesOfMax { get; set; } = new();
-	public G.List<int> OldSort { get; set; } = new();
-	public List<int> MySort { get; set; } = new();
+	public G.List<int> OldIndexesOfMax { get; set; } = [];
+	public List<int> MyIndexesOfMax { get; set; } = [];
+	public G.List<int> OldSort { get; set; } = [];
+	public List<int> MySort { get; set; } = [];
 
 	[Benchmark]
 	public void GHashSetTest() => GHashSet = new(list8);

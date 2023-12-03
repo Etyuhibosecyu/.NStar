@@ -1215,6 +1215,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -1271,8 +1272,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext())
 			{
@@ -1289,6 +1290,7 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
@@ -1345,8 +1347,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext())
 			{
@@ -1363,6 +1365,7 @@ public partial class List<T, TCertain>
 
 	internal static List<(T, T2)> CombineEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
@@ -1418,8 +1421,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T, T2)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext())
 			{
@@ -1436,6 +1439,8 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
@@ -1496,9 +1501,9 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : TryGetLengthEasilyEnumerable(source3, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
-			var en3 = source3.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
+			using var en3 = source3.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
@@ -1516,6 +1521,8 @@ public partial class List<T, TCertain>
 
 	internal static List<TResult> CombineEnumerable<T2, T3, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
@@ -1576,9 +1583,9 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : TryGetLengthEasilyEnumerable(source3, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
-			var en3 = source3.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
+			using var en3 = source3.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
@@ -1596,6 +1603,8 @@ public partial class List<T, TCertain>
 
 	internal static List<(T, T2, T3)> CombineEnumerable<T2, T3>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3)
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
@@ -1655,9 +1664,9 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T, T2, T3)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : TryGetLengthEasilyEnumerable(source3, out length) ? length : 1024);
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
-			var en3 = source3.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
+			using var en3 = source3.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
 			{
@@ -1675,6 +1684,7 @@ public partial class List<T, TCertain>
 
 	internal static List<T> ConcatEnumerable(IEnumerable<T> source, params IEnumerable<T>[] collections)
 	{
+		ArgumentNullException.ThrowIfNull(collections);
 		List<T> result = new(source);
 		for (var i = 0; i < collections.Length; i++)
 			result.AddRange(collections[i]);
@@ -1741,6 +1751,7 @@ public partial class List<T, TCertain>
 
 	internal static bool ContainsEnumerable(IEnumerable<T> source, T target, IEqualityComparer<T> comparer)
 	{
+		ArgumentNullException.ThrowIfNull(comparer);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -1799,6 +1810,7 @@ public partial class List<T, TCertain>
 
 	internal static bool ContainsEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
 		if (source is List<T> list)
 		{
@@ -1858,6 +1870,8 @@ public partial class List<T, TCertain>
 
 	internal static bool ContainsEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
+		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		if (source is List<T> list)
 		{
@@ -2361,8 +2375,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			while (en.MoveNext())
 			{
 				if (!en2.MoveNext())
@@ -2436,8 +2450,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext())
 			{
@@ -2512,8 +2526,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			while (en.MoveNext())
 			{
 				if (!en2.MoveNext())
@@ -34799,6 +34813,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfEnumerable(IEnumerable<T> source, T target, IEqualityComparer<T> comparer)
 	{
+		ArgumentNullException.ThrowIfNull(comparer);
 		if (source is List<T> list)
 		{
 			var length = list._size;
@@ -34857,6 +34872,7 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
 		var comparer = new EComparer<T>(equalFunction);
 		if (source is List<T> list)
 		{
@@ -34916,6 +34932,8 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
+		ArgumentNullException.ThrowIfNull(equalFunction);
+		ArgumentNullException.ThrowIfNull(hashCodeFunction);
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		if (source is List<T> list)
 		{
@@ -44553,7 +44571,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			var n = 0;
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			while (en.MoveNext()) n++;
 			return n;
 		}
@@ -48666,8 +48684,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -48754,8 +48772,8 @@ public partial class List<T, TCertain>
 			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -48841,8 +48859,8 @@ public partial class List<T, TCertain>
 			List<(T, T)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -51476,7 +51494,7 @@ public partial class List<T, TCertain>
 			return new(source.ToList());
 		else
 		{
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			for (var i = 0; i < length; i++)
 				if (!en.MoveNext())
 					return new();
@@ -51497,7 +51515,7 @@ public partial class List<T, TCertain>
 		{
 			var end = Math.Max(count2 - length, 0);
 			List<T> result = new(end);
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; i < end && en.MoveNext(); i++)
 				result._items[i] = en.Current;
@@ -51507,8 +51525,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = [];
-			LimitedQueue<T> queue = new(length);
-			var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(length);
+			using var en = source.GetEnumerator();
 			while (en.MoveNext())
 				queue.Enqueue(en.Current, result);
 			return result.GetSlice();
@@ -51522,7 +51540,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -51537,7 +51555,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -51730,8 +51748,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			bool b2;
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
 				var item = en.Current;
@@ -51804,8 +51822,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			bool b2;
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
@@ -51879,8 +51897,8 @@ public partial class List<T, TCertain>
 		else
 		{
 			bool b2;
-			var en = source.GetEnumerator();
-			var en2 = source2.GetEnumerator();
+			using var en = source.GetEnumerator();
+			using var en2 = source2.GetEnumerator();
 			while (en.MoveNext() & (b2 = en2.MoveNext()))
 			{
 				var item = en.Current;
@@ -52859,7 +52877,7 @@ public partial class List<T, TCertain>
 			return result.GetSlice();
 		}
 		int index = range.Start.Value, index2 = range.End.Value;
-		var en = source.GetEnumerator();
+		using var en = source.GetEnumerator();
 		if (!range.Start.IsFromEnd && !range.End.IsFromEnd)
 		{
 			if (index >= index2)
@@ -52881,14 +52899,14 @@ public partial class List<T, TCertain>
 				if (!en.MoveNext())
 					return new();
 			List<T> result = [];
-			LimitedQueue<T> queue = new(index2);
+			using LimitedQueue<T> queue = new(index2);
 			while (en.MoveNext())
 				queue.Enqueue(en.Current, result);
 			return result.GetSlice();
 		}
 		else if (range.Start.IsFromEnd && !range.End.IsFromEnd)
 		{
-			LimitedQueue<T> queue = new(index);
+			using LimitedQueue<T> queue = new(index);
 			var i = 0;
 			while (en.MoveNext())
 			{
@@ -52905,7 +52923,7 @@ public partial class List<T, TCertain>
 		}
 		else if (range.Start.IsFromEnd && range.End.IsFromEnd)
 		{
-			LimitedQueue<T> queue = new(index);
+			using LimitedQueue<T> queue = new(index);
 			while (en.MoveNext())
 				queue.Enqueue(en.Current);
 			if (queue.Length <= index2)
@@ -52929,7 +52947,7 @@ public partial class List<T, TCertain>
 		else if (TryGetLengthEasilyEnumerable(source, out var count2))
 		{
 			var start = Math.Max(count2 - length, 0);
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; i < start; i++)
 				if (!en.MoveNext())
@@ -52942,8 +52960,8 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			LimitedQueue<T> queue = new(length);
-			var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(length);
+			using var en = source.GetEnumerator();
 			while (en.MoveNext())
 				queue.Enqueue(en.Current);
 			return queue.ToList().GetSlice();
@@ -52957,7 +52975,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			T item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
@@ -52972,7 +52990,7 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			T item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);
@@ -66238,6 +66256,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2)
 		{
@@ -66297,6 +66316,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2)
 		{
@@ -66356,6 +66376,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T2)> CombineEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2) where T2 : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Min(list.Length, list2.Length);
@@ -66414,6 +66435,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
@@ -66477,6 +66500,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(IEnumerable<T_> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T_> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
@@ -66540,6 +66565,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T2, T3)> CombineEnumerable<T2, T3>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3) where T2 : unmanaged where T3 : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
 		{
 			var length = List<int>.MinEnumerable(new[] { list.Length, list3.Length, list3.Length }.AsSpan());
@@ -66666,6 +66693,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, TResult>(NList<T> source, NList<T2> source2, Func<T, T2, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source._size, source2._size);
 		NList<TResult> result = new(length);
@@ -66677,6 +66705,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, TResult>(NList<T> source, NList<T2> source2, Func<T, T2, int, TResult> function) where T2 : unmanaged where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source._size, source2._size);
 		NList<TResult> result = new(length);
@@ -66688,6 +66717,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T2)> CombineEnumerable<T2>(NList<T> source, NList<T2> source2) where T2 : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
 		var length = Min(source._size, source2._size);
 		NList<(T, T2)> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -66698,6 +66728,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(length);
@@ -66709,6 +66741,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<TResult> CombineEnumerable<T2, T3, TResult>(NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<TResult> result = new(length);
@@ -66720,6 +66754,8 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T2, T3)> CombineEnumerable<T2, T3>(NList<T> source, NList<T2> source2, NList<T3> source3) where T2 : unmanaged where T3 : unmanaged
 	{
+		ArgumentNullException.ThrowIfNull(source2);
+		ArgumentNullException.ThrowIfNull(source3);
 		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
@@ -67086,8 +67122,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<T_>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T_>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T_> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -67174,8 +67210,8 @@ public unsafe partial class NList<T>
 			NList<TResult> result = new(List<T_>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T_>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T_> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -67261,8 +67297,8 @@ public unsafe partial class NList<T>
 			NList<(T, T)> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? Math.Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
-			var en = source.GetEnumerator();
-			var queue = new LimitedQueue<T>(offset);
+			using var en = source.GetEnumerator();
+			using LimitedQueue<T> queue = new(offset);
 			while (!queue.IsFull && en.MoveNext())
 				queue.Enqueue(en.Current);
 			var i = 0;
@@ -67555,7 +67591,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -67570,7 +67606,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; en.MoveNext() && function(en.Current, i); i++) ;
 			for (; en.MoveNext(); i++) result.Add(en.Current);
@@ -67632,7 +67668,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			T item;
 			for (; en.MoveNext() && function(item = en.Current); i++) result.Add(item);
@@ -67647,7 +67683,7 @@ public unsafe partial class NList<T>
 		else
 		{
 			NList<T> result = [];
-			var en = source.GetEnumerator();
+			using var en = source.GetEnumerator();
 			var i = 0;
 			T item;
 			for (; en.MoveNext() && function(item = en.Current, i); i++) result.Add(item);

@@ -134,14 +134,14 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			switch (byteArray.Length - j)
 			{
 				case 3:
-					_items[i] = (uint)(byteArray[j + 2] & 0xff) << 16;
-					goto case 2;
+				_items[i] = (uint)(byteArray[j + 2] & 0xff) << 16;
+				goto case 2;
 				case 2:
-					_items[i] |= (uint)(byteArray[j + 1] & 0xff) << 8;
-					goto case 1;
+				_items[i] |= (uint)(byteArray[j + 1] & 0xff) << 8;
+				goto case 1;
 				case 1:
-					_items[i] |= (uint)(byteArray[j] & 0xff);
-					break;
+				_items[i] |= (uint)(byteArray[j] & 0xff);
+				break;
 			}
 		}
 		else if (bits is bool[] boolArray)
@@ -1015,7 +1015,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (bits is IEnumerable<byte> bytes)
 		{
 			var b = true;
-			var en = bytes.GetEnumerator();
+			using var en = bytes.GetEnumerator();
 			BigList<uint> values = [];
 			var n = 0;
 			while (b)
@@ -1059,7 +1059,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else if (bits is IEnumerable<bool> bools)
 		{
-			var en = bools.GetEnumerator();
+			using var en = bools.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
@@ -1096,7 +1096,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low.And(value.low);
 		else high = high != null && value.high != null
 			? high.Combine(value.high, (x, y) => x.And(y))
-			:            throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 
@@ -1150,7 +1150,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low.Or(value.low);
 		else high = high != null && value.high != null
 			? high.Combine(value.high, (x, y) => x.Or(y))
-			:         throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 
@@ -1179,7 +1179,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			low.Xor(value.low);
 		else high = high != null && value.high != null
 			? high.Combine(value.high, (x, y) => x.Xor(y))
-			:            throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
 }

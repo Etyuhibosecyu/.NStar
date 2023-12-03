@@ -585,15 +585,19 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> IntersectWith(IEnumerable<T> other)
 	{
-		if (other is not ISet<T> set)
-			set = new ParallelHashSet<T>(other);
-		Parallel.For(0, _size, i =>
+		if (other is ISet<T> set)
+			return Do(set);
+		return Do(new ParallelHashSet<T>(other));
+		ParallelHashSet<T> Do(ISet<T> set)
 		{
-			var item = GetInternal(i);
-			if (!set.Contains(item))
-				RemoveValue(item);
-		});
-		return this;
+			Parallel.For(0, _size, i =>
+			{
+				var item = GetInternal(i);
+				if (!set.Contains(item))
+					RemoveValue(item);
+			});
+			return this;
+		}
 	}
 
 	public override bool IsSupersetOf(IEnumerable<T> other)
