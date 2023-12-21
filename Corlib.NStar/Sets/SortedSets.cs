@@ -725,7 +725,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return null;
 	}
 
-	public virtual T GetAndRemove(Index index)
+	public override T GetAndRemove(Index index)
 	{
 		var index2 = index.GetOffset(_size);
 		if (root == null)

@@ -547,17 +547,17 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return null;
 	}
 
-	public virtual T GetAndRemove(Index index)
+	public override (T Key, int Value) GetAndRemove(Index index)
 	{
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
-		T found = default!;
+		(T Key, int Value) found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
-			found = match.Item.Key;
+			found = match.Item;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
 		}
@@ -2692,17 +2692,17 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 		return null;
 	}
 
-	public virtual int GetAndRemove(Index index)
+	public override T GetAndRemove(Index index)
 	{
 		var index2 = index.GetOffset(_size);
 		if (root == null)
 			return default!;
 		FindForRemove(index2, out var parent, out var grandParent, out var match, out var parentOfMatch);
-		int found = default!;
+		T found = default!;
 		// Move successor to the matching node position and replace links.
 		if (match != null)
 		{
-			found = match.Left?.LeavesCount ?? 0;
+			found = match.Value;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
 		}

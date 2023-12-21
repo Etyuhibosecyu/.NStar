@@ -66,10 +66,13 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public Dictionary(G.IDictionary<TKey, TValue> dictionary) : this(dictionary, (IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey>? comparer) : this(dictionary != null ? dictionary.Count : throw new ArgumentNullException(nameof(dictionary)), comparer)
+	public Dictionary(G.IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey>? comparer)
 	{
+		comparer ??= EqualityComparer<TKey>.Default;
+		this.comparer = comparer;
+		ArgumentNullException.ThrowIfNull(dictionary);
 		if (dictionary.Count <= _hashThreshold)
-			low = new(dictionary);
+			low = new(dictionary, new Comparer<TKey>((x, y) => comparer.Equals(x, y) ? 0 : -1));
 		else
 		{
 			high = new(dictionary, comparer);

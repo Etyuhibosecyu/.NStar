@@ -1140,6 +1140,7 @@ public class ListTests
 		b.AddRange(defaultCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Replace((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -1148,7 +1149,7 @@ public class ListTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
+			for (var j = 0; j < arr.Length; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
@@ -1164,7 +1165,7 @@ public class ListTests
 		for (var i = 0; i < 100; i++)
 		{
 			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
+			for (var j = 0; j < arr.Length; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
@@ -1180,6 +1181,90 @@ public class ListTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace(null!, null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace("925", null!));
+		var backConverter = new Chain(48, 10).ToArray(x => ((char)(x - 48 + 'A'), (char)x));
+		for (var i = 0; i < 100; i++)
+		{
+			var arr = new char[1000];
+			for (var j = 0; j < arr.Length; j++)
+				arr[j] = (char)random.Next(48, 58);
+			string s = new(arr);
+			String a = s;
+			var dic = new Chain(48, 10).ToList().Shuffle().Take(random.Next(2, 11)).ToDictionary(x => (char)x, x => (char)random.Next(48, 58));
+			var b = a.Replace(dic);
+			string c = new(s);
+			var replace = dic.ToArray(x => (x.Key, (char)(x.Value - 48 + 'A')));
+			for (var j = 0; j < replace.Length; j++)
+				c = c.Replace(replace[j].Key, replace[j].Item2);
+			for (var j = 0; j < backConverter.Length; j++)
+				c = c.Replace(backConverter[j].Item1, backConverter[j].Item2);
+			Assert.IsTrue(a.Equals(s));
+			Assert.IsTrue(E.SequenceEqual(s, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, char>)null!));
+		for (var i = 0; i < 100; i++)
+		{
+			var arr = new char[1000];
+			for (var j = 0; j < arr.Length; j++)
+				arr[j] = (char)random.Next(48, 58);
+			string s = new(arr);
+			String a = s;
+			var dic = new Chain(48, 10).ToList().Shuffle().Take(random.Next(2, 11)).ToDictionary(x => (char)x, x => (G.IEnumerable<char>)new Chain(random.Next(0, 5)).ToString(y => (char)random.Next(48, 58)));
+			var b = a.Replace(dic);
+			string c = new(s);
+			var replace = dic.ToArray(x => (x.Key, x.Value.ToString(y => (char)(y - 48 + 'A'))));
+			for (var j = 0; j < replace.Length; j++)
+				c = c.Replace("" + replace[j].Key, replace[j].Item2);
+			for (var j = 0; j < backConverter.Length; j++)
+				c = c.Replace(backConverter[j].Item1, backConverter[j].Item2);
+			Assert.IsTrue(a.Equals(s));
+			Assert.IsTrue(E.SequenceEqual(s, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, String>)null!));
+		ProcessPairs("3692581470", "3692581470", []);
+		ProcessPairs("3692581470", "3696925814070", new() { { ('6', '9'), "6969" }, { ('1', '4'), "140" } });
+		ProcessPairs("3692581470", "3122007370", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("", "", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("6", "6", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("3232323232!", "256256256256256!", new() { { ('3', '2'), "256" }, { ('2', '3'), "128" }, { ('3', '1'), "888" } });
+		ProcessPairs("3232323232!", "256256256256256!", new() { { ('2', '3'), "128" }, { ('3', '2'), "256" }, { ('3', '1'), "888" } });
+		ProcessPairs("77777", "777777777", new() { { ('7', '7'), "7777" }, { ('8', '8'), "8888" } });
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char), G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char), String>)null!));
+		ProcessTriples("3692581470", "3692581470", []);
+		ProcessTriples("3692581470", "36969581400", new() { { ('6', '9', '2'), "6969" }, { ('1', '4', '7'), "140" } });
+		ProcessTriples("3692581470", "391114641470", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("", "", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("6", "6", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("256256256256256!", "40964096409640964096!", new() { { ('2', '5', '6'), "4096" }, { ('5', '6', '2'), "2048" }, { ('6', '2', '5'), "888" } });
+		ProcessTriples("3232323232!", "2048409620482!", new() { { ('2', '3', '2'), "4096" }, { ('3', '2', '3'), "2048" }, { ('3', '1', '2'), "888" } });
+		ProcessTriples("77777777", "777777777777", new() { { ('7', '7', '7'), "77777" }, { ('8', '8', '8'), "88888" } });
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char, char), G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char, char), String>)null!));
+		static void ProcessPairs(string s, string c, Dictionary<(char, char), G.IEnumerable<char>> dic)
+		{
+			String a = s;
+			var b = a.Replace(dic);
+			Assert.IsTrue(a.Equals(s));
+			Assert.IsTrue(E.SequenceEqual(s, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		static void ProcessTriples(string s, string c, Dictionary<(char, char, char), G.IEnumerable<char>> dic)
+		{
+			String a = s;
+			var b = a.Replace(dic);
+			Assert.IsTrue(a.Equals(s));
+			Assert.IsTrue(E.SequenceEqual(s, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
 	}
 
 	[TestMethod]
@@ -1188,7 +1273,7 @@ public class ListTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
+			for (var j = 0; j < arr.Length; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
@@ -1204,7 +1289,7 @@ public class ListTests
 		for (var i = 0; i < 100; i++)
 		{
 			var arr = new char[1000];
-			for (var j = 0; j < 1000; j++)
+			for (var j = 0; j < arr.Length; j++)
 				arr[j] = (char)random.Next(33, 127);
 			string s = new(arr);
 			String a = s;
@@ -1215,6 +1300,89 @@ public class ListTests
 			string newCollection = new(newArray);
 			var b = a.ReplaceInPlace(oldCollection, newArray);
 			var c = s.Replace(oldCollection, newCollection);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace(null!, null!));
+		var backConverter = new Chain(48, 10).ToArray(x => ((char)(x - 48 + 'A'), (char)x));
+		for (var i = 0; i < 100; i++)
+		{
+			var arr = new char[1000];
+			for (var j = 0; j < arr.Length; j++)
+				arr[j] = (char)random.Next(48, 58);
+			string s = new(arr);
+			String a = s;
+			var dic = new Chain(48, 10).ToList().Shuffle().Take(random.Next(2, 11)).ToDictionary(x => (char)x, x => (char)random.Next(48, 58));
+			var b = a.ReplaceInPlace(dic);
+			string c = new(s);
+			var replace = dic.ToArray(x => (x.Key, (char)(x.Value - 48 + 'A')));
+			for (var j = 0; j < replace.Length; j++)
+				c = c.Replace(replace[j].Key, replace[j].Item2);
+			for (var j = 0; j < backConverter.Length; j++)
+				c = c.Replace(backConverter[j].Item1, backConverter[j].Item2);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, char>)null!));
+		for (var i = 0; i < 100; i++)
+		{
+			var arr = new char[1000];
+			for (var j = 0; j < arr.Length; j++)
+				arr[j] = (char)random.Next(48, 58);
+			string s = new(arr);
+			String a = s;
+			var dic = new Chain(48, 10).ToList().Shuffle().Take(random.Next(2, 11)).ToDictionary(x => (char)x, x => (G.IEnumerable<char>)new Chain(random.Next(0, 5)).ToString(y => (char)random.Next(48, 58)));
+			var b = a.ReplaceInPlace(dic);
+			string c = new(s);
+			var replace = dic.ToArray(x => (x.Key, x.Value.ToString(y => (char)(y - 48 + 'A'))));
+			for (var j = 0; j < replace.Length; j++)
+				c = c.Replace("" + replace[j].Key, replace[j].Item2);
+			for (var j = 0; j < backConverter.Length; j++)
+				c = c.Replace(backConverter[j].Item1, backConverter[j].Item2);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<char, String>)null!));
+		ProcessPairs("3692581470", "3692581470", []);
+		ProcessPairs("3692581470", "3696925814070", new() { { ('6', '9'), "6969" }, { ('1', '4'), "140" } });
+		ProcessPairs("3692581470", "3122007370", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("", "", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("6", "6", new() { { ('6', '9'), "12" }, { ('1', '4'), "3" }, { ('5', '8'), "007" } });
+		ProcessPairs("3232323232!", "256256256256256!", new() { { ('3', '2'), "256" }, { ('2', '3'), "128" }, { ('3', '1'), "888" } });
+		ProcessPairs("3232323232!", "256256256256256!", new() { { ('2', '3'), "128" }, { ('3', '2'), "256" }, { ('3', '1'), "888" } });
+		ProcessPairs("77777", "777777777", new() { { ('7', '7'), "7777" }, { ('8', '8'), "8888" } });
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char), G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char), String>)null!));
+		ProcessTriples("3692581470", "3692581470", []);
+		ProcessTriples("3692581470", "36969581400", new() { { ('6', '9', '2'), "6969" }, { ('1', '4', '7'), "140" } });
+		ProcessTriples("3692581470", "391114641470", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("", "", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("6", "6", new() { { ('6', '9', '2'), "911" }, { ('1', '4', '7'), "3" }, { ('5', '8', '1'), "14641" } });
+		ProcessTriples("256256256256256!", "40964096409640964096!", new() { { ('2', '5', '6'), "4096" }, { ('5', '6', '2'), "2048" }, { ('6', '2', '5'), "888" } });
+		ProcessTriples("3232323232!", "2048409620482!", new() { { ('2', '3', '2'), "4096" }, { ('3', '2', '3'), "2048" }, { ('3', '1', '2'), "888" } });
+		ProcessTriples("77777777", "777777777777", new() { { ('7', '7', '7'), "77777" }, { ('8', '8', '8'), "88888" } });
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char, char), G.IEnumerable<char>>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => ((String)"3692581470").Replace((Dictionary<(char, char, char), String>)null!));
+		static void ProcessPairs(string s, string c, Dictionary<(char, char), G.IEnumerable<char>> dic)
+		{
+			String a = s;
+			var b = a.ReplaceInPlace(dic);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+		}
+		static void ProcessTriples(string s, string c, Dictionary<(char, char, char), G.IEnumerable<char>> dic)
+		{
+			String a = s;
+			var b = a.ReplaceInPlace(dic);
 			Assert.IsTrue(a.Equals(b));
 			Assert.IsTrue(E.SequenceEqual(b, a));
 			Assert.IsTrue(b.Equals(c));

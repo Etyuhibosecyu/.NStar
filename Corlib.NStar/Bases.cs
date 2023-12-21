@@ -293,6 +293,13 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
+	public virtual T GetAndRemove(Index index)
+	{
+		var value = this[index];
+		RemoveAt(index);
+		return value;
+	}
+
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection) => GetBeforeSetAfter(collection, 0, _size);
 
 	public virtual TCertain GetBeforeSetAfter(IEnumerable<T> collection, int index) => GetBeforeSetAfter(collection, index, _size - index);
@@ -643,9 +650,92 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			result.SetInternal(index, newItem);
 		return result;
 	}
+#pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
+
+	public virtual TCertain Replace(Dictionary<T, IEnumerable<T>> dic)
+	{
+		ArgumentNullException.ThrowIfNull(dic);
+		if (_size < 2)
+			return CollectionCreator(this);
+		var result = CapacityCreator(_size + GetArrayLength(_size, 10));
+		for (var i = 0; i < _size; i++)
+		{
+			var element = GetInternal(i);
+			if (dic.TryGetValue(element, out var newCollection))
+				result.AddRange(newCollection);
+			else
+				result.Add(element);
+		}
+		return result;
+	}
+
+	public virtual TCertain Replace(Dictionary<T, T> dic)
+	{
+		ArgumentNullException.ThrowIfNull(dic);
+		var result = CollectionCreator(this);
+		for (var i = 0; i < _size; i++)
+			if (dic.TryGetValue(result.GetInternal(i), out var newItem))
+				result.SetInternal(i, newItem);
+		return result;
+	}
+
+	public virtual TCertain Replace(Dictionary<T, TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
+#pragma warning restore CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
+
+	public virtual TCertain Replace(Dictionary<(T, T), IEnumerable<T>> dic)
+	{
+		ArgumentNullException.ThrowIfNull(dic);
+		if (_size < 2)
+			return CollectionCreator(this);
+		var result = CapacityCreator(_size + GetArrayLength(_size, 10));
+		using Buffer<T> buffer = new(2) { GetInternal(0) };
+		for (var i = 1; i < _size; i++)
+		{
+			buffer.Add(GetInternal(i));
+			if (!buffer.IsFull)
+				continue;
+			if (dic.TryGetValue((buffer[0], buffer[1]), out var newCollection))
+			{
+				result.AddRange(newCollection);
+				buffer.Clear();
+			}
+			else
+				result.Add(buffer.GetAndRemove(0));
+		}
+		return result.AddRange(buffer);
+	}
+
+	public virtual TCertain Replace(Dictionary<(T, T), TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
+
+	public virtual TCertain Replace(Dictionary<(T, T, T), IEnumerable<T>> dic)
+	{
+		ArgumentNullException.ThrowIfNull(dic);
+		if (_size < 3)
+			return CollectionCreator(this);
+		var result = CapacityCreator(_size + GetArrayLength(_size, 10));
+		using Buffer<T> buffer = new(3) { GetInternal(0), GetInternal(1) };
+		for (var i = 2; i < _size; i++)
+		{
+			buffer.Add(GetInternal(i));
+			if (!buffer.IsFull)
+				continue;
+			if (dic.TryGetValue((buffer[0], buffer[1], buffer[2]), out var newCollection))
+			{
+				result.AddRange(newCollection);
+				buffer.Clear();
+			}
+			else
+				result.Add(buffer.GetAndRemove(0));
+		}
+		return result.AddRange(buffer);
+	}
+
+	public virtual TCertain Replace(Dictionary<(T, T, T), TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
 
 	public virtual TCertain Replace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection)
 	{
+		ArgumentNullException.ThrowIfNull(oldCollection);
+		ArgumentNullException.ThrowIfNull(newCollection);
 		var length = oldCollection.Length();
 		if (length == 0 || length > _size)
 			return CollectionCreator(this);
@@ -675,6 +765,29 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			SetInternal(index, newItem);
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
+#pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
+
+	public virtual TCertain ReplaceInPlace(Dictionary<T, IEnumerable<T>> dic) => Replace(Replace(dic));
+
+	public virtual TCertain ReplaceInPlace(Dictionary<T, T> dic)
+	{
+		ArgumentNullException.ThrowIfNull(dic);
+		for (var i = 0; i < _size; i++)
+			if (dic.TryGetValue(GetInternal(i), out var newItem))
+				SetInternal(i, newItem);
+		return this as TCertain ?? throw new InvalidOperationException();
+	}
+
+	public virtual TCertain ReplaceInPlace(Dictionary<T, TCertain> dic) => Replace(Replace(dic));
+#pragma warning restore CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
+
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), IEnumerable<T>> dic) => Replace(Replace(dic));
+
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), TCertain> dic) => Replace(Replace(dic));
+
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), IEnumerable<T>> dic) => Replace(Replace(dic));
+
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), TCertain> dic) => Replace(Replace(dic));
 
 	public virtual TCertain ReplaceInPlace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection) => Replace(Replace(oldCollection, newCollection));
 

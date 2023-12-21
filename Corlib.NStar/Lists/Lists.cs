@@ -124,6 +124,8 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 	}
 
+	public virtual bool IsFull => _size == Capacity;
+
 	public override TCertain Add(T item)
 	{
 		if (_size == Capacity)
@@ -136,7 +138,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public override Span<T> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<T> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
 
 	private protected override void ClearInternal(int index, int length)
 	{
