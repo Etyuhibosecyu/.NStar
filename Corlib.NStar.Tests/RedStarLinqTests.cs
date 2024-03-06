@@ -3,261 +3,194 @@
 [TestClass]
 public class RedStarLinqTests
 {
-	[TestMethod]
-	public void TestAll()
+	public static void Test(Action<G.IEnumerable<string>> action)
 	{
 		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
+		action(a);
 		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
+		action(a);
 		a = E.ToList(list);
-		ProcessA(a);
+		action(a);
 		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
+		action(a);
 		a = enumerable;
-		ProcessA(a);
+		action(a);
 		a = enumerable2;
-		ProcessA(a);
+		action(a);
 		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.All(x => x.Length > 0);
-			var d = E.All(a, x => x.Length > 0);
-			Assert.AreEqual(c, d);
-			c = a.All(x => x.StartsWith('#'));
-			d = E.All(a, x => x.StartsWith('#'));
-			Assert.AreEqual(c, d);
-			c = a.All(x => x.StartsWith('M'));
-			d = E.All(a, x => x.StartsWith('M'));
-			Assert.AreEqual(c, d);
-			Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, bool>)null!));
-			c = a.All((x, index) => x.Length > 0 && index >= 0);
-			d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
-			Assert.AreEqual(c, d);
-			c = a.All((x, index) => index < 0);
-			d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
-			Assert.AreEqual(c, d);
-			c = a.All((x, index) => x.StartsWith('M') && index > 0);
-			d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
-			Assert.AreEqual(c, d);
-			Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, int, bool>)null!));
-		}
+		action(a);
 	}
 
 	[TestMethod]
-	public void TestAny()
+	public void TestAll() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
+		var c = a.All(x => x.Length > 0);
+		var d = E.All(a, x => x.Length > 0);
+		Assert.AreEqual(c, d);
+		c = a.All(x => x.StartsWith('#'));
+		d = E.All(a, x => x.StartsWith('#'));
+		Assert.AreEqual(c, d);
+		c = a.All(x => x.StartsWith('M'));
+		d = E.All(a, x => x.StartsWith('M'));
+		Assert.AreEqual(c, d);
+		Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, bool>)null!));
+		c = a.All((x, index) => x.Length > 0 && index >= 0);
+		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
+		Assert.AreEqual(c, d);
+		c = a.All((x, index) => index < 0);
+		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
+		Assert.AreEqual(c, d);
+		c = a.All((x, index) => x.StartsWith('M') && index > 0);
+		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
+		Assert.AreEqual(c, d);
+		Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, int, bool>)null!));
+	});
+
+	[TestMethod]
+	public void TestAny() => Test(a =>
+	{
+		var c = a.Any(x => x.Length > 0);
+		var d = E.Any(a, x => x.Length > 0);
+		Assert.AreEqual(c, d);
+		c = a.Any(x => x.StartsWith('#'));
+		d = E.Any(a, x => x.StartsWith('#'));
+		Assert.AreEqual(c, d);
+		c = a.Any(x => x.StartsWith('M'));
+		d = E.Any(a, x => x.StartsWith('M'));
+		Assert.AreEqual(c, d);
+		Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, bool>)null!));
+		c = a.Any((x, index) => x.Length > 0 && index >= 0);
+		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
+		Assert.AreEqual(c, d);
+		c = a.Any((x, index) => index < 0);
+		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
+		Assert.AreEqual(c, d);
+		c = a.Any((x, index) => x.StartsWith('M') && index > 0);
+		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
+		Assert.AreEqual(c, d);
+		Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, int, bool>)null!));
+		c = a.Any();
+		d = E.Any(a);
+		Assert.AreEqual(c, d);
 		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
+		c = a.Any();
+		d = E.Any(a);
+		Assert.AreEqual(c, d);
 		a = E.ToList(list);
-		ProcessA(a);
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.Any(x => x.Length > 0);
-			var d = E.Any(a, x => x.Length > 0);
-			Assert.AreEqual(c, d);
-			c = a.Any(x => x.StartsWith('#'));
-			d = E.Any(a, x => x.StartsWith('#'));
-			Assert.AreEqual(c, d);
-			c = a.Any(x => x.StartsWith('M'));
-			d = E.Any(a, x => x.StartsWith('M'));
-			Assert.AreEqual(c, d);
-			Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, bool>)null!));
-			c = a.Any((x, index) => x.Length > 0 && index >= 0);
-			d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
-			Assert.AreEqual(c, d);
-			c = a.Any((x, index) => index < 0);
-			d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
-			Assert.AreEqual(c, d);
-			c = a.Any((x, index) => x.StartsWith('M') && index > 0);
-			d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
-			Assert.AreEqual(c, d);
-			Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, int, bool>)null!));
-			c = a.Any();
-			d = E.Any(a);
-			Assert.AreEqual(c, d);
-			a = RedStarLinq.ToArray(list);
-			c = a.Any();
-			d = E.Any(a);
-			Assert.AreEqual(c, d);
-			a = E.ToList(list);
-			c = a.Any();
-			d = E.Any(a);
-			Assert.AreEqual(c, d);
-		}
-	}
+		c = a.Any();
+		d = E.Any(a);
+		Assert.AreEqual(c, d);
+	});
 
 	[TestMethod]
-	public void TestBreak()
+	public void TestBreak() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list2);
-		ProcessA(a);
-		a = E.ToList(list2);
-		ProcessA(a);
-		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.Break(x => x[0], x => x[1..]);
-			var d = (E.Select(a, x => x[0]), E.Select(a, x => x[1..]));
-			Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
-			c = a.Break(x => (x[0], x[1..]));
-			Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
-			c = E.Select(a, x => (x[0], x[1..])).Break();
-			Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, char>)null!, (Func<string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], (Func<string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, (char, string)>)null!));
-			c = a.Break((x, index) => (char)(x[0] + index), (x, index) => x[1..] + index.ToString("D2"));
-			d = (E.Select(a, (x, index) => (char)(x[0] + index)), E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
-			Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
-			c = a.Break((x, index) => ((char)(x[0] + index), x[1..] + index.ToString("D2")));
-			Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, char>)null!, (Func<string, int, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (Func<string, int, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, (char, string)>)null!));
-			var c2 = a.Break(x => x[0], x => x[^1], x => x[1..]);
-			var d2 = (E.Select(a, x => x[0]), E.Select(a, x => x[^1]), E.Select(a, x => x[1..]));
-			Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
-			c2 = a.Break(x => (x[0], x[^1], x[1..]));
-			Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
-			c2 = E.Select(a, x => (x[0], x[^1], x[1..])).Break();
-			Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, char>)null!, (Func<string, char>)null!, (Func<string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], (Func<string, char>)null!, (Func<string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], x => x[^1], (Func<string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, (char, char, string)>)null!));
-			c2 = a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (x, index) => x[1..] + index.ToString("D2"));
-			d2 = (E.Select(a, (x, index) => (char)(x[0] + index)), E.Select(a, (x, index) => (char)(x[^1] * index + 5)), E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
-			Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
-			c2 = a.Break((x, index) => ((char)(x[0] + index), (char)(x[^1] * index + 5), x[1..] + index.ToString("D2")));
-			Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, char>)null!, (Func<string, int, char>)null!, (Func<string, int, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (Func<string, int, char>)null!, (Func<string, int, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (Func<string, int, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, (char, char, string)>)null!));
-		}
-	}
+		var c = a.Break(x => x[0], x => x[1..]);
+		var d = (E.Select(a, x => x[0]), E.Select(a, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.Break(x => (x[0], x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = E.Select(a, x => (x[0], x[1..])).Break();
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, char>)null!, (Func<string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], (Func<string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, (char, string)>)null!));
+		c = a.Break((x, index) => (char)(x[0] + index), (x, index) => x[1..] + index.ToString("D2"));
+		d = (E.Select(a, (x, index) => (char)(x[0] + index)), E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.Break((x, index) => ((char)(x[0] + index), x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, char>)null!, (Func<string, int, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (Func<string, int, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, (char, string)>)null!));
+		var c2 = a.Break(x => x[0], x => x[^1], x => x[1..]);
+		var d2 = (E.Select(a, x => x[0]), E.Select(a, x => x[^1]), E.Select(a, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.Break(x => (x[0], x[^1], x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = E.Select(a, x => (x[0], x[^1], x[1..])).Break();
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, char>)null!, (Func<string, char>)null!, (Func<string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], (Func<string, char>)null!, (Func<string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break(x => x[0], x => x[^1], (Func<string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, (char, char, string)>)null!));
+		c2 = a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (x, index) => x[1..] + index.ToString("D2"));
+		d2 = (E.Select(a, (x, index) => (char)(x[0] + index)), E.Select(a, (x, index) => (char)(x[^1] * index + 5)), E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.Break((x, index) => ((char)(x[0] + index), (char)(x[^1] * index + 5), x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, char>)null!, (Func<string, int, char>)null!, (Func<string, int, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (Func<string, int, char>)null!, (Func<string, int, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((x, index) => (char)(x[0] + index), (x, index) => (char)(x[^1] * index + 5), (Func<string, int, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Break((Func<string, int, (char, char, string)>)null!));
+	});
 
 	[TestMethod]
-	public void TestBreakFilter()
+	public void TestBreakFilter() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
-		a = E.ToList(list);
-		ProcessA(a);
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.BreakFilter(x => x.Length > 0, out var c2);
-			var d = E.Where(a, x => x.Length > 0);
-			var d2 = E.Where(a, x => x.Length <= 0);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			c = a.BreakFilter(x => x.StartsWith('#'), out c2);
-			d = E.Where(a, x => x.StartsWith('#'));
-			d2 = E.Where(a, x => !x.StartsWith('#'));
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			c = a.BreakFilter(x => x.StartsWith('M'), out c2);
-			d = E.Where(a, x => x.StartsWith('M'));
-			d2 = E.Where(a, x => !x.StartsWith('M'));
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, bool>)null!, out c2));
-			c = a.BreakFilter((x, index) => x.Length > 0 && index >= 0, out c2);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
-			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.Length > 0 && x.index >= 0)), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			c = a.BreakFilter((x, index) => index < 0, out c2);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
-			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index >= 0), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			c = a.BreakFilter((x, index) => x.StartsWith('M') && index > 0, out c2);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
-			d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.StartsWith('M') && x.index > 0)), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, int, bool>)null!, out c2));
-		}
-	}
+		var c = a.BreakFilter(x => x.Length > 0, out var c2);
+		var d = E.Where(a, x => x.Length > 0);
+		var d2 = E.Where(a, x => x.Length <= 0);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.BreakFilter(x => x.StartsWith('#'), out c2);
+		d = E.Where(a, x => x.StartsWith('#'));
+		d2 = E.Where(a, x => !x.StartsWith('#'));
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.BreakFilter(x => x.StartsWith('M'), out c2);
+		d = E.Where(a, x => x.StartsWith('M'));
+		d2 = E.Where(a, x => !x.StartsWith('M'));
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, bool>)null!, out c2));
+		c = a.BreakFilter((x, index) => x.Length > 0 && index >= 0, out c2);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.Length > 0 && x.index >= 0)), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.BreakFilter((x, index) => index < 0, out c2);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index >= 0), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.BreakFilter((x, index) => x.StartsWith('M') && index > 0, out c2);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
+		d2 = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => !(x.elem.StartsWith('M') && x.index > 0)), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.BreakFilter((Func<string, int, bool>)null!, out c2));
+	});
 
 	[TestMethod]
-	public void TestCombine()
+	public void TestCombine() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list2);
-		ProcessA(a);
-		a = E.ToList(list2);
-		ProcessA(a);
-		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
-			ProcessB(a, b);
-			b = E.Skip(list2, 1).ToArray();
-			ProcessB(a, b);
-			b = E.ToList(E.Skip(list2, 1));
-			ProcessB(a, b);
-			b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
-			ProcessB(a, b);
-			b = E.Skip(enumerable, 1);
-			ProcessB(a, b);
-			b = E.Skip(enumerable2, 1);
-			ProcessB(a, b);
-			b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
-			ProcessB(a, b);
-		}
+		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToArray();
+		ProcessB(a, b);
+		b = E.ToList(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessB(a, b);
+		b = E.Skip(enumerable, 1);
+		ProcessB(a, b);
+		b = E.Skip(enumerable2, 1);
+		ProcessB(a, b);
+		b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
+		ProcessB(a, b);
 		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			var c = a.Combine(b, (x, y) => x + y);
@@ -306,42 +239,25 @@ public class RedStarLinqTests
 			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, string>)null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, int, string>)null!));
 		}
-	}
+	});
 
 	[TestMethod]
-	public void TestConcat()
+	public void TestConcat() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list2);
-		ProcessA(a);
-		a = E.ToList(list2);
-		ProcessA(a);
-		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
-			ProcessB(a, b);
-			b = E.Skip(list2, 1).ToArray();
-			ProcessB(a, b);
-			b = E.ToList(E.Skip(list2, 1));
-			ProcessB(a, b);
-			b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
-			ProcessB(a, b);
-			b = E.Skip(enumerable, 1);
-			ProcessB(a, b);
-			b = E.Skip(enumerable2, 1);
-			ProcessB(a, b);
-			b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
-			ProcessB(a, b);
-		}
+		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToArray();
+		ProcessB(a, b);
+		b = E.ToList(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessB(a, b);
+		b = E.Skip(enumerable, 1);
+		ProcessB(a, b);
+		b = E.Skip(enumerable2, 1);
+		ProcessB(a, b);
+		b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
+		ProcessB(a, b);
 		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			var c = a.Concat(b);
@@ -384,31 +300,14 @@ public class RedStarLinqTests
 			Assert.ThrowsException<ArgumentNullException>(() => a.Concat(b, (G.IEnumerable<string>)null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.Concat(b, b2, (G.IEnumerable<string>)null!));
 		}
-	}
+	});
 
 	[TestMethod]
-	public void TestContains()
+	public void TestContains() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
-		a = E.ToList(list);
-		ProcessA(a);
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			ProcessString(a, "MMM");
-			ProcessString(a, "#");
-			ProcessString(a, null!);
-		}
+		ProcessString(a, "MMM");
+		ProcessString(a, "#");
+		ProcessString(a, null!);
 		static void ProcessString(G.IEnumerable<string> a, string s)
 		{
 			var c = a.Contains(s);
@@ -443,67 +342,33 @@ public class RedStarLinqTests
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (x, y) => x == y, null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (Func<string, string, bool>)null!, null!));
 		}
-	}
+	});
 
 	[TestMethod]
-	public void TestConvert()
+	public void TestConvert() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list2);
-		ProcessA(a);
-		a = E.ToList(list2);
-		ProcessA(a);
-		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.Convert(x => x[1..]);
-			var d = E.Select(a, x => x[1..]);
-			Assert.IsTrue(E.SequenceEqual(c, d));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
-			c = a.Convert((x, index) => x[1..] + index.ToString("D2"));
-			d = E.Select(a, (x, index) => x[1..] + index.ToString("D2"));
-			Assert.IsTrue(E.SequenceEqual(c, d));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
-		}
-	}
+		var c = a.Convert(x => x[1..]);
+		var d = E.Select(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+		c = a.Convert((x, index) => x[1..] + index.ToString("D2"));
+		d = E.Select(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+	});
 
 	[TestMethod]
-	public void TestConvertAndJoin()
+	public void TestConvertAndJoin() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list2);
-		ProcessA(a);
-		a = E.ToList(list2);
-		ProcessA(a);
-		a = list2.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list2, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.ConvertAndJoin(x => x[1..]);
-			var d = E.SelectMany(a, x => x[1..]);
-			Assert.IsTrue(E.SequenceEqual(c, d));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
-			c = a.ConvertAndJoin((x, index) => x[1..] + index.ToString("D2"));
-			d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
-			Assert.IsTrue(E.SequenceEqual(c, d));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
-		}
-	}
+		var c = a.ConvertAndJoin(x => x[1..]);
+		var d = E.SelectMany(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+		c = a.ConvertAndJoin((x, index) => x[1..] + index.ToString("D2"));
+		d = E.SelectMany(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+	});
 
 	[TestMethod]
 	public void TestEquals()
@@ -574,103 +439,69 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
-	public void TestFilter()
+	public void TestFilter() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
-		a = E.ToList(list);
-		ProcessA(a);
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.Filter(x => x.Length > 0);
-			var d = E.Where(a, x => x.Length > 0);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Filter(x => x.StartsWith('#'));
-			d = E.Where(a, x => x.StartsWith('#'));
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Filter(x => x.StartsWith('M'));
-			d = E.Where(a, x => x.StartsWith('M'));
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, bool>)null!));
-			c = a.Filter((x, index) => x.Length > 0 && index >= 0);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Filter((x, index) => index < 0);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Filter((x, index) => x.StartsWith('M') && index > 0);
-			d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
-		}
-	}
+		var c = a.Filter(x => x.Length > 0);
+		var d = E.Where(a, x => x.Length > 0);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Filter(x => x.StartsWith('#'));
+		d = E.Where(a, x => x.StartsWith('#'));
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Filter(x => x.StartsWith('M'));
+		d = E.Where(a, x => x.StartsWith('M'));
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, bool>)null!));
+		c = a.Filter((x, index) => x.Length > 0 && index >= 0);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Filter((x, index) => index < 0);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Filter((x, index) => x.StartsWith('M') && index > 0);
+		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
+	});
 
 	[TestMethod]
-	public void TestPairs()
+	public void TestPairs() => Test(a =>
 	{
-		G.IEnumerable<string> a = RedStarLinq.ToList(list);
-		ProcessA(a);
-		a = RedStarLinq.ToArray(list);
-		ProcessA(a);
-		a = E.ToList(list);
-		ProcessA(a);
-		a = list.ToList().Insert(0, "XXX").GetSlice(1);
-		ProcessA(a);
-		a = enumerable;
-		ProcessA(a);
-		a = enumerable2;
-		ProcessA(a);
-		a = E.SkipWhile(list, _ => random.Next(10) != -1);
-		ProcessA(a);
-		static void ProcessA(G.IEnumerable<string> a)
-		{
-			var c = a.Pairs((x, y) => x + y);
-			var d = E.Zip(a, E.Skip(a, 1), (x, y) => x + y);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Pairs((x, y, index) => x + y + index.ToString());
-			d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 1), (x, y) => x.elem + y + x.index.ToString());
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			var c2 = a.Pairs();
-			var d2 = E.Zip(a, E.Skip(a, 1), (x, y) => (x, y));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			c = a.Pairs((x, y) => x + y, 3);
-			d = E.Zip(a, E.Skip(a, 3), (x, y) => x + y);
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c = a.Pairs((x, y, index) => x + y + index.ToString(), 3);
-			d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 3), (x, y) => x.elem + y + x.index.ToString());
-			Assert.IsTrue(c.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, c));
-			c2 = a.Pairs(3);
-			d2 = E.Zip(a, E.Skip(a, 3), (x, y) => (x, y));
-			Assert.IsTrue(c2.Equals(d2));
-			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, int, string>)null!));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y) => x + y, 0));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y, index) => x + y + index.ToString(), 0));
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs(0));
-		}
-	}
+		var c = a.Pairs((x, y) => x + y);
+		var d = E.Zip(a, E.Skip(a, 1), (x, y) => x + y);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Pairs((x, y, index) => x + y + index.ToString());
+		d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 1), (x, y) => x.elem + y + x.index.ToString());
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		var c2 = a.Pairs();
+		var d2 = E.Zip(a, E.Skip(a, 1), (x, y) => (x, y));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.Pairs((x, y) => x + y, 3);
+		d = E.Zip(a, E.Skip(a, 3), (x, y) => x + y);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Pairs((x, y, index) => x + y + index.ToString(), 3);
+		d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 3), (x, y) => x.elem + y + x.index.ToString());
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c2 = a.Pairs(3);
+		d2 = E.Zip(a, E.Skip(a, 3), (x, y) => (x, y));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, int, string>)null!));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y) => x + y, 0));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y, index) => x + y + index.ToString(), 0));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs(0));
+	});
 
 	[TestMethod]
 	public void TestSetAll()
