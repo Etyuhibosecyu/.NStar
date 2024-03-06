@@ -354,6 +354,16 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 
 	public virtual TCertain GetBeforeSetAfterLast(TCertain list, int index, int length) => GetBeforeSetAfterLast((IEnumerable<T>)list, index, length);
 
+	public virtual T GetOrAdd(int index, T value)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		return GetOrAddInternal(index, value);
+	}
+
+	private protected virtual T GetOrAddInternal(int index, T value) => index == _size ? Add(value)[index] : GetInternal(index);
+
 	private protected override TCertain GetRangeInternal(int index, int length)
 	{
 		var list = CapacityCreator(length);

@@ -6,9 +6,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestAll()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -48,9 +48,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestAny()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -87,7 +87,7 @@ public class RedStarLinqTests
 			c = a.Any();
 			d = E.Any(a);
 			Assert.AreEqual(c, d);
-			a = list.ToArray();
+			a = RedStarLinq.ToArray(list);
 			c = a.Any();
 			d = E.Any(a);
 			Assert.AreEqual(c, d);
@@ -101,9 +101,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestBreak()
 	{
-		G.IEnumerable<string> a = list2.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
 		ProcessA(a);
-		a = list2.ToArray();
+		a = RedStarLinq.ToArray(list2);
 		ProcessA(a);
 		a = E.ToList(list2);
 		ProcessA(a);
@@ -161,9 +161,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -227,9 +227,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestCombine()
 	{
-		G.IEnumerable<string> a = list2.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
 		ProcessA(a);
-		a = list2.ToArray();
+		a = RedStarLinq.ToArray(list2);
 		ProcessA(a);
 		a = E.ToList(list2);
 		ProcessA(a);
@@ -311,9 +311,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestConcat()
 	{
-		G.IEnumerable<string> a = list2.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
 		ProcessA(a);
-		a = list2.ToArray();
+		a = RedStarLinq.ToArray(list2);
 		ProcessA(a);
 		a = E.ToList(list2);
 		ProcessA(a);
@@ -389,9 +389,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestContains()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -448,9 +448,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestConvert()
 	{
-		G.IEnumerable<string> a = list2.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
 		ProcessA(a);
-		a = list2.ToArray();
+		a = RedStarLinq.ToArray(list2);
 		ProcessA(a);
 		a = E.ToList(list2);
 		ProcessA(a);
@@ -478,9 +478,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestConvertAndJoin()
 	{
-		G.IEnumerable<string> a = list2.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list2);
 		ProcessA(a);
-		a = list2.ToArray();
+		a = RedStarLinq.ToArray(list2);
 		ProcessA(a);
 		a = E.ToList(list2);
 		ProcessA(a);
@@ -539,11 +539,15 @@ public class RedStarLinqTests
 			ProcessB(a, b);
 			b = E.Prepend(E.Skip(b, 1), random.Next(1000).ToString("D3"));
 			ProcessB(a, b);
+#pragma warning disable IDE0028 // Упростите инициализацию коллекции
+#pragma warning disable IDE0301 // Упростите инициализацию коллекции
 			b = new List<string>();
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 			b = Array.Empty<string>();
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 			b = new G.List<string>();
+#pragma warning restore IDE0301 // Упростите инициализацию коллекции
+#pragma warning restore IDE0028 // Упростите инициализацию коллекции
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 			b = new List<string>().Insert(0, "XXX").GetSlice(1);
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
@@ -572,9 +576,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestFilter()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -620,9 +624,9 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestPairs()
 	{
-		G.IEnumerable<string> a = list.ToList();
+		G.IEnumerable<string> a = RedStarLinq.ToList(list);
 		ProcessA(a);
-		a = list.ToArray();
+		a = RedStarLinq.ToArray(list);
 		ProcessA(a);
 		a = E.ToList(list);
 		ProcessA(a);
@@ -955,7 +959,7 @@ public class RedStarLinqTests
 			var original5 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (random.Next(), random.Next())));
 			ProcessA(original5, (1234567890, 1234567890));
 			var original6 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => new BitList(new[] { random.Next(), random.Next() })));
-			ProcessA(original6, new BitList(new[] { 1234567890, 1234567890 }));
+			ProcessA(original6, new BitList([1234567890, 1234567890]));
 		}
 		static void ProcessA<T>(ImmutableArray<T> original, T @default)
 		{
@@ -1032,7 +1036,7 @@ public class RedStarLinqTestsN
 	{
 		G.IEnumerable<(char, char, char)> a = new List<(char, char, char)>(nList);
 		ProcessA(a);
-		a = nList.ToArray();
+		a = RedStarLinq.ToArray(nList);
 		ProcessA(a);
 		a = E.ToList(nList);
 		ProcessA(a);

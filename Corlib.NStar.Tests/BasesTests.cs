@@ -127,8 +127,8 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(151);
-			var method = typeof(TCertain).GetConstructor(new[] { typeof(int) });
-			var a = method?.Invoke(new object[] { capacity }) as TCertain ?? throw new InvalidOperationException();
+			var method = typeof(TCertain).GetConstructor([typeof(int)]);
+			var a = method?.Invoke([capacity]) as TCertain ?? throw new InvalidOperationException();
 			b = new(capacity);
 			for (var j = 0; j < length; j++)
 			{
@@ -151,8 +151,8 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 		{
 			length = random.Next(51);
 			capacity = length + random.Next(9951);
-			var method = typeof(TCertain).GetConstructor(new[] { typeof(int) });
-			var a = method?.Invoke(new object[] { capacity }) as TCertain ?? throw new InvalidOperationException();
+			var method = typeof(TCertain).GetConstructor([typeof(int)]);
+			var a = method?.Invoke([capacity]) as TCertain ?? throw new InvalidOperationException();
 			b = new(capacity);
 			for (var j = 0; j < length; j++)
 			{

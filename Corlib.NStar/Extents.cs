@@ -962,7 +962,7 @@ public static unsafe partial class Extents
 
 	public static T[] TryNSort<T>(this T[] array, int index, int length, IComparer<T>? comparer = null)
 	{
-		if (typeof(Extents).GetMethods().Find(x => x.Name == "NSort" && x.GetParameters().Wrap(y => y.Length == 3 && y[0].ParameterType.IsArray && y[1].ParameterType == typeof(int) && y[2].ParameterType == typeof(int)))?.MakeGenericMethod(typeof(T))?.Invoke(null, new object[] { array, index, length }) == null)
+		if (typeof(Extents).GetMethods().Find(x => x.Name == "NSort" && x.GetParameters().Wrap(y => y.Length == 3 && y[0].ParameterType.IsArray && y[1].ParameterType == typeof(int) && y[2].ParameterType == typeof(int)))?.MakeGenericMethod(typeof(T))?.Invoke(null, [array, index, length]) == null)
 			Array.Sort(array, index, length, comparer);
 		return array;
 	}

@@ -299,6 +299,27 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
+	public virtual void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		var indexes = other.Convert(IndexOf).ToHashSet();
+		keys.FilterInPlace((x, index) => !indexes.Contains(index));
+		values.FilterInPlace((x, index) => !indexes.Contains(index));
+	}
+
+	public virtual void ExceptWith(IEnumerable<TKey> other)
+	{
+		var indexes = other.Convert(IndexOfKey).ToHashSet();
+		keys.FilterInPlace((x, index) => !indexes.Contains(index));
+		values.FilterInPlace((x, index) => !indexes.Contains(index));
+	}
+
+	public virtual void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		var indexes = other.Convert(IndexOf).ToHashSet();
+		keys.FilterInPlace((x, index) => !indexes.Contains(index));
+		values.FilterInPlace((x, index) => !indexes.Contains(index));
+	}
+
 	public virtual TValue GetByIndex(int index)
 	{
 		if (index < 0 || index >= keys.Length)
@@ -332,6 +353,16 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return valueList;
 	}
 
+	public virtual int IndexOf(KeyValuePair<TKey, TValue> item) => IndexOf((item.Key, item.Value));
+
+	public virtual int IndexOf((TKey Key, TValue Value) item)
+	{
+		var index = IndexOfKey(item.Key);
+		if (index == -1 || EqualityComparer<TValue>.Default.Equals(values[index], item.Value))
+			return index;
+		return -1;
+	}
+
 	public virtual int IndexOfKey(TKey key)
 	{
 		if (key == null)
@@ -350,6 +381,27 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values.Insert(index, value);
 		if (keys.Length == 65)
 			keys.Sort(values, comparer);
+	}
+
+	public virtual void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		var indexes = other.Convert(IndexOf).ToHashSet();
+		keys.FilterInPlace((x, index) => indexes.Contains(index));
+		values.FilterInPlace((x, index) => indexes.Contains(index));
+	}
+
+	public virtual void IntersectWith(IEnumerable<TKey> other)
+	{
+		var indexes = other.Convert(IndexOfKey).ToHashSet();
+		keys.FilterInPlace((x, index) => indexes.Contains(index));
+		values.FilterInPlace((x, index) => indexes.Contains(index));
+	}
+
+	public virtual void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		var indexes = other.Convert(IndexOf).ToHashSet();
+		keys.FilterInPlace((x, index) => indexes.Contains(index));
+		values.FilterInPlace((x, index) => indexes.Contains(index));
 	}
 
 	private static bool IsCompatibleKey(object key)
@@ -378,7 +430,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values.RemoveAt(index);
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
+	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		var index = IndexOfKey(keyValuePair.Key);
 		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
@@ -388,6 +440,10 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 		return false;
 	}
+
+	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
+
+	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
 	public virtual int Search(TKey key)
 	{
@@ -424,6 +480,10 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		value = default!;
 		return false;
 	}
+
+	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
+
+	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
 
 	[Serializable()]
 	public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>, IDictionaryEnumerator

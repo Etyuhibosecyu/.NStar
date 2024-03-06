@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <LangVersion>latest</LangVersion>
-    <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Razor" Version="6.0.16" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
   </ItemGroup>
 
 </Project>

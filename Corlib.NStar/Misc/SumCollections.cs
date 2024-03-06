@@ -63,7 +63,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	private protected override Func<int, SumSet<T>> CapacityCreator => x => new();
+	private protected override Func<int, SumSet<T>> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
 
@@ -3000,7 +3000,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCe
 		private protected Node? _right;
 		private protected virtual Node? Parent { get; set; }
 
-		internal virtual T Value { get; set; }
+		internal virtual T Value { get; private protected set; }
 		private protected int _leavesCount;
 
 		internal Node(T value, NodeColor color)
@@ -3368,7 +3368,7 @@ public class SumList : BaseSumList<int, SumList>
 
 	public SumList(ReadOnlySpan<int> span) : this((IEnumerable<int>)span.ToArray()) { }
 
-	private protected override Func<int, SumList> CapacityCreator => x => new();
+	private protected override Func<int, SumList> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
 
@@ -3394,7 +3394,7 @@ public class SumList : BaseSumList<int, SumList>
 			{
 				var b = en.MoveNext();
 				if (b)
-					node.Value = en.Current;
+					node.Update(en.Current);
 				return b;
 			});
 		while (en.MoveNext())
@@ -3524,7 +3524,7 @@ public class SumList : BaseSumList<int, SumList>
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
-				current.Value = value;
+				current.Update(value);
 				Changed();
 				return;
 			}
@@ -4015,7 +4015,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	private protected override Func<int, BigSumList> CapacityCreator => x => new();
+	private protected override Func<int, BigSumList> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
 
@@ -4050,7 +4050,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			{
 				var b = en.MoveNext();
 				if (b)
-					node.Value = new(en.Current);
+					node.Update(en.Current);
 				return b;
 			});
 		while (en.MoveNext())
@@ -4163,9 +4163,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		var index = 0;
 		while (current != null)
 		{
-			if (sum == (current.Left?.ValuesSum ?? 0))
+			if (sum >= (current.Left?.ValuesSum ?? 0) && sum < (current.Left?.ValuesSum ?? 0) + current.Value)
 			{
-				sumExceedsBy = 0;
+				sumExceedsBy = sum - (current.Left?.ValuesSum ?? 0);
 				return index + (current.Left?.LeavesCount ?? 0);
 			}
 			else if (sum < (current.Left?.ValuesSum ?? 0))
@@ -4192,7 +4192,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			if ((current.Left?.LeavesCount ?? 0) == index)
 			{
-				current.Value = new(value);
+				current.Update(value);
 				Changed();
 				return;
 			}

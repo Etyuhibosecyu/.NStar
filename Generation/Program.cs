@@ -1,5 +1,5 @@
-namespace Generation
-{
+namespace Generation;
+
     internal static class Program
     {
         /// <summary>
@@ -14,4 +14,3 @@ namespace Generation
             Application.Run(new Form1());
         }
     }
-}

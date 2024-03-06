@@ -40193,6 +40193,556 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<List<T>> source, T separator)
+	{
+		if (source is List<List<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is List<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<List<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.Add(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<TResult> JoinIntoSingleEnumerable<TSource, TResult>(IEnumerable<TSource> source, TResult separator) where TSource : IEnumerable<TResult>
+	{
+		if (source is List<TSource> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.Add(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<T[]> source, T separator)
+	{
+		if (source is List<T[]> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is T[][] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<T[]> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.Add(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<G.IList<T>> source, T separator)
+	{
+		if (source is List<G.IList<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<G.IList<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.Add(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<IEnumerable<T>> source, T separator)
+	{
+		if (source is List<IEnumerable<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is IEnumerable<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<IEnumerable<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.Add(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.Add(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<List<T>> source, IEnumerable<T> separator)
+	{
+		if (source is List<List<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is List<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<List<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<TResult> JoinIntoSingleEnumerable<TSource, TResult>(IEnumerable<TSource> source, IEnumerable<TResult> separator) where TSource : IEnumerable<TResult>
+	{
+		if (source is List<TSource> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is TSource[] array)
+		{
+			List<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<TSource> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<T[]> source, IEnumerable<T> separator)
+	{
+		if (source is List<T[]> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is T[][] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<T[]> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<G.IList<T>> source, IEnumerable<T> separator)
+	{
+		if (source is List<G.IList<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<G.IList<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(IEnumerable<IEnumerable<T>> source, IEnumerable<T> separator)
+	{
+		if (source is List<IEnumerable<T>> list)
+		{
+			var length = list._size;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list._items[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is IEnumerable<T>[] array)
+		{
+			List<T> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = array[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else if (source is G.IList<IEnumerable<T>> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(1024);
+			for (var i = 0; i < length; i++)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				var item = list2[i];
+				result.AddRange(item);
+			}
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i != 0)
+					result.AddRange(separator);
+				result.AddRange(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
 	internal static int LastIndexOfEnumerable(IEnumerable<T> source, T target)
 	{
 		if (source is List<T> list)
@@ -53179,7 +53729,7 @@ public partial class List<T, TCertain>
 				length = s.Length;
 				return length >= 0;
 			}
-			else if (CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.IIListProvider`1")?.MakeGenericType(typeof(T)) ?? throw new InvalidOperationException(), out var targetType).IsInstanceOfType(source) && targetType.GetMethod("GetCount")?.Invoke(source, new object[] { true }) is int n)
+			else if (CreateVar(Assembly.Load("System.Linq").GetType("System.Linq.IIListProvider`1")?.MakeGenericType(typeof(T)) ?? throw new InvalidOperationException(), out var targetType).IsInstanceOfType(source) && targetType.GetMethod("GetCount")?.Invoke(source, [true]) is int n)
 			{
 				length = n;
 				return length >= 0;
@@ -62009,6 +62559,146 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<List<T>> source, T separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.Add(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<TResult> JoinIntoSingleEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, TResult separator) where TSource : IEnumerable<TResult>
+	{
+		var length = source.Length;
+		List<TResult> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.Add(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<T[]> source, T separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.Add(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<G.IList<T>> source, T separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.Add(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<IEnumerable<T>> source, T separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.Add(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<List<T>> source, IEnumerable<T> separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.AddRange(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<TResult> JoinIntoSingleEnumerable<TSource, TResult>(ReadOnlySpan<TSource> source, IEnumerable<TResult> separator) where TSource : IEnumerable<TResult>
+	{
+		var length = source.Length;
+		List<TResult> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.AddRange(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<T[]> source, IEnumerable<T> separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.AddRange(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<G.IList<T>> source, IEnumerable<T> separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.AddRange(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
+	internal static List<T> JoinIntoSingleEnumerable(ReadOnlySpan<IEnumerable<T>> source, IEnumerable<T> separator)
+	{
+		var length = source.Length;
+		List<T> result = new(1024);
+		for (var i = 0; i < length; i++)
+		{
+			if (i != 0)
+				result.AddRange(separator);
+			var item = source[i];
+			result.AddRange(item);
+		}
+		return result;
+	}
+
 	internal static int LastIndexOfEnumerable(ReadOnlySpan<T> source, T target)
 	{
 		var length = source.Length;
@@ -66662,7 +67352,7 @@ public unsafe partial class NList<T>
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(source[i], source2[i], source3[i]);
@@ -66673,7 +67363,7 @@ public unsafe partial class NList<T>
 	internal static NList<TResult> CombineEnumerable<T_, T2, T3, TResult>(ReadOnlySpan<T_> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T_, T2, T3, int, TResult> function) where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(source[i], source2[i], source3[i], i);
@@ -66683,7 +67373,7 @@ public unsafe partial class NList<T>
 
 	internal static NList<(T, T2, T3)> CombineEnumerable<T2, T3>(ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3) where T2 : unmanaged where T3 : unmanaged
 	{
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source.Length, source2.Length, source3.Length });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source.Length, source2.Length, source3.Length]);
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = (source[i], source2[i], source3[i]);
@@ -66731,7 +67421,7 @@ public unsafe partial class NList<T>
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source._size, source2._size, source3._size]);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(source._items[i], source2._items[i], source3._items[i]);
@@ -66744,7 +67434,7 @@ public unsafe partial class NList<T>
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source._size, source2._size, source3._size]);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(source._items[i], source2._items[i], source3._items[i], i);
@@ -66756,7 +67446,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(source3);
-		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)new[] { source._size, source2._size, source3._size });
+		var length = List<int>.MinEnumerable((ReadOnlySpan<int>)[source._size, source2._size, source3._size]);
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = (source._items[i], source2._items[i], source3._items[i]);
@@ -68146,7 +68836,7 @@ public static class RedStarLinq
 	public static IEnumerable<T> DefaultIfEmpty<T>(this IEnumerable<T> source, T defaultValue) => Enumerable.DefaultIfEmpty(source, defaultValue);
 	public static T ElementAt<T>(this IEnumerable<T> source, int index) => Enumerable.ElementAt(source, index);
 	public static T? ElementAtOrDefault<T>(this IEnumerable<T> source, int index) => Enumerable.ElementAtOrDefault(source, index);
-	public static IEnumerable<T?> Empty<T>() => Enumerable.Empty<T>();
+	public static IEnumerable<T?> Empty<T>() => [];
 	public static List<T> EmptyList<T>(int length) => List<T>.EmptyListEnumerable(length);
 	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, bool> function) => List<T>.EqualsEnumerable(source, source2, function);
 	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, bool> function) => List<T>.EqualsEnumerable(source, source2, function);
@@ -68716,6 +69406,16 @@ public static class RedStarLinq
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<G.IList<T>> source) => List<T>.JoinIntoSingleEnumerable(source);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<IEnumerable<T>> source) => List<T>.JoinIntoSingleEnumerable(source);
 	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<List<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<T[]> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<G.IList<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<T[]> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<G.IList<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target) => List<T>.LastIndexOfEnumerable(source, target);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target, IEqualityComparer<T> comparer) => List<T>.LastIndexOfEnumerable(source, target, comparer);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.LastIndexOfEnumerable(source, target, equalFunction);
@@ -70627,6 +71327,36 @@ public static class RedStarLinq
 	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source);
 	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source);
 	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan());
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<List<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this List<T>[] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<T[]> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<T[]> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T[]>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this T[][] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T[]>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IList<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<G.IList<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this G.IList<T>[] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<T>>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<T>[] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source.AsSpan(), separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this List<T>[] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<T[]> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<T[]> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T[]>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this T[][] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T[]>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<G.IList<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<G.IList<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this G.IList<T>[] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<G.IList<T>>)source.AsSpan(), separator);
+	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<T> JoinIntoSingle<T>(this Span<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source, separator);
+	public static List<T> JoinIntoSingle<T>(this IEnumerable<T>[] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source.AsSpan(), separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan(), separator);
 	public static int LastIndexOf<T>(this ReadOnlySpan<T> source, T target) => List<T>.LastIndexOfEnumerable(source, target);
 	public static int LastIndexOf<T>(this Span<T> source, T target) => List<T>.LastIndexOfEnumerable((ReadOnlySpan<T>)source, target);
 	public static int LastIndexOf<T>(this T[] source, T target) => List<T>.LastIndexOfEnumerable((ReadOnlySpan<T>)source.AsSpan(), target);

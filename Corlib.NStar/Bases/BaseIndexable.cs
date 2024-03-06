@@ -333,7 +333,21 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	private Enumerator GetEnumeratorInternal() => new(this);
 
-	public override int GetHashCode() => _size < 3 ? 1234567890 : ((GetInternal(0)?.GetHashCode() ?? 0) << 7 ^ (GetInternal(1)?.GetHashCode() ?? 0)) << 7 ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
+	public override int GetHashCode()
+	{
+		var hash = 486187739;
+		var en = GetEnumerator();
+		if (en.MoveNext())
+		{
+			hash = (hash * 16777619) ^ (en.Current?.GetHashCode() ?? 0);
+			if (en.MoveNext())
+			{
+				hash = (hash * 16777619) ^ (en.Current?.GetHashCode() ?? 0);
+				hash = (hash * 16777619) ^ (GetInternal(_size - 1)?.GetHashCode() ?? 0);
+			}
+		}
+		return hash;
+	}
 
 	internal abstract T GetInternal(int index, bool invoke = true);
 

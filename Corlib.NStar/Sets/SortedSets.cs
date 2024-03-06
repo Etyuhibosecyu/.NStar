@@ -274,7 +274,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private protected override Func<int, TreeSet<T>> CapacityCreator => x => new();
+	private protected override Func<int, TreeSet<T>> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
 

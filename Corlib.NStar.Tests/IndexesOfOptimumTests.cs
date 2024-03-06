@@ -21,9 +21,9 @@ public class IndexesOfOptimumTests
 				bytes2.Add(bytes);
 				return (new MpzT(bytes, -1), new BigInteger(bytes));
 			}).Wrap(x => (ImmutableArray.Create(x.ToArray(y => y.Item1)), ImmutableArray.Create(x.ToArray(y => y.Item2))));
-			G.IEnumerable<MpzT> a = list2.ToList();
+			G.IEnumerable<MpzT> a = RedStarLinq.ToList(list2);
 			ProcessA(a, list3);
-			a = list2.ToArray();
+			a = RedStarLinq.ToArray(list2);
 			ProcessA(a, list3);
 			a = E.ToList(list2);
 			ProcessA(a, list3);
@@ -45,9 +45,9 @@ public class IndexesOfOptimumTests
 				bytes2.Add(bytes);
 				return (new MpzT(bytes, -1), new BigInteger(bytes));
 			}).Wrap(x => (ImmutableArray.Create(x.ToArray(y => y.Item1)), ImmutableArray.Create(x.ToArray(y => y.Item2))));
-			G.IEnumerable<MpzT> a = list2.ToList();
+			G.IEnumerable<MpzT> a = RedStarLinq.ToList(list2);
 			ProcessA(a, list3);
-			a = list2.ToArray();
+			a = RedStarLinq.ToArray(list2);
 			ProcessA(a, list3);
 			a = E.ToList(list2);
 			ProcessA(a, list3);

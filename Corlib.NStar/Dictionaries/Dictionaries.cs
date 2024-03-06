@@ -355,6 +355,36 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
+	public virtual void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		if (!isHigh && low != null)
+			low.ExceptWith(other);
+		else if (high != null)
+			other.ForEach(x => RemoveValue(x));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual void ExceptWith(IEnumerable<TKey> other)
+	{
+		if (!isHigh && low != null)
+			low.ExceptWith(other);
+		else if (high != null)
+			other.ForEach(x => Remove(x));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		if (!isHigh && low != null)
+			low.ExceptWith(other);
+		else if (high != null)
+			other.ForEach(x => RemoveValue(x));
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
 	public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
 		if (!isHigh && low != null)
@@ -378,6 +408,51 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 	}
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public virtual void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		if (!isHigh && low != null)
+			low.IntersectWith(other);
+		else if (high != null)
+		{
+			var hs = other.ToHashSet();
+			foreach (var x in high)
+				if (!hs.Contains(x))
+					high.Remove(x.Key);
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual void IntersectWith(IEnumerable<TKey> other)
+	{
+		if (!isHigh && low != null)
+			low.IntersectWith(other);
+		else if (high != null)
+		{
+			var hs = other.ToHashSet();
+			foreach (var x in high)
+				if (!hs.Contains(x.Key))
+					high.Remove(x.Key);
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public virtual void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		if (!isHigh && low != null)
+			low.IntersectWith(other);
+		else if (high != null)
+		{
+			var hs = other.ToHashSet();
+			foreach (var x in high)
+				if (!hs.Contains((x.Key, x.Value)))
+					high.Remove(x.Key);
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
 
 	private static bool IsCompatibleKey(object key)
 	{
@@ -411,15 +486,19 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			Remove((TKey)key);
 	}
 
-	bool ICollection<KeyValuePair<TKey, TValue>>.RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
+	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		if (!isHigh && low != null)
-			return ((G.ICollection<KeyValuePair<TKey, TValue>>)low).Remove(keyValuePair);
+			return low.RemoveValue(keyValuePair);
 		else if (high != null)
 			return ((G.ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
+
+	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
+
+	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
 	public virtual void TrimExcess()
 	{
@@ -451,6 +530,10 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
+
+	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
+
+	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
 }
 
 internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>

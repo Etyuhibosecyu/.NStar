@@ -345,8 +345,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT operator %(MpzT x, int mod)
 	{
-		if (mod < 0)
-			throw new ArgumentOutOfRangeException(nameof(mod));
+		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		var z = new MpzT();
 		Mpir.MpzFdivRUi(z, x, (uint)mod);
 		return z;
@@ -723,8 +722,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly int ModAsInt32(int mod)
 	{
-		if (mod < 0)
-			throw new ArgumentOutOfRangeException(nameof(mod));
+		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		return (int)Mpir.MpzFdivUi(this, (uint)mod);
 	}
 
@@ -767,8 +765,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly MpzT Power(int exponent)
 	{
-		if (exponent < 0)
-			throw new ArgumentOutOfRangeException(nameof(exponent));
+		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
 		var z = new MpzT();
 		Mpir.MpzPowUi(z, this, (uint)exponent);
 		return z;
@@ -783,8 +780,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Power(int x, int exponent)
 	{
-		if (exponent < 0)
-			throw new ArgumentOutOfRangeException(nameof(exponent));
+		ArgumentOutOfRangeException.ThrowIfNegative(exponent);
 		var z = new MpzT();
 		Mpir.MpzUiPowUi(z, (uint)x, (uint)exponent);
 		return z;
@@ -861,8 +857,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly MpzT Root(int n)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		Mpir.MpzRoot(z, this, (uint)n);
 		return z;
@@ -877,8 +872,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly MpzT Root(int n, out bool isExact)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		var result = Mpir.MpzRoot(z, this, (uint)n);
 		isExact = result != 0;
@@ -895,8 +889,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly MpzT Root(int n, out MpzT remainder)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		remainder = new MpzT();
 		Mpir.MpzRootrem(z, remainder, this, (uint)n);
@@ -1096,8 +1089,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Factorial(int x)
 	{
-		if (x < 0)
-			throw new ArgumentOutOfRangeException(nameof(x));
+		ArgumentOutOfRangeException.ThrowIfNegative(x);
 		var z = new MpzT();
 		Mpir.MpzFacUi(z, (uint)x);
 		return z;
@@ -1119,8 +1111,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Binomial(MpzT n, int k)
 	{
-		if (k < 0)
-			throw new ArgumentOutOfRangeException(nameof(k));
+		ArgumentOutOfRangeException.ThrowIfNegative(k);
 		var z = new MpzT();
 		Mpir.MpzBinUi(z, n, (uint)k);
 		return z;
@@ -1135,8 +1126,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Binomial(int n, int k)
 	{
-		if (k < 0)
-			throw new ArgumentOutOfRangeException(nameof(k));
+		ArgumentOutOfRangeException.ThrowIfNegative(k);
 		var z = new MpzT();
 		if (n >= 0)
 		{
@@ -1161,8 +1151,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Fibonacci(int n)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		Mpir.MpzFibUi(z, (uint)n);
 		return z;
@@ -1177,8 +1166,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Fibonacci(int n, out MpzT previous)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		previous = new MpzT();
 		Mpir.MpzFib2Ui(z, previous, (uint)n);
@@ -1195,8 +1183,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Lucas(int n)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		Mpir.MpzLucnumUi(z, (uint)n);
 		return z;
@@ -1211,8 +1198,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static MpzT Lucas(int n, out MpzT previous)
 	{
-		if (n < 0)
-			throw new ArgumentOutOfRangeException(nameof(n));
+		ArgumentOutOfRangeException.ThrowIfNegative(n);
 		var z = new MpzT();
 		previous = new MpzT();
 		Mpir.MpzLucnum2Ui(z, previous, (uint)n);
@@ -1239,8 +1225,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		unchecked
 		{
-			if (startingIndex < 0)
-				throw new ArgumentOutOfRangeException(nameof(startingIndex));
+			ArgumentOutOfRangeException.ThrowIfNegative(startingIndex);
 			// Note that the result might be uint.MaxValue in which case it gets cast to -1, which is what is intended.
 			return (int)Mpir.MpzScan0(this, (uint)startingIndex);
 		}
@@ -1250,8 +1235,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		unchecked
 		{
-			if (startingIndex < 0)
-				throw new ArgumentOutOfRangeException(nameof(startingIndex));
+			ArgumentOutOfRangeException.ThrowIfNegative(startingIndex);
 			// Note that the result might be uint.MaxValue in which case it gets cast to -1, which is what is intended.
 			return (int)Mpir.MpzScan1(this, (uint)startingIndex);
 		}
@@ -1409,8 +1393,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly bool EqualsMod(int x, int mod)
 	{
-		if (mod < 0)
-			throw new ArgumentOutOfRangeException(nameof(mod));
+		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		if (x >= 0)
 		{
 			return Mpir.MpzCongruentUiP(this, (uint)x, (uint)mod) != 0;
@@ -1774,9 +1757,24 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public readonly string? ToString(uint @base) => val == 0 ? "0" : Mpir.MpzGetString(@base, this);
 
-	public bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider) => throw new NotImplementedException();
+	public readonly bool TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider? provider)
+	{
+		try
+		{
+			var s = ToString("{0:N0}", provider);
+			for (var i = 0; i < s.Length; i++)
+				destination[i] = s[i];
+			charsWritten = s.Length;
+			return true;
+		}
+		catch
+		{
+			charsWritten = 0;
+			return false;
+		}
+	}
 
-	public string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "", ToString());
+	public readonly string ToString(string? format, IFormatProvider? formatProvider) => string.Format(formatProvider, format ?? "{0:N0}", ToString());
 
 	#region IConvertible Members
 
@@ -1808,8 +1806,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	readonly object IConvertible.ToType(Type targetType, IFormatProvider? provider)
 	{
-		if (targetType == null)
-			throw new ArgumentNullException(nameof(targetType));
+		ArgumentNullException.ThrowIfNull(targetType);
 		if (targetType == typeof(MpzT))
 			return this;
 		IConvertible value = this;

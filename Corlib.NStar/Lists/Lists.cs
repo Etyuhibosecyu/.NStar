@@ -138,7 +138,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public override Span<T> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
+	public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
 
 	private protected override void ClearInternal(int index, int length)
 	{
@@ -340,35 +340,35 @@ public class Buffer<T> : Buffer<T, Buffer<T>>
 
 	public static implicit operator Buffer<T>(T[] x) => new(x);
 
-	public static explicit operator Buffer<T>((T, T) x) => new(x.Item1, x.Item2);
+	public static explicit operator Buffer<T>((T, T) x) => [x.Item1, x.Item2];
 
-	public static explicit operator Buffer<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+	public static explicit operator Buffer<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
 
-	public static explicit operator Buffer<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+	public static explicit operator Buffer<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+	public static explicit operator Buffer<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+	public static explicit operator Buffer<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
 	public static explicit operator (T, T)(Buffer<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
 
@@ -875,35 +875,35 @@ public class List<T> : List<T, List<T>>
 
 	public static implicit operator List<T>(T[] x) => new(x);
 
-	public static explicit operator List<T>((T, T) x) => new(x.Item1, x.Item2);
+	public static explicit operator List<T>((T, T) x) => [x.Item1, x.Item2];
 
-	public static explicit operator List<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+	public static explicit operator List<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
 
-	public static explicit operator List<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+	public static explicit operator List<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
 
-	public static explicit operator List<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+	public static explicit operator List<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
 
-	public static explicit operator List<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+	public static explicit operator List<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+	public static explicit operator List<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
 	public static explicit operator (T, T)(List<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
 
@@ -1494,37 +1494,37 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		return this;
 	}
 
-	public static implicit operator NList<T>(T x) => new NList<T>().Add(x);
+	public static implicit operator NList<T>(T x) => new(x);
 
-	public static explicit operator NList<T>((T, T) x) => new(x.Item1, x.Item2);
+	public static explicit operator NList<T>((T, T) x) => [x.Item1, x.Item2];
 
-	public static explicit operator NList<T>((T, T, T) x) => new(x.Item1, x.Item2, x.Item3);
+	public static explicit operator NList<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
 
-	public static explicit operator NList<T>((T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4);
+	public static explicit operator NList<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
 
-	public static explicit operator NList<T>((T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5);
+	public static explicit operator NList<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6);
+	public static explicit operator NList<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => new(x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16);
+	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
 	public static explicit operator (T, T)(NList<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
 

@@ -1,19 +1,23 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using Corlib.NStar;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Text;
+using System;
+using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using G = System.Collections.Generic;
 
 namespace EasyEvalLib;
 
 public static class EasyEval
 {
-	public static void CompileAndExecute(string sourceCode, IEnumerable<string> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
+	public static void CompileAndExecute(string sourceCode, G.IEnumerable<string> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
 
-	public static Assembly? CompileAndGetAssembly(string sourceCode, IEnumerable<string> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
+	public static Assembly? CompileAndGetAssembly(string sourceCode, G.IEnumerable<string> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
 
-	public static dynamic? Eval(string sourceCode, IEnumerable<string>? extraAssemblies = null, IEnumerable<string>? extraNamespaces = null, params dynamic?[] args)
+	public static dynamic? Eval(string sourceCode, G.IEnumerable<string>? extraAssemblies = null, G.IEnumerable<string>? extraNamespaces = null, params dynamic?[] args)
 	{
 		var assembly = CompileAndGetAssembly(@"using System;
 using System.Collections.Generic;
@@ -21,7 +25,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-" + string.Join(Environment.NewLine, extraNamespaces?.Select(x => "using " + x + ";") ?? Array.Empty<string>()) + @"
+" + string.Join(Environment.NewLine, extraNamespaces?.Convert(x => "using " + x + ";") ?? []) + @"
 namespace MyProject;
 public static class Program
 {
@@ -35,18 +39,18 @@ public static void Main()
 {
 }
 }
-", new[] { "System.Linq.Expressions", "Microsoft.CSharp", "netstandard", "System.Runtime" }.Union(extraAssemblies ?? Array.Empty<string>()));
+", new ListHashSet<string>("System.Linq.Expressions", "Microsoft.CSharp", "netstandard", "System.Runtime").UnionWith(extraAssemblies ?? []));
 		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, new[] { args }) ?? null;
 	}
 
-	public static byte[]? Compile(string sourceCode, IEnumerable<string> extraAssemblies, TextWriter? errors = null)
+	public static byte[]? Compile(string sourceCode, G.IEnumerable<string> extraAssemblies, TextWriter? errors = null)
 	{
 		using var peStream = new MemoryStream();
 		var result = GenerateCode(sourceCode, extraAssemblies).Emit(peStream);
 		if (!result.Success)
 		{
 			errors?.WriteLine("Compilation done with error.");
-			var failures = result.Diagnostics.Where(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
+			var failures = result.Diagnostics.Filter(diagnostic => diagnostic.IsWarningAsError || diagnostic.Severity == DiagnosticSeverity.Error);
 			foreach (var diagnostic in failures)
 			{
 				errors?.WriteLine("{0}: {1}", diagnostic.Id, diagnostic.GetMessage());
@@ -58,17 +62,14 @@ public static void Main()
 		return peStream.ToArray();
 	}
 
-	private static CSharpCompilation GenerateCode(string sourceCode, IEnumerable<string> extraAssemblies)
+	private static CSharpCompilation GenerateCode(string sourceCode, G.IEnumerable<string> extraAssemblies)
 	{
 		var codeString = SourceText.From(sourceCode);
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new[]
-		{
-			"System.Private.CoreLib", "mscorlib", "System", "System.Core",
-		}.Union(extraAssemblies).Select(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "")).Location));
+		var references = new ListHashSet<string>("System.Private.CoreLib", "mscorlib", "System", "System.Core").UnionWith(extraAssemblies).Convert(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "")).Location));
 		return CSharpCompilation.Create("MyProject.dll",
-			new[] { parsedSyntaxTree },
+			[parsedSyntaxTree],
 			references: references,
 			options: new(OutputKind.ConsoleApplication,
 				optimizationLevel: OptimizationLevel.Release,
@@ -89,7 +90,7 @@ public static void Main()
 	{
 		var assembly = GetAssembly(compiledAssembly);
 		var entry = assembly?.EntryPoint;
-		_ = entry != null && entry.GetParameters().Length > 0 ? entry.Invoke(null, new object[] { args }) : entry?.Invoke(null, null);
+		_ = entry != null && entry.GetParameters().Length > 0 ? entry.Invoke(null, [args]) : entry?.Invoke(null, null);
 	}
 
 	public static Assembly? GetAssembly(byte[]? compiledAssembly)
