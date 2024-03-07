@@ -74,96 +74,96 @@ public class EComparer<T> : IEqualityComparer<T>
 	public int GetHashCode(T obj) => hashCode(obj);
 }
 
-public class ArrayEComparer<T> : IEqualityComparer<T[]>
+public class ArrayEComparer<T> : IListEComparer<T>, IEqualityComparer<T[]>
 {
-	private readonly Func<T, T, bool> equals;
-	private readonly Func<T, int> hashCode;
-
-	public ArrayEComparer()
+	public ArrayEComparer() : base()
 	{
-		equals = EqualityComparer<T>.Default.Equals;
-		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public ArrayEComparer(Func<T, T, bool> equals)
+	public ArrayEComparer(Func<T, T, bool> equals) : base(equals)
 	{
-		this.equals = equals;
-		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public ArrayEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	public ArrayEComparer(Func<T, T, bool> equals, Func<T, int> hashCode) : base(equals, hashCode)
 	{
-		this.equals = equals;
-		this.hashCode = hashCode;
 	}
 
-	public bool Equals(T[]? x, T[]? y)
-	{
-		if (x == null && y == null)
-			return true;
-		else if (x == null || y == null)
-			return false;
-		if (x.Length != y.Length)
-			return false;
-		for (var i = 0; i < x.Length; i++)
-			if (!equals(x[i], y[i]))
-				return false;
-		return true;
-	}
+	public bool Equals(T[]? x, T[]? y) => base.Equals(x, y);
 
-	public int GetHashCode(T[] x) => x.Length switch
-	{
-		0 => 1234567890,
-		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
-	};
+	public int GetHashCode(T[] x) => base.GetHashCode(x);
 }
 
-public class ListEComparer<T> : IEqualityComparer<List<T>>
+public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 {
 	private readonly Func<T, T, bool> equals;
 	private readonly Func<T, int> hashCode;
 
-	public ListEComparer()
+	public IListEComparer()
 	{
 		equals = EqualityComparer<T>.Default.Equals;
 		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public ListEComparer(Func<T, T, bool> equals)
+	public IListEComparer(Func<T, T, bool> equals)
 	{
 		this.equals = equals;
 		hashCode = x => x?.GetHashCode() ?? 0;
 	}
 
-	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
+	public IListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode)
 	{
 		this.equals = equals;
 		this.hashCode = hashCode;
 	}
 
-	public bool Equals(List<T>? x, List<T>? y)
+	public bool Equals(G.IList<T>? x, G.IList<T>? y)
 	{
 		if (x == null && y == null)
 			return true;
 		else if (x == null || y == null)
 			return false;
-		if (x.Length != y.Length)
+		if (x.Count != y.Count)
 			return false;
-		for (var i = 0; i < x.Length; i++)
+		for (var i = 0; i < x.Count; i++)
 			if (!equals(x[i], y[i]))
 				return false;
 		return true;
 	}
 
-	public int GetHashCode(List<T> x) => x.Length switch
+	public int GetHashCode(G.IList<T> x)
 	{
-		0 => 1234567890,
-		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
-	};
+		var hash = 486187739;
+		var en = x.GetEnumerator();
+		if (en.MoveNext())
+		{
+			hash = (hash * 16777619) ^ hashCode(en.Current);
+			if (en.MoveNext())
+			{
+				hash = (hash * 16777619) ^ hashCode(en.Current);
+				hash = (hash * 16777619) ^ hashCode(x[^1]);
+			}
+		}
+		return hash;
+	}
+}
+
+public class ListEComparer<T> : IListEComparer<T>, IEqualityComparer<List<T>>
+{
+	public ListEComparer() : base()
+	{
+	}
+
+	public ListEComparer(Func<T, T, bool> equals) : base(equals)
+	{
+	}
+
+	public ListEComparer(Func<T, T, bool> equals, Func<T, int> hashCode) : base(equals, hashCode)
+	{
+	}
+
+	public bool Equals(List<T>? x, List<T>? y) => base.Equals(x, y);
+
+	public int GetHashCode(List<T> x) => base.GetHashCode(x);
 }
 
 public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
@@ -216,13 +216,21 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 		return true;
 	}
 
-	public int GetHashCode(NList<T> x) => x.Length switch
+	public int GetHashCode(NList<T> x)
 	{
-		0 => 1234567890,
-		1 => hashCode(x[0]),
-		2 => hashCode(x[0]) << 7 ^ hashCode(x[1]),
-		_ => (hashCode(x[0]) << 7 ^ hashCode(x[1])) << 7 ^ hashCode(x[^1]),
-	};
+		var hash = 486187739;
+		var en = x.GetEnumerator();
+		if (en.MoveNext())
+		{
+			hash = (hash * 16777619) ^ hashCode(en.Current);
+			if (en.MoveNext())
+			{
+				hash = (hash * 16777619) ^ hashCode(en.Current);
+				hash = (hash * 16777619) ^ hashCode(x[^1]);
+			}
+		}
+		return hash;
+	}
 }
 
 [Serializable]
@@ -840,19 +848,7 @@ public static unsafe partial class Extents
 
 	private static void RadixPass<T>(int offset, int n, T* @in, T* @out, int* count) where T : unmanaged
 	{
-		T* sp;
-		int s, c, i;
-		byte* bp;
-		s = 0;
-		var cp = count;
-		for (i = 256; i > 0; --i, ++cp)
-		{
-			c = *cp;
-			*cp = s;
-			s += c;
-		}
-		bp = (byte*)@in + offset;
-		sp = @in;
+		RadixPassMain(offset, @in, count, out var sp, out var i, out var bp, out var cp);
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp)
 		{
 			cp = count + *bp;
@@ -863,20 +859,8 @@ public static unsafe partial class Extents
 
 	private static void RadixPass<T, T2>(int offset, int n, T* @in, T2* in2, T* @out, T2* out2, int* count) where T : unmanaged where T2 : unmanaged
 	{
-		T* sp;
 		T2* sp2;
-		int s, c, i;
-		byte* bp;
-		s = 0;
-		var cp = count;
-		for (i = 256; i > 0; --i, ++cp)
-		{
-			c = *cp;
-			*cp = s;
-			s += c;
-		}
-		bp = (byte*)@in + offset;
-		sp = @in;
+		RadixPassMain(offset, @in, count, out var sp, out var i, out var bp, out var cp);
 		sp2 = in2;
 		for (i = n; i > 0; --i, bp += sizeof(T), ++sp, ++sp2)
 		{
@@ -885,6 +869,21 @@ public static unsafe partial class Extents
 			out2[*cp] = *sp2;
 			++*cp;
 		}
+	}
+
+	private static void RadixPassMain<T>(int offset, T* @in, int* count, out T* sp, out int i, out byte* bp, out int* cp) where T : unmanaged
+	{
+		int s, c;
+		s = 0;
+		cp = count;
+		for (i = 256; i > 0; --i, ++cp)
+		{
+			c = *cp;
+			*cp = s;
+			s += c;
+		}
+		bp = (byte*)@in + offset;
+		sp = @in;
 	}
 
 	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
