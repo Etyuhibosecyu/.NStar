@@ -71,7 +71,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		comparer ??= EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentNullException.ThrowIfNull(dictionary);
-		if (dictionary.Count <= _hashThreshold)
+		if (dictionary.Count < _hashThreshold)
 			low = new(dictionary, new Comparer<TKey>((x, y) => comparer.Equals(x, y) ? 0 : -1));
 		else
 		{
@@ -262,18 +262,18 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public virtual void Add(TKey key, TValue value)
 	{
-		if (!isHigh && low != null && Length >= _hashThreshold)
-		{
-			high = new(low, comparer);
-			low = null;
-			isHigh = true;
-		}
 		if (!isHigh && low != null)
 			low.Add(key, value);
 		else if (high != null)
 			high.Add(key, value);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		if (!isHigh && low != null && Length >= _hashThreshold)
+		{
+			high = new(low, comparer);
+			low = null;
+			isHigh = true;
+		}
 	}
 
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);

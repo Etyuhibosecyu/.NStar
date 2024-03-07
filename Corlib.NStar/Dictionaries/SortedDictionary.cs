@@ -24,7 +24,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	private object? _syncRoot;
 
 	private const int _defaultCapacity = 32;
-	private const int _sortingThreshold = 64;
+	private const int _sortingThreshold = 65;
 
 	public SortedDictionary()
 	{
@@ -379,7 +379,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		keys.Insert(index, key);
 		values.Insert(index, value);
-		if (keys.Length == 65)
+		if (keys.Length >= _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -468,6 +468,19 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		keys.TrimExcess();
 		values.TrimExcess();
 	}
+
+	public virtual bool TryAdd(TKey key, TValue value)
+	{
+		if (key == null)
+			throw new ArgumentNullException(nameof(key));
+		var i = Search(key);
+		if (i >= 0)
+			return false;
+		Insert(~i, key, value);
+		return true;
+	}
+
+	public virtual bool TryAdd((TKey Key, TValue Value) item) => TryAdd(item.Key, item.Value);
 
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{
