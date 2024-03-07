@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Numerics;
+using System.Threading;
 
 namespace Corlib.NStar.Tests;
 
@@ -3496,22 +3497,18 @@ public class NListTests
 }
 
 [TestClass]
-public class SumListTests
+public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
 {
-	[TestMethod]
-	public void ComplexTest()
+	public static void ComplexTest(Func<(BaseSumList<T, TCertain>, G.List<T>, byte[])> create, Func<T> newValueFunc, Action<int> check, Action<byte[]> check2)
 	{
 		var counter = 0;
 	l1:
-		var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
-		SumList sl = new(arr);
-		G.List<int> gl = new(arr);
-		var bytes = new byte[16];
+		var (sl, gl, bytes) = create();
 		var updateActions = new[] { (int key) =>
 		{
-			var newValue = random.Next(16);
+			var newValue = newValueFunc();
 			sl.Update(key, newValue);
-			if (newValue <= 0)
+			if (newValue <= T.Zero)
 				gl.RemoveAt(key);
 			else
 				gl[key] = newValue;
@@ -3521,7 +3518,7 @@ public class SumListTests
 			gl[key]++;
 		}, key =>
 		{
-			if (sl[key] == 1)
+			if (sl[key] == T.One)
 				gl.RemoveAt(key);
 			else
 				gl[key]--;
@@ -3529,7 +3526,9 @@ public class SumListTests
 		} };
 		var actions = new[] { () =>
 		{
-			var n = random.Next(1, 16);
+			var n = newValueFunc();
+			while (n < T.One)
+				n = newValueFunc();
 			if (random.Next(2) == 0)
 			{
 				sl.Add(n);
@@ -3555,12 +3554,11 @@ public class SumListTests
 			var index = random.Next(sl.Length);
 			updateActions.Random(random)(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-			Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index)));
+			check(index);
 		}, () =>
 		{
 			random.NextBytes(bytes);
-			var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
-			Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
+			check2(bytes);
 		}, () =>
 		{
 			if (sl.Length == 0) return;
@@ -3575,87 +3573,51 @@ public class SumListTests
 }
 
 [TestClass]
+public class SumListTests
+{
+	private SumList sl = default!;
+	private G.List<int> gl = default!;
+
+	[TestMethod]
+	public void ComplexTest() => BaseSumListTests<int, SumList>.ComplexTest(() =>
+	{
+		var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
+		sl = new(arr);
+		gl = new(arr);
+		var bytes = new byte[16];
+		return (sl, gl, bytes);
+	}, () => random.Next(16), index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index))), bytes =>
+	{
+		var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
+		Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
+	});
+}
+
+[TestClass]
 public class BigSumListTests
 {
+	private BigSumList sl = default!;
+	private G.List<MpzT> gl = default!;
+	private readonly byte[] bytes = new byte[20], bytes2 = new byte[48];
+
 	[TestMethod]
-	public void ComplexTest()
+	public void ComplexTest() => BaseSumListTests<MpzT, BigSumList>.ComplexTest(() =>
 	{
-		var counter = 0;
-	l1:
-		var bytes = new byte[20];
-		var bytes2 = new byte[48];
 		var arr = RedStarLinq.FillArray(16, _ =>
 		{
 			random.NextBytes(bytes);
 			return new MpzT(bytes, 1);
 		});
-		BigSumList sl = new(arr);
-		G.List<MpzT> gl = new(arr);
-		var updateActions = new[] { (int key) =>
-		{
-			random.NextBytes(bytes);
-			MpzT newValue = new(bytes, 1);
-			sl.Update(key, newValue);
-			if (newValue <= 0)
-				gl.RemoveAt(key);
-			else
-				gl[key] = newValue;
-		}, key =>
-		{
-			sl.Increase(key);
-			gl[key]++;
-		}, key =>
-		{
-			if (sl[key] == 1)
-				gl.RemoveAt(key);
-			else
-				gl[key]--;
-			sl.Decrease(key);
-		} };
-		var actions = new[] { () =>
-		{
-			random.NextBytes(bytes);
-			MpzT n = new(bytes, 1);
-			if (random.Next(2) == 0)
-			{
-				sl.Add(n);
-				gl.Add(n);
-			}
-			else
-			{
-				var index = random.Next(sl.Length + 1);
-				sl.Insert(index, n);
-				gl.Insert(index, n);
-			}
-			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-		}, () =>
-		{
-			if (sl.Length == 0) return;
-			var index = random.Next(sl.Length);
-			gl.RemoveAt(index);
-			sl.RemoveAt(index);
-			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-		}, () =>
-		{
-			if (sl.Length == 0) return;
-			var index = random.Next(sl.Length);
-			updateActions.Random(random)(index);
-			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
-			Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y));
-		}, () =>
-		{
-			random.NextBytes(bytes2);
-			var index = sl.IndexOfNotGreaterSum(CreateVar(new MpzT(bytes2, 1) % (sl.ValuesSum + 1), out var sum));
-			Assert.IsTrue(index == 0 && (gl.Count == 0 || sum < gl[0]) || index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y) || CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum));
-		}, () =>
-		{
-			if (sl.Length == 0) return;
-			var index = random.Next(sl.Length);
-			Assert.AreEqual(sl[index], gl[index]);
-		} };
-		for (var i = 0; i < 1000; i++)
-			actions.Random(random)();
-		if (counter++ < 1000)
-			goto l1;
-	}
+		sl = new(arr);
+		gl = new(arr);
+		return (sl, gl, bytes2);
+	}, () =>
+	{
+		random.NextBytes(bytes);
+		return new(bytes, 1);
+	}, index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y)), bytes =>
+	{
+		var index = sl.IndexOfNotGreaterSum(CreateVar(new MpzT(bytes, 1) % (sl.ValuesSum + 1), out var sum));
+		Assert.IsTrue(index == 0 && (gl.Count == 0 || sum < gl[0]) || index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y) || CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum));
+	});
 }

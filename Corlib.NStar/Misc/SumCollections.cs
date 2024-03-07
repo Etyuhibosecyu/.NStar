@@ -2409,9 +2409,9 @@ internal class SumSetEqualityComparer<T> : IEqualityComparer<SumSet<T>>
 	public override int GetHashCode() => comparer.GetHashCode() ^ e_comparer.GetHashCode();
 }
 
-internal delegate bool BaseSumWalkPredicate<T, TCertain>(BaseSumList<T, TCertain>.Node node) where TCertain : BaseSumList<T, TCertain>, new();
+internal delegate bool BaseSumWalkPredicate<T, TCertain>(BaseSumList<T, TCertain>.Node node) where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new();
 
-public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where TCertain : BaseSumList<T, TCertain>, new()
+public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
 {
 	private protected Node? root;
 	private protected int version;
