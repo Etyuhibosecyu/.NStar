@@ -47,18 +47,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.Contains("MMM");
-			Assert.IsTrue(b);
-			b = a.Contains("BBB", 2);
-			Assert.IsTrue(!b);
-			b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
-			Assert.IsTrue(b);
-			b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-			Assert.IsTrue(!b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestContains();
 	}
 
 	[TestMethod]
@@ -136,17 +125,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.EndsWith("DDD");
-			Assert.IsTrue(b);
-			b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-			Assert.IsTrue(b);
-			b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-			Assert.IsTrue(!b);
-			b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-			Assert.IsTrue(!b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
 	}
 
 	[TestMethod]
@@ -158,19 +137,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.Contains("MMM");
-			Assert.IsTrue(b);
-			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-			Assert.IsTrue(b);
-			b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-			Assert.IsTrue(!b);
-			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-			Assert.IsTrue(!b);
-			b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-			Assert.IsTrue(!b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEquals();
 	}
 
 	[TestMethod]
@@ -210,25 +177,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new(E.ToList(list.ToList().Insert(3, new List<string>("$", "###")).Insert(0, "XXX")), 1);
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindAll(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			var d = c.FindAll(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.IsTrue(b.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, b));
-			b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.IsTrue(b.Equals(d));
-			Assert.IsTrue(E.SequenceEqual(d, b));
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindAll();
 	}
 
 	[TestMethod]

@@ -272,15 +272,7 @@ public class ListTests
 	public void TestContains()
 	{
 		var a = list.ToList();
-		var b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Contains("BBB", 2);
-		Assert.IsTrue(!b);
-		b = a.Contains(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestContains();
 	}
 
 	[TestMethod]
@@ -345,30 +337,14 @@ public class ListTests
 	public void TestEndsWith()
 	{
 		var a = list.ToList();
-		var b = a.EndsWith("DDD");
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-		Assert.IsTrue(b);
-		b = a.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsTrue(!b);
-		b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
 	}
 
 	[TestMethod]
 	public void TestEquals()
 	{
 		var a = list.ToList();
-		var b = a.Contains("MMM");
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(b);
-		b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsTrue(!b);
-		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsTrue(!b);
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestEquals();
 	}
 
 	[TestMethod]
@@ -443,23 +419,7 @@ public class ListTests
 	public void TestFindAll()
 	{
 		var a = list.ToList().Insert(3, new List<string>("$", "###"));
-		var b = a.FindAll(x => x.Length != 3);
-		var c = new G.List<string>(list);
-		c.InsertRange(3, ["$", "###"]);
-		var d = c.FindAll(x => x.Length != 3);
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = list.ToList().Insert(3, new List<string>("$", "###"));
-		b = a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
-		c.InsertRange(3, ["$", "###"]);
-		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(a.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestFindAll();
 	}
 
 	[TestMethod]
@@ -1092,13 +1052,13 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).ToList();
+		var a = new Chain(15, 10).Convert(x => x.ToString());
 		for (var i = 0; i < 1000; i++)
 		{
 			var value = a.Random(random);
-			var b = new List<int>(a);
+			var b = new List<string>(a);
 			b.RemoveValue(value);
-			var c = new G.List<int>(a);
+			var c = new G.List<string>(a);
 			c.Remove(value);
 			foreach (var x in a)
 				Assert.AreEqual(b.Contains(x), x != value);
@@ -2991,13 +2951,13 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).ToNList();
+		var a = new Chain(15, 10).NConvert(x => ((char, char, char))(String)x.ToString("D3"));
 		for (var i = 0; i < 1000; i++)
 		{
 			var value = a.Random(random);
-			var b = new NList<int>(a);
+			var b = new NList<(char, char, char)>(a);
 			b.RemoveValue(value);
-			var c = new G.List<int>(a);
+			var c = new G.List<(char, char, char)>(a);
 			c.Remove(value);
 			foreach (var x in a)
 				Assert.AreEqual(b.Contains(x), x != value);

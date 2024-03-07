@@ -988,6 +988,66 @@ public class String : List<char, String>
 	public static implicit operator String(char[] x) => new(x);
 
 	public static implicit operator String(string x) => new((ReadOnlySpan<char>)x);
+
+	public static explicit operator String((char, char) x) => [x.Item1, x.Item2];
+
+	public static explicit operator String((char, char, char) x) => [x.Item1, x.Item2, x.Item3];
+
+	public static explicit operator String((char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
+
+	public static explicit operator String((char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
+
+	public static explicit operator String((char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
+
+	public static explicit operator String((char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
+
+	public static explicit operator (char, char)(String x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char)(String x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char)(String x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char)(String x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char)(String x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char)(String x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char)(String x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char)(String x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]

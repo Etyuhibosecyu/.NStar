@@ -1019,7 +1019,7 @@ public class ListHashSetTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var value = a.Random(random);
-			var b = new List<int>(a);
+			var b = new ListHashSet<int>(a);
 			b.RemoveValue(value);
 			var c = new G.List<int>(a);
 			c.Remove(value);

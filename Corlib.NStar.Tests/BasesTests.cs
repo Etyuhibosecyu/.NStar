@@ -1,6 +1,6 @@
-﻿using System.Collections.Immutable;
-
+﻿
 namespace Corlib.NStar.Tests;
+
 public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, ImmutableArray<T> OriginalCollection, T DefaultString, G.IEnumerable<T> DefaultCollection) where TCertain : BaseIndexable<T, TCertain>, new()
 {
 	public void TestGetRange()
@@ -168,6 +168,65 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 
 public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, ImmutableArray<string> OriginalCollection, string DefaultString, G.IEnumerable<string> DefaultCollection) where TCertain : BaseIndexable<string, TCertain>, new()
 {
+	public void TestContains()
+	{
+		var b = TestCollection.Contains("MMM");
+		Assert.IsTrue(b);
+		b = TestCollection.Contains("BBB", 2);
+		Assert.IsTrue(!b);
+		b = TestCollection.Contains(new List<string>("PPP", "DDD", "MMM"));
+		Assert.IsTrue(b);
+		b = TestCollection.Contains(new List<string>("PPP", "DDD", "NNN"));
+		Assert.IsTrue(!b);
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
+	}
+
+	public void TestEndsWith()
+	{
+		var b = TestCollection.EndsWith("DDD");
+		Assert.IsTrue(b);
+		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "DDD"));
+		Assert.IsTrue(b);
+		b = TestCollection.EndsWith(new List<string>("PPP", "EEE", "DDD"));
+		Assert.IsTrue(!b);
+		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "NNN"));
+		Assert.IsTrue(!b);
+	}
+
+	public void TestEquals()
+	{
+		var b = TestCollection.Contains("MMM");
+		Assert.IsTrue(b);
+		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
+		Assert.IsTrue(b);
+		b = TestCollection.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
+		Assert.IsTrue(!b);
+		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
+		Assert.IsTrue(!b);
+		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
+		Assert.IsTrue(!b);
+	}
+
+	public void TestFindAll()
+	{
+		var b = TestCollection.FindAll(x => x.Length != 3);
+		var c = new G.List<string>(list);
+		c.InsertRange(3, ["$", "###"]);
+		var d = c.FindAll(x => x.Length != 3);
+		Assert.IsTrue(TestCollection.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, TestCollection));
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
+		b = TestCollection.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
+		c = new G.List<string>(list);
+		c.InsertRange(3, ["$", "###"]);
+		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
+		Assert.IsTrue(TestCollection.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, TestCollection));
+		Assert.IsTrue(b.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, b));
+	}
+
 	public void TestIndexOf()
 	{
 		var b = TestCollection.IndexOf("MMM");

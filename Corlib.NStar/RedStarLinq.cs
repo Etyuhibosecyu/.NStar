@@ -67503,7 +67503,7 @@ public unsafe partial class NList<T>
 				result._items[i] = function(item);
 				i++;
 			}
-			result._size = length;
+			result._size = i;
 			return result;
 		}
 	}
@@ -67569,7 +67569,7 @@ public unsafe partial class NList<T>
 				result._items[i] = function(item, i);
 				i++;
 			}
-			result._size = length;
+			result._size = i;
 			return result;
 		}
 	}
