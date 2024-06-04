@@ -52036,6 +52036,416 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static List<TResult> ShuffleEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Random random)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list._items[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<TResult> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = function(array[0]);
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list2[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list3[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(function(item));
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = function(item);
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<TResult> ShuffleEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Random random)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list._items[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<TResult> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = function(array[0], 0);
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list2[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list3[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			List<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(function(item, i));
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = function(item, i);
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static List<T> ShuffleEnumerable(IEnumerable<T> source, Random random)
+	{
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			List<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list._items[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<T> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = array[0];
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list2[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list3[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			List<T> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			List<T> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(item);
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = item;
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
 	internal static Slice<T> SkipEnumerable(IEnumerable<T> source, int length)
 	{
 		if (source is List<T> list)
@@ -68274,6 +68684,416 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
+	internal static NList<TResult> ShuffleEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, TResult> function, Random random) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			NList<TResult> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = function(array[0]);
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list2[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list3[0]);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (List<T_>.TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item);
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(function(item));
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = function(item);
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static NList<TResult> ShuffleEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, int, TResult> function, Random random) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			NList<TResult> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = function(array[0], 0);
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list2[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = function(list3[0], 0);
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (List<T_>.TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			NList<TResult> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = function(item, i);
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = function(item, i);
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(function(item, i));
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = function(item, i);
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static NList<T> ShuffleEnumerable(IEnumerable<T> source, Random random)
+	{
+		if (source is List<T> list)
+		{
+			var length = list.Length;
+			NList<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			NList<T> result = new(array.Length);
+			if (array.Length == 0)
+				return result;
+			result._items[0] = array[0];
+			int blend;
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			NList<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list2[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			NList<T> result = new(length);
+			if (length == 0)
+				return result;
+			result._items[0] = list3[0];
+			int blend;
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+			}
+			result._size = length;
+			return result;
+		}
+		else if (List<T>.TryGetLengthEasilyEnumerable(source, out var length))
+		{
+			NList<T> result = new(length);
+			if (length == 0)
+				return result;
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result._items[i] = item;
+				else
+				{
+					result._items[i] = result._items[blend];
+					result._items[blend] = item;
+				}
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+		else
+		{
+			NList<T> result = new(1024);
+			int blend;
+			var i = 0;
+			foreach (var item in source)
+			{
+				blend = random.Next(i + 1);
+				if (blend == i)
+					result.Add(item);
+				else
+				{
+					result.Add(result._items[blend]);
+					result._items[blend] = item;
+				}
+				i++;
+			}
+			return result;
+		}
+	}
+
 	internal static Slice<T> SkipWhileEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
 		if (source is NList<T> list)
@@ -69662,6 +70482,12 @@ public static class RedStarLinq
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source) => List<bool>.SetInnerTypeEnumerable<TResult>(source);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, TResult> function) => List<bool>.SetInnerTypeEnumerable(source, function);
 	public static List<TResult> SetInnerType<TResult>(this IEnumerable source, Func<object?, int, TResult> function) => List<bool>.SetInnerTypeEnumerable(source, function);
+	public static List<TResult> Shuffle<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.ShuffleEnumerable(source, function, random);
+	public static List<TResult> Shuffle<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, Random random) => List<T>.ShuffleEnumerable(source, function, random);
+	public static List<TResult> Shuffle<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.ShuffleEnumerable(source, function, random);
+	public static List<TResult> Shuffle<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, Random random) => List<T>.ShuffleEnumerable(source, function, random);
+	public static List<T> Shuffle<T>(this IEnumerable<T> source) => List<T>.ShuffleEnumerable(source, random);
+	public static List<T> Shuffle<T>(this IEnumerable<T> source, Random random) => List<T>.ShuffleEnumerable(source, random);
 	public static Slice<T> Skip<T>(this IEnumerable<T> source, int length) => List<T>.SkipEnumerable(source, length);
 	public static Slice<T> SkipLast<T>(this IEnumerable<T> source, int length) => List<T>.SkipLastEnumerable(source, length);
 	public static Slice<T> SkipWhile<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.SkipWhileEnumerable(source, function);
@@ -72076,6 +72902,12 @@ public static class RedStarLinq
 	public static NList<int> NRepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction) where T : unmanaged => NList<T>.RepresentIntoNumbersEnumerable(source, equalFunction);
 	public static NList<int> NRepresentIntoNumbers<T>(this NList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : unmanaged => NList<T>.RepresentIntoNumbersEnumerable(source, equalFunction, hashCodeFunction);
 	public static NList<T> NReverse<T>(this NList<T> source) where T : unmanaged => NList<T>.ReverseEnumerable(source);
+	public static NList<TResult> NShuffle<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ShuffleEnumerable(source, function, random);
+	public static NList<TResult> NShuffle<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, Random random) where TResult : unmanaged => NList<bool>.ShuffleEnumerable(source, function, random);
+	public static NList<TResult> NShuffle<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ShuffleEnumerable(source, function, random);
+	public static NList<TResult> NShuffle<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, Random random) where TResult : unmanaged => NList<bool>.ShuffleEnumerable(source, function, random);
+	public static NList<T> NShuffle<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.ShuffleEnumerable(source, random);
+	public static NList<T> NShuffle<T>(this IEnumerable<T> source, Random random) where T : unmanaged => NList<T>.ShuffleEnumerable(source, random);
 	public static Slice<T> NSkipWhile<T>(this IEnumerable<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.SkipWhileEnumerable(source, function);
 	public static Slice<T> NSkipWhile<T>(this IEnumerable<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.SkipWhileEnumerable(source, function);
 	public static List<NList<T>> NSplitIntoEqual<T>(this NList<T> source, int fragmentLength) where T : unmanaged => NList<T>.SplitIntoEqualEnumerable(source, fragmentLength);

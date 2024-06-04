@@ -527,6 +527,25 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestShuffle() => Test(a =>
+	{
+		var c = a.Shuffle(x => x[1..]);
+		var d = c.NSort();
+		var e = E.Order(E.Select(a, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c, e));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Shuffle((Func<string, string>)null!));
+		c = a.Shuffle((x, index) => x[1..] + index.ToString("D2"));
+		d = c.NSort();
+		e = E.Order(E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c, e));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Shuffle((Func<string, int, string>)null!));
+		var c2 = a.Shuffle();
+		var d2 = c2.NSort();
+		var e2 = E.Order(a);
+		Assert.IsTrue(E.SequenceEqual(c2, e2));
+	});
+
+	[TestMethod]
 	public void TestSkip()
 	{
 		var a = list.Skip(3);
@@ -862,6 +881,24 @@ public class RedStarLinqTests
 [TestClass]
 public class RedStarLinqTestsN
 {
+	public static void Test(Action<G.IEnumerable<(char, char, char)>> action)
+	{
+		G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(nList);
+		action(a);
+		a = RedStarLinq.ToArray(nList);
+		action(a);
+		a = E.ToList(nList);
+		action(a);
+		a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+		action(a);
+		a = nEnumerable;
+		action(a);
+		a = nEnumerable2;
+		action(a);
+		a = E.SkipWhile(nList, _ => random.Next(10) != -1);
+		action(a);
+	}
+
 	[TestMethod]
 	public void TestNPairs()
 	{
@@ -912,4 +949,23 @@ public class RedStarLinqTestsN
 			Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.NPairs(0));
 		}
 	}
+
+	[TestMethod]
+	public void TestNShuffle() => Test(a =>
+	{
+		var c = a.NShuffle(x => (x.Item2, x.Item3, (char)(x.Item3 + 123)));
+		var d = c.ToList().Sort();
+		var e = E.Order(E.Select(a, x => (x.Item2, x.Item3, (char)(x.Item3 + 123))));
+		Assert.IsTrue(E.SequenceEqual(d, e));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NShuffle((Func<(char, char, char), (char, char, char)>)null!));
+		c = a.NShuffle((x, index) => (x.Item2, x.Item3, (char)index));
+		d = c.ToList().Sort();
+		e = E.Order(E.Select(a, (x, index) => (x.Item2, x.Item3, (char)index)));
+		Assert.IsTrue(E.SequenceEqual(d, e));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NShuffle((Func<(char, char, char), int, (char, char, char)>)null!));
+		var c2 = a.NShuffle();
+		var d2 = c2.ToList().Sort();
+		var e2 = E.Order(a);
+		Assert.IsTrue(E.SequenceEqual(d2, e2));
+	});
 }

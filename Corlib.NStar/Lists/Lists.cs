@@ -766,7 +766,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		if (this is List<uint> uintList)
+		if (this is List<byte> byteList)
+		{
+			byteList._items.NSort(index, length);
+			return this as TCertain ?? throw new InvalidOperationException();
+		}
+		else if (this is List<ushort> ushortList)
+		{
+			ushortList._items.NSort(index, length);
+			return this as TCertain ?? throw new InvalidOperationException();
+		}
+		else if (this is List<uint> uintList)
 		{
 			uintList._items.NSort(index, length);
 			return this as TCertain ?? throw new InvalidOperationException();
@@ -947,11 +957,15 @@ public class String : List<char, String>
 
 	public String(IEnumerable<char> collection) : base(collection) { }
 
+	public String(string s) : base(s.ToArray()) { }
+
 	public String(params char[] array) : base(array) { }
 
 	public String(ReadOnlySpan<char> span) : base(span) { }
 
 	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
+
+	public String(int capacity, string s) : base(capacity, s.ToArray()) { }
 
 	public String(int capacity, params char[] array) : base(capacity, array) { }
 
@@ -1062,6 +1076,14 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+
+	public BigList(T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
+
+	//public BigList(ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
+
+	public BigList(MpzT capacity, T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
+
+	//public BigList(MpzT capacity, ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 

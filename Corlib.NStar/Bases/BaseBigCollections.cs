@@ -753,7 +753,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				} while (oldFragment > fragment);
 				high[0].Capacity = value;
 			}
-			end:
+		end:
 			_capacity = value;
 		}
 	}

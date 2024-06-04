@@ -115,6 +115,20 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				CopyMemory((uint*)array2, _items, arrayLength);
 			_size = bitArray.Length;
 		}
+		else if (bits is int[] intArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * intArray.Length);
+			fixed (int* ptr = intArray)
+				CopyMemory((uint*)ptr, _items, intArray.Length);
+			_size = (_capacity = intArray.Length) * BitsPerInt;
+		}
+		else if (bits is uint[] uintArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
+			fixed (uint* ptr = uintArray)
+				CopyMemory(ptr, _items, uintArray.Length);
+			_size = (_capacity = uintArray.Length) * BitsPerInt;
+		}
 		else if (bits is byte[] byteArray)
 		{
 			if (byteArray.Length > int.MaxValue / BitsPerByte)
@@ -154,19 +168,19 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<int> ints)
 		{
-			var uintArray = List<int>.ToArrayEnumerable(ints, x => (uint)x);
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
-			fixed (uint* ptr = uintArray)
-				CopyMemory(ptr, _items, uintArray.Length);
-			_size = (_capacity = uintArray.Length) * BitsPerInt;
+			var toArray = List<int>.ToArrayEnumerable(ints, x => (uint)x);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
+			fixed (uint* ptr = toArray)
+				CopyMemory(ptr, _items, toArray.Length);
+			_size = (_capacity = toArray.Length) * BitsPerInt;
 		}
 		else if (bits is IEnumerable<uint> uints)
 		{
-			var uintArray = List<uint>.ToArrayEnumerable(uints);
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
-			fixed (uint* ptr = uintArray)
-				CopyMemory(ptr, _items, uintArray.Length);
-			_size = (_capacity = uintArray.Length) * BitsPerInt;
+			var toArray = List<uint>.ToArrayEnumerable(uints);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
+			fixed (uint* ptr = toArray)
+				CopyMemory(ptr, _items, toArray.Length);
+			_size = (_capacity = toArray.Length) * BitsPerInt;
 		}
 		else if (bits is IEnumerable<byte> bytes)
 		{
@@ -851,6 +865,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public BigBitList(MpzT length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
 		if (capacityFirstStepBitLength >= 5)
@@ -884,6 +900,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public BigBitList(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
 		if (capacityFirstStepBitLength >= 5)
@@ -1057,6 +1075,26 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 			throw new ArgumentException(null, nameof(bits));
+	}
+
+	public BigBitList(uint[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.AsSpan(), capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigBitList(ReadOnlySpan<uint> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.Length, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+		foreach (var x in values)
+			AddRange(new BitList(BitsPerInt, x));
+	}
+
+	public BigBitList(MpzT capacity, uint[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, values.AsSpan(), capacityStepBitLength, capacityFirstStepBitLength)
+	{
+	}
+
+	public BigBitList(MpzT capacity, ReadOnlySpan<uint> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityStepBitLength, capacityFirstStepBitLength)
+	{
+		foreach (var x in values)
+			AddRange(new BitList(BitsPerInt, x));
 	}
 
 	private protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);

@@ -257,9 +257,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		// avoid the enumerator allocation and overhead by looping through the entries array directly.
 		// We only do this when dictionary is Mirror<TKey,TValue> and not a subclass, to maintain
 		// back-compat with subclasses that may have overridden the enumerator behavior.
-		if (enumerable.GetType() == typeof(Mirror<TKey, TValue>))
+		if (enumerable is Mirror<TKey, TValue> source)
 		{
-			var source = (Mirror<TKey, TValue>)enumerable;
 			if (source.Length == 0)
 				return;
 			// This is not currently a true .AddRange as it needs to be an initialized dictionary
@@ -287,8 +286,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		ReadOnlySpan<KeyValuePair<TKey, TValue>> span;
 		if (enumerable is KeyValuePair<TKey, TValue>[] array)
 			span = array;
-		else if (enumerable.GetType() == typeof(List<KeyValuePair<TKey, TValue>>))
-			span = ((List<KeyValuePair<TKey, TValue>>)enumerable).AsSpan();
+		else if (enumerable is List<KeyValuePair<TKey, TValue>> list)
+			span = list.AsSpan();
 		else
 		{
 			// Fallback path for all other enumerables
@@ -307,7 +306,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		if (length > 0)
 		{
 			Debug.Assert(_buckets != null, "_buckets should be non-null");
-			Debug.Assert(_bucketsM != null, "_buckets should be non-null");
+			Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
 			Debug.Assert(_entries != null, "_entries should be non-null");
 			Array.Clear(_buckets);
 			Array.Clear(_bucketsM);
@@ -358,7 +357,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				entry.next = bucket - 1; // Value in _buckets is 1-based
 				bucket = newCount + 1;
 				ref var bucketM = ref GetBucketM(hashCodeM);
-				entry.nextM = bucketM - 1; // Value in _buckets is 1-based
+				entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
 				bucketM = newCount + 1;
 				newCount++;
 			}
@@ -469,7 +468,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			var entries = _entries;
 			uint collisionCountM = 0;
 			// KeyType: Devirtualize with EqualityComparer<TValue>.Default intrinsic
-			currentM--; // Key in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
+			currentM--; // Key in _bucketsM is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
 			do
 			{
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
@@ -493,7 +492,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			var currentM = GetBucketM(hashCodeM);
 			var entries = _entries;
 			uint collisionCountM = 0;
-			currentM--; // Key in _buckets is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
+			currentM--; // Key in _bucketsM is 1-based; subtract 1 from i. We do it here so it fuses with the following conditional.
 			do
 			{
 				// Should be a while loop https://github.com/dotnet/runtime/issues/9422
@@ -592,7 +591,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private protected virtual ref int GetBucket(uint hashCode)
 	{
-		Debug.Assert(_buckets != null);
+		Debug.Assert(_buckets != null, "_buckets should be non-null");
 		var buckets = _buckets;
 		return ref buckets[hashCode % buckets.Length];
 	}
@@ -600,7 +599,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private protected virtual ref int GetBucketM(uint hashCode)
 	{
-		Debug.Assert(_bucketsM != null);
+		Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
 		var buckets = _bucketsM;
 		return ref buckets[hashCode % buckets.Length];
 	}
@@ -678,8 +677,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool RemoveKey(TKey key)
 	{
-		// The overload Remove(TKey key, out TValue value) is a copy of this method with one additional
-		// statement to copy the value for entry being removed into the output parameter.
+		// The overload RemoveKey(TKey key, out TValue value) is a copy of this method with one
+		// additional statement to copy the value for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
@@ -728,7 +727,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool RemoveKey(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
-		// This overload is a copy of the overload Remove(TKey key) with one additional
+		// This overload is a copy of the overload RemoveKey(TKey key) with one additional
 		// statement to copy the value for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
 		if (key == null)
@@ -783,8 +782,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool RemoveValue(TValue value)
 	{
-		// The overload Remove(TValue value, out TKey key) is a copy of this method with one additional
-		// statement to copy the key for entry being removed into the output parameter.
+		// The overload RemoveValue(TValue value, out TKey key) is a copy of this method with one
+		// additional statement to copy the key for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
 		if (value == null)
 			throw new ArgumentNullException(nameof(value));
@@ -833,7 +832,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool RemoveValue(TValue value, [MaybeNullWhen(false)] out TKey key)
 	{
-		// This overload is a copy of the overload Remove(TValue value) with one additional
+		// This overload is a copy of the overload RemoveValue(TValue value) with one additional
 		// statement to copy the key for entry being removed into the output parameter.
 		// Code has been intentionally duplicated for performance reasons.
 		if (value == null)
@@ -1021,8 +1020,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			throw new ArgumentNullException(nameof(value));
 		if (_buckets == null || _bucketsM == null)
 			Initialize(0);
-		Debug.Assert(_buckets != null);
-		Debug.Assert(_bucketsM != null);
+		Debug.Assert(_buckets != null, "_buckets should be non-null");
+		Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
 		var entries = _entries;
 		Debug.Assert(entries != null, "expected entries to be non-null");
 		var comparer = _comparer;
@@ -1065,7 +1064,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		var hashCodeM = (uint)((typeof(TValue).IsValueType && comparer == null) ? value.GetHashCode() : comparerM.GetHashCode(value));
 		uint collisionCountM = 0;
 		ref var bucketM = ref GetBucketM(hashCodeM);
-		var currentM = bucketM - 1; // Value in _buckets is 1-based
+		var currentM = bucketM - 1; // Value in _bucketsM is 1-based
 		if (typeof(TValue).IsValueType && comparerM == null) // comparer can only be null for value types; enable JIT to eliminate entire if block for ref types
 			while (true)
 			{
@@ -1125,11 +1124,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		entry.hashCode = hashCode;
 		entry.hashCodeM = hashCodeM;
 		entry.next = bucket - 1; // Value in _buckets is 1-based
-		entry.nextM = bucketM - 1; // Value in _buckets is 1-based
+		entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
 		entry.key = key;
 		entry.value = value;
 		bucket = index + 1; // Value in _buckets is 1-based
-		bucketM = indexM + 1; // Value in _buckets is 1-based
+		bucketM = indexM + 1; // Value in _bucketsM is 1-based
 		_version++;
 		Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
 		Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
@@ -1177,9 +1176,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 					ProcessLast(entries, entry, ref bucketM, lastM, true);
 					entry.hashCodeM = (uint)((typeof(TValue).IsValueType && comparer == null) ? value.GetHashCode() : comparerM.GetHashCode(value));
 					bucketM = ref GetBucketM(entry.hashCodeM);
-					entry.nextM = bucketM - 1; // Value in _buckets is 1-based
+					entry.nextM = bucketM - 1; // Value in _bucketsM is 1-based
 					entries[current].value = value;
-					bucketM = current + 1; // Value in _buckets is 1-based
+					bucketM = current + 1; // Value in _bucketsM is 1-based
 				}
 				return 1;
 			}
