@@ -919,7 +919,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		for (var i = _size; i > 0; i--)
 		{
 			var swapIndex = random.Next(i);
-			(this[swapIndex], this[i - 1]) = (this[i - 1], this[swapIndex]);
+			var temp = GetInternal(swapIndex);
+			SetInternal(swapIndex, GetInternal(i - 1));
+			SetInternal(i - 1, temp);
 		}
 		return this as TCertain ?? throw new InvalidOperationException();
 	}

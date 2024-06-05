@@ -1462,6 +1462,20 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestShuffle()
+	{
+		var toShuffle = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
+		var a = new List<string>(toShuffle);
+		var b = new List<string>(a).Shuffle();
+		b.Sort();
+		var c = new G.List<string>(a);
+		c = new(c.Shuffle());
+		c.Sort();
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+	}
+
+	[TestMethod]
 	public void TestSkip()
 	{
 		var a = list.ToList();
@@ -3111,6 +3125,20 @@ public class NListTests
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(-1, hs));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().SetRange(1000, hs));
 		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().SetRange(4, null!));
+	}
+
+	[TestMethod]
+	public void TestShuffle()
+	{
+		var toShuffle = new G.List<(char, char, char)>(new byte[256].ToArray(x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536))));
+		var a = new NList<(char, char, char)>(toShuffle);
+		var b = new NList<(char, char, char)>(a).Shuffle();
+		b.Replace(b.ToList().Sort());
+		var c = new G.List<(char, char, char)>(a);
+		c = new(c.Shuffle());
+		c.Sort();
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
 	}
 
 	[TestMethod]

@@ -1136,6 +1136,18 @@ public class ListHashSetTests
 	}
 
 	[TestMethod]
+	public void TestShuffle()
+	{
+		var toShuffle = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
+		var a = toShuffle.ToHashSet();
+		var b = a.Copy().Shuffle();
+		var c = new G.List<string>(a);
+		c = new(c.Shuffle());
+		Assert.IsTrue(b.SetEquals(c));
+		Assert.IsTrue(E.ToHashSet(b).SetEquals(c));
+	}
+
+	[TestMethod]
 	public void TestSkip()
 	{
 		var a = list.ToHashSet();
