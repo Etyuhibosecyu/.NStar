@@ -52448,8 +52448,8 @@ public partial class List<T, TCertain>
 
 	internal static Slice<T> SkipEnumerable(IEnumerable<T> source, int length)
 	{
-		if (source is List<T> list)
-			return list.Skip(length);
+		if (source is G.IList<T> list)
+			return list.GetSlice(Clamp(length, 0, list.Count));
 		else if (length <= 0)
 			return new(source.ToList());
 		else
@@ -52467,8 +52467,8 @@ public partial class List<T, TCertain>
 
 	internal static Slice<T> SkipLastEnumerable(IEnumerable<T> source, int length)
 	{
-		if (source is List<T> list)
-			return list.SkipLast(length);
+		if (source is G.IList<T> list)
+			return list.GetSlice(0, Clamp(list.Count - length, 0, list.Count));
 		else if (length <= 0)
 			return new(source.ToList());
 		else if (TryGetLengthEasilyEnumerable(source, out var count2))
@@ -53792,8 +53792,8 @@ public partial class List<T, TCertain>
 	{
 		if (length <= 0)
 			return new();
-		else if (source is List<T> list)
-			return list.Take(length);
+		else if (source is G.IList<T> list)
+			return list.GetSlice(0, Clamp(length, 0, list.Count));
 		else
 		{
 			List<T> result = new(length);
@@ -53811,10 +53811,10 @@ public partial class List<T, TCertain>
 
 	internal static Slice<T> TakeEnumerable(IEnumerable<T> source, Range range)
 	{
-		if (source is List<T> list)
+		if (source is G.IList<T> list)
 		{
-			var start = Clamp(range.Start.GetOffset(list.Length), 0, list.Length);
-			var end = Clamp(range.End.GetOffset(list.Length), 0, list.Length);
+			var start = Clamp(range.Start.GetOffset(list.Count), 0, list.Count);
+			var end = Clamp(range.End.GetOffset(list.Count), 0, list.Count);
 			return start >= end ? new() : list.GetSlice(start, end - start);
 		}
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
@@ -53902,8 +53902,8 @@ public partial class List<T, TCertain>
 	{
 		if (length <= 0)
 			return new();
-		else if (source is List<T> list)
-			return list.TakeLast(length);
+		else if (source is G.IList<T> list)
+			return list.GetSlice(Clamp(list.Count - length, 0, list.Count));
 		else if (TryGetLengthEasilyEnumerable(source, out var count2))
 		{
 			var start = Math.Max(count2 - length, 0);
