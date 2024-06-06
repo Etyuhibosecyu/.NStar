@@ -818,10 +818,10 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public virtual List<uint> ToUIntList()
+	public virtual NList<uint> ToUIntList()
 	{
 		var length = GetArrayLength(_size, BitsPerInt);
-		List<uint> result = new(length);
+		NList<uint> result = new(length);
 		for (var i = 0; i < length; i++)
 			result.Add(_items[i]);
 		return result;

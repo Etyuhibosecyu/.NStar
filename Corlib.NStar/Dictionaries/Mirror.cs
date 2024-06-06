@@ -901,13 +901,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		// Value types never rehash
-		Debug.Assert(!forceNewHashCodes || !typeof(TKey).IsValueType);
+		Debug.Assert(!forceNewHashCodes || !typeof(TKey).IsValueType || !typeof(TValue).IsValueType);
 		Debug.Assert(_entries != null, "_entries should be non-null");
 		Debug.Assert(newSize >= _entries.Length);
 		var entries = new Entry[newSize];
 		var length = _count;
 		Array.Copy(_entries, entries, length);
-		if (!typeof(TKey).IsValueType && forceNewHashCodes)
+		if ((!typeof(TKey).IsValueType || !typeof(TValue).IsValueType) && forceNewHashCodes)
 		{
 			var comparer = _comparer = EqualityComparer<TKey>.Default;
 			var comparerM = _comparerM = EqualityComparer<TValue>.Default;
@@ -931,9 +931,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				entries[i].nextM = bucketM - 1;
 				bucketM = i + 1;
 			}
+		_entries = entries;
 		Debug.Assert(entries.All(x => x.next >= -1 == x.nextM >= -1));
 		Debug.Assert(this.All(x => _comparer.Equals(x.Key, GetKey(x.Value)) && _comparerM.Equals(GetValue(x.Key), x.Value)));
-		_entries = entries;
 	}
 
 	public virtual void SetKey(TValue value, TKey key)

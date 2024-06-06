@@ -163,15 +163,15 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		return item;
 	}
 
-	public virtual List<int> HashIndexesOf(T item) => HashIndexesOf(item, _size - 1, _size);
+	public virtual NList<int> HashIndexesOf(T item) => HashIndexesOf(item, _size - 1, _size);
 
-	public virtual List<int> HashIndexesOf(T item, int index) => HashIndexesOf(item, index, index + 1);
+	public virtual NList<int> HashIndexesOf(T item, int index) => HashIndexesOf(item, index, index + 1);
 
-	public virtual List<int> HashIndexesOf(T item, int index, int length)
+	public virtual NList<int> HashIndexesOf(T item, int index, int length)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
-		List<int> result = [];
+		NList<int> result = [];
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
@@ -220,11 +220,11 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		return -1;
 	}
 
-	public virtual List<int> IndexesOf(T item) => IndexesOf(item, 0, _size);
+	public virtual NList<int> IndexesOf(T item) => IndexesOf(item, 0, _size);
 
-	public virtual List<int> IndexesOf(T item, int index) => IndexesOf(item, index, _size - index);
+	public virtual NList<int> IndexesOf(T item, int index) => IndexesOf(item, index, _size - index);
 
-	public virtual List<int> IndexesOf(T item, int index, int length) => IsHashSearchBetter() ? HashIndexesOf(item, index, length) : LinearIndexesOf(item, index, length);
+	public virtual NList<int> IndexesOf(T item, int index, int length) => IsHashSearchBetter() ? HashIndexesOf(item, index, length) : LinearIndexesOf(item, index, length);
 
 	private protected override int IndexOfInternal(T item, int index, int length) => uniqueElements.Length >= AnyHashIndexThreshold ? HashIndexOf(item, index, length) : LinearIndexOf(item, index, length);
 
@@ -298,11 +298,11 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		return -1;
 	}
 
-	public virtual List<int> LinearIndexesOf(T item) => LinearIndexesOf(item, _size - 1, _size);
+	public virtual NList<int> LinearIndexesOf(T item) => LinearIndexesOf(item, _size - 1, _size);
 
-	public virtual List<int> LinearIndexesOf(T item, int index) => LinearIndexesOf(item, index, index + 1);
+	public virtual NList<int> LinearIndexesOf(T item, int index) => LinearIndexesOf(item, index, index + 1);
 
-	public virtual List<int> LinearIndexesOf(T item, int index, int length)
+	public virtual NList<int> LinearIndexesOf(T item, int index, int length)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -310,7 +310,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		List<int> result = [];
+		NList<int> result = [];
 		var endIndex = index + length;
 		for (var i = index; i < endIndex; i++)
 			if (Comparer.Equals(entries[i].item, item))

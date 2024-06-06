@@ -3836,7 +3836,7 @@ public class SumList : BaseSumList<int, SumList>
 		{
 			if (Length == 0)
 				return;
-			List<int> toRemove = [];
+			NList<int> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
 			{
@@ -4531,7 +4531,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			if (Length == 0)
 				return;
-			List<int> toRemove = [];
+			NList<int> toRemove = [];
 			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
 			while (toRemove.Length != 0)
 			{
