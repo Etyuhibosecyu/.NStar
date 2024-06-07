@@ -808,6 +808,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	private protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
 	{
+		var buckets = this.buckets;
 		if (buckets != null)
 		{
 			uint collisionCount = 0;

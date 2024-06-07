@@ -53407,6 +53407,546 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = [];
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = [];
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item, i), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source)
+	{
+		ParallelHashSet<T> hs = [];
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(item, out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(comparer);
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(comparer);
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item, i), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, IEqualityComparer<T> comparer)
+	{
+		ParallelHashSet<T> hs = new(comparer);
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(item, out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item, i), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, Func<T, T, bool> equalFunction)
+	{
+		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction));
+		var length = source.Count;
+		List<T> result = new(1024);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(item, out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(function(item, i), out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		var length = source.Count;
+		List<T> result = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			if (hs.TryAdd(item, out var index))
+				result._items[index] = item;
+		});
+		result._size = hs.Length;
+		result.TrimExcess();
+		return result;
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = [];
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = [];
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item, i), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2)
+	{
+		ParallelHashSet<T> hs = [];
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(item, out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(comparer);
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(comparer);
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item, i), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, IEqualityComparer<T> comparer)
+	{
+		ParallelHashSet<T> hs = new(comparer);
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(item, out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item, i), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction)
+	{
+		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(item, out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	{
+		try
+		{
+			throw new ExperimentalException();
+		}
+		catch
+		{
+		}
+		ArgumentNullException.ThrowIfNull(function);
+		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(function(item, i), out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		var length = Math.Min(source.Count, source2.Count);
+		List<T> result = new(length);
+		List<T2> result2 = new(length);
+		Parallel.For(0, length, i =>
+		{
+			var item = source[i];
+			var item2 = source2[i];
+			if (hs.TryAdd(item, out var index))
+			{
+				result._items[index] = item;
+				result2._items[index] = item2;
+			}
+		});
+		result._size = hs.Length;
+		result2._size = hs.Length;
+		result.TrimExcess();
+		result2.TrimExcess();
+		return (result, result2);
+	}
+
 	internal static TResult[] PToArrayEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -72696,46 +73236,46 @@ public static class RedStarLinq
 	public static BitList ToBitList(this IEnumerable<byte> source) => new(source);
 	public static BitList ToBitList(this IEnumerable<int> source) => new(source);
 	public static BitList ToBitList(this IEnumerable<uint> source) => new(source);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function));
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2) where T : notnull => new(source, source2);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, IEqualityComparer<T> comparer) where T : notnull => new(source, source2, comparer);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T, bool> equalFunction) where T : notnull => new(source, source2, equalFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => new(source, source2, equalFunction, hashCodeFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source) where T : notnull => new(source.Item1, source.Item2);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, IEqualityComparer<T> comparer) where T : notnull => new(source.Item1, source.Item2, comparer);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T, bool> equalFunction) where T : notnull => new(source.Item1, source.Item2, equalFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => new(source.Item1, source.Item2, equalFunction, hashCodeFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source) where T : notnull => new(source);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, IEqualityComparer<T> comparer) where T : notnull => new(source, comparer);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, Func<T, T, bool> equalFunction) where T : notnull => new(source, equalFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => new(source, equalFunction, hashCodeFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source) where T : notnull => new(source);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, IEqualityComparer<T> comparer) where T : notnull => new(source, comparer);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction) where T : notnull => new(source, equalFunction);
-	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => new(source, equalFunction, hashCodeFunction);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, bool unordered = false) where T : notnull => new(source, source2, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source, source2, comparer, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, source2, equalFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source, source2, equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, bool unordered = false) where T : notnull => new(source.Item1, source.Item2, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source.Item1, source.Item2, comparer, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source.Item1, source.Item2, equalFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source.Item1, source.Item2, equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, bool unordered = false) where T : notnull => new(source, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source, comparer, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, equalFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<(T, T2)> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source, equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, bool unordered = false) where T : notnull => new(source, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source, comparer, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, equalFunction, unordered);
+	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source, equalFunction, hashCodeFunction, unordered);
 	public static ListHashSet<T> ToHashSet<T>(this IEnumerable<T> source) => new(source);
 	public static List<T> ToList<T>(this IEnumerable<T> source) => List<T>.ReturnOrConstruct(source);
 	public static NList<T> ToNList<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.ReturnOrConstruct(source);
@@ -74950,6 +75490,42 @@ public static class RedStarLinq
 	public static TResult[] PFillArray<TResult>(int length, Func<int, TResult> function) => List<bool>.PFillArrayEnumerable(function, length);
 	public static List<T> PFilter<T>(this G.IList<T> source, Func<T, bool> function) => List<T>.PFilterEnumerable(source, function);
 	public static List<T> PFilter<T>(this G.IList<T> source, Func<T, int, bool> function) => List<T>.PFilterEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T>(this G.IList<T> source) => List<T>.PRemoveDoublesEnumerable(source);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
+	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, comparer);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
+	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2) => List<T>.PRemoveDoublesEnumerable(source, source2);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, source2, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction, hashCodeFunction);
 	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static T[] PToArray<T>(this G.IList<T> source) => List<T>.PToArrayEnumerable(source);

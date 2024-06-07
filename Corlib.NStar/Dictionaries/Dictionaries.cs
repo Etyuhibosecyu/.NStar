@@ -84,29 +84,29 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, (IEqualityComparer<TKey>?)null) { }
+	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) : this(keyCollection, valueCollection, (IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection), comparer) { }
+	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, (IEqualityComparer<TKey>?)null) { }
+	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) : this(collection, (IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : this(collection, (IEqualityComparer<TKey>?)null) { }
+	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) : this(collection, (IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer) : this(new UnsortedDictionary<TKey, TValue>(collection), comparer) { }
+	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction) : this(collection, new EComparer<TKey>(equalFunction)) { }
+	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
+	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
 	public virtual TValue this[TKey key]
 	{
@@ -541,11 +541,11 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	private readonly List<TKey> keys;
 	private readonly List<TValue> values;
 
-	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection) => (keys, values) = (keyCollection, valueCollection).RemoveDoubles();
+	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IList<TKey> keyList && valueCollection is G.IList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
 
-	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection) => (keys, values) = collection.RemoveDoubles(x => x.Key).Break();
+	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IList<(TKey Key, TValue Value)> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break();
 
-	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) => (keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
+	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IList<KeyValuePair<TKey, TValue>> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break(x => x.Key, x => x.Value);
 
 	public virtual TValue this[TKey key] => throw new NotSupportedException();
 
