@@ -18,10 +18,6 @@
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Remove="RedStarLinq.cs~RF2c3e0cc.TMP" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\Mpir.NET\Mpir.NET.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

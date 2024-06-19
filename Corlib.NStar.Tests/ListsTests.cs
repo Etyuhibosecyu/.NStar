@@ -1052,7 +1052,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).Convert(x => x.ToString());
+		var a = new Chain(15, 10).ToList(x => x.ToString());
 		for (var i = 0; i < 1000; i++)
 		{
 			var value = a.Random(random);
@@ -2965,7 +2965,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
-		var a = new Chain(15, 10).NConvert(x => ((char, char, char))(String)x.ToString("D3"));
+		var a = new Chain(15, 10).ToNList(x => ((char, char, char))(String)x.ToString("D3"));
 		for (var i = 0; i < 1000; i++)
 		{
 			var value = a.Random(random);

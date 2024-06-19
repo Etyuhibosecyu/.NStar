@@ -40,7 +40,7 @@ public static void Main()
 }
 }
 ", new ListHashSet<string>("System.Linq.Expressions", "Microsoft.CSharp", "netstandard", "System.Runtime").UnionWith(extraAssemblies ?? []));
-		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, new[] { args }) ?? null;
+		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, [args]) ?? null;
 	}
 
 	public static byte[]? Compile(string sourceCode, G.IEnumerable<string> extraAssemblies, TextWriter? errors = null)

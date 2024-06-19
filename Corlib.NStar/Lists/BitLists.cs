@@ -1127,7 +1127,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.And(value.low);
 		else high = high != null && value.high != null
-			? high.Combine(value.high, (x, y) => x.And(y))
+			? high.Combine(value.high, (x, y) => x.And(y)).ToList()
 			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
@@ -1181,7 +1181,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Or(value.low);
 		else high = high != null && value.high != null
-			? high.Combine(value.high, (x, y) => x.Or(y))
+			? high.Combine(value.high, (x, y) => x.Or(y)).ToList()
 			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}
@@ -1210,7 +1210,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		if (!isHigh && low != null && !value.isHigh && value.low != null)
 			low.Xor(value.low);
 		else high = high != null && value.high != null
-			? high.Combine(value.high, (x, y) => x.Xor(y))
+			? high.Combine(value.high, (x, y) => x.Xor(y)).ToList()
 			: throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		return this;
 	}

@@ -13,11 +13,27 @@ public class RedStarLinqTests
 		action(a);
 		a = list.ToList().Insert(0, "XXX").GetSlice(1);
 		action(a);
+		a = list.Prepend("XXX");
+		action(a);
 		a = enumerable;
 		action(a);
 		a = enumerable2;
 		action(a);
 		a = E.SkipWhile(list, _ => random.Next(10) != -1);
+		action(a);
+	}
+
+	public static void Test2(Action<G.IReadOnlyList<string>> action)
+	{
+		G.IReadOnlyList<string> a = RedStarLinq.ToList(list);
+		action(a);
+		a = RedStarLinq.ToArray(list);
+		action(a);
+		a = E.ToList(list);
+		action(a);
+		a = list.ToList().Insert(0, "XXX").GetSlice(1);
+		action(a);
+		a = list.Prepend("XXX");
 		action(a);
 	}
 
@@ -195,18 +211,18 @@ public class RedStarLinqTests
 		{
 			var c = a.Combine(b, (x, y) => x + y);
 			var d = E.Zip(a, b, (x, y) => x + y);
-			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.Combine(b, (x, y, index) => x + y + index.ToString());
 			d = E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => x.elem + y + x.index.ToString());
-			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			var c2 = a.Combine(b);
 			var d2 = E.Zip(a, b);
-			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
 			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!).ToList());
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!).ToList());
 			G.IEnumerable<string> b2 = E.Skip(list2, 2).ToList();
 			ProcessB2(a, b, b2);
 			b2 = E.Skip(list2, 2).ToArray();
@@ -226,18 +242,73 @@ public class RedStarLinqTests
 		{
 			var c = a.Combine(b, b2, (x, y, z) => x + y + z);
 			var d = E.Select(E.Zip(a, b, b2), x => x.First + x.Second + x.Third);
-			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.Combine(b, b2, (x, y, z, index) => x + y + z + index.ToString());
 			d = E.Zip(E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => (x.elem + y, x.index)), b2, (x, y) => x.Item1 + y + x.index.ToString());
-			Assert.IsTrue(c.Equals(d));
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			var c2 = a.Combine(b, b2);
 			var d2 = E.Zip(a, b, b2);
-			Assert.IsTrue(c2.Equals(d2));
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
 			Assert.IsTrue(E.SequenceEqual(d2, c2));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, string>)null!));
-			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, int, string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, string>)null!).ToList());
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, int, string>)null!).ToList());
+		}
+	});
+
+	[TestMethod]
+	public void TestCombine2() => Test2(a =>
+	{
+		G.IReadOnlyList<string> b = E.Skip(list2, 1).ToList();
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToArray();
+		ProcessB(a, b);
+		b = E.ToList(E.Skip(list2, 1));
+		ProcessB(a, b);
+		b = E.Skip(list2, 1).ToList().Insert(0, "XXX").GetSlice(1);
+		ProcessB(a, b);
+		static void ProcessB(G.IReadOnlyList<string> a, G.IReadOnlyList<string> b)
+		{
+			var c = a.Combine(b, (x, y) => x + y);
+			var d = E.Zip(a, b, (x, y) => x + y);
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Combine(b, (x, y, index) => x + y + index.ToString());
+			d = E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => x.elem + y + x.index.ToString());
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var c2 = a.Combine(b);
+			var d2 = E.Zip(a, b);
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, string>)null!).ToList());
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, (Func<string, string, int, string>)null!).ToList());
+			G.IReadOnlyList<string> b2 = E.Skip(list2, 2).ToList();
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(list2, 2).ToArray();
+			ProcessB2(a, b, b2);
+			b2 = E.ToList(E.Skip(list2, 2));
+			ProcessB2(a, b, b2);
+			b2 = E.Skip(list2, 2).ToList().Insert(0, "XXX").GetSlice(1);
+			ProcessB2(a, b, b2);
+		}
+		static void ProcessB2(G.IReadOnlyList<string> a, G.IReadOnlyList<string> b, G.IReadOnlyList<string> b2)
+		{
+			var c = a.Combine(b, b2, (x, y, z) => x + y + z);
+			var d = E.Select(E.Zip(a, b, b2), x => x.First + x.Second + x.Third);
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			c = a.Combine(b, b2, (x, y, z, index) => x + y + z + index.ToString());
+			d = E.Zip(E.Zip(E.Select(a, (elem, index) => (elem, index)), b, (x, y) => (x.elem + y, x.index)), b2, (x, y) => x.Item1 + y + x.index.ToString());
+			Assert.IsTrue(RedStarLinq.Equals(c, d));
+			Assert.IsTrue(E.SequenceEqual(d, c));
+			var c2 = a.Combine(b, b2);
+			var d2 = E.Zip(a, b, b2);
+			Assert.IsTrue(RedStarLinq.Equals(c2, d2));
+			Assert.IsTrue(E.SequenceEqual(d2, c2));
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, string>)null!).ToList());
+			Assert.ThrowsException<ArgumentNullException>(() => a.Combine(b, b2, (Func<string, string, string, int, string>)null!).ToList());
 		}
 	});
 
@@ -358,6 +429,19 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestConvert2() => Test2(a =>
+	{
+		var c = a.Convert(x => x[1..]);
+		var d = E.Select(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, string>)null!));
+		c = a.Convert((x, index) => x[1..] + index.ToString("D2"));
+		d = E.Select(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Convert((Func<string, int, string>)null!));
+	});
+
+	[TestMethod]
 	public void TestConvertAndJoin() => Test(a =>
 	{
 		var c = a.ConvertAndJoin(x => x[1..]);
@@ -443,34 +527,68 @@ public class RedStarLinqTests
 	{
 		var c = a.Filter(x => x.Length > 0);
 		var d = E.Where(a, x => x.Length > 0);
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		c = a.Filter(x => x.StartsWith('#'));
 		d = E.Where(a, x => x.StartsWith('#'));
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		c = a.Filter(x => x.StartsWith('M'));
 		d = E.Where(a, x => x.StartsWith('M'));
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, bool>)null!));
 		c = a.Filter((x, index) => x.Length > 0 && index >= 0);
 		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0), x => x.elem);
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		c = a.Filter((x, index) => index < 0);
 		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0), x => x.elem);
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		c = a.Filter((x, index) => x.StartsWith('M') && index > 0);
 		d = E.Select(E.Where(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0), x => x.elem);
-		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
 	});
 
 	[TestMethod]
 	public void TestPairs() => Test(a =>
+	{
+		var c = a.Pairs((x, y) => x + y);
+		var d = E.Zip(a, E.Skip(a, 1), (x, y) => x + y);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Pairs((x, y, index) => x + y + index.ToString());
+		d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 1), (x, y) => x.elem + y + x.index.ToString());
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		var c2 = a.Pairs();
+		var d2 = E.Zip(a, E.Skip(a, 1), (x, y) => (x, y));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		c = a.Pairs((x, y) => x + y, 3);
+		d = E.Zip(a, E.Skip(a, 3), (x, y) => x + y);
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c = a.Pairs((x, y, index) => x + y + index.ToString(), 3);
+		d = E.Zip(E.Select(a, (elem, index) => (elem, index)), E.Skip(a, 3), (x, y) => x.elem + y + x.index.ToString());
+		Assert.IsTrue(c.Equals(d));
+		Assert.IsTrue(E.SequenceEqual(d, c));
+		c2 = a.Pairs(3);
+		d2 = E.Zip(a, E.Skip(a, 3), (x, y) => (x, y));
+		Assert.IsTrue(c2.Equals(d2));
+		Assert.IsTrue(E.SequenceEqual(d2, c2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.Pairs((Func<string, string, int, string>)null!));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y) => x + y, 0));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs((x, y, index) => x + y + index.ToString(), 0));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.Pairs(0));
+	});
+
+	[TestMethod]
+	public void TestPairs2() => Test2(a =>
 	{
 		var c = a.Pairs((x, y) => x + y);
 		var d = E.Zip(a, E.Skip(a, 1), (x, y) => x + y);
@@ -794,6 +912,64 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestToArray()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
+			ProcessA(original, 1234567890);
+			var original2 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (long)random.Next() << 31 | (uint)random.Next()));
+			ProcessA(original2, 1234567890123456789);
+			var original3 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next().ToString("D3")));
+			ProcessA(original3, "XXX");
+			var original4 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (((MpzT)random.Next() << 31 | random.Next()) << 31 | random.Next()) << 31 | random.Next()));
+			ProcessA(original4, 12345678901234567890);
+			var original5 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (random.Next(), random.Next())));
+			ProcessA(original5, (1234567890, 1234567890));
+			var original6 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => new BitList(new[] { random.Next(), random.Next() })));
+			ProcessA(original6, new BitList([1234567890, 1234567890]));
+		}
+		static void ProcessA<T>(ImmutableArray<T> original, T @default)
+		{
+			G.IEnumerable<T> a = new List<T>(original);
+			ProcessA2(a);
+			a = E.ToArray(original);
+			ProcessA2(a);
+			a = E.ToList(original);
+			ProcessA2(a);
+			a = new List<T>(original).Insert(0, @default).GetSlice(1);
+			ProcessA2(a);
+			a = E.Select(original, x => x);
+			ProcessA2(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA2(a);
+		}
+		static void ProcessA2<T>(G.IEnumerable<T> a)
+		{
+			var b = new List<T>(a);
+			var c = a.ToArray();
+			var d = E.ToArray(a);
+			Assert.IsTrue(RedStarLinq.Equals(b, c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(RedStarLinq.Equals(b, d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
+	}
+
+	[TestMethod]
+	public void TestToArray2() => Test2(a =>
+	{
+		var c = a.ToArray(x => x[1..]);
+		var d = E.ToArray(E.Select(a, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToArray((Func<string, string>)null!));
+		c = a.ToArray((x, index) => x[1..] + index.ToString("D2"));
+		d = E.ToArray(E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToArray((Func<string, int, string>)null!));
+	});
+
+	[TestMethod]
 	public void TestToList()
 	{
 		for (var i = 0; i < 1000; i++)
@@ -837,6 +1013,19 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d, b));
 		}
 	}
+
+	[TestMethod]
+	public void TestToList2() => Test2(a =>
+	{
+		var c = a.ToList(x => x[1..]);
+		var d = E.ToList(E.Select(a, x => x[1..]));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToList((Func<string, string>)null!));
+		c = a.ToList((x, index) => x[1..] + index.ToString("D2"));
+		d = E.ToList(E.Select(a, (x, index) => x[1..] + index.ToString("D2")));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToList((Func<string, int, string>)null!));
+	});
 
 	[TestMethod]
 	public void TestToNList()
@@ -1152,5 +1341,18 @@ public class RedStarLinqTestsN
 		var d2 = c2.ToList().Sort();
 		var e2 = E.Order(a);
 		Assert.IsTrue(E.SequenceEqual(d2, e2));
+	});
+
+	[TestMethod]
+	public void TestToNList() => Test(a =>
+	{
+		var c = a.ToNList(x => (x.Item2, x.Item3, (char)(x.Item3 + 123)));
+		var d = E.ToList(E.Select(a, x => (x.Item2, x.Item3, (char)(x.Item3 + 123))));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNList((Func<(char, char, char), (char, char, char)>)null!));
+		c = a.ToNList((x, index) => (x.Item2, x.Item3, (char)index));
+		d = E.ToList(E.Select(a, (x, index) => (x.Item2, x.Item3, (char)index)));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNList((Func<(char, char, char), int, (char, char, char)>)null!));
 	});
 }

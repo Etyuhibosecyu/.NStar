@@ -4,53 +4,6 @@ namespace Corlib.NStar;
 
 public partial class List<T, TCertain>
 {
-	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			for (var i = 0; i < length; i++)
-				if (!function(list._items[i]))
-					return false;
-			return true;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-				if (!function(array[i]))
-					return false;
-			return true;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-				if (!function(list2[i]))
-					return false;
-			return true;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-				if (!function(list3[i]))
-					return false;
-			return true;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!function(item))
-					return false;
-				i++;
-			}
-			return true;
-		}
-	}
-
 	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -107,61 +60,6 @@ public partial class List<T, TCertain>
 				i++;
 			}
 			return true;
-		}
-	}
-
-	internal static bool AnyEnumerable(IEnumerable<T> source) => source switch
-	{
-		List<T> list => list._size != 0,
-		T[] array => array.Length != 0,
-		G.IList<T> list2 => list2.Count != 0,
-		_ => source.GetEnumerator().MoveNext()
-	};
-
-	internal static bool AnyEnumerable(IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			for (var i = 0; i < length; i++)
-				if (function(list._items[i]))
-					return true;
-			return false;
-		}
-		else if (source is T[] array)
-		{
-			for (var i = 0; i < array.Length; i++)
-				if (function(array[i]))
-					return true;
-			return false;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			for (var i = 0; i < length; i++)
-				if (function(list2[i]))
-					return true;
-			return false;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			for (var i = 0; i < length; i++)
-				if (function(list3[i]))
-					return true;
-			return false;
-		}
-		else
-		{
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (function(item))
-					return true;
-				i++;
-			}
-			return false;
 		}
 	}
 
@@ -223,6 +121,64 @@ public partial class List<T, TCertain>
 			return false;
 		}
 	}
+
+	private class AppendList : BaseIndexable<T, AppendList>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly T element;
+
+		public AppendList()
+		{
+			source = [];
+			element = default!;
+		}
+
+		public AppendList(G.IReadOnlyList<T> source, T element)
+		{
+			this.source = source;
+			this.element = element;
+			_size = source.Count + 1;
+		}
+
+		public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override T GetInternal(int index, bool invoke = true) => index == source.Count ? element : source[index];
+
+		private protected override AppendList GetRangeInternal(int index, int length) => index == _size - length ? new(source.GetROLSlice(index, length - 1), element) : new(source.GetROLSlice(index, length - 1), source[index + length - 1]);
+
+		private protected override Slice<T> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(T item, int index, int length)
+		{
+			for (var i = index; i < Math.Min(index + length, source.Count); i++)
+				if (source[i - 1]?.Equals(item) ?? item == null)
+					return i;
+			if (index == _size - length && (element?.Equals(item) ?? item == null))
+				return source.Count;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(T item, int index, int length)
+		{
+			if (index == source.Count && (element?.Equals(item) ?? item == null))
+				return 0;
+			var endIndex = index - length + 1;
+			for (var i = Math.Min(index, source.Count - 1); i >= endIndex; i++)
+				if (source[i - 1]?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+	}
+
+	internal static Slice<T> AppendEnumerable(G.IReadOnlyList<T> source, T element) => new AppendList(source, element).GetROLSlice();
 
 	internal static (List<TResult>, List<TResult2>) BreakEnumerable<TResult, TResult2>(IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
@@ -1213,227 +1169,426 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function)
+	private class CombineList<T2, TResult> : BaseIndexable<TResult, CombineList<T2, TResult>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+		private readonly Func<T, T2, TResult> function;
+
+		public CombineList()
+		{
+			source = [];
+			source2 = [];
+			function = (x, y) => default!;
+		}
+
+		public CombineList(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.source2 = source2;
+			this.function = function;
+			_size = Math.Min(source.Count, source2.Count);
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index]);
+
+		private protected override CombineList<T2, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if (function(source[i], source2[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i], source2[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+	}
+
+	private class CombineListInt<T2, TResult> : BaseIndexable<TResult, CombineListInt<T2, TResult>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+		private readonly Func<T, T2, int, TResult> function;
+
+		public CombineListInt()
+		{
+			source = [];
+			source2 = [];
+			function = (x, y, index) => default!;
+		}
+
+		public CombineListInt(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.source2 = source2;
+			this.function = function;
+			_size = Math.Min(source.Count, source2.Count);
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], index);
+
+		private protected override CombineListInt<T2, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if (function(source[i], source2[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i], source2[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+	}
+
+	private class CombineListPure<T2> : BaseIndexable<(T, T2), CombineListPure<T2>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+
+		public CombineListPure()
+		{
+			source = [];
+			source2 = [];
+		}
+
+		public CombineListPure(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			this.source = source;
+			this.source2 = source2;
+			_size = Math.Min(source.Count, source2.Count);
+		}
+
+		public override Span<(T, T2)> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, (T, T2)[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override (T, T2) GetInternal(int index, bool invoke = true) => (source[index], source2[index]);
+
+		private protected override CombineListPure<T2> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length));
+
+		private protected override Slice<(T, T2)> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal((T, T2) item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null))
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal((T, T2) item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null))
+					return i;
+			return -1;
+		}
+	}
+
+	private class CombineList<T2, T3, TResult> : BaseIndexable<TResult, CombineList<T2, T3, TResult>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+		private readonly G.IReadOnlyList<T3> source3;
+		private readonly Func<T, T2, T3, TResult> function;
+
+		public CombineList()
+		{
+			source = [];
+			source2 = [];
+			source3 = [];
+			function = (x, y, z) => default!;
+		}
+
+		public CombineList(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			ArgumentNullException.ThrowIfNull(source3);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.source2 = source2;
+			this.source3 = source3;
+			this.function = function;
+			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], source3[index]);
+
+		private protected override CombineList<T2, T3, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i], source2[i], source3[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+	}
+
+	private class CombineListInt<T2, T3, TResult> : BaseIndexable<TResult, CombineListInt<T2, T3, TResult>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+		private readonly G.IReadOnlyList<T3> source3;
+		private readonly Func<T, T2, T3, int, TResult> function;
+
+		public CombineListInt()
+		{
+			source = [];
+			source2 = [];
+			source3 = [];
+			function = (x, y, z, index) => default!;
+		}
+
+		public CombineListInt(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			ArgumentNullException.ThrowIfNull(source3);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.source2 = source2;
+			this.source3 = source3;
+			this.function = function;
+			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index], source2[index], source3[index], index);
+
+		private protected override CombineListInt<T2, T3, TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i], source2[i], source3[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+	}
+
+	private class CombineListPure<T2, T3> : BaseIndexable<(T, T2, T3), CombineListPure<T2, T3>>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly G.IReadOnlyList<T2> source2;
+		private readonly G.IReadOnlyList<T3> source3;
+
+		public CombineListPure()
+		{
+			source = [];
+			source2 = [];
+			source3 = [];
+		}
+
+		public CombineListPure(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(source2);
+			ArgumentNullException.ThrowIfNull(source3);
+			this.source = source;
+			this.source2 = source2;
+			this.source3 = source3;
+			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+		}
+
+		public override Span<(T, T2, T3)> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, (T, T2, T3)[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override (T, T2, T3) GetInternal(int index, bool invoke = true) => (source[index], source2[index], source3[index]);
+
+		private protected override CombineListPure<T2, T3> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), source2.GetROLSlice(index, length), source3.GetROLSlice(index, length));
+
+		private protected override Slice<(T, T2, T3)> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal((T, T2, T3) item, int index, int length)
+		{
+			for (var i = index; i < index + length; i++)
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 == null))
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal((T, T2, T3) item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if ((source[i]?.Equals(item.Item1) ?? item.Item1 == null) && (source2[i]?.Equals(item.Item2) ?? item.Item2 == null) && (source3[i]?.Equals(item.Item3) ?? item.Item3 == null))
+					return i;
+			return -1;
+		}
+	}
+
+	internal static Slice<TResult> CombineEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function) => new CombineList<T2, TResult>(source, source2, function).GetSlice();
+
+	internal static Slice<TResult> CombineEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function) => new CombineListInt<T2, TResult>(source, source2, function).GetSlice();
+
+	internal static Slice<(T, T2)> CombineEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2) => new CombineListPure<T2>(source, source2).GetSlice();
+
+	internal static Slice<TResult> CombineEnumerable<T2, T3, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function) => new CombineList<T2, T3, TResult>(source, source2, source3, function).GetSlice();
+
+	internal static Slice<TResult> CombineEnumerable<T2, T3, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function) => new CombineListInt<T2, T3, TResult>(source, source2, source3, function).GetSlice();
+
+	internal static Slice<(T, T2, T3)> CombineEnumerable<T2, T3>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3) => new CombineListPure<T2, T3>(source, source2, source3).GetSlice();
+
+	internal static IEnumerable<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
 			var length = Math.Min(list._size, list2._size);
-			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list._items[i];
 				var item2 = list2._items[i];
-				result._items[i] = function(item, item2);
+				yield return function(item, item2, i);
 			}
-			result._size = length;
-			return result;
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
 			var length = Math.Min(array.Length, array2.Length);
-			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = array[i];
 				var item2 = array2[i];
-				result._items[i] = function(item, item2);
+				yield return function(item, item2, i);
 			}
-			result._size = length;
-			return result;
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
 			var length = Math.Min(list2_.Count, list2_2.Count);
-			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
 				var item2 = list2_2[i];
-				result._items[i] = function(item, item2);
+				yield return function(item, item2, i);
 			}
-			result._size = length;
-			return result;
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
 			var length = Math.Min(list3_.Count, list3_2.Count);
-			List<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
 				var item2 = list3_2[i];
-				result._items[i] = function(item, item2);
+				yield return function(item, item2, i);
 			}
-			result._size = length;
-			return result;
 		}
 		else
 		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
 			using var en = source.GetEnumerator();
 			using var en2 = source2.GetEnumerator();
 			var i = 0;
 			while (en.MoveNext() && en2.MoveNext())
 			{
-				result.EnsureCapacity(i + 1);
 				var item = en.Current;
 				var item2 = en2.Current;
-				result._items[i] = function(item, item2);
+				yield return function(item, item2, i);
 				i++;
 			}
-			result._size = i;
-			return result;
-		}
-	}
-
-	internal static List<TResult> CombineEnumerable<T2, TResult>(IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function)
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Math.Min(list._size, list2._size);
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				var item2 = list2._items[i];
-				result._items[i] = function(item, item2, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Math.Min(array.Length, array2.Length);
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				result._items[i] = function(item, item2, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
-		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				result._items[i] = function(item, item2, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
-		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				result._items[i] = function(item, item2, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
-			using var en = source.GetEnumerator();
-			using var en2 = source2.GetEnumerator();
-			var i = 0;
-			while (en.MoveNext() && en2.MoveNext())
-			{
-				result.EnsureCapacity(i + 1);
-				var item = en.Current;
-				var item2 = en2.Current;
-				result._items[i] = function(item, item2, i);
-				i++;
-			}
-			result._size = i;
-			return result;
-		}
-	}
-
-	internal static List<(T, T2)> CombineEnumerable<T2>(IEnumerable<T> source, IEnumerable<T2> source2)
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		if (source is List<T> list && source2 is List<T2> list2)
-		{
-			var length = Math.Min(list._size, list2._size);
-			List<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				var item2 = list2._items[i];
-				result._items[i] = (item, item2);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2)
-		{
-			var length = Math.Min(array.Length, array2.Length);
-			List<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				result._items[i] = (item, item2);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
-		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
-			List<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				result._items[i] = (item, item2);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
-		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
-			List<(T, T2)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				result._items[i] = (item, item2);
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<(T, T2)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : 1024);
-			using var en = source.GetEnumerator();
-			using var en2 = source2.GetEnumerator();
-			var i = 0;
-			while (en.MoveNext() && en2.MoveNext())
-			{
-				result.EnsureCapacity(i + 1);
-				var item = en.Current;
-				var item2 = en2.Current;
-				result._items[i] = (item, item2);
-				i++;
-			}
-			result._size = i;
-			return result;
 		}
 	}
 
@@ -1594,87 +1749,6 @@ public partial class List<T, TCertain>
 				var item2 = en2.Current;
 				var item3 = en3.Current;
 				result._items[i] = function(item, item2, item3, i);
-				i++;
-			}
-			result._size = i;
-			return result;
-		}
-	}
-
-	internal static List<(T, T2, T3)> CombineEnumerable<T2, T3>(IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3)
-	{
-		ArgumentNullException.ThrowIfNull(source2);
-		ArgumentNullException.ThrowIfNull(source3);
-		if (source is List<T> list && source2 is List<T2> list2 && source3 is List<T3> list3)
-		{
-			var length = MinEnumerable(new[] { list._size, list3._size, list3._size }.AsSpan());
-			List<(T, T2, T3)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				var item2 = list2._items[i];
-				var item3 = list3._items[i];
-				result._items[i] = (item, item2, item3);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is T[] array && source2 is T2[] array2 && source3 is T3[] array3)
-		{
-			var length = MinEnumerable(new[] { array.Length, array2.Length, array3.Length }.AsSpan());
-			List<(T, T2, T3)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = array[i];
-				var item2 = array2[i];
-				var item3 = array3[i];
-				result._items[i] = (item, item2, item3);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2 && source3 is G.IList<T3> list2_3)
-		{
-			var length = MinEnumerable(new[] { list2_.Count, list2_2.Count, list2_3.Count }.AsSpan());
-			List<(T, T2, T3)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2_[i];
-				var item2 = list2_2[i];
-				var item3 = list2_3[i];
-				result._items[i] = (item, item2, item3);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2 && source3 is G.IReadOnlyList<T3> list3_3)
-		{
-			var length = MinEnumerable(new[] { list3_.Count, list3_2.Count, list3_3.Count }.AsSpan());
-			List<(T, T2, T3)> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3_[i];
-				var item2 = list3_2[i];
-				var item3 = list3_3[i];
-				result._items[i] = (item, item2, item3);
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<(T, T2, T3)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : TryGetLengthEasilyEnumerable(source2, out length) ? length : TryGetLengthEasilyEnumerable(source3, out length) ? length : 1024);
-			using var en = source.GetEnumerator();
-			using var en2 = source2.GetEnumerator();
-			using var en3 = source3.GetEnumerator();
-			var i = 0;
-			while (en.MoveNext() && en2.MoveNext() && en3.MoveNext())
-			{
-				result.EnsureCapacity(i + 1);
-				var item = en.Current;
-				var item2 = en2.Current;
-				var item3 = en3.Current;
-				result._items[i] = (item, item2, item3);
 				i++;
 			}
 			result._size = i;
@@ -1929,231 +2003,117 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
+	private class ConvertList<TResult> : BaseIndexable<TResult, ConvertList<TResult>>
 	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
+		private readonly G.IReadOnlyList<T> source;
+		private readonly Func<T, TResult> function;
+
+		public ConvertList()
 		{
-			var length = list._size;
-			List<TResult> result = new(length);
+			source = [];
+			function = x => default!;
+		}
+
+		public ConvertList(G.IReadOnlyList<T> source, Func<T, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.function = function;
+			_size = source.Count;
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
 			for (var i = 0; i < length; i++)
-				result._items[i] = function(list._items[i]);
-			result._size = length;
-			return result;
+				array[arrayIndex++] = GetInternal(index++);
 		}
-		else if (source is T[] array)
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index]);
+
+		private protected override ConvertList<TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
 		{
-			List<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-				result._items[i] = function(array[i]);
-			result._size = array.Length;
-			return result;
+			for (var i = index; i < index + length; i++)
+				if (function(source[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
-		else if (source is G.IList<T> list2)
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
-			var length = list2.Count;
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-				result._items[i] = function(list2[i]);
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-				result._items[i] = function(list3[i]);
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i >= 32 && (i & i - 1) == 0)
-					result.EnsureCapacity(i + 1);
-				result._items[i] = function(item);
-				i++;
-			}
-			result._size = i;
-			return result;
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i])?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
 	}
 
-	internal static List<TResult> ConvertEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
+	private class ConvertListInt<TResult> : BaseIndexable<TResult, ConvertListInt<TResult>>
 	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
+		private readonly G.IReadOnlyList<T> source;
+		private readonly Func<T, int, TResult> function;
+
+		public ConvertListInt()
 		{
-			var length = list._size;
-			List<TResult> result = new(length);
+			source = [];
+			function = (x, index) => default!;
+		}
+
+		public ConvertListInt(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
+		{
+			ArgumentNullException.ThrowIfNull(source);
+			ArgumentNullException.ThrowIfNull(function);
+			this.source = source;
+			this.function = function;
+			_size = source.Count;
+		}
+
+		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, TResult[] array, int arrayIndex, int length)
+		{
 			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
+				array[arrayIndex++] = GetInternal(index++);
 		}
-		else if (source is T[] array)
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override TResult GetInternal(int index, bool invoke = true) => function(source[index], index);
+
+		private protected override ConvertListInt<TResult> GetRangeInternal(int index, int length) => new(source.GetROLSlice(index, length), function);
+
+		private protected override Slice<TResult> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(TResult item, int index, int length)
 		{
-			List<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = array.Length;
-			return result;
+			for (var i = index; i < index + length; i++)
+				if (function(source[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
-		else if (source is G.IList<T> list2)
+
+		private protected override int LastIndexOfInternal(TResult item, int index, int length)
 		{
-			var length = list2.Count;
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (i >= 32 && (i & i - 1) == 0)
-					result.EnsureCapacity(i + 1);
-				result._items[i] = function(item, i);
-				i++;
-			}
-			result._size = i;
-			return result;
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (function(source[i], i)?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
 	}
 
-	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(IEnumerable<T> source, Func<T, IEnumerable<TResult>> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-				result.AddRange(function(list._items[i]));
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-				result.AddRange(function(array[i]));
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-				result.AddRange(function(list2[i]));
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-				result.AddRange(function(list3[i]));
-			return result;
-		}
-		else
-		{
-			List<TResult> result = new(1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.AddRange(function(item));
-				i++;
-			}
-			return result;
-		}
-	}
+	internal static Slice<TResult> ConvertEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function) => new ConvertList<TResult>(source, function).GetSlice();
 
-	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(IEnumerable<T> source, Func<T, int, IEnumerable<TResult>> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				result.AddRange(function(item, i));
-			}
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result.AddRange(function(item, i));
-			}
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result.AddRange(function(item, i));
-			}
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<TResult> result = new(1024);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result.AddRange(function(item, i));
-			}
-			return result;
-		}
-		else
-		{
-			List<TResult> result = new(1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result.AddRange(function(item, i));
-				i++;
-			}
-			return result;
-		}
-	}
+	internal static Slice<TResult> ConvertEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function) => new ConvertListInt<TResult>(source, function).GetSlice();
 
 	internal static int CountEnumerable(IEnumerable<T> source, Func<T, bool> function)
 	{
@@ -2575,144 +2535,6 @@ public partial class List<T, TCertain>
 		for (var i = 0; i < length; i++)
 			result[i] = function(i);
 		return result;
-	}
-
-	internal static List<T> FilterEnumerable(IEnumerable<T> source, Func<T, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(array.Length / 2);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (function(item))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (function(item))
-					result.Add(item);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	internal static List<T> FilterEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<T> result = new(array.Length / 2);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<T> result = new(length / 2);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (function(item, i))
-					result.Add(item);
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length / 2 : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (function(item, i))
-					result.Add(item);
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
 	}
 
 	internal static T? FindEnumerable(IEnumerable<T> source, Func<T, bool> function)
@@ -26369,19 +26191,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -26392,7 +26214,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 	}
@@ -26403,19 +26225,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -26426,7 +26248,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<decimal>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 	}
@@ -26437,19 +26259,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -26460,7 +26282,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 	}
@@ -26471,19 +26293,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -26494,7 +26316,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<double>.IndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 	}
@@ -26505,21 +26327,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
@@ -26532,7 +26354,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
@@ -26544,21 +26366,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
@@ -26571,7 +26393,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
@@ -26583,21 +26405,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
@@ -26610,7 +26432,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
@@ -26622,21 +26444,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
@@ -26649,7 +26471,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
@@ -26661,21 +26483,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
@@ -26688,7 +26510,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
@@ -26700,21 +26522,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
@@ -26727,7 +26549,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
@@ -26739,21 +26561,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
@@ -26766,7 +26588,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
@@ -26778,21 +26600,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
@@ -26805,7 +26627,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
@@ -26965,19 +26787,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -26988,7 +26810,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -26999,19 +26821,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27022,7 +26844,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27033,19 +26855,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27056,7 +26878,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27067,19 +26889,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27090,7 +26912,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27101,19 +26923,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27124,7 +26946,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27135,19 +26957,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27158,7 +26980,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27169,19 +26991,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27192,7 +27014,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27203,19 +27025,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27226,7 +27048,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27237,19 +27059,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27260,7 +27082,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27271,19 +27093,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27294,7 +27116,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27305,19 +27127,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27328,7 +27150,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -27339,19 +27161,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -27362,7 +27184,7 @@ public partial class List<T, TCertain>
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToListEnumerable(source, function);
 			return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 	}
@@ -31978,19 +31800,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32009,19 +31831,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32040,19 +31862,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32071,19 +31893,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.LastIndexOfEnumerable(list_, NList<bool>.MeanEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32102,21 +31924,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32137,21 +31959,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32172,21 +31994,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32207,21 +32029,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32242,21 +32064,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32277,21 +32099,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32312,21 +32134,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32347,21 +32169,21 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
@@ -32508,19 +32330,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32539,19 +32361,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32570,19 +32392,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32601,19 +32423,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32632,19 +32454,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32663,19 +32485,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32694,19 +32516,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32725,19 +32547,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32756,19 +32578,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32787,19 +32609,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32818,19 +32640,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -32849,19 +32671,19 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToListEnumerable(list, function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToListEnumerable(array.AsSpan(), function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ConvertEnumerable(list2.GetSlice(), function);
 			return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T> list3)
@@ -36703,25 +36525,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static decimal MedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
@@ -36730,25 +36552,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, double> function)
@@ -36757,25 +36579,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
@@ -36784,25 +36606,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int> function)
@@ -36811,25 +36633,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
@@ -36838,25 +36660,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
@@ -36865,25 +36687,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
@@ -36892,25 +36714,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, long> function)
@@ -36919,25 +36741,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
@@ -36946,25 +36768,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
@@ -36973,25 +36795,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
@@ -37000,25 +36822,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? 0 : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? 0 : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? 0 : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? 0 : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? 0 : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? 0 : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? 0 : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ConvertEnumerable(source, function), out var col).Length == 0 ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
 	}
 
 	internal static decimal MedianEnumerable(IEnumerable<decimal> source)
@@ -37093,25 +36915,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? default : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? default : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? default : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? default : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? default : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else return TryGetLengthEasilyEnumerable(source, out var length)
-			? length == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(length - 1) / 2]
+			? length == 0 ? default : ToListEnumerable(source, function).Sort()._items[(length - 1) / 2]
 			: MedianEnumerable(new List<T>(source), function);
 	}
 
@@ -37121,25 +36943,25 @@ public partial class List<T, TCertain>
 		if (source is List<T> list)
 		{
 			var length = list._size;
-			return list._size == 0 ? default : ConvertEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
+			return list._size == 0 ? default : ToListEnumerable(list, function).Sort()._items[(list._size - 1) / 2];
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			return array.Length == 0 ? default : ConvertEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
+			return array.Length == 0 ? default : ToListEnumerable(array.AsSpan(), function).Sort()._items[(array.Length - 1) / 2];
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			return list2.Count == 0 ? default : ConvertEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
+			return list2.Count == 0 ? default : ToListEnumerable(list2, function).Sort()._items[(list2.Count - 1) / 2];
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			return list3.Count == 0 ? default : ConvertEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
+			return list3.Count == 0 ? default : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else return TryGetLengthEasilyEnumerable(source, out var length)
-			? length == 0 ? default : ConvertEnumerable(source, function).Sort()._items[(length - 1) / 2]
+			? length == 0 ? default : ToListEnumerable(source, function).Sort()._items[(length - 1) / 2]
 			: MedianEnumerable(new List<T>(source), function);
 	}
 
@@ -38641,6 +38463,12 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
+	internal static Slice<TResult> PairsEnumerable<TResult>(G.IList<T> source, Func<T, T, TResult> function, int offset = 1) => new CombineList<T, TResult>(source.GetSlice(), source.GetSlice(offset), function).GetSlice();
+
+	internal static Slice<TResult> PairsEnumerable<TResult>(G.IList<T> source, Func<T, T, int, TResult> function, int offset = 1) => new CombineListInt<T, TResult>(source.GetSlice(), source.GetSlice(offset), function).GetSlice();
+
+	internal static Slice<(T, T)> PairsEnumerable(G.IList<T> source, int offset = 1) => new CombineListPure<T>(source.GetSlice(), source.GetSlice(offset)).GetSlice();
+
 	internal static List<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -38904,6 +38732,64 @@ public partial class List<T, TCertain>
 			return result;
 		}
 	}
+
+	private class PrependList : BaseIndexable<T, PrependList>
+	{
+		private readonly G.IReadOnlyList<T> source;
+		private readonly T element;
+
+		public PrependList()
+		{
+			source = [];
+			element = default!;
+		}
+
+		public PrependList(G.IReadOnlyList<T> source, T element)
+		{
+			this.source = source;
+			this.element = element;
+			_size = source.Count + 1;
+		}
+
+		public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+		{
+			for (var i = 0; i < length; i++)
+				array[arrayIndex++] = GetInternal(index++);
+		}
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override T GetInternal(int index, bool invoke = true) => index == 0 ? element : source[index - 1];
+
+		private protected override PrependList GetRangeInternal(int index, int length) => index == 0 ? new(source.GetROLSlice(0, length - 1), element) : new(source.GetROLSlice(index, length - 1), source[index - 1]);
+
+		private protected override Slice<T> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(T item, int index, int length)
+		{
+			if (index == 0 && (element?.Equals(item) ?? item == null))
+				return 0;
+			for (var i = Math.Max(index, 1); i < index + length; i++)
+				if (source[i - 1]?.Equals(item) ?? item == null)
+					return i;
+			return -1;
+		}
+
+		private protected override int LastIndexOfInternal(T item, int index, int length)
+		{
+			var endIndex = index - length + 1;
+			for (var i = index; i >= Math.Max(endIndex, 1); i++)
+				if (source[i - 1]?.Equals(item) ?? item == null)
+					return i;
+			if (endIndex == 0 && (element?.Equals(item) ?? item == null))
+				return 0;
+			return -1;
+		}
+	}
+
+	internal static Slice<T> PrependEnumerable(G.IReadOnlyList<T> source, T element) => new PrependList(source, element).GetROLSlice();
 
 	internal static T? ProgressionEnumerable(IEnumerable<T> source, Func<T, T, T> function)
 	{
@@ -43828,6 +43714,126 @@ public partial class List<T, TCertain>
 			return new List<T>(source).ToArray();
 	}
 
+	internal static List<TResult> ToListEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list._items[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+				result._items[i] = function(array[i]);
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list2[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list3[i]);
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i >= 32 && (i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static List<TResult> ToListEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			List<TResult> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 32);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (i >= 32 && (i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item, i);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
 	internal static bool TryGetLengthEasilyEnumerable(IEnumerable<T> source, out int length)
 	{
 		try
@@ -44320,7 +44326,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
+	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
@@ -44331,7 +44337,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> ConvertEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
+	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
@@ -49664,7 +49670,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<decimal>.IndexOfEnumerable(list_, value2) : -1;
@@ -49674,7 +49680,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<decimal>.IndexOfEnumerable(list_, value2) : -1;
@@ -49684,7 +49690,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<double>.IndexOfEnumerable(list_, value2) : -1;
@@ -49694,7 +49700,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<double>.IndexOfEnumerable(list_, value2) : -1;
@@ -49704,7 +49710,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<int>.IndexOfEnumerable(list_, value);
 	}
@@ -49713,7 +49719,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<int>.IndexOfEnumerable(list_, value);
 	}
@@ -49722,7 +49728,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<uint>.IndexOfEnumerable(list_, value);
 	}
@@ -49731,7 +49737,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<uint>.IndexOfEnumerable(list_, value);
 	}
@@ -49740,7 +49746,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return List<long>.IndexOfEnumerable(list_, value);
 	}
@@ -49749,7 +49755,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return List<long>.IndexOfEnumerable(list_, value);
 	}
@@ -49758,7 +49764,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.SumEnumerable(list_) / (MpzT)list_.Length;
 		return List<MpzT>.IndexOfEnumerable(list_, value);
 	}
@@ -49767,7 +49773,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.SumEnumerable(list_) / (MpzT)list_.Length;
 		return List<MpzT>.IndexOfEnumerable(list_, value);
 	}
@@ -49814,7 +49820,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49822,7 +49828,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<decimal>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49830,7 +49836,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49838,7 +49844,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<double>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49846,7 +49852,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49854,7 +49860,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<int>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49862,7 +49868,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49870,7 +49876,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<uint>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49878,7 +49884,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49886,7 +49892,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<long>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49894,7 +49900,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -49902,7 +49908,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<MpzT>.IndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -50980,7 +50986,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<decimal>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -50990,7 +50996,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<decimal>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -51000,7 +51006,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<double>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -51010,7 +51016,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.MeanEnumerable(list_);
 		var value2 = value;
 		return value == value2 ? List<double>.LastIndexOfEnumerable(list_, value2) : -1;
@@ -51020,7 +51026,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51029,7 +51035,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51038,7 +51044,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51047,7 +51053,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51056,7 +51062,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51065,7 +51071,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51074,7 +51080,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.SumEnumerable(list_) / (MpzT)list_.Length;
 		return List<MpzT>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51083,7 +51089,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		var value = NList<bool>.SumEnumerable(list_) / (MpzT)list_.Length;
 		return List<MpzT>.LastIndexOfEnumerable(list_, value);
 	}
@@ -51130,7 +51136,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51138,7 +51144,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<decimal>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51146,7 +51152,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51154,7 +51160,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<double>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51162,7 +51168,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51170,7 +51176,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<int>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51178,7 +51184,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51186,7 +51192,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<uint>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51194,7 +51200,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51202,7 +51208,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<long>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51210,7 +51216,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -51218,7 +51224,7 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToListEnumerable(source, function);
 		return List<MpzT>.LastIndexOfEnumerable(list_, MedianEnumerable(list_));
 	}
 
@@ -52154,51 +52160,51 @@ public partial class List<T, TCertain>
 
 	internal static decimal MedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static decimal MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static double MedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static double MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static int MedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static int MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static uint MedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static uint MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static long MedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static long MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? 0 : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? 0 : ConvertEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
 
 	internal static decimal MedianEnumerable(ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new NList<decimal>(source).Sort()[(source.Length - 1) / 2];
 
@@ -55787,173 +55793,6 @@ public unsafe partial class NList<T>
 		NList<(T, T2, T3)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = (source._items[i], source2._items[i], source3._items[i]);
-		result._size = length;
-		return result;
-	}
-
-	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T_> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-				result._items[i] = function(list[i]);
-			result._size = length;
-			return result;
-		}
-		else if (source is T_[] array)
-		{
-			NList<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-				result._items[i] = function(array[i]);
-			result._size = array.Length;
-			return result;
-		}
-		else if (source is G.IList<T_> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-				result._items[i] = function(list2[i]);
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T_> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-				result._items[i] = function(list3[i]);
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if ((i & i - 1) == 0)
-					result.EnsureCapacity(i + 1);
-				result._items[i] = function(item);
-				i++;
-			}
-			result._size = i;
-			return result;
-		}
-	}
-
-	internal static NList<TResult> ConvertEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		if (source is List<T_> list)
-		{
-			var length = list.Length;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is T_[] array)
-		{
-			NList<TResult> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = array.Length;
-			return result;
-		}
-		else if (source is G.IList<T_> list2)
-		{
-			var length = list2.Count;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T_> list3)
-		{
-			var length = list3.Count;
-			NList<TResult> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result._items[i] = function(item, i);
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			NList<TResult> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
-			var i = 0;
-			foreach (var item in source)
-			{
-				if ((i & i - 1) == 0)
-					result.EnsureCapacity(i + 1);
-				result._items[i] = function(item, i);
-				i++;
-			}
-			result._size = i;
-			return result;
-		}
-	}
-
-	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = function(source[i]);
-		result._size = length;
-		return result;
-	}
-
-	internal static NList<TResult> ConvertEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		NList<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = function(source[i], i);
-		result._size = length;
-		return result;
-	}
-
-	internal static NList<TResult> ConvertEnumerable<TResult>(NList<T> source, Func<T, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source._size;
-		NList<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = function(source._items[i]);
-		result._size = length;
-		return result;
-	}
-
-	internal static NList<TResult> ConvertEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source._size;
-		NList<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-		{
-			var item = source._items[i];
-			result._items[i] = function(item, i);
-		}
 		result._size = length;
 		return result;
 	}
@@ -63904,34 +63743,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -63943,34 +63782,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -63982,34 +63821,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64021,34 +63860,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = MeanEnumerable(list_);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64060,34 +63899,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64099,34 +63938,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64138,34 +63977,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64177,34 +64016,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64216,34 +64055,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64255,34 +64094,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64294,34 +64133,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64333,34 +64172,34 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = ToNListEnumerable(list, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = ToNListEnumerable(array.AsSpan(), function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = ToNListEnumerable(list2, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = ToNListEnumerable(list3, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			var value = SumEnumerable(list_) / list_.Length;
 			return IndexesOfEnumerable(list_, value);
 		}
@@ -64372,30 +64211,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64406,30 +64245,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64440,30 +64279,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64474,30 +64313,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64508,30 +64347,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64542,30 +64381,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64576,30 +64415,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64610,30 +64449,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64644,30 +64483,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64678,30 +64517,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64712,30 +64551,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -64746,30 +64585,30 @@ public unsafe partial class NList<T>
 		if (source is List<T_> list)
 		{
 			var length = list.Length;
-			var list_ = ConvertEnumerable(list, function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)list, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
-			var list_ = ConvertEnumerable(array.AsSpan(), function);
+			var list_ = List<T_>.ConvertEnumerable((G.IReadOnlyList<T_>)array, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
-			var list_ = ConvertEnumerable(list2, function);
+			var list_ = List<T_>.ConvertEnumerable(list2.GetSlice(), function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
-			var list_ = ConvertEnumerable(list3, function);
+			var list_ = List<T_>.ConvertEnumerable(list3, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 		else
 		{
-			var list_ = ConvertEnumerable(source, function);
+			var list_ = ToNListEnumerable(source, function);
 			return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 		}
 	}
@@ -69573,6 +69412,187 @@ public unsafe partial class NList<T>
 		}
 	}
 
+	internal static NList<TResult> ToNListEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			NList<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+				result._items[i] = function(array[i]);
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list2[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list3[i]);
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static NList<TResult> ToNListEnumerable<T_, TResult>(IEnumerable<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			NList<TResult> result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			NList<TResult> result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			NList<TResult> result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item, i);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static NList<TResult> ToNListEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i]);
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<TResult> ToNListEnumerable<T_, TResult>(ReadOnlySpan<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i], i);
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<TResult> ToNListEnumerable<TResult>(NList<T> source, Func<T, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source._size;
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source._items[i]);
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<TResult> ToNListEnumerable<TResult>(NList<T> source, Func<T, int, TResult> function) where TResult : unmanaged
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source._size;
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+		{
+			var item = source._items[i];
+			result._items[i] = function(item, i);
+		}
+		result._size = length;
+		return result;
+	}
+
+	internal static bool TryWrapEnumerable<TResult>(NList<T> source, Func<NList<T>, TResult> function, out TResult? result)
+	{
+		try
+		{
+			result = function(source);
+			return true;
+		}
+		catch
+		{
+			result = default;
+			return false;
+		}
+	}
+
 	internal static NList<int> FindIndexesEnumerable<T_>(ReadOnlySpan<T_> source, Func<T_, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -71072,7 +71092,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = MeanEnumerable(list_);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71081,7 +71101,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = MeanEnumerable(list_);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71090,7 +71110,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = MeanEnumerable(list_);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71099,7 +71119,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = MeanEnumerable(list_);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71108,7 +71128,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71117,7 +71137,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71126,7 +71146,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71135,7 +71155,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71144,7 +71164,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71153,7 +71173,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71162,7 +71182,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71171,7 +71191,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		var value = SumEnumerable(list_) / (MpzT)list_.Length;
 		return IndexesOfEnumerable(list_, value);
 	}
@@ -71216,7 +71236,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71224,7 +71244,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71232,7 +71252,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71240,7 +71260,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71248,7 +71268,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71256,7 +71276,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71264,7 +71284,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71272,7 +71292,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71280,7 +71300,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71288,7 +71308,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71296,7 +71316,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -71304,7 +71324,7 @@ public unsafe partial class NList<T>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var list_ = ConvertEnumerable(source, function);
+		var list_ = ToNListEnumerable(source, function);
 		return IndexesOfEnumerable(list_, List<T_>.MedianEnumerable(list_));
 	}
 
@@ -72299,10 +72319,10 @@ public unsafe partial class NList<T>
 
 public static class RedStarLinq
 {
-	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.AllEnumerable(source, function);
+	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.All(source, function);
 	public static bool All<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
-	public static bool Any<T>(this IEnumerable<T> source) => List<T>.AnyEnumerable(source);
-	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.AnyEnumerable(source, function);
+	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
+	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable(source, function);
 	public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<T> source) => source;
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source) => source is BaseIndexable<T> collection ? collection.AsSpan() : source is T[] array ? MemoryExtensions.AsSpan(array) : List<T>.ReturnOrConstruct(source).AsSpan();
@@ -72322,31 +72342,45 @@ public static class RedStarLinq
 	public static List<T> BreakFilter<T>(this IEnumerable<T> source, Func<T, int, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable(source, function, out result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this IEnumerable<T> source, Func<T, bool> function) => (List<T>.BreakFilterEnumerable(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this IEnumerable<T> source, Func<T, int, bool> function) => (List<T>.BreakFilterEnumerable(source, function, out var result2), result2);
-	public static List<TResult> Combine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
-	public static List<TResult> Combine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
-	public static List<(T, T2)> Combine<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2) => List<T>.CombineEnumerable(source, source2);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
-	public static List<(T, T2, T3)> Combine<T, T2, T3>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3) => List<T>.CombineEnumerable(source, source2, source3);
-	public static List<TResult> Combine<T, T2, TResult>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T2, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, function);
-	public static List<TResult> Combine<T, T2, TResult>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, function);
-	public static List<(T, T2)> Combine<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source) => List<T>.CombineEnumerable(source.Item1, source.Item2);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
-	public static List<(T, T2, T3)> Combine<T, T2, T3>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3);
+	public static Slice<TResult> Combine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
+	public static IEnumerable<TResult> Combine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, TResult> function) => Enumerable.Zip(source, source2, function);
+	public static Slice<TResult> Combine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
+	public static IEnumerable<TResult> Combine<T, T2, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
+	public static Slice<(T, T2)> Combine<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2) => List<T>.CombineEnumerable(source, source2);
+	public static IEnumerable<(T, T2)> Combine<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2) => Enumerable.Zip(source, source2);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	public static IEnumerable<TResult> Combine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	public static IEnumerable<TResult> Combine<T, T2, T3, TResult>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	public static Slice<(T, T2, T3)> Combine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3) => List<T>.CombineEnumerable(source, source2, source3);
+	public static IEnumerable<(T, T2, T3)> Combine<T, T2, T3>(this IEnumerable<T> source, IEnumerable<T2> source2, IEnumerable<T3> source3) => Enumerable.Zip(source, source2, source3);
+	public static Slice<TResult> Combine<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T2, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, function);
+	public static IEnumerable<TResult> Combine<T, T2, TResult>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T2, TResult> function) => Enumerable.Zip(source.Item1, source.Item2, function);
+	public static Slice<TResult> Combine<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, function);
+	public static IEnumerable<TResult> Combine<T, T2, TResult>(this (IEnumerable<T>, IEnumerable<T2>) source, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, function);
+	public static Slice<(T, T2)> Combine<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source) => List<T>.CombineEnumerable(source.Item1, source.Item2);
+	public static IEnumerable<(T, T2)> Combine<T, T2>(this (IEnumerable<T>, IEnumerable<T2>) source) => Enumerable.Zip(source.Item1, source.Item2);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static IEnumerable<TResult> Combine<T, T2, T3, TResult>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static IEnumerable<TResult> Combine<T, T2, T3, TResult>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static Slice<(T, T2, T3)> Combine<T, T2, T3>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source) => List<T>.CombineEnumerable(source.Item1, source.Item2, source.Item3);
+	public static IEnumerable<(T, T2, T3)> Combine<T, T2, T3>(this (IEnumerable<T>, IEnumerable<T2>, IEnumerable<T3>) source) => Enumerable.Zip(source.Item1, source.Item2, source.Item3);
 	public static List<T> Concat<T>(this IEnumerable<T> source, params IEnumerable<T>[] collections) => List<T>.ConcatEnumerable(source, collections);
 	public static bool Contains<T>(this IEnumerable<T> source, T target) => List<T>.ContainsEnumerable(source, target);
 	public static bool Contains<T>(this IEnumerable<T> source, T target, IEqualityComparer<T> comparer) => List<T>.ContainsEnumerable(source, target, comparer);
 	public static bool Contains<T>(this IEnumerable<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.ContainsEnumerable(source, target, equalFunction);
 	public static bool Contains<T>(this IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.ContainsEnumerable(source, target, equalFunction, hashCodeFunction);
-	public static List<TResult> Convert<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.ConvertEnumerable(source, function);
-	public static List<TResult> Convert<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable(source, function);
-	public static List<TResult> ConvertAndJoin<T, TResult>(this IEnumerable<T> source, Func<T, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable(source, function);
-	public static List<TResult> ConvertAndJoin<T, TResult>(this IEnumerable<T> source, Func<T, int, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable(source, function);
+	public static Slice<TResult> Convert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.ConvertEnumerable(source, function);
+	public static IEnumerable<TResult> Convert<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => Enumerable.Select(source, function);
+	public static Slice<TResult> Convert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable(source, function);
+	public static IEnumerable<TResult> Convert<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => Enumerable.Select(source, function);
+	public static IEnumerable<TResult> ConvertAndJoin<T, TResult>(this IEnumerable<T> source, Func<T, IEnumerable<TResult>> function) => Enumerable.SelectMany(source, function);
+	public static IEnumerable<TResult> ConvertAndJoin<T, TResult>(this IEnumerable<T> source, Func<T, int, IEnumerable<TResult>> function) => Enumerable.SelectMany(source, function);
 	public static IEnumerable<TResult> ConvertAndJoin<T, TCollection, TResult>(this IEnumerable<T> source, Func<T, IEnumerable<TCollection>> collectionSelector, Func<T, TCollection, TResult> resultSelector) => Enumerable.SelectMany(source, collectionSelector, resultSelector);
 	public static IEnumerable<TResult> ConvertAndJoin<T, TCollection, TResult>(this IEnumerable<T> source, Func<T, int, IEnumerable<TCollection>> collectionSelector, Func<T, TCollection, int, TResult> resultSelector) => List<T>.ConvertAndJoin(source, collectionSelector, resultSelector);
-	public static List<List<T>> CopyDoubleList<T>(this List<List<T>> source) => source.Convert(x => x.Copy());
-	public static List<List<List<T>>> CopyTripleList<T>(this List<List<List<T>>> source) => source.Convert(x => x.CopyDoubleList());
+	public static List<List<T>> CopyDoubleList<T>(this List<List<T>> source) => source.ToList(x => x.Copy());
+	public static List<List<List<T>>> CopyTripleList<T>(this List<List<List<T>>> source) => source.ToList(x => x.CopyDoubleList());
 	public static int Count<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.CountEnumerable(source, function);
 	public static int Count<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.CountEnumerable(source, function);
 	public static int Count<T>(this IEnumerable<T> source, T target) => List<T>.CountEnumerable(source, target);
@@ -72367,8 +72401,8 @@ public static class RedStarLinq
 	public static TResult[] FillArray<TResult>(TResult elem, int length) => List<bool>.FillArrayEnumerable(elem, length);
 	public static TResult[] FillArray<TResult>(Func<int, TResult> function, int length) => List<bool>.FillArrayEnumerable(function, length);
 	public static TResult[] FillArray<TResult>(int length, Func<int, TResult> function) => List<bool>.FillArrayEnumerable(function, length);
-	public static List<T> Filter<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.FilterEnumerable(source, function);
-	public static List<T> Filter<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.FilterEnumerable(source, function);
+	public static IEnumerable<T> Filter<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Where(source, function);
+	public static IEnumerable<T> Filter<T>(this IEnumerable<T> source, Func<T, int, bool> function) => Enumerable.Where(source, function);
 	public static T? Find<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.FindEnumerable(source, function);
 	public static T? Find<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.FindEnumerable(source, function);
 	public static List<T> FindAll<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.FindAllEnumerable(source, function);
@@ -72669,6 +72703,8 @@ public static class RedStarLinq
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, long> function, out long indicator) => List<T>.FindMinIndexEnumerable(source, function, out indicator);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindMinIndexEnumerable(source, function, out indicator);
 	public static int FindMinIndex<T>(this IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindMinIndexEnumerable(source, function, out indicator);
+	public static T First<T>(this IEnumerable<T> source) => Enumerable.First(source);
+	public static T? FirstOrDefault<T>(this IEnumerable<T> source) => Enumerable.FirstOrDefault(source);
 	public static void ForEach<T>(this IEnumerable<T> source, Action<T> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action) => List<T>.ForEachEnumerable(source, action);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function);
@@ -72688,6 +72724,11 @@ public static class RedStarLinq
 	public static Slice<T> GetSlice<T>(this G.IList<T> source, int index) => new(source, index);
 	public static Slice<T> GetSlice<T>(this G.IList<T> source, int index, int length) => new(source, index, length);
 	public static Slice<T> GetSlice<T>(this G.IList<T> source, Range range) => new(source, range);
+	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source) => new(source);
+	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source, Index index) => new(source, index);
+	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source, int index) => new(source, index);
+	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source, int index, int length) => new(source, index, length);
+	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source, Range range) => new(source, range);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => List<T>.GroupEnumerable(source);
@@ -72928,12 +72969,14 @@ public static class RedStarLinq
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<T[]> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<G.IList<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<T[]> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<G.IList<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this IEnumerable<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static T Last<T>(this IEnumerable<T> source) => Enumerable.Last(source);
+	public static T? LastOrDefault<T>(this IEnumerable<T> source) => Enumerable.LastOrDefault(source);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target) => List<T>.LastIndexOfEnumerable(source, target);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target, IEqualityComparer<T> comparer) => List<T>.LastIndexOfEnumerable(source, target, comparer);
 	public static int LastIndexOf<T>(this IEnumerable<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.LastIndexOfEnumerable(source, target, equalFunction);
@@ -73088,7 +73131,7 @@ public static class RedStarLinq
 	public static uint Median(params uint[] source) => List<uint>.MedianEnumerable(source.AsSpan());
 	public static long Median(params long[] source) => List<long>.MedianEnumerable(source.AsSpan());
 	public static MpzT Median(params MpzT[] source) => List<MpzT>.MedianEnumerable(source.AsSpan());
-	public static T? Median<T>(params T?[] source) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static T? Median<T>(params T[] source) => List<T>.MedianEnumerable((G.IList<T>)source);
 	public static decimal Min<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static double Min<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.MinEnumerable(source, function);
@@ -73121,7 +73164,8 @@ public static class RedStarLinq
 	public static List<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
 	public static List<(T, T)> Pairs<T>(this IEnumerable<T> source, int offset = 1) => List<T>.PairsEnumerable(source, offset);
-	public static List<T> Prepend<T>(this IEnumerable<T> source, T element) => new List<T>().Add(element).AddRange(source);
+	public static Slice<T> Prepend<T>(this G.IReadOnlyList<T> source, T element) => List<T>.PrependEnumerable(source, element);
+	public static IEnumerable<T> Prepend<T>(this IEnumerable<T> source, T element) => Enumerable.Prepend(source, element);
 	public static T? Progression<T>(this IEnumerable<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static TResult? Progression<T, TResult>(this IEnumerable<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable(source, seed, function);
 	public static T Random<T>(this G.IList<T> source) => source[random.Next(source.Count)];
@@ -73236,30 +73280,30 @@ public static class RedStarLinq
 	public static BitList ToBitList(this IEnumerable<byte> source) => new(source);
 	public static BitList ToBitList(this IEnumerable<int> source) => new(source);
 	public static BitList ToBitList(this IEnumerable<uint> source) => new(source);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), List<T>.ConvertEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), comparer, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
-	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ConvertEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, TKey> function, Func<T, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, TKey> function, Func<T, int, TValue> function2, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), List<T>.ToListEnumerable(source, function2), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, (TKey, TValue)> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, IEqualityComparer<TKey> comparer, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), comparer, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
+	public static Dictionary<TKey, TValue> ToDictionary<T, TKey, TValue>(this IEnumerable<T> source, Func<T, int, KeyValuePair<TKey, TValue>> function, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) where TKey : notnull => new(List<T>.ToListEnumerable(source, function), equalFunction, hashCodeFunction, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, bool unordered = false) where T : notnull => new(source, source2, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source, source2, comparer, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, source2, equalFunction, unordered);
@@ -73277,7 +73321,11 @@ public static class RedStarLinq
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, equalFunction, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source, equalFunction, hashCodeFunction, unordered);
 	public static ListHashSet<T> ToHashSet<T>(this IEnumerable<T> source) => new(source);
+	public static List<TResult> ToList<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable(source, function);
+	public static List<TResult> ToList<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.ToListEnumerable(source, function);
 	public static List<T> ToList<T>(this IEnumerable<T> source) => List<T>.ReturnOrConstruct(source);
+	public static NList<TResult> ToNList<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
+	public static NList<TResult> ToNList<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
 	public static NList<T> ToNList<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.ReturnOrConstruct(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this IEnumerable<T> source) => new(source);
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable(source, function));
@@ -73286,45 +73334,39 @@ public static class RedStarLinq
 	public static List<List<T>> Transpose<T>(this List<List<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
 	public static bool TryGetLengthEasily<T>(this IEnumerable<T> source, out int length) => List<T>.TryGetLengthEasilyEnumerable(source, out length);
 	public static bool TryGetLengthEasily<T>(this IEnumerable source, out int length) => List<T>.TryGetLengthEasilyEnumerable(source, out length);
-	public static bool TryWrap<T>(this IEnumerable<T> source, Func<IEnumerable<T>, List<T>> function, out List<T>? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this IEnumerable<T> source, Func<IEnumerable<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T>(this List<T> source, Func<List<T>, List<T>> function, out List<T>? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T>(this T[] source, Func<T[], List<T>> function, out List<T>? result) => List<T>.TryWrapEnumerable(source, function, out result);
+	public static bool TryWrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function, out TResult? result) where T : unmanaged => NList<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this T[] source, Func<T[], TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T>(this G.IList<T> source, Func<G.IList<T>, List<T>> function, out List<T>? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this G.IList<T> source, Func<G.IList<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2) => Enumerable.Union(source, source2);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer) => Enumerable.Union(source, source2, comparer);
-	public static List<T> Wrap<T>(this IEnumerable<T> source, Func<IEnumerable<T>, List<T>> function) => function(source);
 	public static TResult Wrap<T, TResult>(this IEnumerable<T> source, Func<IEnumerable<T>, TResult> function) => function(source);
-	public static List<T> Wrap<T>(this List<T> source, Func<List<T>, List<T>> function) => function(source);
 	public static TResult Wrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function) => function(source);
-	public static List<T> Wrap<T>(this T[] source, Func<T[], List<T>> function) => function(source);
+	public static TResult Wrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function) where T : unmanaged => function(source);
 	public static TResult Wrap<T, TResult>(this T[] source, Func<T[], TResult> function) => function(source);
-	public static List<T> Wrap<T>(this G.IList<T> source, Func<G.IList<T>, List<T>> function) => function(source);
 	public static TResult Wrap<T, TResult>(this G.IList<T> source, Func<G.IList<T>, TResult> function) => function(source);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this Span<T> source, Func<T, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source, function);
 	public static bool All<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source, function);
-	public static bool All<T>(this T[] source, Func<T, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static bool All<T>(this T[] source, Func<T, int, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static bool All<T>(this T[] source, Func<T, bool> function) => Enumerable.All((G.IList<T>)source, function);
+	public static bool All<T>(this T[] source, Func<T, int, bool> function) => List<T>.AllEnumerable((G.IList<T>)source, function);
 	public static bool Any<T>(this ReadOnlySpan<T> source) => List<T>.AnyEnumerable(source);
 	public static bool Any<T>(this Span<T> source) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source);
-	public static bool Any<T>(this T[] source) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static bool Any<T>(this T[] source) => Enumerable.Any((G.IList<T>)source);
 	public static bool Any<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.AnyEnumerable(source, function);
 	public static bool Any<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable(source, function);
 	public static bool Any<T>(this Span<T> source, Func<T, bool> function) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source, function);
 	public static bool Any<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source, function);
-	public static bool Any<T>(this T[] source, Func<T, bool> function) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static bool Any<T>(this T[] source, Func<T, int, bool> function) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static bool Any<T>(this T[] source, Func<T, bool> function) => Enumerable.Any((G.IList<T>)source, function);
+	public static bool Any<T>(this T[] source, Func<T, int, bool> function) => List<T>.AnyEnumerable((G.IList<T>)source, function);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.BreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.BreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
-	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
-	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
+	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.BreakEnumerable((G.IList<T>)source, function, function2);
+	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.BreakEnumerable((G.IList<T>)source, function, function2);
 	public static (List<T>, List<T2>) Break<T, T2>(this ReadOnlySpan<(T, T2)> source) => List<T>.BreakEnumerable(source);
 	public static (List<T>, List<T2>) Break<T, T2>(this Span<(T, T2)> source) => List<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source);
 	public static (List<T>, List<T2>) Break<T, T2>(this (T, T2)[] source) => List<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source.AsSpan());
@@ -73332,14 +73374,14 @@ public static class RedStarLinq
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) => List<T>.BreakEnumerable(source, function);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this Span<T> source, Func<T, (TResult, TResult2)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this Span<T> source, Func<T, int, (TResult, TResult2)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) => List<T>.BreakEnumerable((G.IList<T>)source, function);
+	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) => List<T>.BreakEnumerable((G.IList<T>)source, function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.BreakEnumerable(source, function, function2, function3);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.BreakEnumerable(source, function, function2, function3);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.BreakEnumerable((G.IList<T>)source, function, function2, function3);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.BreakEnumerable((G.IList<T>)source, function, function2, function3);
 	public static (List<T>, List<T2>, List<T3>) Break<T, T2, T3>(this ReadOnlySpan<(T, T2, T3)> source) => List<T>.BreakEnumerable(source);
 	public static (List<T>, List<T2>, List<T3>) Break<T, T2, T3>(this Span<(T, T2, T3)> source) => List<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source);
 	public static (List<T>, List<T2>, List<T3>) Break<T, T2, T3>(this (T, T2, T3)[] source) => List<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source.AsSpan());
@@ -73347,1097 +73389,1113 @@ public static class RedStarLinq
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable(source, function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
 	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((G.IList<T>)source, function);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) Break<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.BreakEnumerable((G.IList<T>)source, function);
 	public static List<T> BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable(source, function, out result2);
 	public static List<T> BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable(source, function, out result2);
 	public static List<T> BreakFilter<T>(this Span<T> source, Func<T, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source, function, out result2);
 	public static List<T> BreakFilter<T>(this Span<T> source, Func<T, int, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source, function, out result2);
-	public static List<T> BreakFilter<T>(this T[] source, Func<T, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, out result2);
-	public static List<T> BreakFilter<T>(this T[] source, Func<T, int, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, out result2);
+	public static List<T> BreakFilter<T>(this T[] source, Func<T, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((G.IList<T>)source, function, out result2);
+	public static List<T> BreakFilter<T>(this T[] source, Func<T, int, bool> function, out List<T> result2) => List<T>.BreakFilterEnumerable((G.IList<T>)source, function, out result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => (List<T>.BreakFilterEnumerable(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => (List<T>.BreakFilterEnumerable(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, bool> function) => (List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this Span<T> source, Func<T, int, bool> function) => (List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source, function, out var result2), result2);
-	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, bool> function) => (List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, out var result2), result2);
-	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, int, bool> function) => (List<T>.BreakFilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, out var result2), result2);
+	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, bool> function) => (List<T>.BreakFilterEnumerable((G.IList<T>)source, function, out var result2), result2);
+	public static (List<T>, List<T>) BreakFilter<T>(this T[] source, Func<T, int, bool> function) => (List<T>.BreakFilterEnumerable((G.IList<T>)source, function, out var result2), result2);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable(source, source2, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, TResult>(this Span<T> source, Span<T2> source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, TResult>(this Span<T> source, Span<T2> source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
-	public static List<TResult> Combine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
-	public static List<TResult> Combine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
+	public static Slice<TResult> Combine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, TResult> function) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2, function);
+	public static Slice<TResult> Combine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, int, TResult> function) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2)> Combine<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) => List<T>.CombineEnumerable(source, source2);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2)> Combine<T, T2>(this Span<T> source, Span<T2> source2) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2);
-	public static List<(T, T2)> Combine<T, T2>(this T[] source, T2[] source2) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan());
+	public static Slice<(T, T2)> Combine<T, T2>(this T[] source, T2[] source2) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable(source, source2, source3, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, T3, TResult>(this Span<T> source, Span<T2> source2, Span<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<TResult> Combine<T, T2, T3, TResult>(this Span<T> source, Span<T2> source2, Span<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3, function);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan(), function);
-	public static List<TResult> Combine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan(), function);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, TResult> function) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2, source3, function);
+	public static Slice<TResult> Combine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, int, TResult> function) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2, source3, function);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2, T3)> Combine<T, T2, T3>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3) => List<T>.CombineEnumerable(source, source2, source3);
+	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2, T3)> Combine<T, T2, T3>(this Span<T> source, Span<T2> source2, Span<T3> source3) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3);
-	public static List<(T, T2, T3)> Combine<T, T2, T3>(this T[] source, T2[] source2, T3[] source3) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan());
-	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => List<T>.ConvertEnumerable(source, function);
-	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable(source, function);
-	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<TResult> Convert<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<TResult> Convert<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static Slice<(T, T2, T3)> Combine<T, T2, T3>(this T[] source, T2[] source2, T3[] source3) => List<T>.CombineEnumerable((G.IReadOnlyList<T>)source, source2, source3);
+	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
+	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => throw new NotSupportedException();
+	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
+	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => throw new NotSupportedException();
+	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
+	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, TResult> function) => throw new NotSupportedException();
+	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
+	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => throw new NotSupportedException();
+	public static Slice<TResult> Convert<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.ConvertEnumerable((G.IReadOnlyList<T>)source, function);
+	public static Slice<TResult> Convert<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable((G.IReadOnlyList<T>)source, function);
 	public static List<TResult> ConvertAndJoin<T, TResult>(this ReadOnlySpan<T> source, Func<T, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable(source, function);
 	public static List<TResult> ConvertAndJoin<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable(source, function);
 	public static List<TResult> ConvertAndJoin<T, TResult>(this Span<T> source, Func<T, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<TResult> ConvertAndJoin<T, TResult>(this Span<T> source, Func<T, int, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<TResult> ConvertAndJoin<T, TResult>(this T[] source, Func<T, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<TResult> ConvertAndJoin<T, TResult>(this T[] source, Func<T, int, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static IEnumerable<TResult> ConvertAndJoin<T, TResult>(this T[] source, Func<T, IEnumerable<TResult>> function) => Enumerable.SelectMany((G.IList<T>)source, function);
+	public static IEnumerable<TResult> ConvertAndJoin<T, TResult>(this T[] source, Func<T, int, IEnumerable<TResult>> function) => Enumerable.SelectMany((G.IList<T>)source, function);
 	public static int Count<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.CountEnumerable(source, function);
 	public static int Count<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.CountEnumerable(source, function);
 	public static int Count<T>(this Span<T> source, Func<T, bool> function) => List<T>.CountEnumerable((ReadOnlySpan<T>)source, function);
 	public static int Count<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.CountEnumerable((ReadOnlySpan<T>)source, function);
-	public static int Count<T>(this T[] source, Func<T, bool> function) => List<T>.CountEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int Count<T>(this T[] source, Func<T, int, bool> function) => List<T>.CountEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int Count<T>(this T[] source, Func<T, bool> function) => List<T>.CountEnumerable((G.IList<T>)source, function);
+	public static int Count<T>(this T[] source, Func<T, int, bool> function) => List<T>.CountEnumerable((G.IList<T>)source, function);
 	public static bool Equals<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function) => List<T>.EqualsEnumerable(source, source2, function);
 	public static bool Equals<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function) => List<T>.EqualsEnumerable(source, source2, function);
 	public static bool Equals<T, T2>(this Span<T> source, Span<T2> source2, Func<T, T2, bool> function) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
 	public static bool Equals<T, T2>(this Span<T> source, Span<T2> source2, Func<T, T2, int, bool> function) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
-	public static bool Equals<T, T2>(this T[] source, T2[] source2, Func<T, T2, bool> function) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
-	public static bool Equals<T, T2>(this T[] source, T2[] source2, Func<T, T2, int, bool> function) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
+	public static bool Equals<T, T2>(this T[] source, T2[] source2, Func<T, T2, bool> function) => List<T>.EqualsEnumerable((G.IList<T>)source, source2, function);
+	public static bool Equals<T, T2>(this T[] source, T2[] source2, Func<T, T2, int, bool> function) => List<T>.EqualsEnumerable((G.IList<T>)source, source2, function);
 	public static bool Equals<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) => List<T>.EqualsEnumerable(source, source2);
 	public static bool Equals<T, T2>(this Span<T> source, Span<T2> source2) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2);
-	public static bool Equals<T, T2>(this T[] source, T2[] source2) => List<T>.EqualsEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan());
+	public static bool Equals<T, T2>(this T[] source, T2[] source2) => List<T>.EqualsEnumerable((G.IList<T>)source, source2);
 	public static List<T> Filter<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.FilterEnumerable(source, function);
 	public static List<T> Filter<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.FilterEnumerable(source, function);
 	public static List<T> Filter<T>(this Span<T> source, Func<T, bool> function) => List<T>.FilterEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> Filter<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.FilterEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> Filter<T>(this T[] source, Func<T, bool> function) => List<T>.FilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> Filter<T>(this T[] source, Func<T, int, bool> function) => List<T>.FilterEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static IEnumerable<T> Filter<T>(this T[] source, Func<T, bool> function) => Enumerable.Where((G.IList<T>)source, function);
+	public static IEnumerable<T> Filter<T>(this T[] source, Func<T, int, bool> function) => Enumerable.Where((G.IList<T>)source, function);
 	public static T? Find<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.FindEnumerable(source, function);
 	public static T? Find<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.FindEnumerable(source, function);
 	public static T? Find<T>(this Span<T> source, Func<T, bool> function) => List<T>.FindEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? Find<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.FindEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? Find<T>(this T[] source, Func<T, bool> function) => List<T>.FindEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? Find<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? Find<T>(this T[] source, Func<T, bool> function) => List<T>.FindEnumerable((G.IList<T>)source, function);
+	public static T? Find<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAll<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.FindAllEnumerable(source, function);
 	public static List<T> FindAll<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.FindAllEnumerable(source, function);
 	public static List<T> FindAll<T>(this Span<T> source, Func<T, bool> function) => List<T>.FindAllEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAll<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.FindAllEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAll<T>(this T[] source, Func<T, bool> function) => List<T>.FindAllEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAll<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindAllEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAll<T>(this T[] source, Func<T, bool> function) => List<T>.FindAllEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAll<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindAllEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, double> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable(source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMaxEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, double> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable(source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMeanEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, double> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable(source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMedianEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, double> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, double> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, long> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable(source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> FindAllMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
+	public static List<T> FindAllMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindAllMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLast<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.FindLastEnumerable(source, function);
 	public static T? FindLast<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.FindLastEnumerable(source, function);
 	public static T? FindLast<T>(this Span<T> source, Func<T, bool> function) => List<T>.FindLastEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLast<T>(this Span<T> source, Func<T, int, bool> function) => List<T>.FindLastEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLast<T>(this T[] source, Func<T, bool> function) => List<T>.FindLastEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLast<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindLastEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLast<T>(this T[] source, Func<T, bool> function) => List<T>.FindLastEnumerable((G.IList<T>)source, function);
+	public static T? FindLast<T>(this T[] source, Func<T, int, bool> function) => List<T>.FindLastEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable(source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable(source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable(source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable(source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindLastMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindLastMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
+	public static T? FindLastMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMinEnumerable((G.IList<T>)source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable(source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMaxIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMaxIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindLastMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable(source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMeanIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMeanIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindLastMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable(source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMedianIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMedianIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindLastMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable(source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindLastMinIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindLastMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindLastMinIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindLastMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, double> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, double> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, int> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, int> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, uint> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable(source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
+	public static T? FindMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, double> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, double> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, int> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, int> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, uint> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable(source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
+	public static T? FindMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, double> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, uint> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable(source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
+	public static T? FindMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, double> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, double> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, int> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, int> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, uint> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, long> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable(source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? FindMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? FindMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static T? FindMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, double> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, int> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, long> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, double> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, int> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, long> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, double> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, int> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, long> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, double> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, double> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, int> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, long> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, long> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>(source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.FindMinIndexesEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? FindMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static T? FindMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, double> function, out double indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, double> function, out double indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int> function, out int indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, int> function, out int indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, uint> function, out uint indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, long> function, out long indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, long> function, out long indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable(source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMaxIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMaxIndexes<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => NList<bool>.FindMaxIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, double> function, out double indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, double> function, out double indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int> function, out int indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, int> function, out int indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, uint> function, out uint indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, long> function, out long indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, long> function, out long indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable(source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMeanIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMeanIndexes<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => NList<bool>.FindMeanIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, double> function, out double indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, double> function, out double indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int> function, out int indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, int> function, out int indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, uint> function, out uint indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, long> function, out long indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, long> function, out long indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable(source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMedianIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMedianIndexes<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => NList<bool>.FindMedianIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, double> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, double> function, out double indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, double> function, out double indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int> function, out int indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, int> function, out int indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, uint> function, out uint indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, long> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, long> function, out long indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, long> function, out long indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMinIndexesEnumerable(source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.FindMinIndexesEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
+	public static NList<int> FindMinIndexes<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => NList<bool>.FindMinIndexesEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable(source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMaxIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMaxIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMaxIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMaxIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindMaxIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable(source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMeanIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMeanIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMeanIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMeanIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindMeanIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable(source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMedianIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMedianIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMedianIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMedianIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindMedianIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, decimal> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, decimal> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, decimal> function, out decimal indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, decimal> function, out decimal indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, double> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, double> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, double> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, double> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, double> function, out double indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, double> function, out double indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, int> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, int> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int> function, out int indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, int> function, out int indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, uint> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, uint> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, uint> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, uint> function, out uint indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, uint> function, out uint indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, long> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, long> function, out long indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, long> function, out long indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable(source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
 	public static int FindMinIndex<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source, function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int FindMinIndex<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.FindMinIndexEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int FindMinIndex<T>(this T[] source, Func<T, MpzT> function, out MpzT indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
+	public static int FindMinIndex<T>(this T[] source, Func<T, int, MpzT> function, out MpzT indicator) => List<T>.FindMinIndexEnumerable((G.IList<T>) source, function, out indicator);
 	public static void ForEach<T>(this ReadOnlySpan<T> source, Action<T> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this ReadOnlySpan<T> source, Action<T, int> action) => List<T>.ForEachEnumerable(source, action);
 	public static void ForEach<T>(this Span<T> source, Action<T> action) => List<T>.ForEachEnumerable((ReadOnlySpan<T>)source, action);
 	public static void ForEach<T>(this Span<T> source, Action<T, int> action) => List<T>.ForEachEnumerable((ReadOnlySpan<T>)source, action);
-	public static void ForEach<T>(this T[] source, Action<T> action) => List<T>.ForEachEnumerable((ReadOnlySpan<T>)source.AsSpan(), action);
-	public static void ForEach<T>(this T[] source, Action<T, int> action) => List<T>.ForEachEnumerable((ReadOnlySpan<T>)source.AsSpan(), action);
+	public static void ForEach<T>(this T[] source, Action<T> action) => List<T>.ForEachEnumerable((G.IList<T>)source, action);
+	public static void ForEach<T>(this T[] source, Action<T, int> action) => List<T>.ForEachEnumerable((G.IList<T>)source, action);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source) where T : notnull => List<T>.FrequencyTableEnumerable(source);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this Span<T> source) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source);
-	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source) where T : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function, equalFunction);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function, equalFunction);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.FrequencyTableEnumerable(source, equalFunction);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this Span<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, equalFunction);
-	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction);
+	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, equalFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
-	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
+	public static List<(TResult Key, int Count)> FrequencyTable<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.FrequencyTableEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<(T Key, int Count)> FrequencyTable<T>(this Span<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source, equalFunction, hashCodeFunction);
-	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.FrequencyTableEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
+	public static List<(T Key, int Count)> FrequencyTable<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.FrequencyTableEnumerable((G.IList<T>)source, equalFunction, hashCodeFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source) where T : notnull => List<T>.GroupEnumerable(source);
 	public static List<Group<T, T>> Group<T>(this Span<T> source) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source);
-	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => List<T>.GroupEnumerable((G.IList<T>)source);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, comparer);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, comparer);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, comparer);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, comparer);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, comparer);
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable(source, comparer);
 	public static List<Group<T, T>> Group<T>(this Span<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, comparer);
-	public static List<Group<T, T>> Group<T>(this T[] source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), comparer);
+	public static List<Group<T, T>> Group<T>(this T[] source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable((G.IList<T>)source, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable(source, function, equalFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable(source, function, equalFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, equalFunction);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, equalFunction);
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupEnumerable(source, equalFunction);
 	public static List<Group<T, T>> Group<T>(this Span<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, equalFunction);
-	public static List<Group<T, T>> Group<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction);
+	public static List<Group<T, T>> Group<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupEnumerable((G.IList<T>)source, equalFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
-	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
+	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<Group<T, T>> Group<T>(this Span<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, equalFunction, hashCodeFunction);
-	public static List<Group<T, T>> Group<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
+	public static List<Group<T, T>> Group<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupEnumerable((G.IList<T>)source, equalFunction, hashCodeFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function);
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source) where T : notnull => List<T>.GroupIndexesEnumerable(source);
 	public static List<Group<int, T>> GroupIndexes<T>(this Span<T> source) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source);
-	public static List<Group<int, T>> GroupIndexes<T>(this T[] source) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static List<Group<int, T>> GroupIndexes<T>(this T[] source) where T : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, comparer);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, comparer);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, comparer);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, comparer);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, comparer);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, comparer);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, comparer);
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupIndexesEnumerable(source, comparer);
 	public static List<Group<int, T>> GroupIndexes<T>(this Span<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, comparer);
-	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), comparer);
+	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, comparer);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, equalFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, equalFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, equalFunction);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, equalFunction);
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupIndexesEnumerable(source, equalFunction);
 	public static List<Group<int, T>> GroupIndexes<T>(this Span<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, equalFunction);
-	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction);
+	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, equalFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
-	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
+	public static List<Group<int, TResult>> GroupIndexes<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<Group<int, T>> GroupIndexes<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupIndexesEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<Group<int, T>> GroupIndexes<T>(this Span<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source, equalFunction, hashCodeFunction);
-	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupIndexesEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
-	public static NList<int> IndexesOf<T>(this ReadOnlySpan<T> source, T target) => NList<bool>.IndexesOfEnumerable<T>(source, target);
-	public static NList<int> IndexesOf<T>(this Span<T> source, T target) => NList<bool>.IndexesOfEnumerable<T>((ReadOnlySpan<T>)source, target);
-	public static NList<int> IndexesOf<T>(this T[] source, T target) => NList<bool>.IndexesOfEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), target);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<Group<int, T>> GroupIndexes<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.GroupIndexesEnumerable((G.IList<T>)source, equalFunction, hashCodeFunction);
+	public static NList<int> IndexesOf<T>(this ReadOnlySpan<T> source, T target) => NList<bool>.IndexesOfEnumerable(source, target);
+	public static NList<int> IndexesOf<T>(this Span<T> source, T target) => NList<bool>.IndexesOfEnumerable((ReadOnlySpan<T>)source, target);
+	public static NList<int> IndexesOf<T>(this T[] source, T target) => NList<bool>.IndexesOfEnumerable((G.IList<T>)source, target);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable(source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMax<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMaxEnumerable((G.IList<T>)source, function);
 	public static NList<int> IndexesOfMax(this ReadOnlySpan<decimal> source) => NList<bool>.IndexesOfMaxEnumerable<decimal>(source);
 	public static NList<int> IndexesOfMax(this Span<decimal> source) => NList<bool>.IndexesOfMaxEnumerable<decimal>((ReadOnlySpan<decimal>)source);
 	public static NList<int> IndexesOfMax(this decimal[] source) => NList<bool>.IndexesOfMaxEnumerable<decimal>((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74456,42 +74514,42 @@ public static class RedStarLinq
 	public static NList<int> IndexesOfMax(this ReadOnlySpan<MpzT> source) => NList<bool>.IndexesOfMaxEnumerable<MpzT>(source);
 	public static NList<int> IndexesOfMax(this Span<MpzT> source) => NList<bool>.IndexesOfMaxEnumerable<MpzT>((ReadOnlySpan<MpzT>)source);
 	public static NList<int> IndexesOfMax(this MpzT[] source) => NList<bool>.IndexesOfMaxEnumerable<MpzT>((ReadOnlySpan<MpzT>)source.AsSpan());
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable(source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMean<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMeanEnumerable((G.IList<T>)source, function);
 	public static NList<int> IndexesOfMean(this ReadOnlySpan<decimal> source) => NList<bool>.IndexesOfMeanEnumerable<decimal>(source);
 	public static NList<int> IndexesOfMean(this Span<decimal> source) => NList<bool>.IndexesOfMeanEnumerable<decimal>((ReadOnlySpan<decimal>)source);
 	public static NList<int> IndexesOfMean(this decimal[] source) => NList<bool>.IndexesOfMeanEnumerable<decimal>((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74510,42 +74568,42 @@ public static class RedStarLinq
 	public static NList<int> IndexesOfMean(this ReadOnlySpan<MpzT> source) => NList<bool>.IndexesOfMeanEnumerable<MpzT>(source);
 	public static NList<int> IndexesOfMean(this Span<MpzT> source) => NList<bool>.IndexesOfMeanEnumerable<MpzT>((ReadOnlySpan<MpzT>)source);
 	public static NList<int> IndexesOfMean(this MpzT[] source) => NList<bool>.IndexesOfMeanEnumerable<MpzT>((ReadOnlySpan<MpzT>)source.AsSpan());
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable(source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMedianEnumerable((G.IList<T>)source, function);
 	public static NList<int> IndexesOfMedian(this ReadOnlySpan<decimal> source) => NList<bool>.IndexesOfMedianEnumerable<decimal>(source);
 	public static NList<int> IndexesOfMedian(this Span<decimal> source) => NList<bool>.IndexesOfMedianEnumerable<decimal>((ReadOnlySpan<decimal>)source);
 	public static NList<int> IndexesOfMedian(this decimal[] source) => NList<bool>.IndexesOfMedianEnumerable<decimal>((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74564,42 +74622,42 @@ public static class RedStarLinq
 	public static NList<int> IndexesOfMedian(this ReadOnlySpan<MpzT> source) => NList<bool>.IndexesOfMedianEnumerable<MpzT>(source);
 	public static NList<int> IndexesOfMedian(this Span<MpzT> source) => NList<bool>.IndexesOfMedianEnumerable<MpzT>((ReadOnlySpan<MpzT>)source);
 	public static NList<int> IndexesOfMedian(this MpzT[] source) => NList<bool>.IndexesOfMedianEnumerable<MpzT>((ReadOnlySpan<MpzT>)source.AsSpan());
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>(source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source, function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable<T>((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, decimal> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, decimal> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, double> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, double> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, int> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, uint> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, uint> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, long> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, long> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable(source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, MpzT> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
+	public static NList<int> IndexesOfMin<T>(this T[] source, Func<T, int, MpzT> function) => NList<bool>.IndexesOfMinEnumerable((G.IList<T>)source, function);
 	public static NList<int> IndexesOfMin(this ReadOnlySpan<decimal> source) => NList<bool>.IndexesOfMinEnumerable<decimal>(source);
 	public static NList<int> IndexesOfMin(this Span<decimal> source) => NList<bool>.IndexesOfMinEnumerable<decimal>((ReadOnlySpan<decimal>)source);
 	public static NList<int> IndexesOfMin(this decimal[] source) => NList<bool>.IndexesOfMinEnumerable<decimal>((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74620,43 +74678,43 @@ public static class RedStarLinq
 	public static NList<int> IndexesOfMin(this MpzT[] source) => NList<bool>.IndexesOfMinEnumerable<MpzT>((ReadOnlySpan<MpzT>)source.AsSpan());
 	public static int IndexOf<T>(this ReadOnlySpan<T> source, T target) => List<T>.IndexOfEnumerable(source, target);
 	public static int IndexOf<T>(this Span<T> source, T target) => List<T>.IndexOfEnumerable((ReadOnlySpan<T>)source, target);
-	public static int IndexOf<T>(this T[] source, T target) => List<T>.IndexOfEnumerable((ReadOnlySpan<T>)source.AsSpan(), target);
+	public static int IndexOf<T>(this T[] source, T target) => List<T>.IndexOfEnumerable((G.IList<T>)source, target);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, double> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, double> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, int> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, uint> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable(source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMax(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMaxEnumerable(source);
 	public static int IndexOfMax(this Span<decimal> source) => List<decimal>.IndexOfMaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMax(this decimal[] source) => List<decimal>.IndexOfMaxEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74679,38 +74737,38 @@ public static class RedStarLinq
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, double> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, uint> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable(source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMean(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMeanEnumerable(source);
 	public static int IndexOfMean(this Span<decimal> source) => List<decimal>.IndexOfMeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMean(this decimal[] source) => List<decimal>.IndexOfMeanEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74733,38 +74791,38 @@ public static class RedStarLinq
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, double> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, double> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, int> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, uint> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable(source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMedian(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMedianEnumerable(source);
 	public static int IndexOfMedian(this Span<decimal> source) => List<decimal>.IndexOfMedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMedian(this decimal[] source) => List<decimal>.IndexOfMedianEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74787,38 +74845,38 @@ public static class RedStarLinq
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, decimal> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, double> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, double> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, double> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, double> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, int> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, int> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, uint> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, uint> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable(source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int IndexOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int IndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int IndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.IndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int IndexOfMin(this ReadOnlySpan<decimal> source) => List<decimal>.IndexOfMinEnumerable(source);
 	public static int IndexOfMin(this Span<decimal> source) => List<decimal>.IndexOfMinEnumerable((ReadOnlySpan<decimal>)source);
 	public static int IndexOfMin(this decimal[] source) => List<decimal>.IndexOfMinEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74851,7 +74909,7 @@ public static class RedStarLinq
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<T>[] source) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source.AsSpan());
 	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source);
 	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan());
+	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((G.IList<T>)source);
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this Span<List<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source, separator);
 	public static List<T> JoinIntoSingle<T>(this List<T>[] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source.AsSpan(), separator);
@@ -74864,9 +74922,9 @@ public static class RedStarLinq
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this Span<IEnumerable<T>> source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<T>[] source, T separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source.AsSpan(), separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan(), separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T>)source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, TResult separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable((G.IList<T>)source, separator);
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this Span<List<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source, separator);
 	public static List<T> JoinIntoSingle<T>(this List<T>[] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<List<T>>)source.AsSpan(), separator);
@@ -74879,48 +74937,48 @@ public static class RedStarLinq
 	public static List<T> JoinIntoSingle<T>(this ReadOnlySpan<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable(source, separator);
 	public static List<T> JoinIntoSingle<T>(this Span<IEnumerable<T>> source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source, separator);
 	public static List<T> JoinIntoSingle<T>(this IEnumerable<T>[] source, IEnumerable<T> separator) => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<IEnumerable<T>>)source.AsSpan(), separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>(source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source, separator);
-	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable<T, TResult>((ReadOnlySpan<T>)source.AsSpan(), separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this ReadOnlySpan<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable(source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this Span<T> source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable((ReadOnlySpan<T>)source, separator);
+	public static List<TResult> JoinIntoSingle<T, TResult>(this T[] source, IEnumerable<TResult> separator) where T : IEnumerable<TResult> => List<T>.JoinIntoSingleEnumerable((G.IList<T>)source, separator);
 	public static int LastIndexOf<T>(this ReadOnlySpan<T> source, T target) => List<T>.LastIndexOfEnumerable(source, target);
 	public static int LastIndexOf<T>(this Span<T> source, T target) => List<T>.LastIndexOfEnumerable((ReadOnlySpan<T>)source, target);
-	public static int LastIndexOf<T>(this T[] source, T target) => List<T>.LastIndexOfEnumerable((ReadOnlySpan<T>)source.AsSpan(), target);
+	public static int LastIndexOf<T>(this T[] source, T target) => List<T>.LastIndexOfEnumerable((G.IList<T>)source, target);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, double> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, uint> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable(source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMax<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMax<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMaxEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMax(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMaxEnumerable(source);
 	public static int LastIndexOfMax(this Span<decimal> source) => List<decimal>.LastIndexOfMaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMax(this decimal[] source) => List<decimal>.LastIndexOfMaxEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74943,38 +75001,38 @@ public static class RedStarLinq
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, double> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, uint> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable(source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMeanEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMean(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMeanEnumerable(source);
 	public static int LastIndexOfMean(this Span<decimal> source) => List<decimal>.LastIndexOfMeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMean(this decimal[] source) => List<decimal>.LastIndexOfMeanEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -74997,38 +75055,38 @@ public static class RedStarLinq
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, double> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, uint> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable(source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMedian<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMedian<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMedianEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMedian(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMedianEnumerable(source);
 	public static int LastIndexOfMedian(this Span<decimal> source) => List<decimal>.LastIndexOfMedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMedian(this decimal[] source) => List<decimal>.LastIndexOfMedianEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -75051,38 +75109,38 @@ public static class RedStarLinq
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, decimal> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, decimal> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, double> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, double> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, double> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, double> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, int> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, int> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, uint> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, uint> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, uint> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, long> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, long> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable(source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int LastIndexOfMin<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, MpzT> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
+	public static int LastIndexOfMin<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.LastIndexOfMinEnumerable((G.IList<T>)source, function);
 	public static int LastIndexOfMin(this ReadOnlySpan<decimal> source) => List<decimal>.LastIndexOfMinEnumerable(source);
 	public static int LastIndexOfMin(this Span<decimal> source) => List<decimal>.LastIndexOfMinEnumerable((ReadOnlySpan<decimal>)source);
 	public static int LastIndexOfMin(this decimal[] source) => List<decimal>.LastIndexOfMinEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -75105,38 +75163,38 @@ public static class RedStarLinq
 	public static decimal Max<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MaxEnumerable(source, function);
 	public static decimal Max<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static decimal Max<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static decimal Max<T>(this T[] source, Func<T, decimal> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static decimal Max<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static decimal Max<T>(this T[] source, Func<T, decimal> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static decimal Max<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static double Max<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.MaxEnumerable(source, function);
 	public static double Max<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.MaxEnumerable(source, function);
 	public static double Max<T>(this Span<T> source, Func<T, double> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Max<T>(this Span<T> source, Func<T, int, double> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Max<T>(this T[] source, Func<T, double> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Max<T>(this T[] source, Func<T, int, double> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Max<T>(this T[] source, Func<T, double> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static double Max<T>(this T[] source, Func<T, int, double> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static int Max<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.MaxEnumerable(source, function);
 	public static int Max<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.MaxEnumerable(source, function);
 	public static int Max<T>(this Span<T> source, Func<T, int> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static int Max<T>(this Span<T> source, Func<T, int, int> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static int Max<T>(this T[] source, Func<T, int> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int Max<T>(this T[] source, Func<T, int, int> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int Max<T>(this T[] source, Func<T, int> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static int Max<T>(this T[] source, Func<T, int, int> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static uint Max<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.MaxEnumerable(source, function);
 	public static uint Max<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.MaxEnumerable(source, function);
 	public static uint Max<T>(this Span<T> source, Func<T, uint> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static uint Max<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static uint Max<T>(this T[] source, Func<T, uint> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static uint Max<T>(this T[] source, Func<T, int, uint> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static uint Max<T>(this T[] source, Func<T, uint> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static uint Max<T>(this T[] source, Func<T, int, uint> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static long Max<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.MaxEnumerable(source, function);
 	public static long Max<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.MaxEnumerable(source, function);
 	public static long Max<T>(this Span<T> source, Func<T, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Max<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static long Max<T>(this T[] source, Func<T, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static long Max<T>(this T[] source, Func<T, int, long> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static long Max<T>(this T[] source, Func<T, long> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static long Max<T>(this T[] source, Func<T, int, long> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static MpzT Max<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MaxEnumerable(source, function);
 	public static MpzT Max<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable(source, function);
 	public static MpzT Max<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
 	public static MpzT Max<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source, function);
-	public static MpzT Max<T>(this T[] source, Func<T, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static MpzT Max<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Max<T>(this T[] source, Func<T, MpzT> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
+	public static MpzT Max<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MaxEnumerable((G.IList<T>)source, function);
 	public static decimal Max(this ReadOnlySpan<decimal> source) => List<decimal>.MaxEnumerable(source);
 	public static decimal Max(this Span<decimal> source) => List<decimal>.MaxEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Max(this ReadOnlySpan<double> source) => List<double>.MaxEnumerable(source);
@@ -75153,38 +75211,38 @@ public static class RedStarLinq
 	public static decimal Mean<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static decimal Mean<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static decimal Mean<T>(this T[] source, Func<T, decimal> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static decimal Mean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static decimal Mean<T>(this T[] source, Func<T, decimal> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static decimal Mean<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, double> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int, double> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, double> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, double> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, double> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, int, double> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int, int> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, int> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, int> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, int> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, int, int> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, uint> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, uint> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, uint> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, uint> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, int, uint> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, long> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, long> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, int, long> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable(source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Mean<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Mean<T>(this T[] source, Func<T, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Mean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Mean<T>(this T[] source, Func<T, MpzT> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
+	public static double Mean<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MeanEnumerable((G.IList<T>)source, function);
 	public static decimal Mean(this ReadOnlySpan<decimal> source) => List<decimal>.MeanEnumerable(source);
 	public static decimal Mean(this Span<decimal> source) => List<decimal>.MeanEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Mean(this ReadOnlySpan<double> source) => List<double>.MeanEnumerable(source);
@@ -75201,38 +75259,38 @@ public static class RedStarLinq
 	public static decimal Median<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MedianEnumerable(source, function);
 	public static decimal Median<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static decimal Median<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static decimal Median<T>(this T[] source, Func<T, decimal> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static decimal Median<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static decimal Median<T>(this T[] source, Func<T, decimal> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static decimal Median<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.MedianEnumerable(source, function);
 	public static double Median<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.MedianEnumerable(source, function);
 	public static double Median<T>(this Span<T> source, Func<T, double> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Median<T>(this Span<T> source, Func<T, int, double> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Median<T>(this T[] source, Func<T, double> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Median<T>(this T[] source, Func<T, int, double> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Median<T>(this T[] source, Func<T, double> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static double Median<T>(this T[] source, Func<T, int, double> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.MedianEnumerable(source, function);
 	public static int Median<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.MedianEnumerable(source, function);
 	public static int Median<T>(this Span<T> source, Func<T, int> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static int Median<T>(this Span<T> source, Func<T, int, int> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static int Median<T>(this T[] source, Func<T, int> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int Median<T>(this T[] source, Func<T, int, int> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int Median<T>(this T[] source, Func<T, int> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static int Median<T>(this T[] source, Func<T, int, int> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.MedianEnumerable(source, function);
 	public static uint Median<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.MedianEnumerable(source, function);
 	public static uint Median<T>(this Span<T> source, Func<T, uint> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static uint Median<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static uint Median<T>(this T[] source, Func<T, uint> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static uint Median<T>(this T[] source, Func<T, int, uint> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static uint Median<T>(this T[] source, Func<T, uint> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static uint Median<T>(this T[] source, Func<T, int, uint> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.MedianEnumerable(source, function);
 	public static long Median<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.MedianEnumerable(source, function);
 	public static long Median<T>(this Span<T> source, Func<T, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Median<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static long Median<T>(this T[] source, Func<T, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static long Median<T>(this T[] source, Func<T, int, long> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static long Median<T>(this T[] source, Func<T, long> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static long Median<T>(this T[] source, Func<T, int, long> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MedianEnumerable(source, function);
 	public static MpzT Median<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable(source, function);
 	public static MpzT Median<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
 	public static MpzT Median<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source, function);
-	public static MpzT Median<T>(this T[] source, Func<T, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static MpzT Median<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Median<T>(this T[] source, Func<T, MpzT> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
+	public static MpzT Median<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MedianEnumerable((G.IList<T>)source, function);
 	public static decimal Median(this ReadOnlySpan<decimal> source) => List<decimal>.MedianEnumerable(source);
 	public static decimal Median(this Span<decimal> source) => List<decimal>.MedianEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Median(this ReadOnlySpan<double> source) => List<double>.MedianEnumerable(source);
@@ -75249,38 +75307,38 @@ public static class RedStarLinq
 	public static decimal Min<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.MinEnumerable(source, function);
 	public static decimal Min<T>(this Span<T> source, Func<T, decimal> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static decimal Min<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static decimal Min<T>(this T[] source, Func<T, decimal> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static decimal Min<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static decimal Min<T>(this T[] source, Func<T, decimal> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static decimal Min<T>(this T[] source, Func<T, int, decimal> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static double Min<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.MinEnumerable(source, function);
 	public static double Min<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.MinEnumerable(source, function);
 	public static double Min<T>(this Span<T> source, Func<T, double> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Min<T>(this Span<T> source, Func<T, int, double> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Min<T>(this T[] source, Func<T, double> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Min<T>(this T[] source, Func<T, int, double> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Min<T>(this T[] source, Func<T, double> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static double Min<T>(this T[] source, Func<T, int, double> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static int Min<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.MinEnumerable(source, function);
 	public static int Min<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.MinEnumerable(source, function);
 	public static int Min<T>(this Span<T> source, Func<T, int> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static int Min<T>(this Span<T> source, Func<T, int, int> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static int Min<T>(this T[] source, Func<T, int> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int Min<T>(this T[] source, Func<T, int, int> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int Min<T>(this T[] source, Func<T, int> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static int Min<T>(this T[] source, Func<T, int, int> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static uint Min<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.MinEnumerable(source, function);
 	public static uint Min<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.MinEnumerable(source, function);
 	public static uint Min<T>(this Span<T> source, Func<T, uint> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static uint Min<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static uint Min<T>(this T[] source, Func<T, uint> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static uint Min<T>(this T[] source, Func<T, int, uint> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static uint Min<T>(this T[] source, Func<T, uint> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static uint Min<T>(this T[] source, Func<T, int, uint> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static long Min<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.MinEnumerable(source, function);
 	public static long Min<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.MinEnumerable(source, function);
 	public static long Min<T>(this Span<T> source, Func<T, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Min<T>(this Span<T> source, Func<T, int, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static long Min<T>(this T[] source, Func<T, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static long Min<T>(this T[] source, Func<T, int, long> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static long Min<T>(this T[] source, Func<T, long> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static long Min<T>(this T[] source, Func<T, int, long> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static MpzT Min<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.MinEnumerable(source, function);
 	public static MpzT Min<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.MinEnumerable(source, function);
 	public static MpzT Min<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
 	public static MpzT Min<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source, function);
-	public static MpzT Min<T>(this T[] source, Func<T, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static MpzT Min<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MinEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Min<T>(this T[] source, Func<T, MpzT> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
+	public static MpzT Min<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.MinEnumerable((G.IList<T>)source, function);
 	public static decimal Min(this ReadOnlySpan<decimal> source) => List<decimal>.MinEnumerable(source);
 	public static decimal Min(this Span<decimal> source) => List<decimal>.MinEnumerable((ReadOnlySpan<decimal>)source);
 	public static double Min(this ReadOnlySpan<double> source) => List<double>.MinEnumerable(source);
@@ -75297,17 +75355,17 @@ public static class RedStarLinq
 	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
-	public static List<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
-	public static List<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, function, offset);
+	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, function, offset);
 	public static List<(T, T)> Pairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable(source, offset);
 	public static List<(T, T)> Pairs<T>(this Span<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, offset);
-	public static List<(T, T)> Pairs<T>(this T[] source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), offset);
+	public static Slice<(T, T)> Pairs<T>(this T[] source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, offset);
 	public static T? Progression<T>(this ReadOnlySpan<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static T? Progression<T>(this Span<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source, function);
-	public static T? Progression<T>(this T[] source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static T? Progression<T>(this T[] source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((G.IList<T>)source, function);
 	public static TResult? Progression<T, TResult>(this ReadOnlySpan<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable(source, seed, function);
 	public static TResult? Progression<T, TResult>(this Span<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source, seed, function);
-	public static TResult? Progression<T, TResult>(this T[] source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source.AsSpan(), seed, function);
+	public static TResult? Progression<T, TResult>(this T[] source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable((G.IList<T>)source, seed, function);
 	public static T Random<T>(this ReadOnlySpan<T> source) => source[random.Next(source.Length)];
 	public static T Random<T>(this Span<T> source) => source[random.Next(source.Length)];
 	public static T Random<T>(this T[] source) => source[random.Next(source.Length)];
@@ -75318,29 +75376,29 @@ public static class RedStarLinq
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.RemoveDoublesEnumerable(source, function);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function);
 	public static List<T> RemoveDoubles<T>(this ReadOnlySpan<T> source) => List<T>.RemoveDoublesEnumerable(source);
 	public static List<T> RemoveDoubles<T>(this Span<T> source) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source);
-	public static List<T> RemoveDoubles<T>(this T[] source) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static List<T> RemoveDoubles<T>(this T[] source) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source);
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable(source, function, equalFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable(source, function, equalFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function, equalFunction);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function, equalFunction);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function, equalFunction);
 	public static List<T> RemoveDoubles<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction) => List<T>.RemoveDoublesEnumerable(source, equalFunction);
 	public static List<T> RemoveDoubles<T>(this Span<T> source, Func<T, T, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, equalFunction);
-	public static List<T> RemoveDoubles<T>(this T[] source, Func<T, T, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction);
+	public static List<T> RemoveDoubles<T>(this T[] source, Func<T, T, bool> equalFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, equalFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<T> RemoveDoubles<T, TResult>(this Span<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, function, equalFunction, hashCodeFunction);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
-	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, equalFunction, hashCodeFunction);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
+	public static List<T> RemoveDoubles<T, TResult>(this T[] source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, function, equalFunction, hashCodeFunction);
 	public static List<T> RemoveDoubles<T>(this ReadOnlySpan<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable(source, equalFunction, hashCodeFunction);
 	public static List<T> RemoveDoubles<T>(this Span<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source, equalFunction, hashCodeFunction);
-	public static List<T> RemoveDoubles<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
+	public static List<T> RemoveDoubles<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.RemoveDoublesEnumerable((G.IList<T>)source, equalFunction, hashCodeFunction);
 	public static NList<int> RepresentIntoNumbers<T>(this ReadOnlySpan<T> source) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable(source);
 	public static NList<int> RepresentIntoNumbers<T>(this Span<T> source) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable((ReadOnlySpan<T>)source);
 	public static NList<int> RepresentIntoNumbers<T>(this T[] source) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable((ReadOnlySpan<T>)source.AsSpan());
@@ -75352,53 +75410,53 @@ public static class RedStarLinq
 	public static NList<int> RepresentIntoNumbers<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
 	public static List<T> Reverse<T>(this ReadOnlySpan<T> source) => List<T>.ReverseEnumerable(source);
 	public static List<T> Reverse<T>(this Span<T> source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source);
-	public static List<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static List<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((G.IList<T>)source);
 	public static Span<T> SetAll<T>(Span<T> source, T value) => List<T>.SetAllEnumerable(source, value);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<T, T2>(this Span<T> source, Span<T2> source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
 	public static bool StartsWith<T, T2>(this Span<T> source, Span<T2> source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
-	public static bool StartsWith<T, T2>(this T[] source, T2[] source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
-	public static bool StartsWith<T, T2>(this T[] source, T2[] source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
+	public static bool StartsWith<T, T2>(this T[] source, T2[] source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable((G.IList<T>)source, source2, function);
+	public static bool StartsWith<T, T2>(this T[] source, T2[] source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable((G.IList<T>)source, source2, function);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) => List<T>.StartsWithEnumerable(source, source2);
 	public static bool StartsWith<T, T2>(this Span<T> source, Span<T2> source2) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2);
-	public static bool StartsWith<T, T2>(this T[] source, T2[] source2) => List<T>.StartsWithEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan());
+	public static bool StartsWith<T, T2>(this T[] source, T2[] source2) => List<T>.StartsWithEnumerable((G.IList<T>)source, source2);
 	public static decimal Sum<T>(this ReadOnlySpan<T> source, Func<T, decimal> function) => List<T>.SumEnumerable(source, function);
 	public static decimal Sum<T>(this ReadOnlySpan<T> source, Func<T, int, decimal> function) => List<T>.SumEnumerable(source, function);
 	public static decimal Sum<T>(this Span<T> source, Func<T, decimal> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static decimal Sum<T>(this Span<T> source, Func<T, int, decimal> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static decimal Sum<T>(this T[] source, Func<T, decimal> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static decimal Sum<T>(this T[] source, Func<T, int, decimal> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static decimal Sum<T>(this T[] source, Func<T, decimal> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static decimal Sum<T>(this T[] source, Func<T, int, decimal> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static double Sum<T>(this ReadOnlySpan<T> source, Func<T, double> function) => List<T>.SumEnumerable(source, function);
 	public static double Sum<T>(this ReadOnlySpan<T> source, Func<T, int, double> function) => List<T>.SumEnumerable(source, function);
 	public static double Sum<T>(this Span<T> source, Func<T, double> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static double Sum<T>(this Span<T> source, Func<T, int, double> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static double Sum<T>(this T[] source, Func<T, double> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static double Sum<T>(this T[] source, Func<T, int, double> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static double Sum<T>(this T[] source, Func<T, double> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static double Sum<T>(this T[] source, Func<T, int, double> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static int Sum<T>(this ReadOnlySpan<T> source, Func<T, int> function) => List<T>.SumEnumerable(source, function);
 	public static int Sum<T>(this ReadOnlySpan<T> source, Func<T, int, int> function) => List<T>.SumEnumerable(source, function);
 	public static int Sum<T>(this Span<T> source, Func<T, int> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static int Sum<T>(this Span<T> source, Func<T, int, int> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static int Sum<T>(this T[] source, Func<T, int> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static int Sum<T>(this T[] source, Func<T, int, int> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static int Sum<T>(this T[] source, Func<T, int> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static int Sum<T>(this T[] source, Func<T, int, int> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static uint Sum<T>(this ReadOnlySpan<T> source, Func<T, uint> function) => List<T>.SumEnumerable(source, function);
 	public static uint Sum<T>(this ReadOnlySpan<T> source, Func<T, int, uint> function) => List<T>.SumEnumerable(source, function);
 	public static uint Sum<T>(this Span<T> source, Func<T, uint> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static uint Sum<T>(this Span<T> source, Func<T, int, uint> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static uint Sum<T>(this T[] source, Func<T, uint> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static uint Sum<T>(this T[] source, Func<T, int, uint> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static uint Sum<T>(this T[] source, Func<T, uint> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static uint Sum<T>(this T[] source, Func<T, int, uint> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static long Sum<T>(this ReadOnlySpan<T> source, Func<T, long> function) => List<T>.SumEnumerable(source, function);
 	public static long Sum<T>(this ReadOnlySpan<T> source, Func<T, int, long> function) => List<T>.SumEnumerable(source, function);
 	public static long Sum<T>(this Span<T> source, Func<T, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static long Sum<T>(this Span<T> source, Func<T, int, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static long Sum<T>(this T[] source, Func<T, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static long Sum<T>(this T[] source, Func<T, int, long> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static long Sum<T>(this T[] source, Func<T, long> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static long Sum<T>(this T[] source, Func<T, int, long> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static MpzT Sum<T>(this ReadOnlySpan<T> source, Func<T, MpzT> function) => List<T>.SumEnumerable(source, function);
 	public static MpzT Sum<T>(this ReadOnlySpan<T> source, Func<T, int, MpzT> function) => List<T>.SumEnumerable(source, function);
 	public static MpzT Sum<T>(this Span<T> source, Func<T, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
 	public static MpzT Sum<T>(this Span<T> source, Func<T, int, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source, function);
-	public static MpzT Sum<T>(this T[] source, Func<T, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static MpzT Sum<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.SumEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static MpzT Sum<T>(this T[] source, Func<T, MpzT> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
+	public static MpzT Sum<T>(this T[] source, Func<T, int, MpzT> function) => List<T>.SumEnumerable((G.IList<T>)source, function);
 	public static decimal Sum(this ReadOnlySpan<decimal> source) => List<decimal>.SumEnumerable(source);
 	public static decimal Sum(this Span<decimal> source) => List<decimal>.SumEnumerable((ReadOnlySpan<decimal>)source);
 	public static decimal Sum(this decimal[] source) => List<decimal>.SumEnumerable((ReadOnlySpan<decimal>)source.AsSpan());
@@ -75435,22 +75493,36 @@ public static class RedStarLinq
 	public static BitList ToBitList(this uint[] source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this ReadOnlySpan<T> source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static ListHashSet<T> ToHashSet<T>(this T[] source) => new((ReadOnlySpan<T>)source.AsSpan());
+	public static ListHashSet<T> ToHashSet<T>(this T[] source) => new((G.IList<T>)source);
+	public static List<TResult> ToList<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable(source, function);
+	public static List<TResult> ToList<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.ToListEnumerable(source, function);
+	public static List<TResult> ToList<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<TResult> ToList<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source, function);
+	public static List<TResult> ToList<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static List<TResult> ToList<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> ToList<T>(this ReadOnlySpan<T> source) => new(source);
 	public static List<T> ToList<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static List<T> ToList<T>(this T[] source) => new((ReadOnlySpan<T>)source.AsSpan());
+	public static List<T> ToList<T>(this T[] source) => new((G.IList<T>)source);
+	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
+	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
+	public static NList<TResult> ToNList<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<TResult> ToNList<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable((ReadOnlySpan<T>)source, function);
+	public static NList<TResult> ToNList<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable((G.IList<T>)source, function);
+	public static NList<TResult> ToNList<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable((G.IList<T>)source, function);
+	public static NList<TResult> ToNList<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ToNListEnumerable(source, function);
+	public static NList<TResult> ToNList<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ToNListEnumerable(source, function);
 	public static NList<T> ToNList<T>(this ReadOnlySpan<T> source) where T : unmanaged => new(source);
 	public static NList<T> ToNList<T>(this Span<T> source) where T : unmanaged => new((ReadOnlySpan<T>)source);
-	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => new((ReadOnlySpan<T>)source.AsSpan());
+	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => new((G.IList<T>)source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this ReadOnlySpan<T> source) => new(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => new((ReadOnlySpan<T>)source.AsSpan());
+	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => new((G.IList<T>)source);
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString<T>(this Span<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function));
-	public static string ToString<T>(this T[] source, Func<T, char> function) => new(List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source.AsSpan(), function));
+	public static string ToString<T>(this T[] source, Func<T, char> function) => new(List<T>.ToArrayEnumerable((G.IList<T>)source, function));
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString<T>(this Span<T> source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function));
-	public static string ToString<T>(this T[] source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source.AsSpan(), function));
+	public static string ToString<T>(this T[] source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable((G.IList<T>)source, function));
 	public static string ToString(this ReadOnlySpan<char> source) => new(source.ToArray());
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);
@@ -75543,8 +75615,8 @@ public static class RedStarLinq
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this ReadOnlySpan<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this Span<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this (T, T2)[] source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2)>)source.AsSpan());
@@ -75552,14 +75624,14 @@ public static class RedStarLinq
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this Span<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this T[] source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2, function3);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function, function2, function3);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this ReadOnlySpan<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable(source);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this Span<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source);
 	public static (NList<T>, NList<T2>, NList<T3>) NBreak<T, T2, T3>(this (T, T2, T3)[] source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.BreakEnumerable((ReadOnlySpan<(T, T2, T3)>)source.AsSpan());
@@ -75567,8 +75639,8 @@ public static class RedStarLinq
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this ReadOnlySpan<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable(source, function);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
 	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this Span<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) NBreak<T, TResult, TResult2, TResult3>(this T[] source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.BreakEnumerable((G.IList<T>)source, function);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this NList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where T : unmanaged where TResult : unmanaged where TResult2 : unmanaged => NList<T>.BreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this NList<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
@@ -75589,36 +75661,26 @@ public static class RedStarLinq
 	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
 	public static NList<TResult> NCombine<T, T2, TResult>(this Span<T> source, Span<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
 	public static NList<TResult> NCombine<T, T2, TResult>(this Span<T> source, Span<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, function);
-	public static NList<TResult> NCombine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
-	public static NList<TResult> NCombine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), function);
+	public static NList<TResult> NCombine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2, function);
+	public static NList<TResult> NCombine<T, T2, TResult>(this T[] source, T2[] source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2, function);
 	public static NList<(T, T2)> NCombine<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
 	public static NList<(T, T2)> NCombine<T, T2>(this Span<T> source, Span<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2);
-	public static NList<(T, T2)> NCombine<T, T2>(this T[] source, T2[] source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan());
+	public static NList<(T, T2)> NCombine<T, T2>(this T[] source, T2[] source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this Span<T> source, Span<T2> source2, Span<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3, function);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this Span<T> source, Span<T2> source2, Span<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3, function);
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan(), function);
-	public static NList<TResult> NCombine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan(), function);
+	public static NList<TResult> NCombine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2, source3, function);
+	public static NList<TResult> NCombine<T, T2, T3, TResult>(this T[] source, T2[] source2, T3[] source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2, source3, function);
 	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, ReadOnlySpan<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
 	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this Span<T> source, Span<T2> source2, Span<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3);
-	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this T[] source, T2[] source2, T3[] source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable((ReadOnlySpan<T>)source.AsSpan(), (ReadOnlySpan<T2>)source2.AsSpan(), (ReadOnlySpan<T3>)source3.AsSpan());
+	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this T[] source, T2[] source2, T3[] source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable((G.IList<T>)source, source2, source3);
 	public static NList<TResult> NCombine<T, T2, TResult>(this NList<T> source, NList<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
 	public static NList<TResult> NCombine<T, T2, TResult>(this NList<T> source, NList<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, function);
 	public static NList<(T, T2)> NCombine<T, T2>(this NList<T> source, NList<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<TResult> NCombine<T, T2, T3, TResult>(this NList<T> source, NList<T2> source2, NList<T3> source3, Func<T, T2, T3, int, TResult> function) where T : unmanaged where T2 : unmanaged where T3 : unmanaged where TResult : unmanaged => NList<T>.CombineEnumerable(source, source2, source3, function);
 	public static NList<(T, T2, T3)> NCombine<T, T2, T3>(this NList<T> source, NList<T2> source2, NList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
-	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> NConvert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source, function);
-	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<TResult> NConvert<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ConvertEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
-	public static NList<TResult> NConvert<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
-	public static NList<TResult> NConvert<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<T, TResult>(this NList<T> source, Func<T, IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertAndJoinEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<T, TResult>(this NList<T> source, Func<T, int, IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertAndJoinEnumerable(source, function);
 	public static NList<T> NEmptyList<T>(int length) where T : unmanaged => NList<T>.EmptyListEnumerable(length);
@@ -75636,14 +75698,14 @@ public static class RedStarLinq
 	public static NList<TResult> NPairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
 	public static NList<TResult> NPairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
 	public static NList<TResult> NPairs<T, TResult>(this Span<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
-	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
-	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((G.IList<T>)source, function, offset);
+	public static NList<TResult> NPairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable((G.IList<T>)source, function, offset);
 	public static NList<TResult> NPairs<T, TResult>(this NList<T> source, Func<T, T, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged => NList<T>.PairsEnumerable(source, function, offset);
 	public static NList<TResult> NPairs<T, TResult>(this NList<T> source, Func<T, T, int, TResult> function, int offset = 1) where T : unmanaged where TResult : unmanaged => NList<T>.PairsEnumerable(source, function, offset);
 	public static NList<(T, T)> NPairs<T>(this IEnumerable<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
 	public static NList<(T, T)> NPairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
 	public static NList<(T, T)> NPairs<T>(this Span<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable((ReadOnlySpan<T>)source, offset);
-	public static NList<(T, T)> NPairs<T>(this T[] source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable((ReadOnlySpan<T>)source.AsSpan(), offset);
+	public static NList<(T, T)> NPairs<T>(this T[] source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable((G.IList<T>)source, offset);
 	public static NList<(T, T)> NPairs<T>(this NList<T> source, int offset = 1) where T : unmanaged => NList<T>.PairsEnumerable(source, offset);
 	public static NList<T> NRemoveDoubles<T, TResult>(this NList<T> source, Func<T, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.RemoveDoublesEnumerable(source, function);
 	public static NList<T> NRemoveDoubles<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.RemoveDoublesEnumerable(source, function);

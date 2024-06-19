@@ -202,26 +202,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return false;
 	}
 
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
-	{
-		ArgumentNullException.ThrowIfNull(converter);
-		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
-		for (var i = 0; i < _size; i++)
-			list.SetInternal(i, converter(GetInternal(i)));
-		list._size = _size;
-		return list;
-	}
-
-	public virtual TCertainOutput Convert<TOutput, TCertainOutput>(Func<T, int, TOutput> converter) where TCertainOutput : BaseList<TOutput, TCertainOutput>, new()
-	{
-		ArgumentNullException.ThrowIfNull(converter);
-		var list = Activator.CreateInstance(typeof(TCertainOutput), _size) as TCertainOutput ?? throw new InvalidOperationException();
-		for (var i = 0; i < _size; i++)
-			list.SetInternal(i, converter(GetInternal(i), i));
-		list._size = _size;
-		return list;
-	}
-
 	public virtual TCertain Copy() => CollectionCreator(this);
 
 	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length);
@@ -371,7 +351,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 		return list;
 	}
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new(this, index, length);
+	private protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)this, index, length);
 
 	int System.Collections.IList.IndexOf(object? item)
 	{
@@ -533,8 +513,6 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<
 			Add(value);
 		return this2;
 	}
-
-	public virtual TCertain Prepend(T item) => CapacityCreator(Length + 1).Add(item).AddRange(this);
 
 	public virtual TCertain Remove(Index index) => Remove(index.GetOffset(_size));
 

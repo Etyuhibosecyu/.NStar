@@ -372,10 +372,11 @@ public class LimitedQueue<T> : Queue<T>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Slice<T> : BaseIndexable<T, Slice<T>>
 {
-	private readonly G.IList<T> _base;
+	private readonly G.IList<T>? _base;
+	private readonly G.IReadOnlyList<T>? _base2;
 	private readonly int _start;
 
-	public Slice() : this(Array.Empty<T>()) { }
+	public Slice() : this([]) { }
 
 	public Slice(G.IList<T> @base) : this(@base, 0, @base.Count) { }
 
@@ -383,38 +384,70 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(G.IList<T> @base, int start) : this(@base, start, @base.Count - start) { }
 
-	public Slice(G.IList<T> @base, int start, int length)
+	public Slice(G.IList<T> @base, int start, int length) : this(@base, null, start, length) { }
+
+	public Slice(G.IList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
+
+	public Slice(G.IReadOnlyList<T> @base) : this(@base, 0, @base.Count) { }
+
+	public Slice(G.IReadOnlyList<T> @base, Index start) : this(@base, start.GetOffset(@base.Count)) { }
+
+	public Slice(G.IReadOnlyList<T> @base, int start) : this(@base, start, @base.Count - start) { }
+
+	public Slice(G.IReadOnlyList<T> @base, int start, int length) : this(null, @base, start, length) { }
+
+	public Slice(G.IReadOnlyList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
+
+	public Slice(List<T> @base) : this(@base, 0, @base.Length) { }
+
+	public Slice(List<T> @base, Index start) : this(@base, start.GetOffset(@base.Length)) { }
+
+	public Slice(List<T> @base, int start) : this(@base, start, @base.Length - start) { }
+
+	public Slice(List<T> @base, int start, int length) : this(@base, null, start, length) { }
+
+	public Slice(List<T> @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
+
+	public Slice(T[] @base) : this(@base, 0, @base.Length) { }
+
+	public Slice(T[] @base, Index start) : this(@base, start.GetOffset(@base.Length)) { }
+
+	public Slice(T[] @base, int start) : this(@base, start, @base.Length - start) { }
+
+	public Slice(T[] @base, int start, int length) : this(@base, null, start, length) { }
+
+	public Slice(T[] @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
+
+	private Slice(G.IList<T>? @base, G.IReadOnlyList<T>? base2, int start, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(start);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (start + length > @base.Count)
+		if (start + length > (@base?.Count ?? base2?.Count ?? 0))
 			throw new ArgumentException(null);
-		ArgumentNullException.ThrowIfNull(@base);
+		if (@base == null && base2 == null)
+			throw new ArgumentNullException(nameof(@base));
 		if (@base is Slice<T> slice)
 		{
 			_base = slice._base;
+			_base2 = slice._base2;
 			_start = slice._start + start;
+			_size = length;
+		}
+		else if (base2 is Slice<T> slice2)
+		{
+			_base = slice2._base;
+			_base2 = slice2._base2;
+			_start = slice2._start + start;
 			_size = length;
 		}
 		else
 		{
 			_base = @base;
+			_base2 = @base2;
 			_start = start;
 			_size = length;
 		}
 	}
-
-	public Slice(G.IList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
-
-	public Slice(Slice<T> slice) : this(slice._base, slice._start, slice._size) { }
-
-	public Slice(Slice<T> slice, Index start) : this(slice, start.GetOffset(slice._size)) { }
-
-	public Slice(Slice<T> slice, int start) : this(slice, start, slice._size - start) { }
-
-	public Slice(Slice<T> slice, int start, int length) : this(slice._base, slice._start + start, length) { }
-
-	public Slice(Slice<T> slice, Range range) : this(range.End.GetOffset(slice._size) > slice._size ? throw new ArgumentException(null) : slice._base, slice._start + CreateVar(range.GetOffsetAndLength(slice._size), out var startAndLength).Offset, startAndLength.Length) { }
 
 	public override int Length => _size;
 
@@ -424,7 +457,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException(null);
-		return _base.AsSpan(_start + index, length);
+		return ((IEnumerable<T>?)_base ?? _base2 ?? throw new InvalidOperationException()).AsSpan(_start + index, length);
 	}
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
@@ -439,11 +472,11 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public override void Dispose() => GC.SuppressFinalize(this);
 
-	internal override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection.GetInternal(_start + index) : _base[_start + index];
+	internal override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection.GetInternal(_start + index) : _base != null ? _base[_start + index] : _base2 != null ? _base2[_start + index] : throw new InvalidOperationException();
 
 	private protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new(_base, _start + index, length);
+	private protected override Slice<T> GetSliceInternal(int index, int length) => new(_base, _base2, _start + index, length);
 
 	private protected override int IndexOfInternal(T item, int index, int length)
 	{
@@ -454,7 +487,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		else
 		{
 			for (var i = _start + index; i < _start + index + length; i++)
-				if (_base[i]?.Equals(item) ?? item == null)
+				if ((_base != null ? _base[i] : _base2 != null ? _base2[i] : throw new InvalidOperationException())?.Equals(item) ?? item == null)
 					return i - _start;
 			return -1;
 		}
@@ -470,7 +503,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		{
 			var endIndex = _start + index - length + 1;
 			for (var i = _start + index; i >= endIndex; i--)
-				if (_base[i]?.Equals(item) ?? item == null)
+				if ((_base != null ? _base[i] : _base2 != null ? _base2[i] : throw new InvalidOperationException())?.Equals(item) ?? item == null)
 					return i - _start;
 			return -1;
 		}

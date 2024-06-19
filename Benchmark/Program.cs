@@ -21,7 +21,7 @@ var a = E.ToDictionary(E.Where(E.GroupBy(E.Zip(E.Skip(list, 1), E.Skip(list, 2),
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
 sw.Restart();
-var b = list.AsSpan(1).Combine(list.AsSpan(2), (x, y) => ((ulong)(uint)x << 32) + (uint)y).Group(new EComparer<ulong>((x, y) => x == y, x => (int)(x >> 32) ^ (int)x)).FilterInPlace(x => x.Length >= 2).ToDictionary(x => x.Key, col => col.Sort());
+var b = list.GetSlice(1).Combine(list.GetSlice(2), (x, y) => ((ulong)(uint)x << 32) + (uint)y).Group(new EComparer<ulong>((x, y) => x == y, x => (int)(x >> 32) ^ (int)x)).FilterInPlace(x => x.Length >= 2).ToDictionary(x => x.Key, col => col.Sort());
 sw.Stop();
 Console.WriteLine(sw.ElapsedMilliseconds);
 Console.WriteLine(RedStarLinq.Equals(a, b, (x, y) => x.Key == y.Key && RedStarLinq.Equals(x.Value, y.Value, (x, y) => x == y)));

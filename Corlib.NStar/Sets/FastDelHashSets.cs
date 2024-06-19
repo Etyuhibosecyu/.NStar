@@ -203,7 +203,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new(GetRangeInternal(index, length).FixUpFakeIndexes());
+	private protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)GetRangeInternal(index, length).FixUpFakeIndexes());
 
 	private protected override TCertain Insert(T? item, out int index, int hashCode)
 	{

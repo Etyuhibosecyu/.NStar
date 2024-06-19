@@ -154,10 +154,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		Changed();
 	}
 
-	public virtual Buffer<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, Buffer<TOutput>>(converter);
-
-	public virtual Buffer<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, Buffer<TOutput>>(converter);
-
 	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (source != destination || sourceIndex >= destinationIndex)
@@ -557,10 +553,6 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	public virtual List<TOutput> Convert<TOutput>(Func<T, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
-
-	public virtual List<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) => base.Convert<TOutput, List<TOutput>>(converter);
-
 	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, length);
@@ -834,7 +826,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (fasterButMoreMemory)
 		{
-			Convert(function).Sort(this, index, length, comparer);
+			ToListEnumerable(this, function).Sort(this, index, length, comparer);
 			return this as TCertain ?? throw new InvalidOperationException();
 		}
 		else
@@ -1258,10 +1250,6 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	}
 
 	private protected override int CompareInternal(int index, NList<T> other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
-
-	public virtual NList<TOutput> Convert<TOutput>(Func<T, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
-
-	public virtual NList<TOutput> Convert<TOutput>(Func<T, int, TOutput> converter) where TOutput : unmanaged => base.Convert<TOutput, NList<TOutput>>(converter);
 
 	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int length)
 	{
