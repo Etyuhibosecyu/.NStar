@@ -71,7 +71,12 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	/// Import the integer in the byte array bytes.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public readonly void FromByteArray(byte[] source, int order) => Mpir.MpirMpzImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
+	public readonly void FromByteArray(byte[] source, int order)
+	{
+		Mpir.MpirMpzImport(this, (uint)source.Length, order, sizeof(byte), 0, 0u, source);
+		if (source[order == 1 ? 0 : ^1] >= 128)
+			Mpir.MpzSet(this, Subtract((MpzT)1 << source.Length * 8));
+	}
 
 	/// Import the integer in the byte array bytes, starting at startOffset
 	/// and ending at endOffset.
@@ -1702,7 +1707,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static explicit operator int(MpzT value) => Mpir.MpzGetSi(value);
 
-	public static explicit operator uint(MpzT value) => Mpir.MpzGetUi(value);
+	public static explicit operator uint(MpzT value)
+	{
+		var result = Mpir.MpzGetUi(value);
+		if (value < 0)
+			result = ~result + 1;
+		return result;
+	}
 
 	public static explicit operator short(MpzT value) => (short)(int)value;
 
@@ -1711,6 +1722,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	public static explicit operator long(MpzT value)
 	{
 		var bytes = new byte[8];
+		if (value < 0)
+			Array.Fill(bytes, (byte)255);
 		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
 		var length = Math.Min(exportedBytes.Length, bytes.Length);
 		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
@@ -1721,6 +1734,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	public static explicit operator ulong(MpzT value)
 	{
 		var bytes = new byte[8];
+		if (value < 0)
+			Array.Fill(bytes, (byte)255);
 		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
 		var length = Math.Min(exportedBytes.Length, bytes.Length);
 		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;

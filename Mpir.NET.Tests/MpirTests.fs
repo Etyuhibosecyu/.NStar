@@ -1,6 +1,7 @@
 ﻿module MpirTests
 
 open System
+open System.Linq
 open Mpir.NET
 open NUnit.Framework
 
@@ -15,6 +16,15 @@ module NumericLiteralZ =
 let bigNumLiteral1 = 60239597246800183089356887648914080803568478687972971429218563117893654732155483254Z
 let bigNumStr1 =    "60239597246800183089356887648914080803568478687972971429218563117893654732155483254"
 let bigint1 = bigint.Parse bigNumStr1
+let byte1 = byte (bigint1 % bigint 256)
+let short1 = int16 (bigint1 % bigint 65536)
+let ushort1 = uint16 (bigint1 % bigint 65536)
+let int1 = int32 (bigint1 % bigint 4294967296L)
+let uint1 = uint32 (bigint1 % bigint 4294967296L)
+let ulong1 = uint64 (bigint1 % bigint.Parse "18446744073709551616")
+let long1 = int64 ulong1
+let byteArray : byte[] = Array.zeroCreate 8
+let random = Random 1234567890
 
 // A more readable way to concatenate arrays.
 let inline private (++) (a:^T[]) (b:^T[]) = Array.append a b
@@ -41,20 +51,117 @@ type ``MpzT - import and export`` () =
         Assert.AreEqual(bigint1, t)
 
     [<Test>]
+    static member ``Exporting byte`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (byte)z
+        Assert.AreEqual(byte1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (byte)z
+            Assert.AreEqual(byteArray[0], t)
+
+    [<Test>]
+    static member ``Exporting short`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (int16)z
+        Assert.AreEqual(short1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (int16)z
+            Assert.AreEqual(((int16)byteArray[1] <<< 8) + (int16)byteArray[0], t)
+
+    [<Test>]
+    static member ``Exporting ushort`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (uint16)z
+        Assert.AreEqual(ushort1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (uint16)z
+            Assert.AreEqual(((uint16)byteArray[1] <<< 8) + (uint16)byteArray[0], t)
+
+    [<Test>]
+    static member ``Exporting int`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (int32)z
+        Assert.AreEqual(int1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (int32)z
+            Assert.AreEqual(((((int32)byteArray[3] <<< 8) + (int32)byteArray[2] <<< 8) + (int32)byteArray[1] <<< 8) + (int32)byteArray[0], t)
+
+    [<Test>]
+    static member ``Exporting uint`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (uint32)z
+        Assert.AreEqual(uint1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (uint32)z
+            Assert.AreEqual(((((uint32)byteArray[3] <<< 8) + (uint32)byteArray[2] <<< 8) + (uint32)byteArray[1] <<< 8) + (uint32)byteArray[0], t)
+
+    [<Test>]
+    static member ``Exporting long`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (int64)z
+        Assert.AreEqual(long1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (int64)z
+            Assert.AreEqual(BitConverter.ToInt64(byteArray), t)
+
+    [<Test>]
+    static member ``Exporting ulong`` () =
+        let mutable z = new MpzT(bigNumStr1)
+        let mutable t = (uint64)z
+        Assert.AreEqual(ulong1, t)
+        for i in 0..1000 do
+            random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            t <- (uint64)z
+            Assert.AreEqual(BitConverter.ToUInt64(byteArray), t)
+
+    [<Test>]
     static member ``Importing bigint bytes, big endian`` () =
         let a = bigint.Parse(bigNumStr1)
-        let z = new MpzT(a.ToByteArray() |> Array.rev, 1)
-
-        let zStr = Mpir.MpzGetString(10u, z)
+        let mutable byteArray = a.ToByteArray()
+        let mutable z = new MpzT(byteArray |> Array.rev, 1)
+        let mutable zStr = Mpir.MpzGetString(10u, z)
+        let mutable arr = z.ToByteArray(1) |> Array.rev
         Assert.AreEqual(bigNumStr1, zStr)
+        Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+        for i in 0..10000 do
+            while byteArray[byteArray.Length - 1] = (byte)0 || byteArray[byteArray.Length - 1] = (byte)255 do
+                random.NextBytes byteArray
+            z <- new MpzT(byteArray |> Array.rev, 1)
+            zStr <- Mpir.MpzGetString(10u, z)
+            arr <- z.ToByteArray(1) |> Array.rev
+            Assert.AreEqual((new bigint(byteArray)).ToString(), zStr)
+            Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
 
     [<Test>]
     static member ``Importing bigint bytes, little endian`` () =
         let a = bigint.Parse(bigNumStr1)
-        let z = new MpzT(a.ToByteArray(), -1)
-
-        let zStr = Mpir.MpzGetString(10u, z)
+        let mutable byteArray = a.ToByteArray()
+        let mutable z = new MpzT(byteArray, -1)
+        let mutable zStr = Mpir.MpzGetString(10u, z)
+        let mutable arr = z.ToByteArray(-1)
         Assert.AreEqual(bigNumStr1, zStr)
+        Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+        for i in 0..10000 do
+            while byteArray[0] = (byte)0 || byteArray[0] = (byte)255 do
+                random.NextBytes byteArray
+            z <- new MpzT(byteArray, -1)
+            zStr <- Mpir.MpzGetString(10u, z)
+            arr <- z.ToByteArray(-1)
+            Assert.AreEqual((new bigint(byteArray)).ToString(), zStr)
+            Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
 
     [<Test>]
     static member ``Exporting mpz, big endian`` () =
@@ -86,8 +193,8 @@ type ``MpzT - import and export`` () =
     static member ``Importing uint64, big endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let bigEndianBytes =
-            if BitConverter.IsLittleEndian then Array.rev bytes
-            else bytes
+            Array.append (Array.zeroCreate 1) (if BitConverter.IsLittleEndian then Array.rev bytes
+            else bytes)
         let z = new MpzT(bigEndianBytes, 1)
 
         let zStr = Mpir.MpzGetString(10u, z)
@@ -100,8 +207,8 @@ type ``MpzT - import and export`` () =
     static member ``Importing uint64, little endian`` (n : uint64) = 
         let bytes = BitConverter.GetBytes(n)
         let littleEndianBytes =
-            if BitConverter.IsLittleEndian then bytes
-            else Array.rev bytes
+            Array.append (if BitConverter.IsLittleEndian then bytes
+            else Array.rev bytes) (Array.zeroCreate 1)
         let z = new MpzT(littleEndianBytes, -1)
 
         let zStr = Mpir.MpzGetString(10u, z)

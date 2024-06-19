@@ -176,12 +176,18 @@ public static partial class Mpir
 	{
 		var bufSize = (int)Min(MpzSizeinbase(op, 256), 2147483647);
 		var destBuf = new byte[bufSize];
+		var op2 = op;
+		if (op < 0)
+		{
+			op = new(op);
+			op += (MpzT)1 << bufSize * 8;
+		}
 		fixed (void* destPtr = destBuf)
 		{
 			// null countp argument, because we already know how large the result will be.
 			Mpir_internal_mpz_export(destPtr, null, order, size, endian, nails, op.val);
 		}
-		return destBuf;
+		return destBuf[order == 1 ? 0 : ^1] < 128 || op2 < 0 ? destBuf : order == 1 ? [0, .. destBuf] : [.. destBuf, 0];
 	}
 	#endregion
 }

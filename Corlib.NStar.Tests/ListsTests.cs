@@ -3594,7 +3594,7 @@ public class BigSumListTests
 		var arr = RedStarLinq.FillArray(16, _ =>
 		{
 			random.NextBytes(bytes);
-			return new MpzT(bytes, 1);
+			return new MpzT([0, .. bytes], 1);
 		});
 		sl = new(arr);
 		gl = new(arr);
