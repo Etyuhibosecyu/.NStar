@@ -64,6 +64,319 @@ public partial class List<T, TCertain>
 		}
 	}
 
+	internal static bool AllEqualEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			var prev = function(list._items[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list._items[i]);
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			var prev = function(array[0]);
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = function(array[i]);
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			var prev = function(list2[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list2[i]);
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			var prev = function(list3[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list3[i]);
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			var prev = function(en.Current);
+			while (en.MoveNext())
+			{
+				var item = function(en.Current);
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllEqualEnumerable(IEnumerable<T> source, Func<T, T, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			var prev = list._items[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!function(item, prev))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			var prev = array[0];
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!function(item, prev))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			var prev = list2[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				if (!function(item, prev))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			var prev = list3[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				if (!function(item, prev))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			var prev = en.Current;
+			while (en.MoveNext())
+			{
+				var item = en.Current;
+				if (!function(item, prev))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllEqualEnumerable(IEnumerable<T> source, Func<T, T, int, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			var prev = list._items[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!function(item, prev, i - 1))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			var prev = array[0];
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!function(item, prev, i - 1))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			var prev = list2[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				if (!function(item, prev, i - 1))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			var prev = list3[0];
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				if (!function(item, prev, i - 1))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			var i = 1;
+			var prev = en.Current;
+			while (en.MoveNext())
+			{
+				var item = en.Current;
+				if (!function(item, prev, i - 1))
+					return false;
+				prev = item;
+				i++;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllEqualEnumerable(IEnumerable<T> source)
+	{
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			var prev = list._items[0];
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			var prev = array[0];
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			var prev = list2[0];
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			var prev = list3[0];
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			var prev = en.Current;
+			while (en.MoveNext())
+			{
+				var item = en.Current;
+				if (!(item?.Equals(prev) ?? prev == null))
+					return false;
+				prev = item;
+			}
+			return true;
+		}
+	}
+
 	internal static bool AnyEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -37883,11 +38196,11 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static Slice<TResult> PairsEnumerable<TResult>(G.IList<T> source, Func<T, T, TResult> function, int offset = 1) => new CombineList<T, TResult>(source.GetSlice(), source.GetSlice(offset), function).GetSlice();
+	internal static Slice<TResult> PairsEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, T, TResult> function, int offset = 1) => new CombineList<T, TResult>(source, source.GetROLSlice(offset), function).GetSlice();
 
-	internal static Slice<TResult> PairsEnumerable<TResult>(G.IList<T> source, Func<T, T, int, TResult> function, int offset = 1) => new CombineListInt<T, TResult>(source.GetSlice(), source.GetSlice(offset), function).GetSlice();
+	internal static Slice<TResult> PairsEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, T, int, TResult> function, int offset = 1) => new CombineListInt<T, TResult>(source, source.GetROLSlice(offset), function).GetSlice();
 
-	internal static Slice<(T, T)> PairsEnumerable(G.IList<T> source, int offset = 1) => new CombineListPure<T>(source.GetSlice(), source.GetSlice(offset)).GetSlice();
+	internal static Slice<(T, T)> PairsEnumerable(G.IReadOnlyList<T> source, int offset = 1) => new CombineListPure<T>(source, source.GetROLSlice(offset)).GetSlice();
 
 	internal static IEnumerable<TResult> PairsEnumerable<TResult>(IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1)
 	{
@@ -38155,6 +38468,1181 @@ public partial class List<T, TCertain>
 	}
 
 	internal static Slice<T> PrependEnumerable(G.IReadOnlyList<T> source, T element) => new PrependList(source, element).GetROLSlice();
+
+	internal static decimal ProductEnumerable(IEnumerable<T> source, Func<T, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			decimal result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static decimal ProductEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			decimal result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static double ProductEnumerable(IEnumerable<T> source, Func<T, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			double result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static double ProductEnumerable(IEnumerable<T> source, Func<T, int, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			double result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static int ProductEnumerable(IEnumerable<T> source, Func<T, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			var result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static int ProductEnumerable(IEnumerable<T> source, Func<T, int, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			var result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static uint ProductEnumerable(IEnumerable<T> source, Func<T, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			uint result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static uint ProductEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			uint result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static long ProductEnumerable(IEnumerable<T> source, Func<T, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			long result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static long ProductEnumerable(IEnumerable<T> source, Func<T, int, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			long result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static MpzT ProductEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0]),
+					2 => function(list._items[0]) * function(list._items[1]),
+					3 => function(list._items[0]) * function(list._items[1]) * function(list._items[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list._items[i]);
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0]),
+					2 => function(array[0]) * function(array[1]),
+					3 => function(array[0]) * function(array[1]) * function(array[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < array.Length; i++)
+				result *= function(array[i]);
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0]),
+					2 => function(list2[0]) * function(list2[1]),
+					3 => function(list2[0]) * function(list2[1]) * function(list2[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list2[i]);
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0]),
+					2 => function(list3[0]) * function(list3[1]),
+					3 => function(list3[0]) * function(list3[1]) * function(list3[2]),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+				result *= function(list3[i]);
+			return result;
+		}
+		else
+		{
+			MpzT result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item);
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static MpzT ProductEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list._items[0], 0),
+					2 => function(list._items[0], 0) * function(list._items[1], 1),
+					3 => function(list._items[0], 0) * function(list._items[1], 1) * function(list._items[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => function(array[0], 0),
+					2 => function(array[0], 0) * function(array[1], 1),
+					3 => function(array[0], 0) * function(array[1], 1) * function(array[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list2[0], 0),
+					2 => function(list2[0], 0) * function(list2[1], 1),
+					3 => function(list2[0], 0) * function(list2[1], 1) * function(list2[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => function(list3[0], 0),
+					2 => function(list3[0], 0) * function(list3[1], 1),
+					3 => function(list3[0], 0) * function(list3[1], 1) * function(list3[2], 2),
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result *= function(item, i);
+			}
+			return result;
+		}
+		else
+		{
+			MpzT result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= function(item, i);
+				i++;
+			}
+			return result;
+		}
+	}
 
 	internal static T? ProgressionEnumerable(IEnumerable<T> source, Func<T, T, T> function)
 	{
@@ -52370,7 +53858,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
+	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -52388,7 +53876,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
+	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -52406,7 +53894,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PBreakEnumerable<T2>(G.IList<(T, T2)> source)
+	internal static (List<T>, List<T2>) PBreakEnumerable<T2>(G.IReadOnlyList<(T, T2)> source)
 	{
 		var length = source.Count;
 		List<T> result = new(length);
@@ -52417,7 +53905,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, (TResult, TResult2)> function)
+	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IReadOnlyList<T> source, Func<T, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52433,7 +53921,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IList<T> source, Func<T, int, (TResult, TResult2)> function)
+	internal static (List<TResult>, List<TResult2>) PBreakEnumerable<TResult, TResult2>(G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52449,7 +53937,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
+	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -52471,7 +53959,7 @@ public partial class List<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
+	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -52492,7 +53980,7 @@ public partial class List<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (List<T>, List<T2>, List<T3>) PBreakEnumerable<T2, T3>(G.IList<(T, T2, T3)> source)
+	internal static (List<T>, List<T2>, List<T3>) PBreakEnumerable<T2, T3>(G.IReadOnlyList<(T, T2, T3)> source)
 	{
 		var length = source.Count;
 		List<T> result = new(length);
@@ -52505,7 +53993,7 @@ public partial class List<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function)
+	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IReadOnlyList<T> source, Func<T, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52523,7 +54011,7 @@ public partial class List<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
+	internal static (List<TResult>, List<TResult2>, List<TResult3>) PBreakEnumerable<TResult, TResult2, TResult3>(G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52541,7 +54029,7 @@ public partial class List<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function)
+	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Count, source2.Count);
@@ -52556,7 +54044,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function)
+	internal static List<TResult> PCombineEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Math.Min(source.Count, source2.Count);
@@ -52571,7 +54059,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<(T, T2)> PCombineEnumerable<T2>(G.IList<T> source, G.IList<T2> source2)
+	internal static List<(T, T2)> PCombineEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
 	{
 		var length = Math.Min(source.Count, source2.Count);
 		List<(T, T2)> result = new(length);
@@ -52585,7 +54073,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function)
+	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
@@ -52601,7 +54089,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function)
+	internal static List<TResult> PCombineEnumerable<T2, T3, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
@@ -52617,7 +54105,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<(T, T2, T3)> PCombineEnumerable<T2, T3>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3)
+	internal static List<(T, T2, T3)> PCombineEnumerable<T2, T3>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3)
 	{
 		var length = MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		List<(T, T2, T3)> result = new(length);
@@ -52632,7 +54120,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target)
 	{
 		var length = source.Count;
 		var result = false;
@@ -52648,7 +54136,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, IEqualityComparer<T> comparer)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, IEqualityComparer<T> comparer)
 	{
 		var length = source.Count;
 		var result = false;
@@ -52664,7 +54152,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, Func<T, T, bool> equalFunction)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction)
 	{
 		var comparer = new EComparer<T>(equalFunction);
 		var length = source.Count;
@@ -52681,7 +54169,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		var length = source.Count;
@@ -52698,7 +54186,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
+	internal static List<TResult> PConvertEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52708,7 +54196,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> PConvertEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
+	internal static List<TResult> PConvertEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52750,7 +54238,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PFilterEnumerable(G.IList<T> source, Func<T, bool> function)
+	internal static List<T> PFilterEnumerable(G.IReadOnlyList<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52764,7 +54252,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PFilterEnumerable(G.IList<T> source, Func<T, int, bool> function)
+	internal static List<T> PFilterEnumerable(G.IReadOnlyList<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -52778,7 +54266,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = [];
@@ -52795,7 +54283,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
 	{
 		try
 		{
@@ -52819,7 +54307,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source)
+	internal static List<T> PRemoveDoublesEnumerable(G.IReadOnlyList<T> source)
 	{
 		ParallelHashSet<T> hs = [];
 		var length = source.Count;
@@ -52835,7 +54323,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(comparer);
@@ -52852,7 +54340,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
 	{
 		try
 		{
@@ -52876,7 +54364,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, IEqualityComparer<T> comparer)
+	internal static List<T> PRemoveDoublesEnumerable(G.IReadOnlyList<T> source, IEqualityComparer<T> comparer)
 	{
 		ParallelHashSet<T> hs = new(comparer);
 		var length = source.Count;
@@ -52892,7 +54380,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
@@ -52909,7 +54397,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
 		try
 		{
@@ -52933,7 +54421,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, Func<T, T, bool> equalFunction)
+	internal static List<T> PRemoveDoublesEnumerable(G.IReadOnlyList<T> source, Func<T, T, bool> equalFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = source.Count;
@@ -52949,7 +54437,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
@@ -52966,7 +54454,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	internal static List<T> PRemoveDoublesEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
 		try
 		{
@@ -52990,7 +54478,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<T> PRemoveDoublesEnumerable(G.IList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	internal static List<T> PRemoveDoublesEnumerable(G.IReadOnlyList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Count;
@@ -53006,7 +54494,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = [];
@@ -53030,7 +54518,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function)
 	{
 		try
 		{
@@ -53061,7 +54549,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
 	{
 		ParallelHashSet<T> hs = [];
 		var length = Math.Min(source.Count, source2.Count);
@@ -53084,7 +54572,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(comparer);
@@ -53108,7 +54596,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer)
 	{
 		try
 		{
@@ -53139,7 +54627,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, IEqualityComparer<T> comparer)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, IEqualityComparer<T> comparer)
 	{
 		ParallelHashSet<T> hs = new(comparer);
 		var length = Math.Min(source.Count, source2.Count);
@@ -53162,7 +54650,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
@@ -53186,7 +54674,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction)
 	{
 		try
 		{
@@ -53217,7 +54705,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		var length = Math.Min(source.Count, source2.Count);
@@ -53240,7 +54728,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
@@ -53264,7 +54752,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2, TResult>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction)
 	{
 		try
 		{
@@ -53295,7 +54783,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	internal static (List<T>, List<T2>) PRemoveDoublesEnumerable<T2>(G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = Math.Min(source.Count, source2.Count);
@@ -53318,7 +54806,7 @@ public partial class List<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static TResult[] PToArrayEnumerable<TResult>(G.IList<T> source, Func<T, TResult> function)
+	internal static TResult[] PToArrayEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -53327,7 +54815,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static TResult[] PToArrayEnumerable<TResult>(G.IList<T> source, Func<T, int, TResult> function)
+	internal static TResult[] PToArrayEnumerable<TResult>(G.IReadOnlyList<T> source, Func<T, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -53336,7 +54824,7 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static T[] PToArrayEnumerable(G.IList<T> source)
+	internal static T[] PToArrayEnumerable(G.IReadOnlyList<T> source)
 	{
 		var length = source.Count;
 		var result = new T[length];
@@ -67326,6 +68814,475 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
+	internal static decimal ProductEnumerable(IEnumerable<decimal> source)
+	{
+		if (source is NList<decimal> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list._items[0],
+					2 => list._items[0] * list._items[1],
+					3 => list._items[0] * list._items[1] * list._items[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is decimal[] array)
+		{
+			decimal result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<decimal> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			decimal result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			decimal result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static double ProductEnumerable(IEnumerable<double> source)
+	{
+		if (source is NList<double> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list._items[0],
+					2 => list._items[0] * list._items[1],
+					3 => list._items[0] * list._items[1] * list._items[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is double[] array)
+		{
+			double result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<double> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			double result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			double result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static int ProductEnumerable(IEnumerable<int> source)
+	{
+		if (source is NList<int> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list._items[0],
+					2 => list._items[0] * list._items[1],
+					3 => list._items[0] * list._items[1] * list._items[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is int[] array)
+		{
+			var result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<int> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			var result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			var result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static uint ProductEnumerable(IEnumerable<uint> source)
+	{
+		if (source is NList<uint> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list._items[0],
+					2 => list._items[0] * list._items[1],
+					3 => list._items[0] * list._items[1] * list._items[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is uint[] array)
+		{
+			uint result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<uint> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			uint result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			uint result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static long ProductEnumerable(IEnumerable<long> source)
+	{
+		if (source is NList<long> list)
+		{
+			var length = list._size;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list._items[0],
+					2 => list._items[0] * list._items[1],
+					3 => list._items[0] * list._items[1] * list._items[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is long[] array)
+		{
+			long result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<long> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			long result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			long result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
+	internal static MpzT ProductEnumerable(IEnumerable<MpzT> source)
+	{
+		if (source is NList<MpzT> list)
+		{
+			var length = list._size;
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is MpzT[] array)
+		{
+			MpzT result = 1;
+			if (array.Length <= 3)
+			{
+				return array.Length switch
+				{
+					0 => 1,
+					1 => array[0],
+					2 => array[0] * array[1],
+					3 => array[0] * array[1] * array[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result *= item;
+			}
+			return result;
+		}
+		else if (source is G.IList<MpzT> list2)
+		{
+			var length = list2.Count;
+			if (length <= 3)
+			{
+				return length switch
+				{
+					0 => 1,
+					1 => list2[0],
+					2 => list2[0] * list2[1],
+					3 => list2[0] * list2[1] * list2[2],
+					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+				};
+			}
+			MpzT result = 1;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result *= item;
+			}
+			return result;
+		}
+		else
+		{
+			MpzT result = 1;
+			var i = 0;
+			foreach (var item in source)
+			{
+				result *= item;
+				i++;
+			}
+			return result;
+		}
+	}
+
 	internal static NList<T> RemoveDoublesEnumerable<TResult>(NList<T> source, Func<T, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -71435,6 +73392,10 @@ public static class RedStarLinq
 {
 	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.All(source, function);
 	public static bool All<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
+	public static bool AllEqual<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.AllEqualEnumerable(source, function);
+	public static bool AllEqual<T>(this IEnumerable<T> source, Func<T, T, bool> function) => List<T>.AllEqualEnumerable(source, function);
+	public static bool AllEqual<T>(this IEnumerable<T> source, Func<T, T, int, bool> function) => List<T>.AllEqualEnumerable(source, function);
+	public static bool AllEqual<T>(this IEnumerable<T> source) => List<T>.AllEqualEnumerable(source);
 	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable(source, function);
@@ -72189,12 +74150,12 @@ public static class RedStarLinq
 	public static TResult? Max<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => Enumerable.Max(source, selector);
 	public static TResult? Max<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> selector) => List<T>.Max(source, selector);
 	public static T? Max<T>(this IEnumerable<T> source) => Enumerable.Max(source);
-	public static decimal Max(params decimal[] source) => NList<bool>.MaxEnumerable(source);
-	public static double Max(params double[] source) => NList<bool>.MaxEnumerable(source);
-	public static int Max(params int[] source) => NList<bool>.MaxEnumerable(source);
-	public static uint Max(params uint[] source) => NList<bool>.MaxEnumerable(source);
-	public static long Max(params long[] source) => NList<bool>.MaxEnumerable(source);
-	public static MpzT Max(params MpzT[] source) => NList<bool>.MaxEnumerable(source);
+	public static decimal Max(params decimal[] source) => List<decimal>.MaxEnumerable(source.AsSpan());
+	public static double Max(params double[] source) => List<double>.MaxEnumerable(source.AsSpan());
+	public static int Max(params int[] source) => List<int>.MaxEnumerable(source.AsSpan());
+	public static uint Max(params uint[] source) => List<uint>.MaxEnumerable(source.AsSpan());
+	public static long Max(params long[] source) => List<long>.MaxEnumerable(source.AsSpan());
+	public static MpzT Max(params MpzT[] source) => List<MpzT>.MaxEnumerable(source.AsSpan());
 	public static T? Max<T>(params T?[] source) => Enumerable.Max(source);
 	public static decimal Mean<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.MeanEnumerable(source, function);
 	public static decimal Mean<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.MeanEnumerable(source, function);
@@ -72269,19 +74230,40 @@ public static class RedStarLinq
 	public static TResult? Min<T, TResult>(this IEnumerable<T> source, Func<T, TResult> selector) => Enumerable.Min(source, selector);
 	public static TResult? Min<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> selector) => List<T>.Min(source, selector);
 	public static T? Min<T>(this IEnumerable<T> source) => Enumerable.Min(source);
-	public static decimal Min(params decimal[] source) => NList<bool>.MinEnumerable(source);
-	public static double Min(params double[] source) => NList<bool>.MinEnumerable(source);
-	public static int Min(params int[] source) => NList<bool>.MinEnumerable(source);
-	public static uint Min(params uint[] source) => NList<bool>.MinEnumerable(source);
-	public static long Min(params long[] source) => NList<bool>.MinEnumerable(source);
-	public static MpzT Min(params MpzT[] source) => NList<bool>.MinEnumerable(source);
+	public static decimal Min(params decimal[] source) => List<decimal>.MinEnumerable(source.AsSpan());
+	public static double Min(params double[] source) => List<double>.MinEnumerable(source.AsSpan());
+	public static int Min(params int[] source) => List<int>.MinEnumerable(source.AsSpan());
+	public static uint Min(params uint[] source) => List<uint>.MinEnumerable(source.AsSpan());
+	public static long Min(params long[] source) => List<long>.MinEnumerable(source.AsSpan());
+	public static MpzT Min(params MpzT[] source) => List<MpzT>.MinEnumerable(source.AsSpan());
 	public static T? Min<T>(params T?[] source) => Enumerable.Min(source);
 	public static IEnumerable<TResult> OfType<TResult>(this IEnumerable source) => Enumerable.OfType<TResult>(source);
+	public static Slice<TResult> Pairs<T, TResult>(this IReadOnlyList<T> source, Func<T, T, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
 	public static IEnumerable<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
+	public static Slice<TResult> Pairs<T, TResult>(this IReadOnlyList<T> source, Func<T, T, int, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
 	public static IEnumerable<TResult> Pairs<T, TResult>(this IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) => List<T>.PairsEnumerable(source, function, offset);
+	public static Slice<(T, T)> Pairs<T>(this IReadOnlyList<T> source, int offset = 1) => List<T>.PairsEnumerable(source, offset);
 	public static IEnumerable<(T, T)> Pairs<T>(this IEnumerable<T> source, int offset = 1) => List<T>.PairsEnumerable(source, offset);
 	public static Slice<T> Prepend<T>(this G.IReadOnlyList<T> source, T element) => List<T>.PrependEnumerable(source, element);
 	public static IEnumerable<T> Prepend<T>(this IEnumerable<T> source, T element) => Enumerable.Prepend(source, element);
+	public static decimal Product<T>(this IEnumerable<T> source, Func<T, decimal> function) => List<T>.ProductEnumerable(source, function);
+	public static decimal Product<T>(this IEnumerable<T> source, Func<T, int, decimal> function) => List<T>.ProductEnumerable(source, function);
+	public static double Product<T>(this IEnumerable<T> source, Func<T, double> function) => List<T>.ProductEnumerable(source, function);
+	public static double Product<T>(this IEnumerable<T> source, Func<T, int, double> function) => List<T>.ProductEnumerable(source, function);
+	public static int Product<T>(this IEnumerable<T> source, Func<T, int> function) => List<T>.ProductEnumerable(source, function);
+	public static int Product<T>(this IEnumerable<T> source, Func<T, int, int> function) => List<T>.ProductEnumerable(source, function);
+	public static uint Product<T>(this IEnumerable<T> source, Func<T, uint> function) => List<T>.ProductEnumerable(source, function);
+	public static uint Product<T>(this IEnumerable<T> source, Func<T, int, uint> function) => List<T>.ProductEnumerable(source, function);
+	public static long Product<T>(this IEnumerable<T> source, Func<T, long> function) => List<T>.ProductEnumerable(source, function);
+	public static long Product<T>(this IEnumerable<T> source, Func<T, int, long> function) => List<T>.ProductEnumerable(source, function);
+	public static MpzT Product<T>(this IEnumerable<T> source, Func<T, MpzT> function) => List<T>.ProductEnumerable(source, function);
+	public static MpzT Product<T>(this IEnumerable<T> source, Func<T, int, MpzT> function) => List<T>.ProductEnumerable(source, function);
+	public static decimal Product(this IEnumerable<decimal> source) => NList<decimal>.ProductEnumerable(source);
+	public static double Product(this IEnumerable<double> source) => NList<double>.ProductEnumerable(source);
+	public static int Product(this IEnumerable<int> source) => NList<int>.ProductEnumerable(source);
+	public static uint Product(this IEnumerable<uint> source) => NList<int>.ProductEnumerable(source);
+	public static long Product(this IEnumerable<long> source) => NList<long>.ProductEnumerable(source);
+	public static MpzT Product(this IEnumerable<MpzT> source) => NList<MpzT>.ProductEnumerable(source);
 	public static T? Progression<T>(this IEnumerable<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static TResult? Progression<T, TResult>(this IEnumerable<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable(source, seed, function);
 	public static T Random<T>(this G.IList<T> source) => source[random.Next(source.Count)];
@@ -72470,7 +74452,7 @@ public static class RedStarLinq
 	public static bool All<T>(this T[] source, Func<T, int, bool> function) => List<T>.AllEnumerable((G.IList<T>)source, function);
 	public static bool Any<T>(this ReadOnlySpan<T> source) => List<T>.AnyEnumerable(source);
 	public static bool Any<T>(this Span<T> source) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source);
-	public static bool Any<T>(this T[] source) => Enumerable.Any(source);
+	public static bool Any<T>(this T[] source) => source.Length != 0;
 	public static bool Any<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.AnyEnumerable(source, function);
 	public static bool Any<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable(source, function);
 	public static bool Any<T>(this Span<T> source, Func<T, bool> function) => List<T>.AnyEnumerable((ReadOnlySpan<T>)source, function);
@@ -74471,11 +76453,11 @@ public static class RedStarLinq
 	public static List<TResult> Pairs<T, TResult>(this ReadOnlySpan<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable(source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
 	public static List<TResult> Pairs<T, TResult>(this Span<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, function, offset);
-	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, function, offset);
-	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, function, offset);
+	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IReadOnlyList<T>)source, function, offset);
+	public static Slice<TResult> Pairs<T, TResult>(this T[] source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => List<T>.PairsEnumerable((G.IReadOnlyList<T>)source, function, offset);
 	public static List<(T, T)> Pairs<T>(this ReadOnlySpan<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable(source, offset);
 	public static List<(T, T)> Pairs<T>(this Span<T> source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((ReadOnlySpan<T>)source, offset);
-	public static Slice<(T, T)> Pairs<T>(this T[] source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((G.IList<T>)source, offset);
+	public static Slice<(T, T)> Pairs<T>(this T[] source, int offset = 1) where T : unmanaged => List<T>.PairsEnumerable((G.IReadOnlyList<T>)source, offset);
 	public static T? Progression<T>(this ReadOnlySpan<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static T? Progression<T>(this Span<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((ReadOnlySpan<T>)source, function);
 	public static T? Progression<T>(this T[] source, Func<T, T, T> function) => List<T>.ProgressionEnumerable((G.IList<T>)source, function);
@@ -74642,81 +76624,81 @@ public static class RedStarLinq
 	public static string ToString(this ReadOnlySpan<char> source) => new(source.ToArray());
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);
-	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.PBreakEnumerable(source, function, function2);
-	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.PBreakEnumerable(source, function, function2);
-	public static (List<T>, List<T2>) PBreak<T, T2>(this G.IList<(T, T2)> source) => List<T>.PBreakEnumerable(source);
-	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, (TResult, TResult2)> function) => List<T>.PBreakEnumerable(source, function);
-	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, (TResult, TResult2)> function) => List<T>.PBreakEnumerable(source, function);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.PBreakEnumerable(source, function, function2, function3);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.PBreakEnumerable(source, function, function2, function3);
-	public static (List<T>, List<T2>, List<T3>) PBreak<T, T2, T3>(this G.IList<(T, T2, T3)> source) => List<T>.PBreakEnumerable(source);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function) => List<T>.PBreakEnumerable(source, function);
-	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.PBreakEnumerable(source, function);
-	public static List<TResult> PCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) => List<T>.PCombineEnumerable(source, source2, function);
-	public static List<TResult> PCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) => List<T>.PCombineEnumerable(source, source2, function);
-	public static List<(T, T2)> PCombine<T, T2>(this G.IList<T> source, G.IList<T2> source2) => List<T>.PCombineEnumerable(source, source2);
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.PCombineEnumerable(source, source2, source3, function);
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.PCombineEnumerable(source, source2, source3, function);
-	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3) => List<T>.PCombineEnumerable(source, source2, source3);
-	public static List<TResult> PCombine<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, T2, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, function);
-	public static List<TResult> PCombine<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, T2, int, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, function);
-	public static List<(T, T2)> PCombine<T, T2>(this (G.IList<T>, G.IList<T2>) source) => List<T>.PCombineEnumerable(source.Item1, source.Item2);
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this (G.IList<T>, G.IList<T2>, G.IList<T3>) source, Func<T, T2, T3, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3, function);
-	public static List<TResult> PCombine<T, T2, T3, TResult>(this (G.IList<T>, G.IList<T2>, G.IList<T3>) source, Func<T, T2, T3, int, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3, function);
-	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this (G.IList<T>, G.IList<T2>, G.IList<T3>) source) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3);
-	public static bool PContains<T>(this G.IList<T> source, T target) => List<T>.PContainsEnumerable(source, target);
-	public static bool PContains<T>(this G.IList<T> source, T target, IEqualityComparer<T> comparer) => List<T>.PContainsEnumerable(source, target, comparer);
-	public static bool PContains<T>(this G.IList<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.PContainsEnumerable(source, target, equalFunction);
-	public static bool PContains<T>(this G.IList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PContainsEnumerable(source, target, equalFunction, hashCodeFunction);
-	public static List<TResult> PConvert<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PConvertEnumerable(source, function);
-	public static List<TResult> PConvert<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PConvertEnumerable(source, function);
+	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.PBreakEnumerable(source, function, function2);
+	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.PBreakEnumerable(source, function, function2);
+	public static (List<T>, List<T2>) PBreak<T, T2>(this G.IReadOnlyList<(T, T2)> source) => List<T>.PBreakEnumerable(source);
+	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2)> function) => List<T>.PBreakEnumerable(source, function);
+	public static (List<TResult>, List<TResult2>) PBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2)> function) => List<T>.PBreakEnumerable(source, function);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) => List<T>.PBreakEnumerable(source, function, function2, function3);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) => List<T>.PBreakEnumerable(source, function, function2, function3);
+	public static (List<T>, List<T2>, List<T3>) PBreak<T, T2, T3>(this G.IReadOnlyList<(T, T2, T3)> source) => List<T>.PBreakEnumerable(source);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2, TResult3)> function) => List<T>.PBreakEnumerable(source, function);
+	public static (List<TResult>, List<TResult2>, List<TResult3>) PBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) => List<T>.PBreakEnumerable(source, function);
+	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function) => List<T>.PCombineEnumerable(source, source2, function);
+	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function) => List<T>.PCombineEnumerable(source, source2, function);
+	public static List<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2) => List<T>.PCombineEnumerable(source, source2);
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, TResult> function) => List<T>.PCombineEnumerable(source, source2, source3, function);
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3, Func<T, T2, T3, int, TResult> function) => List<T>.PCombineEnumerable(source, source2, source3, function);
+	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IReadOnlyList<T3> source3) => List<T>.PCombineEnumerable(source, source2, source3);
+	public static List<TResult> PCombine<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T2, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, function);
+	public static List<TResult> PCombine<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T2, int, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, function);
+	public static List<(T, T2)> PCombine<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source) => List<T>.PCombineEnumerable(source.Item1, source.Item2);
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source, Func<T, T2, T3, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static List<TResult> PCombine<T, T2, T3, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source, Func<T, T2, T3, int, TResult> function) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3, function);
+	public static List<(T, T2, T3)> PCombine<T, T2, T3>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>, G.IReadOnlyList<T3>) source) => List<T>.PCombineEnumerable(source.Item1, source.Item2, source.Item3);
+	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target) => List<T>.PContainsEnumerable(source, target);
+	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, IEqualityComparer<T> comparer) => List<T>.PContainsEnumerable(source, target, comparer);
+	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction) => List<T>.PContainsEnumerable(source, target, equalFunction);
+	public static bool PContains<T>(this G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PContainsEnumerable(source, target, equalFunction, hashCodeFunction);
+	public static List<TResult> PConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.PConvertEnumerable(source, function);
+	public static List<TResult> PConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.PConvertEnumerable(source, function);
 	public static List<TResult> PFill<TResult>(TResult elem, int length) => List<bool>.PFillEnumerable(elem, length);
 	public static List<TResult> PFill<TResult>(Func<int, TResult> function, int length) => List<bool>.PFillEnumerable(function, length);
 	public static List<TResult> PFill<TResult>(int length, Func<int, TResult> function) => List<bool>.PFillEnumerable(function, length);
 	public static TResult[] PFillArray<TResult>(TResult elem, int length) => List<bool>.PFillArrayEnumerable(elem, length);
 	public static TResult[] PFillArray<TResult>(Func<int, TResult> function, int length) => List<bool>.PFillArrayEnumerable(function, length);
 	public static TResult[] PFillArray<TResult>(int length, Func<int, TResult> function) => List<bool>.PFillArrayEnumerable(function, length);
-	public static List<T> PFilter<T>(this G.IList<T> source, Func<T, bool> function) => List<T>.PFilterEnumerable(source, function);
-	public static List<T> PFilter<T>(this G.IList<T> source, Func<T, int, bool> function) => List<T>.PFilterEnumerable(source, function);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
-	public static List<T> PRemoveDoubles<T>(this G.IList<T> source) => List<T>.PRemoveDoublesEnumerable(source);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
-	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, comparer);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
-	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
-	public static List<T> PRemoveDoubles<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
-	public static List<T> PRemoveDoubles<T>(this G.IList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2) => List<T>.PRemoveDoublesEnumerable(source, source2);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, source2, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IList<T> source, G.IList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, comparer);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IList<T>, G.IList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
-	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IList<T>, G.IList<T2>) source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction, hashCodeFunction);
-	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, TResult> function) => List<T>.PToArrayEnumerable(source, function);
-	public static TResult[] PToArray<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) => List<T>.PToArrayEnumerable(source, function);
-	public static T[] PToArray<T>(this G.IList<T> source) => List<T>.PToArrayEnumerable(source);
+	public static List<T> PFilter<T>(this G.IReadOnlyList<T> source, Func<T, bool> function) => List<T>.PFilterEnumerable(source, function);
+	public static List<T> PFilter<T>(this G.IReadOnlyList<T> source, Func<T, int, bool> function) => List<T>.PFilterEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
+	public static List<T> PRemoveDoubles<T>(this G.IReadOnlyList<T> source) => List<T>.PRemoveDoublesEnumerable(source);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, comparer);
+	public static List<T> PRemoveDoubles<T>(this G.IReadOnlyList<T> source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, comparer);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction);
+	public static List<T> PRemoveDoubles<T>(this G.IReadOnlyList<T> source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<T> PRemoveDoubles<T>(this G.IReadOnlyList<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, source2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2) => List<T>.PRemoveDoublesEnumerable(source, source2);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source, source2, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source, source2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source, source2, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, IEqualityComparer<T> comparer) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, comparer);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T, bool> equalFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2, TResult>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, function, equalFunction, hashCodeFunction);
+	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this (G.IReadOnlyList<T>, G.IReadOnlyList<T2>) source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) => List<T>.PRemoveDoublesEnumerable(source.Item1, source.Item2, equalFunction, hashCodeFunction);
+	public static TResult[] PToArray<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.PToArrayEnumerable(source, function);
+	public static TResult[] PToArray<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.PToArrayEnumerable(source, function);
+	public static T[] PToArray<T>(this G.IReadOnlyList<T> source) => List<T>.PToArrayEnumerable(source);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this IEnumerable<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);

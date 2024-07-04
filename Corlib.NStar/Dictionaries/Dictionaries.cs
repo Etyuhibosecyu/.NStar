@@ -541,11 +541,11 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	private readonly List<TKey> keys;
 	private readonly List<TValue> values;
 
-	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IList<TKey> keyList && valueCollection is G.IList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
+	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
 
-	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IList<(TKey Key, TValue Value)> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break();
+	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<(TKey Key, TValue Value)> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break();
 
-	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IList<KeyValuePair<TKey, TValue>> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break(x => x.Key, x => x.Value);
+	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<KeyValuePair<TKey, TValue>> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break(x => x.Key, x => x.Value);
 
 	public virtual TValue this[TKey key] => throw new NotSupportedException();
 

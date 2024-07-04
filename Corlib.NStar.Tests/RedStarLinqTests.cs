@@ -63,6 +63,38 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestAllEqual()
+	{
+		Test(a =>
+	{
+		var c = a.AllEqual(x => x.Length);
+		Assert.AreEqual(c, true);
+		c = a.AllEqual() == a.Any();
+		Assert.AreEqual(c, false);
+		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string>)null!));
+		c = a.AllEqual((x, y) => x.Length == y.Length);
+		Assert.AreEqual(c, true);
+		c = a.AllEqual((x, y) => x == y) == a.Any();
+		Assert.AreEqual(c, false);
+		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string, bool>)null!));
+		c = a.AllEqual((x, y, index) => x.Length == y.Length && index < 10);
+		Assert.AreEqual(c, true);
+		c = a.AllEqual((x, y, index) => x.Length == y.Length && index < 0) == a.Any();
+		Assert.AreEqual(c, false);
+		c = a.AllEqual((x, y, index) => x.Length == y.Length && index > 0) == a.Any();
+		Assert.AreEqual(c, false);
+		c = a.AllEqual((x, y, index) => x.Length == y.Length && index < 5) == a.Any();
+		Assert.AreEqual(c, false);
+		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string, int, bool>)null!));
+	});
+		var c = new[] { 3, 3, 3, 3, 3 }.AllEqual();
+		Assert.AreEqual(c, true);
+		c = new[] { 3, 4, 5, 6, 7 }.AllEqual();
+		Assert.AreEqual(c, false);
+		c = new[] { 3, 3, 3, 3, -42 }.AllEqual();
+	}
+
+	[TestMethod]
 	public void TestAny() => Test(a =>
 	{
 		var c = a.Any(x => x.Length > 0);
@@ -1077,8 +1109,8 @@ public class RedStarLinqTests
 		}
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
-			G.IList<int> a = new List<int>(original);
-			G.IList<long> a2 = new List<long>(original2);
+			G.IReadOnlyList<int> a = new List<int>(original);
+			G.IReadOnlyList<long> a2 = new List<long>(original2);
 			ProcessA2(a, a2);
 			a = new NList<int>(original);
 			a2 = new NList<long>(original2);
@@ -1090,7 +1122,7 @@ public class RedStarLinqTests
 			a2 = E.ToList(original2);
 			ProcessA2(a, a2);
 		}
-		static void ProcessA2(G.IList<int> a, G.IList<long> a2)
+		static void ProcessA2(G.IReadOnlyList<int> a, G.IReadOnlyList<long> a2)
 		{
 			var b = a.PRemoveDoubles();
 			b.Sort();

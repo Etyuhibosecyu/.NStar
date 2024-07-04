@@ -826,8 +826,21 @@ public static unsafe partial class Extents
 				RadixPass(i, n, @in, in2, @out, out2, count);
 				countPasses++;
 			}
-			if (i != sizeof(T) - 1 || (i & 1) != 0)
+			if (i == sizeof(T) - 1 && (i & 1) == 0)
 			{
+				if (count[0] != n)
+				{
+					CopyMemory(@out, @in, n);
+					CopyMemory(out2, in2, n);
+				}
+			}
+			else
+			{
+				if (count[0] == n)
+				{
+					CopyMemory(@in, @out, n);
+					CopyMemory(in2, out2, n);
+				}
 				var temp = @in;
 				@in = @out;
 				@out = temp;
@@ -835,11 +848,6 @@ public static unsafe partial class Extents
 				in2 = @out2;
 				@out2 = temp2;
 			}
-		}
-		if ((countPasses & 1) != 0)
-		{
-			CopyMemory(@out, @in, n);
-			CopyMemory(out2, in2, n);
 		}
 		Marshal.FreeHGlobal((nint)@out);
 		Marshal.FreeHGlobal((nint)out2);

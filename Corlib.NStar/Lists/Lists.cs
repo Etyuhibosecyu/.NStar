@@ -1373,6 +1373,8 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		{
 			if (index < _size)
 				Copy(this, index, this, index + 1, _size - index);
+			else
+				_size++;
 			_items[index] = item;
 		}
 		Changed();
