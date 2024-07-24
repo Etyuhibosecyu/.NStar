@@ -71,9 +71,9 @@ public static partial class Mpir
 		// * GetEntryAssembly().CodeBase property (if previous attempt failed)
 		//
 		var libpath = "";
-		if (Assembly.GetExecutingAssembly().Location != "")
+		if (AppContext.BaseDirectory != "")
 		{
-			var codeBase = Assembly.GetExecutingAssembly().Location;
+			var codeBase = AppContext.BaseDirectory;
 			var uri = new UriBuilder(codeBase);
 			var path = Uri.UnescapeDataString(uri.Path);
 			libpath = Path.GetDirectoryName(path);
@@ -83,7 +83,7 @@ public static partial class Mpir
 		if (libpath == "")
 			if (Assembly.GetEntryAssembly() != null)
 			{
-				var codeBase = Assembly.GetEntryAssembly()?.Location ?? "";
+				var codeBase = AppDomain.CurrentDomain.BaseDirectory ?? "";
 				var uri = new UriBuilder(codeBase);
 				var path = Uri.UnescapeDataString(uri.Path);
 				libpath = Path.GetDirectoryName(path);

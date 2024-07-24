@@ -1721,9 +1721,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static explicit operator long(MpzT value)
 	{
-		var bytes = new byte[8];
-		if (value < 0)
-			Array.Fill(bytes, (byte)255);
+		var bytes = GC.AllocateUninitializedArray<byte>(8);
+		Array.Fill(bytes, (byte)(value >= 0 ? 0 : 255));
 		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
 		var length = Math.Min(exportedBytes.Length, bytes.Length);
 		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;
@@ -1733,9 +1732,8 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 
 	public static explicit operator ulong(MpzT value)
 	{
-		var bytes = new byte[8];
-		if (value < 0)
-			Array.Fill(bytes, (byte)255);
+		var bytes = GC.AllocateUninitializedArray<byte>(8);
+		Array.Fill(bytes, (byte)(value >= 0 ? 0 : 255));
 		var exportedBytes = value.ToByteArray(BitConverter.IsLittleEndian ? -1 : 1);
 		var length = Math.Min(exportedBytes.Length, bytes.Length);
 		var destOffset = BitConverter.IsLittleEndian ? 0 : 8 - length;

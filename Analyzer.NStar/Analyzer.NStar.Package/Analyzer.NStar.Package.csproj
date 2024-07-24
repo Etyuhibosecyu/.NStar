@@ -6,9 +6,6 @@
 		<IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-
-  <PropertyGroup>
     <PackageId>Analyzer.NStar</PackageId>
     <PackageVersion>1.0.0.0</PackageVersion>
     <Authors>Admin</Authors>
@@ -30,9 +27,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Analyzer.NStar.CodeFixes\Analyzer.NStar.CodeFixes.csproj" />
     <ProjectReference Include="..\Analyzer.NStar\Analyzer.NStar.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
   </ItemGroup>
 

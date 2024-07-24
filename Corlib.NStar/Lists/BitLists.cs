@@ -168,10 +168,10 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else if (bits is IEnumerable<int> ints)
 		{
-			var toArray = List<int>.ToArrayEnumerable(ints, x => (uint)x);
+			var toArray = List<int>.ToArrayEnumerable(ints);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
-			fixed (uint* ptr = toArray)
-				CopyMemory(ptr, _items, toArray.Length);
+			fixed (int* ptr = toArray)
+				CopyMemory((uint*)ptr, _items, toArray.Length);
 			_size = (_capacity = toArray.Length) * BitsPerInt;
 		}
 		else if (bits is IEnumerable<uint> uints)
@@ -232,7 +232,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			{
 				var newarray = (uint*)Marshal.AllocHGlobal(sizeof(uint) * newints);
 				CopyMemory(_items, newarray, Min(_capacity, newints));
-				Marshal.FreeHGlobal((nint)_items);
+				if (_capacity != 0)
+					Marshal.FreeHGlobal((nint)_items);
 				_items = newarray;
 				_capacity = newints;
 			}
@@ -506,7 +507,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public override void Dispose()
 	{
-		Marshal.FreeHGlobal((nint)_items);
+		if (_capacity != 0)
+			Marshal.FreeHGlobal((nint)_items);
 		_capacity = 0;
 		_size = 0;
 		GC.SuppressFinalize(this);

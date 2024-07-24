@@ -17,6 +17,7 @@
 	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|Corlib.NStar'">
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
+	
 	<ItemGroup>
 	  <ProjectReference Include="..\Mpir.NET\Mpir.NET.csproj" />
 		<None Update="xmpir64.dll">

@@ -348,15 +348,6 @@ public static unsafe partial class Extents
 
 	internal static readonly Random random = new();
 
-	[LibraryImport("kernel32.dll", EntryPoint = "RtlCompareMemory", SetLastError = false)]
-	private static partial uint CompareMemory(nint left, nint right, uint length);
-
-	[LibraryImport("kernel32.dll", EntryPoint = "RtlCopyMemory", SetLastError = false)]
-	private static partial void CopyMemory(nint destination, nint source, uint length);
-
-	[LibraryImport("kernel32.dll", EntryPoint = "RtlFillMemory", SetLastError = false)]
-	private static partial void FillMemory(nint destination, uint length, byte fill);
-
 	public static Comparer<T[]> ArraySequentialComparer<T>() where T : unmanaged, IComparable<T> => new((x, y) =>
 	{
 		var minLength = Min(x.Length, y.Length);
@@ -388,7 +379,7 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((MpzT)x).BitLength;
 
-	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => (int)(CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) / sizeof(T));
+	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length));
 
 	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
 
@@ -406,7 +397,7 @@ public static unsafe partial class Extents
 			return CompareMemory(left2 + leftIndex, right2 + rightIndex, length);
 	}
 
-	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => CopyMemory((nint)destination, (nint)source, (uint)(sizeof(T) * length));
+	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
 
 	public static void CopyMemory<T>(T* source, int sourceIndex, T* destination, int destinationIndex, int length) where T : unmanaged => CopyMemory(source + sourceIndex, destination + destinationIndex, length);
 
@@ -438,9 +429,25 @@ public static unsafe partial class Extents
 		return (quotient, remainder);
 	}
 
-	public static bool EqualMemory<T>(T* left, T* right, int length) where T : unmanaged => CompareMemory((nint)left, (nint)right, (uint)(sizeof(T) * length)) == sizeof(T) * length;
+	public static bool EqualMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length)) == length;
 
-	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => FillMemory((nint)source, (uint)(sizeof(T) * length), fill);
+	public static bool EqualMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => EqualMemory(left + leftIndex, right + rightIndex, length);
+
+	public static bool EqualMemory<T>(T[] left, T[] right, int length) where T : unmanaged
+	{
+		fixed (T* left2 = left)
+		fixed (T* right2 = right)
+			return EqualMemory(left2, right2, length);
+	}
+
+	public static bool EqualMemory<T>(T[] left, int leftIndex, T[] right, int rightIndex, int length) where T : unmanaged
+	{
+		fixed (T* left2 = left)
+		fixed (T* right2 = right)
+			return EqualMemory(left2 + leftIndex, right2 + rightIndex, length);
+	}
+
+	public static void FillMemory<T>(T* source, int length, byte fill) where T : unmanaged => new Span<byte>((byte*)source, sizeof(T) * length).Fill(fill);
 
 	/// <summary>
 	/// Used for conversion between different representations of bit array. 
@@ -896,7 +903,7 @@ public static unsafe partial class Extents
 
 	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
 	{
-		FillMemory((nint)counters, (uint)(256 * sizeof(T) * sizeof(int)), 0);
+		FillMemory((byte*)counters, 256 * sizeof(T) * sizeof(int), 0);
 		var bp = (byte*)data;
 		var dataEnd = (byte*)(data + n);
 		int i;

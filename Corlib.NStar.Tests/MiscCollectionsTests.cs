@@ -770,6 +770,150 @@ public class SliceTests
 }
 
 [TestClass]
+public class QueueTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.FillArray(random.Next(17), _ => random.Next(16));
+		Queue<int> q = new(arr);
+		G.Queue<int> gq = new(arr);
+		var actions = new[] { () =>
+		{
+			var n = random.Next(16);
+			q.Enqueue(n);
+			gq.Enqueue(n);
+			Assert.IsTrue(RedStarLinq.Equals(q, gq));
+			Assert.IsTrue(E.SequenceEqual(gq, q));
+		}, () =>
+		{
+			if (random.Next(2) == 0)
+			{
+				if (q.Length == 0)
+					Assert.ThrowsException<InvalidOperationException>(() => q.Dequeue());
+				else
+					Assert.AreEqual(q.Dequeue(), gq.Dequeue());
+				Assert.IsTrue(RedStarLinq.Equals(q, gq));
+				Assert.IsTrue(E.SequenceEqual(gq, q));
+			}
+			else
+			{
+				if (q.TryDequeue(out var value))
+					Assert.AreEqual(value, gq.Dequeue());
+				else
+				{
+					Assert.AreEqual(q.Length, 0);
+					Assert.AreEqual(gq.Count, 0);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(q, gq));
+				Assert.IsTrue(E.SequenceEqual(gq, q));
+			}
+		}, () =>
+		{
+			if (random.Next(2) == 0)
+			{
+				if (q.Length == 0)
+					Assert.ThrowsException<InvalidOperationException>(() => q.Peek());
+				else
+					Assert.AreEqual(q.Peek(), gq.Peek());
+				Assert.IsTrue(RedStarLinq.Equals(q, gq));
+				Assert.IsTrue(E.SequenceEqual(gq, q));
+			}
+			else
+			{
+				if (q.TryPeek(out var value))
+					Assert.AreEqual(value, gq.Peek());
+				else
+				{
+					Assert.AreEqual(q.Length, 0);
+					Assert.AreEqual(gq.Count, 0);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(q, gq));
+				Assert.IsTrue(E.SequenceEqual(gq, q));
+			}
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 10)
+			goto l1;
+	}
+}
+
+[TestClass]
+public class StackTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.FillArray(random.Next(17), _ => random.Next(16));
+		Stack<int> st = new(arr);
+		G.Stack<int> gst = new(arr);
+		var actions = new[] { () =>
+		{
+			var n = random.Next(16);
+			st.Push(n);
+			gst.Push(n);
+			Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
+			Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
+		}, () =>
+		{
+			if (random.Next(2) == 0)
+			{
+				if (st.Length == 0)
+					Assert.ThrowsException<InvalidOperationException>(() => st.Pop());
+				else
+					Assert.AreEqual(st.Pop(), gst.Pop());
+				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
+				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
+			}
+			else
+			{
+				if (st.TryPop(out var value))
+					Assert.AreEqual(value, gst.Pop());
+				else
+				{
+					Assert.AreEqual(st.Length, 0);
+					Assert.AreEqual(gst.Count, 0);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
+				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
+			}
+		}, () =>
+		{
+			if (random.Next(2) == 0)
+			{
+				if (st.Length == 0)
+					Assert.ThrowsException<InvalidOperationException>(() => st.Peek());
+				else
+					Assert.AreEqual(st.Peek(), gst.Peek());
+				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
+				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
+			}
+			else
+			{
+				if (st.TryPeek(out var value))
+					Assert.AreEqual(value, gst.Peek());
+				else
+				{
+					Assert.AreEqual(st.Length, 0);
+					Assert.AreEqual(gst.Count, 0);
+				}
+				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
+				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
+			}
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 10)
+			goto l1;
+	}
+}
+
+[TestClass]
 public class BigArrayTests
 {
 	[TestMethod]

@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 
 namespace Mpir.NET;
 
-partial class MpirDynamicLoader
+internal partial class MpirDynamicLoader
 {
 	// Windows imports
 	[LibraryImport("kernel32", EntryPoint = "LoadLibraryA", StringMarshalling = StringMarshalling.Utf8)]
@@ -11,7 +11,7 @@ partial class MpirDynamicLoader
 	private static partial nint GetProcAddress(nint hwnd, string procedureName);
 
 	// Linux imports
-	const int RTLD_NOW = 2;
+	private const int RTLD_NOW = 2;
 	[LibraryImport("libdl.so", StringMarshalling = StringMarshalling.Utf8)]
 	private static partial nint dlopen(string filename, int flags);
 	[LibraryImport("libdl.so", StringMarshalling = StringMarshalling.Utf8)]

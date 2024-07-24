@@ -1446,7 +1446,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			VersionCheck();
 		if (asSorted != null && treeSubset == null && Length == 0)
 		{
-			root = asSorted.root?.DeepClone(_size);
+			root = asSorted.root?.DeepClone(asSorted._size);
 			_size = asSorted._size;
 			version++;
 			return this;
@@ -3384,7 +3384,7 @@ public class SumList : BaseSumList<int, SumList>
 			return;
 		if (length == 1)
 		{
-			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAddInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
 		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
@@ -4006,14 +4006,6 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	public BigSumList(params MpzT[] array) : this((IEnumerable<MpzT>)array) { }
 
 	public BigSumList(ReadOnlySpan<MpzT> span) : this((IEnumerable<MpzT>)span.ToArray()) { }
-
-	public override int Capacity
-	{
-		get => _size;
-		set
-		{
-		}
-	}
 
 	private protected override Func<int, BigSumList> CapacityCreator => x => [];
 

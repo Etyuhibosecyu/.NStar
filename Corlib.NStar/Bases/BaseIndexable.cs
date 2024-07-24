@@ -597,7 +597,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual T[] ToArray()
 	{
-		var array = new T[Length];
+		var array = GC.AllocateUninitializedArray<T>(Length);
 		CopyToInternal(0, array, 0, Length);
 		return array;
 	}

@@ -1678,7 +1678,7 @@ public partial class List<T, TCertain>
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+			_size = NList<bool>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count });
 		}
 
 		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
@@ -1740,7 +1740,7 @@ public partial class List<T, TCertain>
 			this.source2 = source2;
 			this.source3 = source3;
 			this.function = function;
-			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+			_size = NList<bool>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count });
 		}
 
 		public override Span<TResult> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
@@ -1798,7 +1798,7 @@ public partial class List<T, TCertain>
 			this.source = source;
 			this.source2 = source2;
 			this.source3 = source3;
-			_size = NList<bool>.MinEnumerable(new int[] { source.Count, source2.Count, source3.Count });
+			_size = NList<bool>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count });
 		}
 
 		public override Span<(T, T2, T3)> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();

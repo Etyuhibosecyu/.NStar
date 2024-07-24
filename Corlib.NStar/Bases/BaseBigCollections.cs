@@ -514,7 +514,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T> where TCertai
 		if (Length > int.MaxValue)
 			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
 		var length = (int)Length;
-		var array = new T[length];
+		var array = GC.AllocateUninitializedArray<T>(length);
 		CopyToInternal(0, array, 0, length);
 		return array;
 	}
