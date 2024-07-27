@@ -37,6 +37,74 @@ public class RedStarLinqTests
 		action(a);
 	}
 
+	public static void TestN(Action<G.IEnumerable<(char, char, char)>> action)
+	{
+		G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(nList);
+		action(a);
+		a = RedStarLinq.ToArray(nList);
+		action(a);
+		a = E.ToList(nList);
+		action(a);
+		a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+		action(a);
+		a = nList.Prepend(('X', 'X', 'X'));
+		action(a);
+		a = nEnumerable;
+		action(a);
+		a = nEnumerable2;
+		action(a);
+		a = E.SkipWhile(nList, _ => random.Next(10) != -1);
+		action(a);
+	}
+
+	public static void Test2N(Action<G.IReadOnlyList<(char, char, char)>> action)
+	{
+		G.IReadOnlyList<(char, char, char)> a = RedStarLinq.ToList(nList);
+		action(a);
+		a = RedStarLinq.ToArray(nList);
+		action(a);
+		a = E.ToList(nList);
+		action(a);
+		a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+		action(a);
+		a = nList.Prepend(('X', 'X', 'X'));
+		action(a);
+	}
+
+	public static void TestS(Action<G.IEnumerable<char>> action)
+	{
+		G.IEnumerable<char> a = RedStarLinq.ToList(nString);
+		action(a);
+		a = RedStarLinq.ToArray(nString);
+		action(a);
+		a = E.ToList(nString);
+		action(a);
+		a = nString.ToList().Insert(0, 'X').GetSlice(1);
+		action(a);
+		a = nString.Prepend('X');
+		action(a);
+		a = nSEnumerable;
+		action(a);
+		a = nSEnumerable2;
+		action(a);
+		a = E.SkipWhile(nString, _ => random.Next(10) != -1);
+		action(a);
+	}
+
+	public static void Test2S(Action<G.IReadOnlyList<char>> action)
+	{
+		G.IReadOnlyList<char> a = RedStarLinq.ToList(nString);
+		action(a);
+		a = RedStarLinq.ToArray(nString);
+		action(a);
+		a = E.ToList(nString);
+		action(a);
+		a = nString.ToList().Insert(0, 'X').GetSlice(1);
+		action(a);
+		a = nString.Prepend('X');
+		action(a);
+	}
+
 	[TestMethod]
 	public void TestAll() => Test(a =>
 	{
@@ -1097,6 +1165,69 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.SequenceEqual(d, b));
 		}
 	}
+
+	[TestMethod]
+	public void TestToNList2() => Test2N(a =>
+	{
+		var c = a.ToNList(x => (x.Item2, x.Item3, '\0'));
+		var d = E.ToList(E.Select(a, x => (x.Item2, x.Item3, '\0')));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNList((Func<(char, char, char), (char, char, char)>)null!));
+		c = a.ToNList((x, index) => (x.Item2, x.Item3, (char)index));
+		d = E.ToList(E.Select(a, (x, index) => (x.Item2, x.Item3, (char)index)));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNList((Func<(char, char, char), int, (char, char, char)>)null!));
+	});
+
+	[TestMethod]
+	public void TestToNString()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (char)random.Next(65536)));
+			ProcessA(original, (char)12345);
+		}
+		static void ProcessA(ImmutableArray<char> original, char @default)
+		{
+			G.IEnumerable<char> a = new String(original);
+			ProcessA2(a);
+			a = RedStarLinq.ToList(original);
+			ProcessA2(a);
+			a = E.ToArray(original);
+			ProcessA2(a);
+			a = E.ToList(original);
+			ProcessA2(a);
+			a = new List<char>(original).Insert(0, @default).GetSlice(1);
+			ProcessA2(a);
+			a = E.Select(original, x => x);
+			ProcessA2(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA2(a);
+		}
+		static void ProcessA2(G.IEnumerable<char> a)
+		{
+			var b = new String(a);
+			var c = a.ToNString();
+			var d = new string(E.ToArray(a));
+			Assert.IsTrue(b.Equals(c));
+			Assert.IsTrue(E.SequenceEqual(c, b));
+			Assert.IsTrue(b.Equals(d));
+			Assert.IsTrue(E.SequenceEqual(d, b));
+		}
+	}
+
+	[TestMethod]
+	public void TestToNString2() => Test2S(a =>
+	{
+		var c = a.ToNString(x => (char)(x + 1));
+		var d = E.ToList(E.Select(a, x => (char)(x + 1)));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNString((Func<char, char>)null!));
+		c = a.ToNString((x, index) => (char)(x + index));
+		d = E.ToList(E.Select(a, (x, index) => (char)(x + index)));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.ToNString((Func<char, int, char>)null!));
+	});
 
 	[TestMethod]
 	public void TestPRemoveDoubles()

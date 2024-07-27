@@ -938,124 +938,6 @@ public class List<T> : List<T, List<T>>
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }
 
-[DebuggerDisplay("{ToString()}")]
-[ComVisible(true)]
-[Serializable]
-public class String : List<char, String>
-{
-	public String() : base() { }
-
-	public String(int capacity) : base(capacity) { }
-
-	public String(IEnumerable<char> collection) : base(collection) { }
-
-	public String(string s) : base(s.ToArray()) { }
-
-	public String(params char[] array) : base(array) { }
-
-	public String(ReadOnlySpan<char> span) : base(span) { }
-
-	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
-
-	public String(int capacity, string s) : base(capacity, s.ToArray()) { }
-
-	public String(int capacity, params char[] array) : base(capacity, array) { }
-
-	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span) { }
-
-	private protected override Func<int, String> CapacityCreator => x => new(x);
-
-	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
-
-	public override bool Equals(object? obj) => base.Equals(obj);
-
-	public override int GetHashCode() => base.GetHashCode();
-
-	public override String Pad(int length) => Pad(length, ' ');
-
-	public override String PadInPlace(int length) => PadInPlace(length, ' ');
-
-	public override String PadLeft(int length) => PadLeft(length, ' ');
-
-	public override String PadLeftInPlace(int length) => PadLeftInPlace(length, ' ');
-
-	public override String PadRight(int length) => PadRight(length, ' ');
-
-	public override String PadRightInPlace(int length) => PadRightInPlace(length, ' ');
-
-	public override string ToString() => new(AsSpan());
-
-	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;
-
-	public static bool operator !=(String? x, String? y) => !(x == y);
-
-	public static implicit operator String(char x) => new(x);
-
-	public static implicit operator String(char[] x) => new(x);
-
-	public static implicit operator String(string x) => new((ReadOnlySpan<char>)x);
-
-	public static explicit operator String((char, char) x) => [x.Item1, x.Item2];
-
-	public static explicit operator String((char, char, char) x) => [x.Item1, x.Item2, x.Item3];
-
-	public static explicit operator String((char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
-
-	public static explicit operator String((char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
-
-	public static explicit operator String((char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
-
-	public static explicit operator String((char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
-
-	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
-
-	public static explicit operator (char, char)(String x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char)(String x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char)(String x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char)(String x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char)(String x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char)(String x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char)(String x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char)(String x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
-
-	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
-}
-
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigList<T> : BigList<T, BigList<T>, List<T>>
 {
@@ -1087,10 +969,10 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
+public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> where T : unmanaged where TCertain : NList<T, TCertain>, new()
 {
-	private T* _items;
-	private int _capacity;
+	private protected T* _items;
+	private protected int _capacity;
 
 	private static readonly T* _emptyArray = null;
 
@@ -1226,11 +1108,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		}
 	}
 
-	private protected override Func<int, NList<T>> CapacityCreator => x => new(x);
-
-	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
-
-	public virtual NList<T> AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
+	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
 
 	public override Span<T> AsSpan(int index, int length)
 	{
@@ -1249,9 +1127,9 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		Changed();
 	}
 
-	private protected override int CompareInternal(int index, NList<T> other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
+	private protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
 
-	private protected override void Copy(NList<T> source, int sourceIndex, NList<T> destination, int destinationIndex, int length)
+	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -1279,7 +1157,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not G.IList<T>)
 			return base.EqualsInternal(collection, index, toEnd);
-		if (collection is NList<T> nList)
+		if (collection is TCertain nList)
 		{
 			if (index > _size - nList.Length)
 				return false;
@@ -1319,7 +1197,7 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		return item;
 	}
 
-	public override NList<T> GetRange(int index, int length, bool alwaysCopy = false)
+	public override TCertain GetRange(int index, int length, bool alwaysCopy = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -1328,12 +1206,18 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		if (length == 0)
 			return [];
 		else if (!alwaysCopy && index == 0 && length == _size)
-			return this;
+			return this as TCertain ?? throw new InvalidOperationException();
 		if (!alwaysCopy)
-			return new(length) { _items = _items + index, _size = length };
+		{
+			var list = CapacityCreator(length);
+			list._items = _items + index;
+			list._size = length;
+			return list;
+		}
 		else
 		{
-			NList<T> list = new(length) { _size = length };
+			var list = CapacityCreator(length);
+			list._size = length;
 			CopyMemory(_items + index, list._items, length);
 			return list;
 		}
@@ -1348,10 +1232,11 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		return -1;
 	}
 
-	public override NList<T> Insert(int index, T item)
+	public override TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (_size == Capacity)
 		{
 			var min = _size + 1;
@@ -1372,20 +1257,21 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		else
 		{
 			if (index < _size)
-				Copy(this, index, this, index + 1, _size - index);
+				Copy(this2, index, this2, index + 1, _size - index);
 			else
 				_size++;
 			_items[index] = item;
 		}
 		Changed();
-		return this;
+		return this2;
 	}
 
-	public virtual NList<T> Insert(int index, ReadOnlySpan<T> span)
+	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
 		var length = span.Length;
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
 		if (length == 0)
-			return this;
+			return this2;
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
@@ -1410,16 +1296,17 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		}
 		_size += length;
 		Changed();
-		return this;
+		return this2;
 	}
 
-	private protected override NList<T> InsertInternal(int index, IEnumerable<T> collection)
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		if (collection is NList<T> list)
+		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		if (collection is TCertain list)
 		{
 			var length = list._size;
 			if (length == 0)
-				return this;
+				return this2;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -1455,13 +1342,13 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 					CopyMemory(list._items, 0, _items, index, length);
 			}
 			_size += length;
-			return this;
+			return this2;
 		}
 		else if (collection is T[] array)
 		{
 			var length = array.Length;
 			if (length == 0)
-				return this;
+				return this2;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -1486,13 +1373,13 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 					CopyMemory(ptr, 0, _items, index, length);
 			}
 			_size += length;
-			return this;
+			return this2;
 		}
 		else if (collection is G.ICollection<T> list2)
 		{
 			var length = list2.Count;
 			if (length == 0)
-				return this;
+				return this2;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -1518,10 +1405,10 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 			}
 			_size += length;
 			Changed();
-			return this;
+			return this2;
 		}
 		else
-			return InsertInternal(index, new NList<T>(collection));
+			return InsertInternal(index, CollectionCreator(collection));
 	}
 
 	private protected override int LastIndexOfInternal(T item, int index, int length)
@@ -1535,12 +1422,12 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 
 	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : new(collection);
 
-	private protected override NList<T> ReverseInternal(int index, int length)
+	private protected override TCertain ReverseInternal(int index, int length)
 	{
 		for (var i = 0; i < length / 2; i++)
 			(_items[index + i], _items[index + length - 1 - i]) = (_items[index + length - 1 - i], _items[index + i]);
 		Changed();
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -1549,22 +1436,65 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 		Changed();
 	}
 
-	public virtual NList<T> Sort() => Sort(0, _size);
+	public virtual TCertain Sort() => Sort(0, _size);
 
-	public virtual NList<T> Sort(int index, int length)
+	public virtual TCertain Sort(int index, int length)
 	{
 		var shiftedItems = _items + index;
 		RadixSort(shiftedItems, length);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
-	public virtual NList<T> Sort(Func<T, uint> function) => Sort(function, 0, _size);
+	public virtual TCertain Sort(Func<T, uint> function) => Sort(function, 0, _size);
 
-	public virtual NList<T> Sort(Func<T, uint> function, int index, int length)
+	public virtual TCertain Sort(Func<T, uint> function, int index, int length)
 	{
 		NSort(_items, function, index, length);
-		return this;
+		return this as TCertain ?? throw new InvalidOperationException();
 	}
+}
+
+public unsafe class NList<T> : NList<T, NList<T>> where T : unmanaged
+{
+	public NList()
+	{
+	}
+
+	public NList(int capacity) : base(capacity)
+	{
+	}
+
+	public NList(IEnumerable<T> collection) : base(collection)
+	{
+	}
+
+	public NList(params T[] array) : base(array)
+	{
+	}
+
+	public NList(ReadOnlySpan<T> span) : base(span)
+	{
+	}
+
+	public NList(int capacity, IEnumerable<T> collection) : base(capacity, collection)
+	{
+	}
+
+	public NList(int capacity, params T[] array) : base(capacity, array)
+	{
+	}
+
+	public NList(int capacity, T* ptr) : base(capacity, ptr)
+	{
+	}
+
+	public NList(int capacity, ReadOnlySpan<T> span) : base(capacity, span)
+	{
+	}
+
+	private protected override Func<int, NList<T>> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
 
 	public static implicit operator NList<T>(T x) => new(x);
 
@@ -1627,4 +1557,233 @@ public unsafe partial class NList<T> : BaseList<T, NList<T>> where T : unmanaged
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
 
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(NList<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
+}
+
+[DebuggerDisplay("{ToString()}")]
+[ComVisible(true)]
+[Serializable]
+public unsafe class String : NList<char, String>
+{
+	public String() : base() { }
+
+	public String(int capacity) : base(capacity) { }
+
+	public String(IEnumerable<char> collection) : base(collection) { }
+
+	public String(string s) : base(s.ToArray()) { }
+
+	public String(params char[] array) : base(array) { }
+
+	public String(ReadOnlySpan<char> span) : base(span) { }
+
+	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
+
+	public String(int capacity, string s) : base(capacity, s.ToArray()) { }
+
+	public String(int capacity, params char[] array) : base(capacity, array) { }
+
+	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span) { }
+
+	private protected override Func<int, String> CapacityCreator => x => new(x);
+
+	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
+
+	public override bool Equals(object? obj) => base.Equals(obj);
+
+	public override int GetHashCode() => base.GetHashCode();
+
+	public static String Join(char separator, params string[] array)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(array));
+		if (array.Length == 0)
+			return [];
+		else if (array.Length == 1)
+			return array[0];
+		var result = array[0].ToNString();
+		for (var i = 1; i < array.Length; i++)
+		{
+			result.Add(separator);
+			result.AddRange(array[i]);
+		}
+		return result;
+	}
+
+	public static String Join(String separator, params string[] array)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(array));
+		if (array.Length == 0)
+			return [];
+		else if (array.Length == 1)
+			return array[0];
+		var result = array[0].ToNString();
+		for (var i = 1; i < array.Length; i++)
+		{
+			result.AddRange(separator);
+			result.AddRange(array[i]);
+		}
+		return result;
+	}
+
+	public static String Join(char separator, params String[] array)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(array));
+		if (array.Length == 0)
+			return [];
+		else if (array.Length == 1)
+			return array[0];
+		var result = array[0].Copy();
+		for (var i = 1; i < array.Length; i++)
+		{
+			result.Add(separator);
+			result.AddRange(array[i]);
+		}
+		return result;
+	}
+
+	public static String Join(String separator, params String[] array)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(array));
+		if (array.Length == 0)
+			return [];
+		else if (array.Length == 1)
+			return array[0];
+		var result = array[0].Copy();
+		for (var i = 1; i < array.Length; i++)
+		{
+			result.AddRange(separator);
+			result.AddRange(array[i]);
+		}
+		return result;
+	}
+
+	public override String Pad(int length) => Pad(length, ' ');
+
+	public override String PadInPlace(int length) => PadInPlace(length, ' ');
+
+	public override String PadLeft(int length) => PadLeft(length, ' ');
+
+	public override String PadLeftInPlace(int length) => PadLeftInPlace(length, ' ');
+
+	public override String PadRight(int length) => PadRight(length, ' ');
+
+	public override String PadRightInPlace(int length) => PadRightInPlace(length, ' ');
+
+	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
+	public List<String> Split(char separator, StringSplitOptions options = StringSplitOptions.None)
+	{
+		if (_size == 0)
+			return [];
+		else if (_size == 1)
+			return _items[0] == separator ? ["", ""] : [_items[0]];
+		var prevPos = 0;
+		List<String> result = [];
+		for (var i = 0; i < _size; i++)
+			if (_items[i] == separator)
+			{
+				if (!(prevPos == i && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
+					result.Add(GetRange(prevPos..i));
+				prevPos = i + 1;
+			}
+		if (!(prevPos == _size && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
+			result.Add(GetRange(prevPos.._size));
+		return result;
+	}
+
+	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
+	public List<String> Split(String separator, StringSplitOptions options = StringSplitOptions.None)
+	{
+		if (_size == 0)
+			return [];
+		else if (_size < separator.Length)
+			return [this];
+		var prevPos = 0;
+		LimitedQueue<char> queue = new(separator.Length);
+		List<String> result = [];
+		for (var i = 0; i < _size; i++)
+		{
+			queue.Enqueue(_items[i]);
+			if (separator.Equals(queue))
+			{
+				if (!(prevPos >= i + 1 - queue.Length && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
+					result.Add(GetRange(prevPos..(i + 1 - queue.Length)));
+				prevPos = i + 1;
+				queue.Clear();
+			}
+		}
+		if (!(prevPos == _size && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
+			result.Add(GetRange(prevPos.._size));
+		return result;
+	}
+
+	public override string ToString() => new(AsSpan());
+
+	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;
+
+	public static bool operator !=(String? x, String? y) => !(x == y);
+
+	public static implicit operator String(char x) => new(x);
+
+	public static implicit operator String(char[] x) => new(x);
+
+	public static implicit operator String(string x) => new((ReadOnlySpan<char>)x);
+
+	public static explicit operator String((char, char) x) => [x.Item1, x.Item2];
+
+	public static explicit operator String((char, char, char) x) => [x.Item1, x.Item2, x.Item3];
+
+	public static explicit operator String((char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
+
+	public static explicit operator String((char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
+
+	public static explicit operator String((char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
+
+	public static explicit operator String((char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
+
+	public static explicit operator String((char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
+
+	public static explicit operator (char, char)(String x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char)(String x) => x._size == 3 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char)(String x) => x._size == 4 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char)(String x) => x._size == 5 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char)(String x) => x._size == 6 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char)(String x) => x._size == 7 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char)(String x) => x._size == 8 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char)(String x) => x._size == 9 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 10 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 11 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 12 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 13 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 14 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
+
+	public static explicit operator (char, char, char, char, char, char, char, char, char, char, char, char, char, char, char, char)(String x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }

@@ -55007,7 +55007,7 @@ public partial class List<T, TCertain>
 	}
 }
 
-public unsafe partial class NList<T>
+public unsafe partial class NList<T, TCertain>
 {
 	internal static (NList<TResult>, NList<TResult2>) BreakEnumerable<T_, TResult, TResult2>(IEnumerable<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
@@ -70650,6 +70650,148 @@ public unsafe partial class NList<T>
 		return result;
 	}
 
+	internal static String ToNStringEnumerable<T_>(IEnumerable<T_> source, Func<T_, char> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			String result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+				result._items[i] = function(array[i]);
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list2[i]);
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+				result._items[i] = function(list3[i]);
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			String result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static String ToNStringEnumerable<T_>(IEnumerable<T_> source, Func<T_, int, char> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T_> list)
+		{
+			var length = list.Length;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is T_[] array)
+		{
+			String result = new(array.Length);
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = array.Length;
+			return result;
+		}
+		else if (source is G.IList<T_> list2)
+		{
+			var length = list2.Count;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T_> list3)
+		{
+			var length = list3.Count;
+			String result = new(length);
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				result._items[i] = function(item, i);
+			}
+			result._size = length;
+			return result;
+		}
+		else
+		{
+			String result = new(List<T>.TryGetLengthEasilyEnumerable(source, out var length) ? length : length = 1024);
+			var i = 0;
+			foreach (var item in source)
+			{
+				if ((i & i - 1) == 0)
+					result.EnsureCapacity(i + 1);
+				result._items[i] = function(item, i);
+				i++;
+			}
+			result._size = i;
+			return result;
+		}
+	}
+
+	internal static String ToNStringEnumerable<T_>(ReadOnlySpan<T_> source, Func<T_, char> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		String result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i]);
+		result._size = length;
+		return result;
+	}
+
+	internal static String ToNStringEnumerable<T_>(ReadOnlySpan<T_> source, Func<T_, int, char> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		String result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i], i);
+		result._size = length;
+		return result;
+	}
+
 	internal static bool TryWrapEnumerable<TResult>(NList<T> source, Func<NList<T>, TResult> function, out TResult? result)
 	{
 		try
@@ -74425,6 +74567,9 @@ public static class RedStarLinq
 	public static NList<TResult> ToNList<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
 	public static NList<TResult> ToNList<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
 	public static NList<T> ToNList<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.ReturnOrConstruct(source);
+	public static String ToNString<T>(this IEnumerable<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable(source, function);
+	public static String ToNString<T>(this IEnumerable<T> source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable(source, function);
+	public static String ToNString(this IEnumerable<char> source) => new(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this IEnumerable<T> source) => new(source);
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable(source, function));
@@ -76612,6 +76757,17 @@ public static class RedStarLinq
 	public static NList<T> ToNList<T>(this ReadOnlySpan<T> source) where T : unmanaged => new(source);
 	public static NList<T> ToNList<T>(this Span<T> source) where T : unmanaged => new((ReadOnlySpan<T>)source);
 	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => new((G.IList<T>)source);
+	public static String ToNString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable(source, function);
+	public static String ToNString<T>(this ReadOnlySpan<T> source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable(source, function);
+	public static String ToNString<T>(this Span<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable((ReadOnlySpan<T>)source, function);
+	public static String ToNString<T>(this Span<T> source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable((ReadOnlySpan<T>)source, function);
+	public static String ToNString<T>(this T[] source, Func<T, char> function) => NList<bool>.ToNStringEnumerable((G.IList<T>)source, function);
+	public static String ToNString<T>(this T[] source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable((G.IList<T>)source, function);
+	public static String ToNString<T>(this NList<T> source, Func<T, char> function) where T : unmanaged => NList<T>.ToNStringEnumerable(source, function);
+	public static String ToNString<T>(this NList<T> source, Func<T, int, char> function) where T : unmanaged => NList<T>.ToNStringEnumerable(source, function);
+	public static String ToNString(this ReadOnlySpan<char> source) => new(source);
+	public static String ToNString(this Span<char> source) => new((ReadOnlySpan<char>)source);
+	public static String ToNString(this char[] source) => new((G.IList<char>)source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this ReadOnlySpan<T> source) => new(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => new((G.IList<T>)source);

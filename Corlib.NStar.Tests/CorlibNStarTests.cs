@@ -19,10 +19,14 @@ internal static class Global
 	internal static readonly string defaultString = "XXX";
 	internal static readonly ImmutableArray<string> list = ["MMM", "BBB", "PPP", "DDD", "MMM", "EEE", "DDD"];
 	internal static readonly ImmutableArray<string> list2 = ["MMM", "BBB", "#", "PPP", "DDD", "MMM", "EEE", "DDD"];
-	internal static readonly G.IEnumerable<(char, char, char)> defaultNCollection = new List<(char, char, char)>(('A', 'A', 'A'), ('B', 'B', 'B'), ('A', 'A', 'A'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('D', 'D', 'D'), ('C', 'C', 'C'));
+	internal static readonly G.IEnumerable<(char, char, char)> defaultNCollection = new NList<(char, char, char)>(('A', 'A', 'A'), ('B', 'B', 'B'), ('A', 'A', 'A'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('B', 'B', 'B'), ('C', 'C', 'C'), ('D', 'D', 'D'), ('C', 'C', 'C'));
 	internal static readonly (char, char, char) defaultNString = ('X', 'X', 'X');
 	internal static readonly ImmutableArray<(char, char, char)> nList = [('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')];
 	internal static readonly ImmutableArray<(char, char, char)> nList2 = [('M', 'M', 'M'), ('B', 'B', 'B'), ('#', '\0', '\0'), ('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')];
+	internal static readonly G.IEnumerable<char> defaultNSCollection = new String('A', 'B', 'A', 'B', 'C', 'B', 'C', 'D', 'C');
+	internal static readonly char defaultNChar = 'X';
+	internal static readonly ImmutableArray<char> nString = ['M', 'B', 'P', 'D', 'M', 'E', 'D'];
+	internal static readonly ImmutableArray<char> nString2 = ['M', 'B', '#', 'P', 'D', 'M', 'E', 'D'];
 	internal static readonly G.IEnumerable<bool> defaultBitCollection = [true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true];
 	internal static readonly bool defaultBit = true;
 	internal static readonly ImmutableArray<bool> bitList = ImmutableArray.Create(new BitList(71, new uint[] { 4186021589, 210265814, 981043 }).SetAll(false, ..5).SetAll(true, ^7..).ToArray());
@@ -32,4 +36,6 @@ internal static class Global
 	internal static readonly G.IEnumerable<string> enumerable2 = E.SkipWhile(list, _ => random.Next(10) == -1);
 	internal static readonly G.IEnumerable<(char, char, char)> nEnumerable = E.Select(nList, x => x);
 	internal static readonly G.IEnumerable<(char, char, char)> nEnumerable2 = E.SkipWhile(nList, _ => random.Next(10) == -1);
+	internal static readonly G.IEnumerable<char> nSEnumerable = E.Select(nString, x => x);
+	internal static readonly G.IEnumerable<char> nSEnumerable2 = E.SkipWhile(nString, _ => random.Next(10) == -1);
 }

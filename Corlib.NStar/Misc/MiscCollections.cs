@@ -23,9 +23,9 @@ public class Chain : IReadOnlyCollection<int>
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public virtual List<int> ToList()
+	public virtual NList<int> ToNList()
 	{
-		List<int> list = new(Length);
+		NList<int> list = new(Length);
 		for (var i = 0; i < Length; i++)
 			list.Add(start + i);
 		return list;
