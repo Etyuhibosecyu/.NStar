@@ -3566,6 +3566,217 @@ public class StringTests
 	public void TestToArray() => BaseListTests<char, String>.TestToArray(() => (char)random.Next(33, 127));
 
 	[TestMethod]
+	public void TestToLower()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var chars = new byte[1000].ToArray(x => (char)random.Next(32, 127));
+			using var @string = new String(chars);
+			var a = @string.ToLower();
+			var b = new string(chars).ToLower();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+	}
+
+	[TestMethod]
+	public void TestToUpper()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var chars = new byte[1000].ToArray(x => (char)random.Next(32, 127));
+			using var @string = new String(chars);
+			var a = @string.ToUpper();
+			var b = new string(chars).ToUpper();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+	}
+
+	[TestMethod]
+	public void TestTrim()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
+			using var @string = new String(chars);
+			var a = @string.Trim();
+			var b = new string(chars).Trim();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var @char = chars.Random(random);
+			@string.Replace(chars);
+			a = @string.Trim(@char);
+			b = new string(chars).Trim(@char);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			chars = new byte[1000].ToArray(x => (char)random.Next('A', 'Z' + 1));
+			@string.Replace(chars);
+			a = @string.Trim(nString);
+			b = new string(chars).Trim(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim(nString.ToHashSet());
+			b = new string(chars).Trim(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim(E.ToArray(nString));
+			b = new string(chars).Trim(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim(E.ToList(nString));
+			b = new string(chars).Trim(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim(nSEnumerable);
+			b = new string(chars).Trim(E.ToArray(nSEnumerable));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim(nSEnumerable2);
+			b = new string(chars).Trim(E.ToArray(nSEnumerable2));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim([]);
+			b = new string(chars).Trim([]);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.Trim('M', 'P', 'X');
+			b = new string(chars).Trim('M', 'P', 'X');
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+	}
+
+	[TestMethod]
+	public void TestTrimEnd()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
+			using var @string = new String(chars);
+			var a = @string.TrimEnd();
+			var b = new string(chars).TrimEnd();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var @char = chars.Random(random);
+			@string.Replace(chars);
+			a = @string.TrimEnd(@char);
+			b = new string(chars).TrimEnd(@char);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			chars = new byte[1000].ToArray(x => (char)random.Next('A', 'Z' + 1));
+			@string.Replace(chars);
+			a = @string.TrimEnd(nString);
+			b = new string(chars).TrimEnd(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd(nString.ToHashSet());
+			b = new string(chars).TrimEnd(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd(E.ToArray(nString));
+			b = new string(chars).TrimEnd(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd(E.ToList(nString));
+			b = new string(chars).TrimEnd(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd(nSEnumerable);
+			b = new string(chars).TrimEnd(E.ToArray(nSEnumerable));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd(nSEnumerable2);
+			b = new string(chars).TrimEnd(E.ToArray(nSEnumerable2));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd([]);
+			b = new string(chars).TrimEnd([]);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimEnd('M', 'P', 'X');
+			b = new string(chars).TrimEnd('M', 'P', 'X');
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+	}
+
+	[TestMethod]
+	public void TestTrimStart()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
+			using var @string = new String(chars);
+			var a = @string.TrimStart();
+			var b = new string(chars).TrimStart();
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			var @char = chars.Random(random);
+			@string.Replace(chars);
+			a = @string.TrimStart(@char);
+			b = new string(chars).TrimStart(@char);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			chars = new byte[1000].ToArray(x => (char)random.Next('A', 'Z' + 1));
+			@string.Replace(chars);
+			a = @string.TrimStart(nString);
+			b = new string(chars).TrimStart(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart(nString.ToHashSet());
+			b = new string(chars).TrimStart(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart(E.ToArray(nString));
+			b = new string(chars).TrimStart(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart(E.ToList(nString));
+			b = new string(chars).TrimStart(E.ToArray(nString));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart(nSEnumerable);
+			b = new string(chars).TrimStart(E.ToArray(nSEnumerable));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart(nSEnumerable2);
+			b = new string(chars).TrimStart(E.ToArray(nSEnumerable2));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart([]);
+			b = new string(chars).TrimStart([]);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			@string.Replace(chars);
+			a = @string.TrimStart('M', 'P', 'X');
+			b = new string(chars).TrimStart('M', 'P', 'X');
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+		}
+	}
+
+	[TestMethod]
 	public void TestTrimExcess() => BaseListTests<char, String>.TestTrimExcess(() => (char)random.Next(33, 127));
 
 	[TestMethod]

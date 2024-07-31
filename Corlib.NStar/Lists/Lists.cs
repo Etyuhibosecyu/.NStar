@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where TCertain : Buffer<T, TCertain>, new()
@@ -1576,6 +1574,13 @@ public unsafe class String : NList<char, String>
 
 	public String(ReadOnlySpan<char> span) : base(span) { }
 
+	public String(int length, char c) : base(length)
+	{
+		for (var i = 0; i < length; i++)
+			SetInternal(i, c);
+		_size = length;
+	}
+
 	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
 
 	public String(int capacity, string s) : base(capacity, s.ToArray()) { }
@@ -1674,11 +1679,11 @@ public unsafe class String : NList<char, String>
 		if (_size == 0)
 			return [];
 		else if (_size == 1)
-			return _items[0] == separator ? ["", ""] : [_items[0]];
+			return GetInternal(0) == separator ? ["", ""] : [GetInternal(0)];
 		var prevPos = 0;
 		List<String> result = [];
 		for (var i = 0; i < _size; i++)
-			if (_items[i] == separator)
+			if (GetInternal(i) == separator)
 			{
 				if (!(prevPos == i && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
 					result.Add(GetRange(prevPos..i));
@@ -1701,7 +1706,7 @@ public unsafe class String : NList<char, String>
 		List<String> result = [];
 		for (var i = 0; i < _size; i++)
 		{
-			queue.Enqueue(_items[i]);
+			queue.Enqueue(GetInternal(i));
 			if (separator.Equals(queue))
 			{
 				if (!(prevPos >= i + 1 - queue.Length && options.HasFlag(StringSplitOptions.RemoveEmptyEntries)))
@@ -1715,7 +1720,111 @@ public unsafe class String : NList<char, String>
 		return result;
 	}
 
+	public String ToLower()
+	{
+		for (var i = 0; i < _size; i++)
+			SetInternal(i, char.ToLower(GetInternal(i)));
+		return this;
+	}
+
 	public override string ToString() => new(AsSpan());
+
+	public String ToUpper()
+	{
+		for (var i = 0; i < _size; i++)
+			SetInternal(i, char.ToUpper(GetInternal(i)));
+		return this;
+	}
+
+	public String Trim() => TrimEnd().TrimStart();
+
+	public String Trim(char c) => TrimEnd(c).TrimStart(c);
+
+	public String Trim(IEnumerable<char> chars) => TrimEnd(chars).TrimStart(chars);
+
+	public String Trim(params char[] chars) => Trim((IEnumerable<char>)chars);
+
+	public String TrimEnd()
+	{
+		for (var i = _size - 1; i >= 0; i--)
+			if (!char.IsWhiteSpace(GetInternal(i)))
+			{
+				Remove(i + 1);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimEnd(char c)
+	{
+		for (var i = _size - 1; i >= 0; i--)
+			if (GetInternal(i) != c)
+			{
+				Remove(i + 1);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimEnd(IEnumerable<char> chars)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(chars));
+		if (chars is not ISet<char> set)
+			set = chars.ToHashSet();
+		for (var i = _size - 1; i >= 0; i--)
+			if (!set.Contains(GetInternal(i)))
+			{
+				Remove(i + 1);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimEnd(params char[] chars) => TrimEnd((IEnumerable<char>)chars);
+
+	public String TrimStart()
+	{
+		for (var i = 0; i < _size; i++)
+			if (!char.IsWhiteSpace(GetInternal(i)))
+			{
+				Remove(0, i);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimStart(char c)
+	{
+		for (var i = 0; i < _size; i++)
+			if (GetInternal(i) != c)
+			{
+				Remove(0, i);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimStart(IEnumerable<char> chars)
+	{
+		ArgumentNullException.ThrowIfNull(nameof(chars));
+		if (chars is not ISet<char> set)
+			set = chars.ToHashSet();
+		for (var i = 0; i < _size; i++)
+			if (!set.Contains(GetInternal(i)))
+			{
+				Remove(0, i);
+				return this;
+			}
+		Clear();
+		return this;
+	}
+
+	public String TrimStart(params char[] chars) => TrimStart((IEnumerable<char>)chars);
 
 	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;
 
