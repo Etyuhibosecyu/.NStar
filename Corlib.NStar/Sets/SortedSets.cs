@@ -1,4 +1,5 @@
-﻿namespace Corlib.NStar;
+﻿
+namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseSortedSet<T, TCertain>, new()
@@ -87,7 +88,7 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		items.AddRange(collection).Sort(Comparer);

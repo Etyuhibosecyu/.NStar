@@ -305,7 +305,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public ListHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
@@ -487,7 +487,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public TreeHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
-	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)

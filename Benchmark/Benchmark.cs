@@ -1,4 +1,5 @@
-﻿namespace Benchmark;
+﻿
+namespace Benchmark;
 
 [MemoryDiagnoser]
 public class Benchmark

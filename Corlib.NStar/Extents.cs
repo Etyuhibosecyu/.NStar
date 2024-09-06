@@ -345,6 +345,9 @@ public static unsafe partial class Extents
 	public const int BitsPerInt = sizeof(int) * BitsPerByte;
 	public const int BytesPerInt = sizeof(int);
 	public const int BitsPerByte = 8;
+	public const int ValuesInByte = 1 << BitsPerByte;
+	public const int ValuesIn2Bytes = ValuesInByte << BitsPerByte;
+	public const int ValuesIn3Bytes = ValuesIn2Bytes << BitsPerByte;
 
 	internal static readonly Random random = new();
 
@@ -793,11 +796,11 @@ public static unsafe partial class Extents
 	internal static void RadixSort<T>(T* @in, int n) where T : unmanaged
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		int* counters = (int*)Marshal.AllocHGlobal(ValuesInByte * sizeof(T) * sizeof(int)), count;
 		CreateCounters(@in, counters, n);
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			count = counters + 256 * i;
+			count = counters + ValuesInByte * i;
 			if (count[0] != n)
 				RadixPass(i, n, @in, @out, count);
 			if (i == sizeof(T) - 1 && (i & 1) == 0)
@@ -822,12 +825,12 @@ public static unsafe partial class Extents
 	{
 		var @out = (T*)Marshal.AllocHGlobal(sizeof(T) * n);
 		var @out2 = (T2*)Marshal.AllocHGlobal(sizeof(T2) * n);
-		int* counters = (int*)Marshal.AllocHGlobal(256 * sizeof(T) * sizeof(int)), count;
+		int* counters = (int*)Marshal.AllocHGlobal(ValuesInByte * sizeof(T) * sizeof(int)), count;
 		CreateCounters(@in, counters, n);
 		var countPasses = 0;
 		for (var i = 0; i < sizeof(T); i++)
 		{
-			count = counters + 256 * i;
+			count = counters + ValuesInByte * i;
 			if (count[0] != n)
 			{
 				RadixPass(i, n, @in, in2, @out, out2, count);
@@ -891,7 +894,7 @@ public static unsafe partial class Extents
 		int s, c;
 		s = 0;
 		cp = count;
-		for (i = 256; i > 0; --i, ++cp)
+		for (i = ValuesInByte; i > 0; --i, ++cp)
 		{
 			c = *cp;
 			*cp = s;
@@ -903,13 +906,13 @@ public static unsafe partial class Extents
 
 	private static void CreateCounters<T>(T* data, int* counters, int n) where T : unmanaged
 	{
-		FillMemory((byte*)counters, 256 * sizeof(T) * sizeof(int), 0);
+		FillMemory((byte*)counters, ValuesInByte * sizeof(T) * sizeof(int), 0);
 		var bp = (byte*)data;
 		var dataEnd = (byte*)(data + n);
 		int i;
 		while (bp != dataEnd)
 			for (i = 0; i < sizeof(T); i++)
-				counters[256 * i + *bp++]++;
+				counters[ValuesInByte * i + *bp++]++;
 	}
 
 	public static uint ReverseBits(uint n)

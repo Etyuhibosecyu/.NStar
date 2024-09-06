@@ -1,4 +1,5 @@
-﻿namespace Corlib.NStar.Tests;
+﻿
+namespace Corlib.NStar.Tests;
 
 [TestClass]
 public class RedStarLinqTests
@@ -160,6 +161,52 @@ public class RedStarLinqTests
 		c = new[] { 3, 4, 5, 6, 7 }.AllEqual();
 		Assert.AreEqual(c, false);
 		c = new[] { 3, 3, 3, 3, -42 }.AllEqual();
+		Assert.AreEqual(c, false);
+		c = new[] { 3, 4, 5, 6, 4 }.AllUnique();
+		Assert.AreEqual(c, false);
+	}
+
+	[TestMethod]
+	public void TestAllUnique()
+	{
+		Test(a =>
+		{
+			var c = a.AllUnique(x => x.Length) == a.Any();
+			Assert.AreEqual(c, false);
+			c = a.AllUnique((x, index) => index);
+			Assert.AreEqual(c, true);
+			c = a.AllUnique() == a.Any();
+			Assert.AreEqual(c, false);
+			c = E.Distinct(a).AllUnique(x => x);
+			Assert.AreEqual(c, true);
+			c = E.Distinct(a).AllUnique();
+			Assert.AreEqual(c, true);
+			Assert.ThrowsException<ArgumentNullException>(() => a.AllUnique((Func<string, string>)null!));
+			Assert.ThrowsException<ArgumentNullException>(() => a.AllUnique((Func<string, int, string>)null!));
+		});
+		ProcessA(["3", "3", "3", "3", "3"]);
+		ProcessA(["3", "4", "5", "6", "7"]);
+		ProcessA(["3", "3", "3", "3", "-42"]);
+		ProcessA(["3", "4", "5", "6", "4"]);
+		static void ProcessA(string[] array)
+		{
+			G.IEnumerable<string> a = RedStarLinq.ToList(array);
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = RedStarLinq.ToArray(array);
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = E.ToList(array);
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = array.ToList().Insert(0, "XXX").GetSlice(1);
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = array.Prepend("XXX");
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = enumerable;
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = enumerable2;
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+			a = E.SkipWhile(array, _ => random.Next(10) != -1);
+			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
+		}
 	}
 
 	[TestMethod]
@@ -652,6 +699,138 @@ public class RedStarLinqTests
 		Assert.IsTrue(E.SequenceEqual(d, c));
 		Assert.ThrowsException<ArgumentNullException>(() => a.Filter((Func<string, int, bool>)null!));
 	});
+
+	[TestMethod]
+	public void TestGroup()
+	{
+		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
+			G.IEnumerable<int> a = new List<int>(original);
+			ProcessA(a);
+			a = RedStarLinq.ToArray(original);
+			ProcessA(a);
+			a = E.ToList(original);
+			ProcessA(a);
+			a = new List<int>(original).Insert(0, -42).GetSlice(1);
+			ProcessA(a);
+			a = E.Select(original, x => x);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) != -1);
+			ProcessA(a);
+		}
+		void ProcessA(G.IEnumerable<int> a)
+		{
+			var c = a.Group();
+			var d = E.GroupBy(a, x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2);
+			d = E.GroupBy(a, x => x / 2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(comparer);
+			d = E.GroupBy(a, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, comparer);
+			d = E.GroupBy(a, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, comparer);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, equalFunction: (x, y) => x / 3 == y / 3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(comparer2);
+			d = E.GroupBy(a, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, comparer2);
+			d = E.GroupBy(a, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, comparer2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(comparer3);
+			d = E.GroupBy(a, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, comparer3);
+			d = E.GroupBy(a, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, comparer3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.Group((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+		}
+	}
 
 	[TestMethod]
 	public void TestPairs() => Test(a =>
@@ -1434,6 +1613,138 @@ public class RedStarLinqTestsN
 		action(a);
 		a = E.SkipWhile(nList, _ => random.Next(10) != -1);
 		action(a);
+	}
+
+	[TestMethod]
+	public void TestNGroup()
+	{
+		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
+			G.IEnumerable<int> a = new List<int>(original);
+			ProcessA(a);
+			a = RedStarLinq.ToArray(original);
+			ProcessA(a);
+			a = E.ToList(original);
+			ProcessA(a);
+			a = new List<int>(original).Insert(0, -42).GetSlice(1);
+			ProcessA(a);
+			a = E.Select(original, x => x);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) != -1);
+			ProcessA(a);
+		}
+		void ProcessA(G.IEnumerable<int> a)
+		{
+			var c = a.NGroup();
+			var d = E.GroupBy(a, x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2);
+			d = E.GroupBy(a, x => x / 2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(comparer);
+			d = E.GroupBy(a, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, comparer);
+			d = E.GroupBy(a, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, comparer);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a, x => x, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, equalFunction: (x, y) => x / 3 == y / 3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.GroupBy(a, x => x / 2, comparer);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(comparer2);
+			d = E.GroupBy(a, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, comparer2);
+			d = E.GroupBy(a, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, comparer2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a, x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.GroupBy(a, x => x / 2, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(comparer3);
+			d = E.GroupBy(a, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, comparer3);
+			d = E.GroupBy(a, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, comparer3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a, x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.GroupBy(a, x => x / 2, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.NGroup((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.elem), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+		}
 	}
 
 	[TestMethod]

@@ -188,15 +188,13 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool Equals(IEnumerable<T>? collection, int index, bool toEnd = false) => EqualsInternal(collection, index, toEnd);
 
-	public override bool Equals(object? obj)
+	public override bool Equals(object? obj) => obj switch
 	{
-		if (obj == null || obj is not G.ICollection<T> m)
-			return false;
-		else if (_size != m.Count)
-			return false;
-		else
-			return Equals(m);
-	}
+		null => false,
+		IEnumerable<T> enumerable => Equals(enumerable),
+		IEquatable<IEnumerable<T>> iqen => iqen.Equals(this),
+		_ => false,
+	};
 
 	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{

@@ -2,7 +2,7 @@
 namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
+public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, ICloneable, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
 {
 	public override T this[Index index, bool invoke = true]
 	{

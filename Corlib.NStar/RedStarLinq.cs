@@ -5,6 +5,65 @@ namespace Corlib.NStar;
 
 public partial class List<T, TCertain>
 {
+	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, bool> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!function(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!function(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!function(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!function(item))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!function(item))
+					return false;
+				i++;
+			}
+			return true;
+		}
+	}
+
 	internal static bool AllEnumerable(IEnumerable<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -372,6 +431,228 @@ public partial class List<T, TCertain>
 				if (!(item?.Equals(prev) ?? prev == null))
 					return false;
 				prev = item;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllUniqueEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list._items[0]));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list._items[i]);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(array.Length, function(array[0]));
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = function(array[i]);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list2[0]));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list2[i]);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list3[0]));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list3[i]);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			ListHashSet<TResult> hs = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 1024, function(en.Current));
+			while (en.MoveNext())
+			{
+				var item = function(en.Current);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllUniqueEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list._items[0], 0));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list._items[i], i);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(array.Length, function(array[0], 0));
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = function(array[i], i);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list2[0], 0));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list2[i], i);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<TResult> hs = new(length, function(list3[0], 0));
+			for (var i = 1; i < length; i++)
+			{
+				var item = function(list3[i], i);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			ListHashSet<TResult> hs = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 1024, function(en.Current, 0));
+			var i = 1;
+			while (en.MoveNext())
+			{
+				var item = function(en.Current, i++);
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+	}
+
+	internal static bool AllUniqueEnumerable(IEnumerable<T> source)
+	{
+		if (source is List<T> list)
+		{
+			var length = list._size;
+			if (length <= 1)
+				return true;
+			ListHashSet<T> hs = new(length, list._items[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is T[] array)
+		{
+			if (array.Length <= 1)
+				return true;
+			ListHashSet<T> hs = new(array.Length, array[0]);
+			for (var i = 1; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<T> hs = new(length, list2[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = list2[i];
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			if (length <= 1)
+				return true;
+			ListHashSet<T> hs = new(length, list3[0]);
+			for (var i = 1; i < length; i++)
+			{
+				var item = list3[i];
+				if (!hs.TryAdd(item))
+					return false;
+			}
+			return true;
+		}
+		else
+		{
+			using var en = source.GetEnumerator();
+			if (!en.MoveNext())
+				return true;
+			ListHashSet<T> hs = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 1024, en.Current);
+			while (en.MoveNext())
+			{
+				var item = en.Current;
+				if (!hs.TryAdd(item))
+					return false;
 			}
 			return true;
 		}
@@ -22091,9 +22372,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22108,9 +22388,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22126,9 +22405,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22144,9 +22422,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22161,10 +22438,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22186,9 +22462,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22203,9 +22478,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22221,9 +22495,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22239,9 +22512,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22256,10 +22528,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22280,9 +22551,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22297,9 +22567,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22315,9 +22584,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22333,9 +22601,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22350,10 +22617,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22375,9 +22641,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22392,9 +22657,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22410,9 +22674,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22428,9 +22691,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22445,10 +22707,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22470,9 +22731,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22487,9 +22747,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22505,9 +22764,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22523,9 +22781,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22540,10 +22797,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22564,9 +22820,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22581,9 +22836,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22599,9 +22853,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22617,9 +22870,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22634,10 +22886,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22659,9 +22910,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22676,9 +22926,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22694,9 +22943,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22712,9 +22960,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22729,10 +22976,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22754,9 +23000,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22771,9 +23016,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22789,9 +23033,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22807,9 +23050,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22824,10 +23066,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22848,9 +23089,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22865,9 +23105,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22883,9 +23122,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22901,9 +23139,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22918,10 +23155,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22943,9 +23179,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22960,9 +23195,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22978,9 +23212,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22996,9 +23229,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23013,10 +23245,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23038,9 +23269,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23055,9 +23285,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23073,9 +23302,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23091,9 +23319,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23108,10 +23335,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23132,9 +23358,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23149,9 +23374,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23167,9 +23391,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23185,9 +23408,8 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23202,10 +23424,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
-					result._items[j++] = new((List<T>)item, f);
+					result.Add(new(32, item, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -44830,7 +45051,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static bool TryWrapEnumerable(G.IList<T> source, Func<G.IList<T>, List<T>> function, out List<T>? result)
+	internal static bool TryWrapEnumerable(G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, List<T>> function, out List<T>? result)
 	{
 		try
 		{
@@ -44844,7 +45065,7 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static bool TryWrapEnumerable<TResult>(G.IList<T> source, Func<G.IList<T>, TResult> function, out TResult? result)
+	internal static bool TryWrapEnumerable<TResult>(G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function, out TResult? result)
 	{
 		try
 		{
@@ -49602,9 +49823,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49623,9 +49843,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49643,9 +49862,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49664,9 +49882,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49685,9 +49902,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49705,9 +49921,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49726,9 +49941,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49747,9 +49961,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49767,9 +49980,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49788,9 +50000,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49809,9 +50020,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -49829,9 +50039,8 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
-				result._items[j++] = new((List<T>)item, f);
+				result.Add(new(32, item, f));
 		}
-		result._size = j;
 		result.TrimExcess();
 		return result;
 	}
@@ -61278,6 +61487,1022 @@ public unsafe partial class NList<T, TCertain>
 				}
 				else if (f == indicator!)
 					result.Add(i);
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = [];
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, T>> GroupEnumerable(IEnumerable<T> source)
+	{
+		ListHashSet<T> dic = [];
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, T>> result = new(array.Length);
+			T f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, T>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			T f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(comparer);
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(comparer);
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, T>> GroupEnumerable(IEnumerable<T> source, IEqualityComparer<T> comparer)
+	{
+		ListHashSet<T> dic = new(comparer);
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, T>> result = new(array.Length);
+			T f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, T>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			T f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, T>> GroupEnumerable(IEnumerable<T> source, Func<T, T, bool> equalFunction)
+	{
+		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, T>> result = new(array.Length);
+			T f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, T>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			T f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where TResult : notnull
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, TResult>> result = new(array.Length);
+			TResult f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, TResult>> result = new(length);
+			TResult f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, TResult>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			TResult f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = function(item, i), out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+				i++;
+			}
+			result.TrimExcess();
+			return result;
+		}
+	}
+
+	internal static List<NGroup<T, T>> GroupEnumerable(IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	{
+		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
+		if (source is NList<T> list)
+		{
+			var length = list._size;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list._items[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is T[] array)
+		{
+			List<NGroup<T, T>> result = new(array.Length);
+			T f;
+			for (var i = 0; i < array.Length; i++)
+			{
+				var item = array[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IList<T> list2)
+		{
+			var length = list2.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list2[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else if (source is G.IReadOnlyList<T> list3)
+		{
+			var length = list3.Count;
+			List<NGroup<T, T>> result = new(length);
+			T f;
+			for (var i = 0; i < length; i++)
+			{
+				var item = list3[i];
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
+			}
+			result.TrimExcess();
+			return result;
+		}
+		else
+		{
+			List<NGroup<T, T>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
+			T f;
+			var i = 0;
+			foreach (var item in source)
+			{
+				if (!dic.TryAdd(f = item, out var index))
+					result[index].Add(item);
+				else
+					result.Add(new(32, item, f));
 				i++;
 			}
 			result.TrimExcess();
@@ -73132,7 +74357,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IReadOnlyList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -73150,7 +74375,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IReadOnlyList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -73179,7 +74404,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IReadOnlyList<T_> source, Func<T_, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73195,7 +74420,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IList<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>) PBreakEnumerable<T_, TResult, TResult2>(G.IReadOnlyList<T_> source, Func<T_, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73211,7 +74436,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IReadOnlyList<T_> source, Func<T_, TResult> function, Func<T_, TResult2> function2, Func<T_, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -73233,7 +74458,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IReadOnlyList<T_> source, Func<T_, int, TResult> function, Func<T_, int, TResult2> function2, Func<T_, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
@@ -73267,7 +74492,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IReadOnlyList<T_> source, Func<T_, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73285,7 +74510,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IList<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
+	internal static (NList<TResult>, NList<TResult2>, NList<TResult3>) PBreakEnumerable<T_, TResult, TResult2, TResult3>(G.IReadOnlyList<T_> source, Func<T_, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73303,7 +74528,7 @@ public unsafe partial class NList<T, TCertain>
 		return (result, result2, result3);
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IReadOnlyList<T_> source, G.IList<T2> source2, Func<T_, T2, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
@@ -73318,7 +74543,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IList<T_> source, G.IList<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, TResult>(G.IReadOnlyList<T_> source, G.IList<T2> source2, Func<T_, T2, int, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = Min(source.Count, source2.Count);
@@ -73333,7 +74558,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<(T, T2)> PCombineEnumerable<T2>(G.IList<T> source, G.IList<T2> source2) where T2 : unmanaged
+	internal static NList<(T, T2)> PCombineEnumerable<T2>(G.IReadOnlyList<T> source, G.IList<T2> source2) where T2 : unmanaged
 	{
 		var length = Min(source.Count, source2.Count);
 		NList<(T, T2)> result = new(length);
@@ -73347,7 +74572,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IReadOnlyList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
@@ -73363,7 +74588,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PCombineEnumerable<T_, T2, T3, TResult>(G.IReadOnlyList<T_> source, G.IList<T2> source2, G.IList<T3> source3, Func<T_, T2, T3, int, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
@@ -73379,7 +74604,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<(T, T2, T3)> PCombineEnumerable<T2, T3>(G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T2 : unmanaged where T3 : unmanaged
+	internal static NList<(T, T2, T3)> PCombineEnumerable<T2, T3>(G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T2 : unmanaged where T3 : unmanaged
 	{
 		var length = List<int>.MinEnumerable(new[] { source.Count, source2.Count, source3.Count }.AsSpan());
 		NList<(T, T2, T3)> result = new(length);
@@ -73394,7 +74619,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target)
 	{
 		var length = source.Count;
 		var result = false;
@@ -73410,7 +74635,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, IEqualityComparer<T> comparer)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, IEqualityComparer<T> comparer)
 	{
 		var length = source.Count;
 		var result = false;
@@ -73426,7 +74651,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, Func<T, T, bool> equalFunction)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction)
 	{
 		var comparer = new EComparer<T>(equalFunction);
 		var length = source.Count;
@@ -73443,7 +74668,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static bool PContainsEnumerable(G.IList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
+	internal static bool PContainsEnumerable(G.IReadOnlyList<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		var comparer = new EComparer<T>(equalFunction, hashCodeFunction);
 		var length = source.Count;
@@ -73460,7 +74685,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IReadOnlyList<T_> source, Func<T_, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73470,7 +74695,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IList<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
+	internal static NList<TResult> PConvertEnumerable<T_, TResult>(G.IReadOnlyList<T_> source, Func<T_, int, TResult> function) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73501,7 +74726,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<T> PFilterEnumerable(G.IList<T> source, Func<T, bool> function)
+	internal static NList<T> PFilterEnumerable(G.IReadOnlyList<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73515,7 +74740,7 @@ public unsafe partial class NList<T, TCertain>
 		return result;
 	}
 
-	internal static NList<T> PFilterEnumerable(G.IList<T> source, Func<T, int, bool> function)
+	internal static NList<T> PFilterEnumerable(G.IReadOnlyList<T> source, Func<T, int, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
@@ -73532,19 +74757,26 @@ public unsafe partial class NList<T, TCertain>
 
 public static class RedStarLinq
 {
-	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.All(source, function);
+	public static bool All<T>(this IEnumerable<T> source, Func<T, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool AllEqual<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.AllEqualEnumerable(source, function);
 	public static bool AllEqual<T>(this IEnumerable<T> source, Func<T, T, bool> function) => List<T>.AllEqualEnumerable(source, function);
 	public static bool AllEqual<T>(this IEnumerable<T> source, Func<T, T, int, bool> function) => List<T>.AllEqualEnumerable(source, function);
 	public static bool AllEqual<T>(this IEnumerable<T> source) => List<T>.AllEqualEnumerable(source);
+	public static bool AllUnique<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.AllUniqueEnumerable(source, function);
+	public static bool AllUnique<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.AllUniqueEnumerable(source, function);
+	public static bool AllUnique<T>(this IEnumerable<T> source) => List<T>.AllUniqueEnumerable(source);
 	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static bool Any<T>(this IEnumerable<T> source, Func<T, int, bool> function) => List<T>.AnyEnumerable(source, function);
+	public static Slice<T> Append<T>(this G.IReadOnlyList<T> source, T element) => List<T>.AppendEnumerable(source, element);
+	public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T element) => Enumerable.Append(source, element);
 	public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<T> source) => source;
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source) => source is BaseIndexable<T> collection ? collection.AsSpan() : source is T[] array ? MemoryExtensions.AsSpan(array) : List<T>.ReturnOrConstruct(source).AsSpan();
+	public static Span<T> AsSpan<T>(this IEnumerable<T> source, Index index) => source is BaseIndexable<T> collection ? collection.AsSpan(index) : source is T[] array ? MemoryExtensions.AsSpan(array, index) : List<T>.ReturnOrConstruct(source).AsSpan(index);
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source, int index) => source is BaseIndexable<T> collection ? collection.AsSpan(index) : source is T[] array ? MemoryExtensions.AsSpan(array, index) : List<T>.ReturnOrConstruct(source).AsSpan(index);
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source, int index, int length) => source is BaseIndexable<T> collection ? collection.AsSpan(index, length) : source is T[] array ? MemoryExtensions.AsSpan(array, index, length) : List<T>.ReturnOrConstruct(source).AsSpan(index, length);
+	public static Span<T> AsSpan<T>(this IEnumerable<T> source, Range range) => AsSpan(source)[range];
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) => List<T>.BreakEnumerable(source, function, function2);
 	public static (List<TResult>, List<TResult2>) Break<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) => List<T>.BreakEnumerable(source, function, function2);
 	public static (List<T>, List<T2>) Break<T, T2>(this IEnumerable<(T, T2)> source) => List<T>.BreakEnumerable(source);
@@ -74408,8 +75640,8 @@ public static class RedStarLinq
 	public static MpzT Product(this IEnumerable<MpzT> source) => NList<MpzT>.ProductEnumerable(source);
 	public static T? Progression<T>(this IEnumerable<T> source, Func<T, T, T> function) => List<T>.ProgressionEnumerable(source, function);
 	public static TResult? Progression<T, TResult>(this IEnumerable<T> source, TResult seed, Func<TResult, T, TResult> function) => List<T>.ProgressionEnumerable(source, seed, function);
-	public static T Random<T>(this G.IList<T> source) => source[random.Next(source.Count)];
-	public static T Random<T>(this G.IList<T> source, Random randomObj) => source[randomObj.Next(source.Count)];
+	public static T Random<T>(this G.IReadOnlyList<T> source) => source[random.Next(source.Count)];
+	public static T Random<T>(this G.IReadOnlyList<T> source, Random randomObj) => source[randomObj.Next(source.Count)];
 	public static List<T> RemoveDoubles<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.RemoveDoublesEnumerable(source, function);
 	public static List<T> RemoveDoubles<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.RemoveDoublesEnumerable(source, function);
 	public static List<T> RemoveDoubles<T>(this IEnumerable<T> source) => List<T>.RemoveDoublesEnumerable(source);
@@ -74581,14 +75813,14 @@ public static class RedStarLinq
 	public static bool TryWrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function, out TResult? result) where T : unmanaged => NList<T>.TryWrapEnumerable(source, function, out result);
 	public static bool TryWrap<T, TResult>(this T[] source, Func<T[], TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T, TResult>(this G.IList<T> source, Func<G.IList<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
+	public static bool TryWrap<T, TResult>(this G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2) => Enumerable.Union(source, source2);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer) => Enumerable.Union(source, source2, comparer);
 	public static TResult Wrap<T, TResult>(this IEnumerable<T> source, Func<IEnumerable<T>, TResult> function) => function(source);
 	public static TResult Wrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function) => function(source);
 	public static TResult Wrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function) where T : unmanaged => function(source);
 	public static TResult Wrap<T, TResult>(this T[] source, Func<T[], TResult> function) => function(source);
-	public static TResult Wrap<T, TResult>(this G.IList<T> source, Func<G.IList<T>, TResult> function) => function(source);
+	public static TResult Wrap<T, TResult>(this G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function) => function(source);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this Span<T> source, Func<T, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source, function);
@@ -76945,6 +78177,18 @@ public static class RedStarLinq
 	public static NList<T> NFilter<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.FilterEnumerable(source, function);
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.GroupEnumerable(source);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : unmanaged => NList<T>.GroupEnumerable(source, comparer);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, equalFunction);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, equalFunction);
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source, Func<T, T, bool> equalFunction) where T : unmanaged => NList<T>.GroupEnumerable(source, equalFunction);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<TResult, TResult, bool> equalFunction, Func<TResult, int> hashCodeFunction) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, equalFunction, hashCodeFunction);
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : unmanaged => NList<T>.GroupEnumerable(source, equalFunction, hashCodeFunction);
 	public static NList<int> NIndexesOf<T>(this NList<T> source, T target) where T : unmanaged => NList<T>.IndexesOfEnumerable(source, target);
 	public static NList<TResult> NPairs<T, TResult>(this IEnumerable<T> source, Func<T, T, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
 	public static NList<TResult> NPairs<T, TResult>(this IEnumerable<T> source, Func<T, T, int, TResult> function, int offset = 1) where TResult : unmanaged => NList<bool>.PairsEnumerable(source, function, offset);
@@ -76986,24 +78230,24 @@ public static class RedStarLinq
 	public static Slice<T> NTake<T>(this IEnumerable<T> source, int length) where T : unmanaged => NList<T>.TakeEnumerable(source, length);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) PNBreak<T, T2>(this G.IList<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.PBreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>) PNBreak<T, TResult, TResult2>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2)> function) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, TResult> function, Func<T, TResult2> function2, Func<T, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2, Func<T, int, TResult3> function3) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function, function2, function3);
 	public static (NList<T>, NList<T2>, NList<T3>) PNBreak<T, T2, T3>(this G.IList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.PBreakEnumerable(source);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
-	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
-	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
-	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
-	public static NList<(T, T2)> PNCombine<T, T2>(this G.IList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
-	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
-	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
-	public static NList<(T, T2, T3)> PNCombine<T, T2, T3>(this G.IList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
-	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
-	public static NList<TResult> PNConvert<T, TResult>(this G.IList<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static (NList<TResult>, NList<TResult2>, NList<TResult3>) PNBreak<T, TResult, TResult2, TResult3>(this G.IReadOnlyList<T> source, Func<T, int, (TResult, TResult2, TResult3)> function) where TResult : unmanaged where TResult2 : unmanaged where TResult3 : unmanaged => NList<bool>.PBreakEnumerable(source, function);
+	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
+	public static NList<TResult> PNCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, function);
+	public static NList<(T, T2)> PNCombine<T, T2>(this G.IReadOnlyList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged => NList<T>.CombineEnumerable(source, source2);
+	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
+	public static NList<TResult> PNCombine<T, T2, T3, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3, Func<T, T2, T3, int, TResult> function) where TResult : unmanaged => NList<bool>.CombineEnumerable(source, source2, source3, function);
+	public static NList<(T, T2, T3)> PNCombine<T, T2, T3>(this G.IReadOnlyList<T> source, G.IList<T2> source2, G.IList<T3> source3) where T : unmanaged where T2 : unmanaged where T3 : unmanaged => NList<T>.CombineEnumerable(source, source2, source3);
+	public static NList<TResult> PNConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
+	public static NList<TResult> PNConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.PConvertEnumerable(source, function);
 	public static NList<TResult> PNFill<TResult>(TResult elem, int length) where TResult : unmanaged => NList<TResult>.PFillEnumerable(elem, length);
 	public static NList<TResult> PNFill<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, length);
 	public static NList<TResult> PNFill<TResult>(int length, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.PFillEnumerable(function, length);
