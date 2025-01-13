@@ -728,7 +728,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual new TCertain ForEach(Action<T> action, int index, int length)
 	{
 		base.ForEach(action, index, length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual new TCertain ForEach(Action<T, int> action) => ForEach(action, 0, _size);
@@ -738,7 +738,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual new TCertain ForEach(Action<T, int> action, int index, int length)
 	{
 		base.ForEach(action, index, length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain GetAfter(IEnumerable<T> collection) => GetAfter(collection, 0, _size);
@@ -780,7 +780,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual TCertain GetBefore(IEnumerable<T> collection, int index, int length)
 	{
 		var foundIndex = IndexOf(collection, index, length);
-		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+		return foundIndex == -1 ? (TCertain)this : GetRange(0, foundIndex);
 	}
 
 	public virtual TCertain GetBefore(TCertain collection) => GetBefore((IEnumerable<T>)collection, 0, _size);
@@ -796,7 +796,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual TCertain GetBeforeLast(IEnumerable<T> collection, int index, int length)
 	{
 		var foundIndex = LastIndexOf(collection, index, length);
-		return foundIndex == -1 ? this as TCertain ?? throw new InvalidOperationException() : GetRange(0, foundIndex);
+		return foundIndex == -1 ? (TCertain)this : GetRange(0, foundIndex);
 	}
 
 	public virtual TCertain GetBeforeLast(TCertain collection) => GetBeforeLast((IEnumerable<T>)collection, _size - 1, _size);

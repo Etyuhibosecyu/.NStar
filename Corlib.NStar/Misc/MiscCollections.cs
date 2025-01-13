@@ -2,7 +2,7 @@
 namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class Chain : IReadOnlyCollection<int>
+public readonly struct Chain : IReadOnlyCollection<int>
 {
 	private readonly int start;
 
@@ -15,15 +15,15 @@ public class Chain : IReadOnlyCollection<int>
 		Length = length;
 	}
 
-	public virtual int Length { get; }
+	public int Length { get; }
 
-	public virtual Enumerator GetEnumerator() => new(this);
+	public readonly Enumerator GetEnumerator() => new(this);
 
 	IEnumerator<int> IEnumerable<int>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	public virtual NList<int> ToNList()
+	public readonly NList<int> ToNList()
 	{
 		NList<int> list = new(Length);
 		for (var i = 0; i < Length; i++)
@@ -63,7 +63,7 @@ public class Chain : IReadOnlyCollection<int>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Group<T, TKey> : List<T>
 {
-	public virtual TKey Key { get; private set; }
+	public virtual TKey Key { get; private protected set; }
 
 	public Group(int capacity, TKey key) : base(capacity) => Key = key;
 
@@ -75,7 +75,7 @@ public class Group<T, TKey> : List<T>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class NGroup<T, TKey> : NList<T> where T : unmanaged
 {
-	public virtual TKey Key { get; private set; }
+	public virtual TKey Key { get; private protected set; }
 
 	public NGroup(int capacity, TKey key) : base(capacity) => Key = key;
 
@@ -87,13 +87,13 @@ public class NGroup<T, TKey> : NList<T> where T : unmanaged
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICloneable, IDisposable
 {
-	private T[] _array;
-	private int _start;
-	private int _end;
-	private int _size;
-	private const int _MinimumGrow = 4;
+	private protected T[] _array;
+	private protected int _start;
+	private protected int _end;
+	private protected int _size;
+	private protected const int _MinimumGrow = 4;
 	[NonSerialized]
-	private readonly object _syncRoot = new();
+	private protected readonly object _syncRoot = new();
 
 	internal virtual int Capacity => _array.Length;
 	public virtual int Length => _size;
@@ -386,9 +386,9 @@ public class LimitedQueue<T> : Queue<T>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Slice<T> : BaseIndexable<T, Slice<T>>
 {
-	private readonly G.IList<T>? _base;
-	private readonly G.IReadOnlyList<T>? _base2;
-	private readonly int _start;
+	private protected readonly G.IList<T>? _base;
+	private protected readonly G.IReadOnlyList<T>? _base2;
+	private protected readonly int _start;
 
 	public Slice() : this([]) { }
 
@@ -432,7 +432,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(T[] @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
 
-	private Slice(G.IList<T>? @base, G.IReadOnlyList<T>? base2, int start, int length)
+	private protected Slice(G.IList<T>? @base, G.IReadOnlyList<T>? base2, int start, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(start);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -527,14 +527,14 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDisposable
 {
-	private T[] _array;     // Storage for stack elements
-	private int _size;           // Number of items in the stack.
-	private static readonly Queue<Stack<T>> pool = new(256);
-	private static readonly object globalLockObj = new();
+	private protected T[] _array;     // Storage for stack elements
+	private protected int _size;           // Number of items in the stack.
+	private protected static readonly Queue<Stack<T>> pool = new(256);
+	private protected static readonly object globalLockObj = new();
 	[NonSerialized]
-	private object _syncRoot = new();
+	private protected object _syncRoot = new();
 
-	private const int _defaultCapacity = 32;
+	private protected const int _defaultCapacity = 32;
 
 	public Stack() : this(_defaultCapacity) { }
 
@@ -759,8 +759,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	}
 
 	[Serializable()]
-	public struct Enumerator : IEnumerator<T>,
-		IEnumerator
+	public struct Enumerator : IEnumerator<T>, IEnumerator
 	{
 		private readonly Stack<T> stack;
 		private int index;

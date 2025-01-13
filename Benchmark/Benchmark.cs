@@ -24,10 +24,10 @@ public class Benchmark
 	public void ParallelHashSetTest() => ParallelHashSet = new(list8);
 
 	[Benchmark]
-	public void OldComplexTest() => OldComplex = E.Average(E.Where(E.Zip(E.Skip(list8, 1), E.Skip(list8, 2), (x, y) => (Item1: x, Item2: y)), x => Math.Abs(x.Item1 - x.Item2) < 4096), x => Math.Abs(x.Item1 - x.Item2));
+	public void OldComplexTest() => OldComplex = E.Average(E.Where(E.Zip(E.Skip(list8, 1), E.Skip(list8, 2), (x, y) => (Item1: x, Item2: y)), x => Abs(x.Item1 - x.Item2) < 4096), x => Abs(x.Item1 - x.Item2));
 
 	[Benchmark]
-	public void MyComplexTest() => MyComplex = list8.GetSlice(1).Combine(list8.GetSlice(2), (x, y) => (Item1: x, Item2: y)).Filter(x => Math.Abs(x.Item1 - x.Item2) < 4096).Mean(x => Math.Abs(x.Item1 - x.Item2));
+	public void MyComplexTest() => MyComplex = list8.GetSlice(1).Combine(list8.GetSlice(2), (x, y) => (Item1: x, Item2: y)).Filter(x => Abs(x.Item1 - x.Item2) < 4096).Mean(x => Abs(x.Item1 - x.Item2));
 
 	[Benchmark]
 	public void OldIndexesOfMaxTest()

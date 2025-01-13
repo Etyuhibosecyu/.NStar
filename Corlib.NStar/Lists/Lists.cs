@@ -134,7 +134,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 		else
 			SetInternal(_size++, item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
@@ -217,7 +217,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (index == 0)
 		{
 			if (_size == Capacity)
@@ -241,7 +241,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var length = collection.Length();
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length == 0)
 			return this2;
 		var toSkip = Max(0, length + _size - Capacity - index);
@@ -276,7 +276,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		_size--;
 		if (index == 0)
 		{
@@ -298,7 +298,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 			SetInternal(index + i, GetInternal(index + length - i - 1));
 			SetInternal(index + length - i - 1, temp);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -401,7 +401,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 {
 	private protected T[] _items;
 
-	private static readonly T[] _emptyArray = [];
+	private protected static readonly T[] _emptyArray = [];
 
 	public List() => _items = _emptyArray;
 
@@ -533,9 +533,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return MemoryExtensions.AsSpan(_items, index, length);
 	}
 
-	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
-
-	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
+	public virtual int BinarySearch(int index, int length, T item) => BinarySearch(index, length, item, G.Comparer<T>.Default);
 
 	public virtual int BinarySearch(int index, int length, T item, IComparer<T> comparer)
 	{
@@ -545,6 +543,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentException(null);
 		return Array.BinarySearch(_items, index, length, item, comparer);
 	}
+
+	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
+
+	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
 	private protected override void ClearInternal(int index, int length)
 	{
@@ -605,13 +607,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		else
 		{
 			if (index < _size)
-				Copy(this as TCertain ?? throw new InvalidOperationException(), index, this as TCertain ?? throw new InvalidOperationException(), index + 1, _size - index);
+				Copy((TCertain)this, index, (TCertain)this, index + 1, _size - index);
 			else
 				_size++;
 			_items[index] = item;
 		}
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
@@ -622,7 +624,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			throw new ArgumentNullException(nameof(span));
 		var length = span.Length;
 		if (length == 0)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
@@ -647,7 +649,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 		_size += length;
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
@@ -656,7 +658,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			var length = list._size;
 			if (length == 0)
-				return this as TCertain ?? throw new InvalidOperationException();
+				return (TCertain)this;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -684,13 +686,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 					Array.Copy(list._items, 0, _items, index, length);
 			}
 			_size += length;
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else if (collection is T[] array)
 		{
 			var length = array.Length;
 			if (length == 0)
-				return this as TCertain ?? throw new InvalidOperationException();
+				return (TCertain)this;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -712,13 +714,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				Array.Copy(array, 0, _items, index, length);
 			}
 			_size += length;
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else if (collection is G.ICollection<T> list2)
 		{
 			var length = list2.Count;
 			if (length == 0)
-				return this as TCertain ?? throw new InvalidOperationException();
+				return (TCertain)this;
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
@@ -741,7 +743,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			}
 			_size += length;
 			Changed();
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else
 			return InsertInternal(index, CollectionCreator(collection));
@@ -760,17 +762,17 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (this is List<byte> byteList)
 		{
 			byteList._items.NSort(index, length);
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else if (this is List<ushort> ushortList)
 		{
 			ushortList._items.NSort(index, length);
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else if (this is List<uint> uintList)
 		{
 			uintList._items.NSort(index, length);
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else
 			return Sort(index, length, G.Comparer<T>.Default);
@@ -785,7 +787,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		_items.NSort(function, index, length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
@@ -794,7 +796,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		Array.Reverse(_items, index, length);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -814,7 +816,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		Array.Sort(_items, index, length, comparer);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain Sort<TValue>(Func<T, TValue> function, bool fasterButMoreMemory = true) => Sort(0, _size, function, fasterButMoreMemory);
@@ -826,7 +828,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (fasterButMoreMemory)
 		{
 			ToListEnumerable(this, function).Sort(this, index, length, comparer);
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		}
 		else
 			return Sort(index, length, new Comparer<T>((x, y) => comparer.Compare(function(x), function(y))));
@@ -845,7 +847,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (index + length > values._size)
 			throw new ArgumentException(null);
 		Array.Sort(_items, values._items, index, length, comparer);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 }
 
@@ -950,13 +952,13 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	//public BigList(ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	public BigList(MpzT capacity, T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }
 
-	//public BigList(MpzT capacity, ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
 
 	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
 

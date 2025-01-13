@@ -134,6 +134,209 @@ public class FastDelHashSetTests
 	}
 }
 
+//[TestClass]
+//public class GPUHashSetTests
+//{
+//	[TestMethod]
+//	public void ComplexTest()
+//	{
+//		var random = new Random(Global.random.Next());
+//		var counter = 0;
+//	l1:
+//		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+//		var toInsert = Array.Empty<int>();
+//		GPUHashSet<int> gpuhs = new(arr);
+//		G.HashSet<int> gs = new(arr);
+//		var collectionActions = new[] { (int[] arr) =>
+//		{
+//			gpuhs.ExceptWith(arr);
+//			gs.ExceptWith(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, arr =>
+//		{
+//			gpuhs.IntersectWith(arr);
+//			gs.IntersectWith(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, arr =>
+//		{
+//			gpuhs.SymmetricExceptWith(arr);
+//			gs.SymmetricExceptWith(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, arr =>
+//		{
+//			gpuhs.UnionWith(arr);
+//			gs.UnionWith(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		} };
+//		var collectionActions2 = new[] { () =>
+//		{
+//			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+//			gpuhs.AddRange(toInsert);
+//			gs.UnionWith(toInsert);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			var n = random.Next(gpuhs.Length);
+//			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+//			gpuhs.Insert(n, toInsert);
+//			gs.UnionWith(toInsert);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			var length = Min(random.Next(9), gpuhs.Length);
+//			if (gpuhs.Length < length)
+//				return;
+//			var start = random.Next(gpuhs.Length - length + 1);
+//			foreach (var item in gpuhs.GetSlice(start, length))
+//				gs.Remove(item);
+//			gpuhs.Remove(start, length);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		} };
+//		var actions = new[] { () =>
+//		{
+//			var n = random.Next(16);
+//			gpuhs.Add(n);
+//			gs.Add(n);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			if (gpuhs.Length == 0) return;
+//			if (random.Next(2) == 0)
+//			{
+//				int n;
+//				do
+//					n = random.Next(gpuhs.Size);
+//				while (!gpuhs.IsValidIndex(n));
+//				gs.Remove(gpuhs[n]);
+//				gpuhs.RemoveAt(n);
+//			}
+//			else
+//			{
+//				var n = random.Next(16);
+//				gpuhs.RemoveValue(n);
+//				gs.Remove(n);
+//			}
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			var arr = RedStarLinq.FillArray(5, _ => random.Next(16));
+//			collectionActions.Random(random)(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			collectionActions2.Random(random)();
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			if (gpuhs.Length == 0) return;
+//			int n;
+//			do
+//				n = random.Next(gpuhs.Size);
+//			while (!gpuhs.IsValidIndex(n));
+//			var n2 = random.Next(16);
+//			gs.Remove(gpuhs[n]);
+//			gpuhs.RemoveValue(n2);
+//			gpuhs[n] = n2;
+//			gs.Add(n2);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}, () =>
+//		{
+//			if (gpuhs.Length == 0) return;
+//			int n;
+//			do
+//				n = random.Next(gpuhs.Size);
+//			while (!gpuhs.IsValidIndex(n));
+//			Assert.AreEqual(gpuhs.IndexOf(gpuhs[n]), n);
+//		} };
+//		for (var i = 0; i < 1000; i++)
+//			actions.Random(random)();
+//		if (counter++ < 1000)
+//			goto l1;
+//	}
+
+//	[TestMethod]
+//	public void ConstructionTest()
+//	{
+//		for (var i = 0; i < 1000; i++)
+//		{
+//			var arr = RedStarLinq.FillArray(65536, _ => random.Next(24576));
+//			var gpuhs = new GPUHashSet<int>(arr);
+//			var gs = new G.HashSet<int>(arr);
+//			Assert.IsTrue(gpuhs.SetEquals(gs));
+//			Assert.IsTrue(gs.SetEquals(gpuhs));
+//		}
+//	}
+
+//	[TestMethod]
+//	public void CrashTest()
+//	{
+//		var random = new Random(Global.random.Next());
+//		var counter = 0;
+//	l1:
+//		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+//		var toInsert = Array.Empty<int>();
+//		GPUHashSet<int> gpuhs = new(arr);
+//		var collectionActions = new[] { (int[] arr) => gpuhs.ExceptWith(arr), gpuhs.IntersectWith, gpuhs.SymmetricExceptWith, gpuhs.UnionWith };
+//		var collectionActions2 = new[] { () =>
+//		{
+//			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+//			gpuhs.AddRange(toInsert);
+//		}, () =>
+//		{
+//			var n = random.Next(gpuhs.Length);
+//			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+//			gpuhs.Insert(n, toInsert);
+//		}, () =>
+//		{
+//			var length = Min(random.Next(9), gpuhs.Length);
+//			if (gpuhs.Length < length)
+//				return;
+//			var start = random.Next(gpuhs.Length - length + 1);
+//			gpuhs.Remove(start, length);
+//		} };
+//		var actions = new[] { () =>
+//		{
+//			var n = random.Next(16);
+//			gpuhs.Add(n);
+//		}, () =>
+//		{
+//			if (gpuhs.Length == 0) return;
+//			if (random.Next(2) == 0)
+//			{
+//				int n;
+//				do
+//					n = random.Next(gpuhs.Size);
+//				while (!gpuhs.IsValidIndex(n));
+//				gpuhs.RemoveAt(n);
+//			}
+//			else
+//			{
+//				var n = random.Next(16);
+//				gpuhs.RemoveValue(n);
+//			}
+//		}, () =>
+//		{
+//			var arr = RedStarLinq.FillArray(5, _ => random.Next(16));
+//			collectionActions.Random(random)(arr);
+//		}, () => collectionActions2.Random(random)() };
+//		Parallel.For(0, 1000, i => actions.Random(random)());
+//		if (counter++ < 10000)
+//			goto l1;
+//	}
+//}
+
 [TestClass]
 public class ListHashSetTests
 {
@@ -243,6 +446,62 @@ public class ListHashSetTests
 		var bhs = E.ToHashSet(b);
 		Assert.IsTrue(a.Equals(bhs));
 		Assert.IsTrue(E.SequenceEqual(bhs, a));
+	}
+
+	[TestMethod]
+	public void TestAddSeries()
+	{
+		var a = list.ToHashSet();
+		a.AddSeries("XXX", 0);
+		G.HashSet<string> b = new(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries("XXX", 3);
+		for (var i = 0; i < 3; i++)
+			b.Add("XXX");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries("XXX", 101);
+		for (var i = 0; i < 101; i++)
+			b.Add("XXX");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries("XXX", -1));
+		a.Replace(list);
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 0);
+		b = new(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 3);
+		b.Add("000");
+		b.Add("001");
+		b.Add("003");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 101);
+		foreach (var x in E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")))
+			b.Add(x);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1).ToString("D3"), -1));
+		a.Replace(list);
+		a.AddSeries(0, index => (index ^ index >> 1).ToString("D3"));
+		b.Clear();
+		b = new(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(3, index => (index ^ index >> 1).ToString("D3"));
+		b.Add("000");
+		b.Add("001");
+		b.Add("003");
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(101, index => (index ^ index >> 1).ToString("D3"));
+		foreach (var x in E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")))
+			b.Add(x);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]
@@ -461,6 +720,45 @@ public class ListHashSetTests
 		Assert.IsTrue(!b);
 		b = a.Equals(new List<string>("BBB", "PPP", "DDD"), 1, true);
 		Assert.IsTrue(!b);
+	}
+
+	[TestMethod]
+	public void TestFillInPlace()
+	{
+		var a = list.ToHashSet();
+		a.FillInPlace("XXX", 0);
+		G.HashSet<string> b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace("XXX", 1);
+		b = ["XXX"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", 2));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", 101));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 0);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 1);
+		b = ["000"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 2));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 101));
+		a.FillInPlace(0, index => (index ^ index >> 1).ToString("D3"));
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(1, index => (index ^ index >> 1).ToString("D3"));
+		b = ["000"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1).ToString("D3")));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(2, index => (index ^ index >> 1).ToString("D3")));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(101, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]

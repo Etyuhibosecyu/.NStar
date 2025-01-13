@@ -27,14 +27,14 @@ internal enum InsertionBehavior : byte
 // лишнее дублирование), а при увеличении числа элементов действует как классический словарь от Microsoft.
 public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
 {
-	private SortedDictionary<TKey, TValue>? low;
-	private G.Dictionary<TKey, TValue>? high;
-	private bool isHigh;
-	private readonly IEqualityComparer<TKey> comparer;
+	private protected SortedDictionary<TKey, TValue>? low;
+	private protected G.Dictionary<TKey, TValue>? high;
+	private protected bool isHigh;
+	private protected readonly IEqualityComparer<TKey> comparer;
 	[NonSerialized]
-	private object? _syncRoot;
+	private protected object? _syncRoot;
 
-	private const int _hashThreshold = 64;
+	private protected const int _hashThreshold = 64;
 
 	public Dictionary() : this(EqualityComparer<TKey>.Default) { }
 
@@ -454,7 +454,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private static bool IsCompatibleKey(object key)
+	private protected static bool IsCompatibleKey(object key)
 	{
 		ArgumentNullException.ThrowIfNull(key);
 		return key is TKey;
@@ -538,8 +538,8 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
-	private readonly List<TKey> keys;
-	private readonly List<TValue> values;
+	private protected readonly List<TKey> keys;
+	private protected readonly List<TValue> values;
 
 	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
 
@@ -596,7 +596,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private int IndexOfKey(TKey key) => keys.IndexOf(key);
+	private protected int IndexOfKey(TKey key) => keys.IndexOf(key);
 
 	public virtual bool Remove(TKey key) => throw new NotSupportedException();
 

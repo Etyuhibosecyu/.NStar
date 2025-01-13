@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using System.Reflection;
 
 namespace Corlib.NStar;
 
@@ -8,6 +9,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 {
 	private protected Node? root;
 	private protected int version;
+	private protected static readonly Queue<Node> nodePool = new(256);
+	private protected static readonly object globalLockObj = new();
 
 	public override int Capacity
 	{
@@ -19,7 +22,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	private protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
 
-	private protected abstract Func<T, NodeColor, Node> NodeCreator { get; }
+	private protected virtual Func<T, NodeColor, Node> NodeCreator => Node.GetNew;
 
 	public override int Length
 	{
@@ -276,7 +279,11 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		while (current != null)
 		{
 			if (lowerBoundActive && Comparer.Compare(from, current.Left?.LeavesCount ?? 0) > 0)
+			{
+				from -= (current.Left?.LeavesCount ?? 0) + 1;
+				to -= (current.Left?.LeavesCount ?? 0) + 1;
 				current = current.Right;
+			}
 			else if (upperBoundActive && Comparer.Compare(to, current.Left?.LeavesCount ?? 0) < 0)
 				current = current.Left;
 			else
@@ -353,7 +360,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Insert(int index, T value)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (root == null)
 		{
 			// The tree is empty and this is the first value.
@@ -475,7 +482,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain RemoveAt(int index)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (root == null)
 			return this2;
 		FindForRemove(index, out var parent, out var grandParent, out var match, out var parentOfMatch);
@@ -587,7 +594,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	internal virtual bool VersionUpToDate() => true;
 #endif
 
-	internal abstract class Node
+	internal abstract class Node : IDisposable
 	{
 		private protected Node? _left;
 		private protected Node? _right;
@@ -596,7 +603,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		internal virtual T Value { get; private protected set; }
 		private protected int _leavesCount;
 
-		internal Node(T value, NodeColor color)
+		private protected Node(T value, NodeColor color)
 		{
 			Value = value;
 			Color = color;
@@ -674,12 +681,35 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 		internal abstract Node DeepClone(int length);
 
+		public void Dispose()
+		{
+			lock (globalLockObj)
+				DisposeLocked();
+			GC.SuppressFinalize(this);
+		}
+
+		private void DisposeLocked()
+		{
+			nodePool.Enqueue(this);
+			Left?.DisposeLocked();
+			Right?.DisposeLocked();
+		}
+
 		internal virtual void FixUp()
 		{
 			if (Left != null)
 				Left.Parent = this;
 			if (Right != null)
 				Right.Parent = this;
+		}
+
+		internal static Node GetNew(T value, NodeColor color)
+		{
+			lock (globalLockObj)
+				return nodePool.TryDequeue(out var node) ? node!.Reconstruct(value, color)
+					: typeof(TCertain)?.GetNestedType("Node", BindingFlags.NonPublic)
+					?.GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+					?[0]?.Invoke([value, color]) as Node ?? throw new NullReferenceException();
 		}
 
 		/// <summary>
@@ -733,6 +763,17 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			ColorBlack();
 			Left.ColorRed();
 			Right.ColorRed();
+		}
+
+		private protected virtual Node Reconstruct(T value, NodeColor color)
+		{
+			Value = value;
+			Color = color;
+			_left = null;
+			_right = null;
+			Parent = null;
+			_leavesCount = 1;
+			return this;
 		}
 
 		/// <summary>
@@ -965,8 +1006,6 @@ public class SumList : BaseSumList<int, SumList>
 
 	private protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
 
-	private protected override Func<int, NodeColor, BaseSumList<int, SumList>.Node> NodeCreator => (x, y) => new Node(x, y);
-
 	public virtual long ValuesSum => (root as Node)?.ValuesSum ?? 0;
 
 	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
@@ -1110,6 +1149,16 @@ public class SumList : BaseSumList<int, SumList>
 		return index - 1;
 	}
 
+	private protected override void SetAllInternal(int value, int index, int endIndex)
+	{
+		var oldLength = _size;
+		for (var i = index; i < Min(_size, endIndex); i++)
+			SetInternal(i, value);
+		for (var i = _size; i < endIndex; i++)
+			Add(value);
+		_size = oldLength;
+	}
+
 	internal override void SetInternal(int index, int value)
 	{
 		var current = root;
@@ -1143,7 +1192,7 @@ public class SumList : BaseSumList<int, SumList>
 		private new Node? Parent { get => base.Parent as Node; set => base.Parent = value; }
 		private long _valuesSum;
 
-		internal Node(int value, NodeColor color) : base(value, color) => _valuesSum = value;
+		private Node(int value, NodeColor color) : base(value, color) => _valuesSum = value;
 
 		internal new Node? Left { get => base.Left as Node; set => base.Left = value; }
 
@@ -1193,6 +1242,13 @@ public class SumList : BaseSumList<int, SumList>
 		/// Gets the sibling of one of this node's children.
 		/// </summary>
 		internal Node GetSibling(Node node) => base.GetSibling(node) as Node ?? throw new InvalidOperationException();
+
+		private protected override BaseSumList<int, SumList>.Node Reconstruct(int value, NodeColor color)
+		{
+			var node = base.Reconstruct(value, color) as Node ?? throw new InvalidOperationException();
+			node._valuesSum = value;
+			return node;
+		}
 
 		internal override Node ShallowClone() => new(Value, Color);
 
@@ -1600,6 +1656,16 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public BigSumList(ReadOnlySpan<MpzT> span) : this((IEnumerable<MpzT>)span.ToArray()) { }
 
+	public override MpzT this[Index index, bool invoke = true]
+	{
+		get => base[index, invoke];
+		set
+		{
+			Debug.Assert(value > 0);
+			base[index, invoke] = value;
+		}
+	}
+
 	private protected override Func<int, BigSumList> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
@@ -1613,11 +1679,14 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	private protected override Func<MpzT, NodeColor, BaseSumList<MpzT, BigSumList>.Node> NodeCreator => (x, y) => new Node(new(x), y);
-
 	public virtual MpzT ValuesSum => new((root as Node)?.ValuesSum ?? 0);
 
-	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
+	private protected override void ClearInternal(int index, int length)
+	{
+		_size += length;
+		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
+		subset.Clear();
+	}
 
 	private protected override void Copy(BigSumList source, int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
@@ -1803,7 +1872,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		private new Node? Parent { get => base.Parent as Node; set => base.Parent = value; }
 		private MpzT _valuesSum;
 
-		internal Node(MpzT value, NodeColor color) : base(value, color) => _valuesSum = new(value);
+		private Node(MpzT value, NodeColor color) : base(new(value), color) => _valuesSum = new(value);
 
 		internal new Node? Left { get => base.Left as Node; set => base.Left = value; }
 
@@ -1879,6 +1948,13 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		internal static bool IsNonNullRed(Node? node) => node != null && node.IsRed;
 
 		internal static bool IsNullOrBlack(Node? node) => node == null || node.IsBlack;
+
+		private protected override BaseSumList<MpzT, BigSumList>.Node Reconstruct(MpzT value, NodeColor color)
+		{
+			var node = base.Reconstruct(new(value), color) as Node ?? throw new InvalidOperationException();
+			node._valuesSum = new(value);
+			return node;
+		}
 
 		internal override Node ShallowClone() => new(Value, Color);
 
@@ -2033,14 +2109,14 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		public TreeSubSet(BigSumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
 			_underlying = Underlying;
+			version = Underlying.version;
+			_countVersion = Underlying.version;
 			_min = Min;
 			_max = Max;
 			_lBoundActive = lowerBoundActive;
 			_uBoundActive = upperBoundActive;
-			root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive); // root is first element within range
-			_size = 0;
-			version = -1;
-			_countVersion = -1;
+			root = _underlying.root/*FindRange(_min, _max, _lBoundActive, _uBoundActive)*/; // root is first element within range
+			_size = Max - Min + 1;
 		}
 
 		internal override int MaxInternal
@@ -2117,7 +2193,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			if (Length == 0)
 				return;
 			NList<int> toRemove = [];
-			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
+			var i = 0;
+			InOrderTreeWalk(n => { toRemove.Add(_min + i++); return true; });
 			while (toRemove.Length != 0)
 			{
 				_underlying.RemoveAt(toRemove[^1]);
@@ -2160,32 +2237,40 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
+			using var indexStack = Stack<int>.GetNew(2 * Log2(_size + 1));
+			var index = current.Left?.LeavesCount ?? 0;
 			while (current != null)
 			{
-				if (IsWithinRange(current.Left?.LeavesCount ?? 0))
+				if (IsWithinRange(index))
 				{
 					stack.Push(current as Node ?? throw new InvalidOperationException());
+					indexStack.Push(index);
 					current = current.Left;
 				}
-				else if (_lBoundActive && Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) > 0)
+				else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
+				{
+					index += (current.Left?.LeavesCount ?? 0) + 1;
 					current = current.Right;
+				}
 				else
 					current = current.Left;
 			}
 			while (stack.Length != 0)
 			{
 				current = stack.Pop();
+				index = indexStack.Pop() + 1;
 				if (!action(current))
 					return false;
 				var node = current.Right;
 				while (node != null)
 				{
-					if (IsWithinRange(node.Left?.LeavesCount ?? 0))
+					if (IsWithinRange(index))
 					{
 						stack.Push(node as Node ?? throw new InvalidOperationException());
+						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
 						node = node.Left;
 					}
-					else if (_lBoundActive && Comparer.Compare(_min, node.Left?.LeavesCount ?? 0) > 0)
+					else if (_lBoundActive && Comparer.Compare(index, node.Left?.LeavesCount ?? 0) > 0)
 						node = node.Right;
 					else
 						node = node.Left;

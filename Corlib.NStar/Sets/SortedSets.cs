@@ -15,7 +15,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 	public override TCertain Add(T item)
 	{
 		TryAdd(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	private protected override int IndexOfInternal(T item, int index, int length)

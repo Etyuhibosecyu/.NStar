@@ -142,7 +142,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
 		if (set is FastDelHashSet<T> fhs)
 			fhs.FixUpFakeIndexes();
@@ -372,14 +372,14 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain RemoveAt(int index)
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		_size--;
 		if (index < _size)
 			Copy(this2, index + 1, this2, index, _size - index);
@@ -571,7 +571,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		for (var i = 0; i < Length; i++)
 			if (!match(GetInternal(i)))
 				RemoveAt(i--);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
@@ -579,7 +579,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		for (var i = 0; i < Length; i++)
 			if (!match(GetInternal(i), i))
 				RemoveAt(i--);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain FixUpDeleted()
@@ -607,7 +607,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		entries = newEntries;
 		deleted.Clear();
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
@@ -652,7 +652,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain RemoveAt(int index) => RemoveAtDirect(IndexGetDirect(index));
@@ -660,16 +660,16 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 	private protected virtual TCertain RemoveAtDirect(int index)
 	{
 		if (buckets == null || entries == null)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		if (entries[index].hashCode >= 0)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		ref var t = ref entries[index];
 		RemoveAtCommon(index, ref t);
 		t.next = 0;
 		deleted.TryAdd(index);
 		if (deleted.Length >= Length && deleted.Length >= DefaultCapacity)
 			FixUpDeleted();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override bool RemoveValue(T? item)

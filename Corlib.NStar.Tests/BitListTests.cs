@@ -85,6 +85,55 @@ public class BitListTests
 	}
 
 	[TestMethod]
+	public void TestAddSeries()
+	{
+		var a = bitList.ToBitList();
+		a.AddSeries(true, 0);
+		G.List<bool> b = new(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(true, 3);
+		b.AddRange([true, true, true]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(true, 101);
+		b.AddRange(E.Repeat(true, 101));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(true, -1));
+		a.Replace(bitList);
+		a.AddSeries(index => (index ^ index >> 1) % 2 == 1, 0);
+		b.Clear();
+		b.AddRange(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1) % 2 == 1, 3);
+		b.AddRange([false, true, true]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1) % 2 == 1, 101);
+		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1) % 2 == 1, -1));
+		a.Replace(bitList);
+		a.AddSeries(0, index => (index ^ index >> 1) % 2 == 1);
+		b.Clear();
+		b.AddRange(bitList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(3, index => (index ^ index >> 1) % 2 == 1);
+		b.AddRange([false, true, true]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(101, index => (index ^ index >> 1) % 2 == 1);
+		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1) % 2 == 1));
+	}
+
+	[TestMethod]
 	public void TestAppend()
 	{
 		var a = new BitList(bitList);
@@ -300,6 +349,51 @@ public class BitListTests
 		Assert.IsTrue(!b);
 		b = a.Equals(new G.List<bool>() { false, true, true }, 2, true);
 		Assert.IsTrue(!b);
+	}
+
+	[TestMethod]
+	public void TestFillInPlace()
+	{
+		var a = bitList.ToBitList();
+		a.FillInPlace(true, 0);
+		G.List<bool> b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(true, 3);
+		b = [true, true, true];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(true, 101);
+		b = [.. E.Repeat(true, 101)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(true, -1));
+		a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, 0);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, 3);
+		b = [false, true, true];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, 101);
+		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1) % 2 == 1, -1));
+		a.FillInPlace(0, index => (index ^ index >> 1) % 2 == 1);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(3, index => (index ^ index >> 1) % 2 == 1);
+		b = [false, true, true];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(101, index => (index ^ index >> 1) % 2 == 1);
+		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1) % 2 == 1)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1) % 2 == 1));
 	}
 
 	[TestMethod]
@@ -690,9 +784,9 @@ public class BitListTests
 			bitList = new(bytes);
 			bitList2 = new(bitList);
 			range = bitList.GetSmallRange(sourceIndex, length);
-			Assert.IsTrue(new BitList(new[] { range })[..length].Equals(bitList[sourceIndex..(sourceIndex + length)]));
-			Assert.IsTrue(new BitList(new[] { range })[..length].Equals(bitList2.GetRange(sourceIndex, length)));
-			Assert.IsTrue(E.SequenceEqual(bitList2.GetRange(sourceIndex, length), new BitList(new[] { range })[..length]));
+			Assert.IsTrue(new BitList([range])[..length].Equals(bitList[sourceIndex..(sourceIndex + length)]));
+			Assert.IsTrue(new BitList([range])[..length].Equals(bitList2.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(bitList2.GetRange(sourceIndex, length), new BitList([range])[..length]));
 		}
 		length = 32;
 		for (var i = 0; i < 100; i++)
@@ -703,9 +797,9 @@ public class BitListTests
 			bitList = new(bytes);
 			bitList2 = new(bitList);
 			range = bitList.GetSmallRange(sourceIndex, length);
-			Assert.IsTrue(new BitList(new[] { range })[..length].Equals(bitList[sourceIndex..(sourceIndex + length)]));
-			Assert.IsTrue(new BitList(new[] { range })[..length].Equals(bitList2.GetRange(sourceIndex, length)));
-			Assert.IsTrue(E.SequenceEqual(bitList2.GetRange(sourceIndex, length), new BitList(new[] { range })[..length]));
+			Assert.IsTrue(new BitList([range])[..length].Equals(bitList[sourceIndex..(sourceIndex + length)]));
+			Assert.IsTrue(new BitList([range])[..length].Equals(bitList2.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(bitList2.GetRange(sourceIndex, length), new BitList([range])[..length]));
 		}
 	}
 
@@ -784,22 +878,34 @@ public class BitListTests
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
-		var a = new BitList(bitList);
-		var b = a.LastIndexOf(true);
-		Assert.AreEqual(b, 70);
-		b = a.LastIndexOf(new[] { a[1], a[2] }, 2);
-		Assert.AreEqual(b, 1);
-		b = a.LastIndexOf(new BitList(5, true), 3, 2);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new G.List<bool>() { false, true, true });
-		Assert.AreEqual(b, 63);
-		b = a.LastIndexOf(new G.List<bool>() { false, true, false });
-		Assert.AreEqual(b, 54);
-		b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] });
-		Assert.AreEqual(b, 56);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
+		for (var i = 0; i < 100000; i++)
+		{
+			BitList a = new(RedStarLinq.NFill(3, _ => random.Next(10) switch
+				{
+					0 => 0u,
+					1 => 4294967295,
+					_ => (uint)random.Next() | (uint)random.Next(2) * 2147483648,
+				}));
+			var b = E.ToList(a);
+			Assert.AreEqual(a.LastIndexOf(false), b.LastIndexOf(false));
+			Assert.AreEqual(a.LastIndexOf(true), b.LastIndexOf(true));
+		}
+		{
+			var a = new BitList(bitList);
+			var b = a.LastIndexOf(new[] { a[1], a[2] }, 2);
+			Assert.AreEqual(b, 1);
+			b = a.LastIndexOf(new BitList(5, true), 3, 2);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOf(new G.List<bool>() { false, true, true });
+			Assert.AreEqual(b, 63);
+			b = a.LastIndexOf(new G.List<bool>() { false, true, false });
+			Assert.AreEqual(b, 54);
+			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 3);
+			Assert.AreEqual(b, -1);
+			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] });
+			Assert.AreEqual(b, 56);
+			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
+		}
 	}
 
 	[TestMethod]

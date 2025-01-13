@@ -153,25 +153,25 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in (TCertain)this)
 			if (!match(item))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		var i = 0;
-		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in (TCertain)this)
 			if (!match(item, i++))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain FixUpFakeIndexes()
 	{
 		if (freeCount == 0)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		var newSize = _size - freeCount;
 		var newSizeExt = HashHelpers.GetPrime(newSize);
 		var newBuckets = new int[newSizeExt];
@@ -196,7 +196,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		freeCount = 0;
 		freeList = 0;
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
@@ -235,7 +235,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual bool IsValidIndex(int index) => entries[index].hashCode < 0;
@@ -243,22 +243,22 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	public override TCertain RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		if (entries[index].hashCode >= 0)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		ref var t = ref entries[index];
 		RemoveAtCommon(index, ref t);
 		t.next = freeList;
 		freeList = ~index;
 		freeCount++;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	private protected override TCertain RemoveInternal(int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			RemoveAt(i);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override bool RemoveValue(T? item)

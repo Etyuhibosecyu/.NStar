@@ -6,13 +6,13 @@ namespace Corlib.NStar;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 {
-	private Node? root;
-	private int version;
+	private protected Node? root;
+	private protected int version;
 
-	private const string ComparerName = "Comparer"; // Do not rename (binary serialization)
-	private const string CountName = "Length"; // Do not rename (binary serialization)
-	private const string ItemsName = "Items"; // Do not rename (binary serialization)
-	private const string VersionName = "Version"; // Do not rename (binary serialization)
+	private protected const string ComparerName = "Comparer"; // Do not rename (binary serialization)
+	private protected const string CountName = "Length"; // Do not rename (binary serialization)
+	private protected const string ItemsName = "Items"; // Do not rename (binary serialization)
+	private protected const string VersionName = "Version"; // Do not rename (binary serialization)
 
 	internal const int StackAllocThreshold = 100;
 
@@ -121,7 +121,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private void AddAllElements(IEnumerable<T> collection)
+	private protected void AddAllElements(IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 		{
@@ -181,7 +181,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	private unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<T> other, bool returnIfUnfound)
+	private protected unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<T> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -239,7 +239,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		++version;
 	}
 
-	private static Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
+	private protected static Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -301,7 +301,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return root;
 	}
 
-	private bool ContainsAllElements(IEnumerable<T> collection)
+	private protected bool ContainsAllElements(IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 		{
@@ -404,7 +404,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return this;
 	}
 
-	private void FindForRemove(int index2, out TreeSet<T>.Node? parent, out TreeSet<T>.Node? grandParent, out TreeSet<T>.Node? match, out TreeSet<T>.Node? parentOfMatch)
+	private protected void FindForRemove(int index2, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
@@ -602,7 +602,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="TreeSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	private bool HasEqualComparer(TreeSet<T> other) => Comparer == other.Comparer || Comparer.Equals(other.Comparer);
+	private protected bool HasEqualComparer(TreeSet<T> other) => Comparer == other.Comparer || Comparer.Equals(other.Comparer);
 	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
 
 	/// <summary>
@@ -649,7 +649,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
 	// need to split again in the next node.
 	// By the time we need to split again, everything will be correctly set.
-	private void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
+	private protected void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
@@ -836,7 +836,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private bool IsSubsetOfSortedSetWithSameComparer(TreeSet<T> asSorted)
+	private protected bool IsSubsetOfSortedSetWithSameComparer(TreeSet<T> asSorted)
 	{
 		var prunedOther = asSorted.GetViewBetween(Min, Max);
 		foreach (var item in this)
@@ -872,7 +872,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	internal virtual bool IsWithinRange(T item) => true;
 
 	// Used for set checking operations (using enumerables) that rely on counting
-	private static int Log2(int value) => BitOperations.Log2((uint)value);
+	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
 
 	public override bool Overlaps(IEnumerable<T> other)
 	{
@@ -889,7 +889,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return false;
 	}
 
-	private void RemoveAllElements(IEnumerable<T> collection)
+	private protected void RemoveAllElements(IEnumerable<T> collection)
 	{
 		var min = Min;
 		var max = Max;
@@ -1063,7 +1063,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// <param name="parent">The (possibly <c>null</c>) parent.</param>
 	/// <param name="child">The child node to replace.</param>
 	/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
-	private void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
+	private protected void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
 	{
 		if (parent != null)
 			parent.ReplaceChild(child, newChild);
@@ -1077,7 +1077,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// <summary>
 	/// Replaces the matching node with its successor.
 	/// </summary>
-	private void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
+	private protected void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
 	{
 		Debug.Assert(match != null);
 		if (successor == match)
@@ -1249,7 +1249,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private TreeSet<T> SymmetricExceptWithSameComparer(TreeSet<T> other)
+	private protected TreeSet<T> SymmetricExceptWithSameComparer(TreeSet<T> other)
 	{
 		Debug.Assert(other != null);
 		Debug.Assert(HasEqualComparer(other));
@@ -1261,7 +1261,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return this;
 	}
 
-	private TreeSet<T> SymmetricExceptWithSameComparer(T[] other, int length)
+	private protected TreeSet<T> SymmetricExceptWithSameComparer(T[] other, int length)
 	{
 		Debug.Assert(other != null);
 		Debug.Assert(length >= 0 && length <= other.Length);
@@ -2208,8 +2208,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 /// </summary>    
 internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 {
-	private readonly IComparer<T> comparer;
-	private readonly IEqualityComparer<T> e_comparer;
+	private protected readonly IComparer<T> comparer;
+	private protected readonly IEqualityComparer<T> e_comparer;
 
 	public TreeSetEqualityComparer() : this(null, null) { }
 

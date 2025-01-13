@@ -133,6 +133,55 @@ public class NListTests
 	}
 
 	[TestMethod]
+	public void TestAddSeries()
+	{
+		var a = nList.ToNList();
+		a.AddSeries(('X', 'X', 'X'), 0);
+		G.List<(char, char, char)> b = new(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(('X', 'X', 'X'), 3);
+		b.AddRange([('X', 'X', 'X'), ('X', 'X', 'X'), ('X', 'X', 'X')]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(('X', 'X', 'X'), 101);
+		b.AddRange(E.Repeat(('X', 'X', 'X'), 101));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(('X', 'X', 'X'), -1));
+		a.Replace(nList);
+		a.AddSeries(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 0);
+		b.Clear();
+		b.AddRange(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 3);
+		b.AddRange([('0', '0', '0'), ('0', '0', '1'), ('0', '0', '3')]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 101);
+		b.AddRange(E.Select(E.Range(0, 101), index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList()));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), -1));
+		a.Replace(nList);
+		a.AddSeries(0, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b.Clear();
+		b.AddRange(nList);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(3, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b.AddRange([('0', '0', '0'), ('0', '0', '1'), ('0', '0', '3')]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(101, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b.AddRange(E.Select(E.Range(0, 101), index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList()));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList()));
+	}
+
+	[TestMethod]
 	public void TestAppend()
 	{
 		var a = nList.ToNList();
@@ -463,6 +512,51 @@ public class NListTests
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 		}
 		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
+	}
+
+	[TestMethod]
+	public void TestFillInPlace()
+	{
+		var a = nList.ToNList();
+		a.FillInPlace(('X', 'X', 'X'), 0);
+		G.List<(char, char, char)> b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(('X', 'X', 'X'), 3);
+		b = [('X', 'X', 'X'), ('X', 'X', 'X'), ('X', 'X', 'X')];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(('X', 'X', 'X'), 101);
+		b = [.. E.Repeat(('X', 'X', 'X'), 101)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(('X', 'X', 'X'), -1));
+		a.FillInPlace(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 0);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 3);
+		b = [('0', '0', '0'), ('0', '0', '1'), ('0', '0', '3')];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), 101);
+		b = [.. E.Select(E.Range(0, 101), index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList())];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList(), -1));
+		a.FillInPlace(0, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(3, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b = [('0', '0', '0'), ('0', '0', '1'), ('0', '0', '3')];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(101, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList());
+		b = [.. E.Select(E.Range(0, 101), index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList())];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => ((char, char, char))(index ^ index >> 1).ToString("D3").ToNList()));
 	}
 
 	[TestMethod]
@@ -1948,6 +2042,55 @@ public class StringTests
 	}
 
 	[TestMethod]
+	public void TestAddSeries()
+	{
+		var a = nString.ToNString();
+		a.AddSeries('X', 0);
+		G.List<char> b = new(nString);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries('X', 3);
+		b.AddRange(['X', 'X', 'X']);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries('X', 101);
+		b.AddRange(E.Repeat('X', 101));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries('X', -1));
+		a.Replace(nString);
+		a.AddSeries(index => (char)(index ^ index >> 1), 0);
+		b.Clear();
+		b.AddRange(nString);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (char)(index ^ index >> 1), 3);
+		b.AddRange(['\0', '\x1', '\x3']);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (char)(index ^ index >> 1), 101);
+		b.AddRange(E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1)));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (char)(index ^ index >> 1), -1));
+		a.Replace(nString);
+		a.AddSeries(0, index => (char)(index ^ index >> 1));
+		b.Clear();
+		b.AddRange(nString);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(3, index => (char)(index ^ index >> 1));
+		b.AddRange(['\0', '\x1', '\x3']);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(101, index => (char)(index ^ index >> 1));
+		b.AddRange(E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1)));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (char)(index ^ index >> 1)));
+	}
+
+	[TestMethod]
 	public void TestAppend()
 	{
 		var a = nString.ToNString();
@@ -2534,6 +2677,51 @@ public class StringTests
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 		}
 		static char Next() => (char)random.Next(1000);
+	}
+
+	[TestMethod]
+	public void TestFillInPlace()
+	{
+		var a = nString.ToNString();
+		a.FillInPlace('X', 0);
+		G.List<char> b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace('X', 3);
+		b = ['X', 'X', 'X'];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace('X', 101);
+		b = [.. E.Repeat('X', 101)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace('X', -1));
+		a.FillInPlace(index => (char)(index ^ index >> 1), 0);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (char)(index ^ index >> 1), 3);
+		b = ['\0', '\x1', '\x3'];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (char)(index ^ index >> 1), 101);
+		b = [.. E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1))];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (char)(index ^ index >> 1), -1));
+		a.FillInPlace(0, index => (char)(index ^ index >> 1));
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(3, index => (char)(index ^ index >> 1));
+		b = ['\0', '\x1', '\x3'];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(101, index => (char)(index ^ index >> 1));
+		b = [.. E.Select(E.Range(0, 101), index => (char)(index ^ index >> 1))];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (char)(index ^ index >> 1)));
 	}
 
 	[TestMethod]

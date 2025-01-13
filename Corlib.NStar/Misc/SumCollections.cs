@@ -242,7 +242,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		++version;
 	}
 
-	private static Node? ConstructRootFromSortedArray((T Key, int Value)[] arr, int startIndex, int endIndex, Node? redNode)
+	private protected static Node? ConstructRootFromSortedArray((T Key, int Value)[] arr, int startIndex, int endIndex, Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -957,7 +957,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	internal virtual bool IsWithinRange(T item) => true;
 
 	// Used for set checking operations (using enumerables) that rely on counting
-	private static int Log2(int value) => BitOperations.Log2((uint)value);
+	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
 
 	public override bool Overlaps(IEnumerable<(T Key, int Value)> other)
 	{

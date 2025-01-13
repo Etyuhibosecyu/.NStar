@@ -22364,7 +22364,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22380,7 +22379,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22397,7 +22395,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22414,7 +22411,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22430,7 +22426,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22454,7 +22449,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22470,7 +22464,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22487,7 +22480,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22504,7 +22496,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22520,7 +22511,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22543,7 +22533,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22559,7 +22548,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, T>> result = new(array.Length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22576,7 +22564,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22593,7 +22580,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22609,7 +22595,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -22633,7 +22618,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22649,7 +22633,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22666,7 +22649,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22683,7 +22665,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22699,7 +22680,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22723,7 +22703,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22739,7 +22718,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22756,7 +22734,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22773,7 +22750,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22789,7 +22765,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22812,7 +22787,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22828,7 +22802,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, T>> result = new(array.Length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22845,7 +22818,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22862,7 +22834,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22878,7 +22849,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -22902,7 +22872,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22918,7 +22887,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -22935,7 +22903,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22952,7 +22919,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -22968,7 +22934,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22992,7 +22957,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23008,7 +22972,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -23025,7 +22988,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23042,7 +23004,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23058,7 +23019,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23081,7 +23041,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23097,7 +23056,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, T>> result = new(array.Length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -23114,7 +23072,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23131,7 +23088,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23147,7 +23103,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -23171,7 +23126,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23187,7 +23141,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -23204,7 +23157,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23221,7 +23173,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23237,7 +23188,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23261,7 +23211,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23277,7 +23226,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, TResult>> result = new(array.Length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -23294,7 +23242,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23311,7 +23258,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, TResult>> result = new(length);
-			var j = 0;
 			TResult f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23327,7 +23273,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23350,7 +23295,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23366,7 +23310,6 @@ public partial class List<T, TCertain>
 		else if (source is T[] array)
 		{
 			List<Group<T, T>> result = new(array.Length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < array.Length; i++)
 			{
@@ -23383,7 +23326,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list2.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23400,7 +23342,6 @@ public partial class List<T, TCertain>
 		{
 			var length = list3.Count;
 			List<Group<T, T>> result = new(length);
-			var j = 0;
 			T f;
 			for (var i = 0; i < length; i++)
 			{
@@ -23416,7 +23357,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<T, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -44967,118 +44907,6 @@ public partial class List<T, TCertain>
 		return false;
 	}
 
-	internal static bool TryWrapEnumerable(IEnumerable<T> source, Func<IEnumerable<T>, List<T>> function, out List<T>? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = null;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable<TResult>(IEnumerable<T> source, Func<IEnumerable<T>, TResult> function, out TResult? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = default;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable(List<T> source, Func<List<T>, List<T>> function, out List<T>? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = null;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable<TResult>(List<T> source, Func<List<T>, TResult> function, out TResult? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = default;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable(T[] source, Func<T[], List<T>> function, out List<T>? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = null;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable<TResult>(T[] source, Func<T[], TResult> function, out TResult? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = default;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable(G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, List<T>> function, out List<T>? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = null;
-			return false;
-		}
-	}
-
-	internal static bool TryWrapEnumerable<TResult>(G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function, out TResult? result)
-	{
-		try
-		{
-			result = function(source);
-			return true;
-		}
-		catch
-		{
-			result = default;
-			return false;
-		}
-	}
-
 	internal static bool AllEnumerable(ReadOnlySpan<T> source, Func<T, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -49815,7 +49643,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49835,7 +49662,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = [];
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49854,7 +49680,6 @@ public partial class List<T, TCertain>
 		ListHashSet<T> dic = [];
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
-		var j = 0;
 		T f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49874,7 +49699,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49894,7 +49718,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(comparer);
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49913,7 +49736,6 @@ public partial class List<T, TCertain>
 		ListHashSet<T> dic = new(comparer);
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
-		var j = 0;
 		T f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49933,7 +49755,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49953,7 +49774,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49972,7 +49792,6 @@ public partial class List<T, TCertain>
 		ListHashSet<T> dic = new(new EComparer<T>(equalFunction));
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
-		var j = 0;
 		T f;
 		for (var i = 0; i < length; i++)
 		{
@@ -49992,7 +49811,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -50012,7 +49830,6 @@ public partial class List<T, TCertain>
 		ListHashSet<TResult> dic = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, TResult>> result = new(length);
-		var j = 0;
 		TResult f;
 		for (var i = 0; i < length; i++)
 		{
@@ -50031,7 +49848,6 @@ public partial class List<T, TCertain>
 		ListHashSet<T> dic = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		var length = source.Length;
 		List<Group<T, T>> result = new(length);
-		var j = 0;
 		T f;
 		for (var i = 0; i < length; i++)
 		{
@@ -52732,6 +52548,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Max(function(source[0]), function(source[1])),
+				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -52749,6 +52576,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -52766,6 +52604,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Max(function(source[0]), function(source[1])),
+				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -52783,6 +52632,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -52800,6 +52660,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Max(function(source[0]), function(source[1])),
+				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -52817,6 +52688,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -52834,6 +52716,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Max(function(source[0]), function(source[1])),
+				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -52851,6 +52744,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -52868,6 +52772,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Max(function(source[0]), function(source[1])),
+				3 => Math.Max(Math.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -52885,6 +52800,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Max(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Max(Math.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -52935,6 +52861,17 @@ public partial class List<T, TCertain>
 	internal static decimal MaxEnumerable(ReadOnlySpan<decimal> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Max(source[0], source[1]),
+				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -52951,6 +52888,17 @@ public partial class List<T, TCertain>
 	internal static double MaxEnumerable(ReadOnlySpan<double> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Max(source[0], source[1]),
+				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -52967,6 +52915,17 @@ public partial class List<T, TCertain>
 	internal static int MaxEnumerable(ReadOnlySpan<int> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Max(source[0], source[1]),
+				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -52983,6 +52942,17 @@ public partial class List<T, TCertain>
 	internal static uint MaxEnumerable(ReadOnlySpan<uint> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Max(source[0], source[1]),
+				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -52999,6 +52969,17 @@ public partial class List<T, TCertain>
 	internal static long MaxEnumerable(ReadOnlySpan<long> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Max(source[0], source[1]),
+				3 => Math.Max(Math.Max(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -53286,6 +53267,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Min(function(source[0]), function(source[1])),
+				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -53303,6 +53295,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -53320,6 +53323,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Min(function(source[0]), function(source[1])),
+				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -53337,6 +53351,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -53354,6 +53379,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Min(function(source[0]), function(source[1])),
+				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -53371,6 +53407,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -53388,6 +53435,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Min(function(source[0]), function(source[1])),
+				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -53405,6 +53463,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -53422,6 +53491,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Math.Min(function(source[0]), function(source[1])),
+				3 => Math.Min(Math.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -53439,6 +53519,17 @@ public partial class List<T, TCertain>
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Math.Min(function(source[0], 0), function(source[1], 1)),
+				3 => Math.Min(Math.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -53489,6 +53580,17 @@ public partial class List<T, TCertain>
 	internal static decimal MinEnumerable(ReadOnlySpan<decimal> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Min(source[0], source[1]),
+				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		decimal indicator = 0;
 		decimal f;
 		for (var i = 0; i < length; i++)
@@ -53505,6 +53607,17 @@ public partial class List<T, TCertain>
 	internal static double MinEnumerable(ReadOnlySpan<double> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Min(source[0], source[1]),
+				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		double indicator = 0;
 		double f;
 		for (var i = 0; i < length; i++)
@@ -53521,6 +53634,17 @@ public partial class List<T, TCertain>
 	internal static int MinEnumerable(ReadOnlySpan<int> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Min(source[0], source[1]),
+				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		var indicator = 0;
 		int f;
 		for (var i = 0; i < length; i++)
@@ -53537,6 +53661,17 @@ public partial class List<T, TCertain>
 	internal static uint MinEnumerable(ReadOnlySpan<uint> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Min(source[0], source[1]),
+				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		uint indicator = 0;
 		uint f;
 		for (var i = 0; i < length; i++)
@@ -53553,6 +53688,17 @@ public partial class List<T, TCertain>
 	internal static long MinEnumerable(ReadOnlySpan<long> source)
 	{
 		var length = source.Length;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => source[0],
+				2 => Math.Min(source[0], source[1]),
+				3 => Math.Min(Math.Min(source[0], source[1]), source[2]),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
 		long indicator = 0;
 		long f;
 		for (var i = 0; i < length; i++)
@@ -55039,6 +55185,33 @@ public partial class List<T, TCertain>
 		var result = new T[length];
 		Parallel.For(0, length, i => result[i] = source[i]);
 		return result;
+	}
+
+	internal static bool TryWrapEnumerable(T source, Action<T> action)
+	{
+		try
+		{
+			action(source);
+			return true;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	internal static bool TryWrapEnumerable<TResult>(T source, Func<T, TResult> function, out TResult? result)
+	{
+		try
+		{
+			result = function(source);
+			return true;
+		}
+		catch
+		{
+			result = default;
+			return false;
+		}
 	}
 
 	internal static IEnumerable<TResult> ConvertAndJoin<TCollection, TResult>(IEnumerable<T> source, Func<T, int, IEnumerable<TCollection>> collectionSelector, Func<T, TCollection, int, TResult> resultSelector)
@@ -56881,21 +57054,21 @@ public unsafe partial class NList<T, TCertain>
 
 	internal static NList<T> EmptyListEnumerable(int length) => new(length) { _size = length };
 
-	internal static NList<TResult> FillEnumerable<TResult>(TResult elem, int length) where TResult : unmanaged
-	{
-		NList<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = elem;
-		result._size = length;
-		return result;
-	}
-
 	internal static NList<TResult> FillEnumerable<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		NList<TResult> result = new(length);
 		for (var i = 0; i < length; i++)
 			result._items[i] = function(i);
+		result._size = length;
+		return result;
+	}
+
+	internal static NList<TResult> FillEnumerable<TResult>(TResult elem, int length) where TResult : unmanaged
+	{
+		NList<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = elem;
 		result._size = length;
 		return result;
 	}
@@ -71162,13 +71335,13 @@ public unsafe partial class NList<T, TCertain>
 		}
 	}
 
-	internal static List<NList<T>> SplitIntoEqualEnumerable(NList<T> source, int fragmentLength)
+	internal static List<NList<T>> SplitIntoEqualEnumerable(G.IReadOnlyList<T> source, int fragmentLength)
 	{
 		if (fragmentLength <= 0)
 			throw new ArgumentException(null, nameof(fragmentLength));
-		var length = GetArrayLength(source._size, fragmentLength);
+		var length = GetArrayLength(source.Count, fragmentLength);
 		List<NList<T>> result = new(length);
-		var count2 = source._size / fragmentLength;
+		var count2 = source.Count / fragmentLength;
 		var index = 0;
 		for (var i = 0; i < count2; i++)
 		{
@@ -71177,7 +71350,7 @@ public unsafe partial class NList<T, TCertain>
 				result[i]._items[j] = source[index++];
 			result[i]._size = fragmentLength;
 		}
-		var rest = source._size % fragmentLength;
+		var rest = source.Count % fragmentLength;
 		if (rest != 0)
 		{
 			result.Add(new(rest));
@@ -74753,6 +74926,726 @@ public unsafe partial class NList<T, TCertain>
 		result.TrimExcess();
 		return result;
 	}
+
+	internal static decimal PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Max(function(source[0]), function(source[1])),
+				3 => Max(Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static decimal PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Max(function(source[0], 0), function(source[1], 1)),
+				3 => Max(Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static double PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Max(function(source[0]), function(source[1])),
+				3 => Max(Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static double PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Max(function(source[0], 0), function(source[1], 1)),
+				3 => Max(Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static int PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Max(function(source[0]), function(source[1])),
+				3 => Max(Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static int PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Max(function(source[0], 0), function(source[1], 1)),
+				3 => Max(Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static uint PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Max(function(source[0]), function(source[1])),
+				3 => Max(Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static uint PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Max(function(source[0], 0), function(source[1], 1)),
+				3 => Max(Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static long PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Max(function(source[0]), function(source[1])),
+				3 => Max(Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static long PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Max(function(source[0], 0), function(source[1], 1)),
+				3 => Max(Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static MpzT PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => MpzT.Max(function(source[0]), function(source[1])),
+				3 => MpzT.Max(MpzT.Max(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static MpzT PMaxEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => MpzT.Max(function(source[0], 0), function(source[1], 1)),
+				3 => MpzT.Max(MpzT.Max(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f < indicator)
+				return;
+			lock (lockObj)
+				if (f > indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static decimal PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Min(function(source[0]), function(source[1])),
+				3 => Min(Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static decimal PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, decimal> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Min(function(source[0], 0), function(source[1], 1)),
+				3 => Min(Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static double PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Min(function(source[0]), function(source[1])),
+				3 => Min(Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static double PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, double> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Min(function(source[0], 0), function(source[1], 1)),
+				3 => Min(Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static int PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Min(function(source[0]), function(source[1])),
+				3 => Min(Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static int PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, int> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Min(function(source[0], 0), function(source[1], 1)),
+				3 => Min(Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static uint PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Min(function(source[0]), function(source[1])),
+				3 => Min(Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static uint PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, uint> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Min(function(source[0], 0), function(source[1], 1)),
+				3 => Min(Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static long PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => Min(function(source[0]), function(source[1])),
+				3 => Min(Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static long PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, long> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => Min(function(source[0], 0), function(source[1], 1)),
+				3 => Min(Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static MpzT PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0]),
+				2 => MpzT.Min(function(source[0]), function(source[1])),
+				3 => MpzT.Min(MpzT.Min(function(source[0]), function(source[1])), function(source[2])),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0]);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
+
+	internal static MpzT PMinEnumerable<T_>(G.IReadOnlyList<T_> source, Func<T_, int, MpzT> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Count;
+		if (length <= 3)
+		{
+			return length switch
+			{
+				0 => 0,
+				1 => function(source[0], 0),
+				2 => MpzT.Min(function(source[0], 0), function(source[1], 1)),
+				3 => MpzT.Min(MpzT.Min(function(source[0], 0), function(source[1], 1)), function(source[2], 2)),
+				_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")
+			};
+		}
+		var indicator = function(source[0], 0);
+		object lockObj = new();
+		Parallel.For(1, source.Count, i =>
+		{
+			var item = source[i];
+			var f = function(item, i);
+			if (f > indicator)
+				return;
+			lock (lockObj)
+				if (f < indicator)
+					indicator = f;
+		});
+		return indicator;
+	}
 }
 
 public static class RedStarLinq
@@ -75807,20 +76700,11 @@ public static class RedStarLinq
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString(this IEnumerable<char> source) => new(List<char>.ToArrayEnumerable(source));
 	public static List<List<T>> Transpose<T>(this List<List<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
+	public static List<NList<T>> Transpose<T>(this List<NList<T>> source, bool widen = false) where T : unmanaged => NList<T>.Transpose(source, widen);
 	public static bool TryGetLengthEasily<T>(this IEnumerable<T> source, out int length) => List<T>.TryGetLengthEasilyEnumerable(source, out length);
 	public static bool TryGetLengthEasily<T>(this IEnumerable source, out int length) => List<T>.TryGetLengthEasilyEnumerable(source, out length);
-	public static bool TryWrap<T, TResult>(this IEnumerable<T> source, Func<IEnumerable<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function, out TResult? result) where T : unmanaged => NList<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T, TResult>(this T[] source, Func<T[], TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
-	public static bool TryWrap<T, TResult>(this G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2) => Enumerable.Union(source, source2);
 	public static IEnumerable<T> Union<T>(this IEnumerable<T> source, IEnumerable<T> source2, IEqualityComparer<T> comparer) => Enumerable.Union(source, source2, comparer);
-	public static TResult Wrap<T, TResult>(this IEnumerable<T> source, Func<IEnumerable<T>, TResult> function) => function(source);
-	public static TResult Wrap<T, TResult>(this List<T> source, Func<List<T>, TResult> function) => function(source);
-	public static TResult Wrap<T, TResult>(this NList<T> source, Func<NList<T>, TResult> function) where T : unmanaged => function(source);
-	public static TResult Wrap<T, TResult>(this T[] source, Func<T[], TResult> function) => function(source);
-	public static TResult Wrap<T, TResult>(this G.IReadOnlyList<T> source, Func<G.IReadOnlyList<T>, TResult> function) => function(source);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this ReadOnlySpan<T> source, Func<T, int, bool> function) => List<T>.AllEnumerable(source, function);
 	public static bool All<T>(this Span<T> source, Func<T, bool> function) => List<T>.AllEnumerable((ReadOnlySpan<T>)source, function);
@@ -78048,6 +78932,30 @@ public static class RedStarLinq
 	public static TResult[] PFillArray<TResult>(int length, Func<int, TResult> function) => List<bool>.PFillArrayEnumerable(function, length);
 	public static List<T> PFilter<T>(this G.IReadOnlyList<T> source, Func<T, bool> function) => List<T>.PFilterEnumerable(source, function);
 	public static List<T> PFilter<T>(this G.IReadOnlyList<T> source, Func<T, int, bool> function) => List<T>.PFilterEnumerable(source, function);
+	public static decimal PMax<T>(this G.IReadOnlyList<T> source, Func<T, decimal> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static decimal PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, decimal> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static double PMax<T>(this G.IReadOnlyList<T> source, Func<T, double> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static double PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, double> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static int PMax<T>(this G.IReadOnlyList<T> source, Func<T, int> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static int PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, int> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static uint PMax<T>(this G.IReadOnlyList<T> source, Func<T, uint> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static uint PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, uint> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static long PMax<T>(this G.IReadOnlyList<T> source, Func<T, long> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static long PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, long> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static MpzT PMax<T>(this G.IReadOnlyList<T> source, Func<T, MpzT> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static MpzT PMax<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function) => NList<bool>.PMaxEnumerable(source, function);
+	public static decimal PMin<T>(this G.IReadOnlyList<T> source, Func<T, decimal> function) => NList<bool>.PMinEnumerable(source, function);
+	public static decimal PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, decimal> function) => NList<bool>.PMinEnumerable(source, function);
+	public static double PMin<T>(this G.IReadOnlyList<T> source, Func<T, double> function) => NList<bool>.PMinEnumerable(source, function);
+	public static double PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, double> function) => NList<bool>.PMinEnumerable(source, function);
+	public static int PMin<T>(this G.IReadOnlyList<T> source, Func<T, int> function) => NList<bool>.PMinEnumerable(source, function);
+	public static int PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, int> function) => NList<bool>.PMinEnumerable(source, function);
+	public static uint PMin<T>(this G.IReadOnlyList<T> source, Func<T, uint> function) => NList<bool>.PMinEnumerable(source, function);
+	public static uint PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, uint> function) => NList<bool>.PMinEnumerable(source, function);
+	public static long PMin<T>(this G.IReadOnlyList<T> source, Func<T, long> function) => NList<bool>.PMinEnumerable(source, function);
+	public static long PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, long> function) => NList<bool>.PMinEnumerable(source, function);
+	public static MpzT PMin<T>(this G.IReadOnlyList<T> source, Func<T, MpzT> function) => NList<bool>.PMinEnumerable(source, function);
+	public static MpzT PMin<T>(this G.IReadOnlyList<T> source, Func<T, int, MpzT> function) => NList<bool>.PMinEnumerable(source, function);
 	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
 	public static List<T> PRemoveDoubles<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.PRemoveDoublesEnumerable(source, function);
 	public static List<T> PRemoveDoubles<T>(this G.IReadOnlyList<T> source) => List<T>.PRemoveDoublesEnumerable(source);
@@ -78087,6 +78995,9 @@ public static class RedStarLinq
 	public static TResult[] PToArray<T, TResult>(this G.IReadOnlyList<T> source, Func<T, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static TResult[] PToArray<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function) => List<T>.PToArrayEnumerable(source, function);
 	public static T[] PToArray<T>(this G.IReadOnlyList<T> source) => List<T>.PToArrayEnumerable(source);
+	public static bool TryWrap<T>(this T source, Action<T> function) => List<T>.TryWrapEnumerable(source, function);
+	public static bool TryWrap<T, TResult>(this T source, Func<T, TResult> function, out TResult? result) => List<T>.TryWrapEnumerable(source, function, out result);
+	public static TResult Wrap<T, TResult>(this T source, Func<T, TResult> function) => function(source);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, TResult> function, Func<T, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<TResult>, NList<TResult2>) NBreak<T, TResult, TResult2>(this IEnumerable<T> source, Func<T, int, TResult> function, Func<T, int, TResult2> function2) where TResult : unmanaged where TResult2 : unmanaged => NList<bool>.BreakEnumerable(source, function, function2);
 	public static (NList<T>, NList<T2>) NBreak<T, T2>(this IEnumerable<(T, T2)> source) where T : unmanaged where T2 : unmanaged => NList<T>.BreakEnumerable(source);
@@ -78170,9 +79081,9 @@ public static class RedStarLinq
 	public static NList<TResult> NConvertAndJoin<T, TResult>(this NList<T> source, Func<T, IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertAndJoinEnumerable(source, function);
 	public static NList<TResult> NConvertAndJoin<T, TResult>(this NList<T> source, Func<T, int, IEnumerable<TResult>> function) where T : unmanaged where TResult : unmanaged => NList<T>.ConvertAndJoinEnumerable(source, function);
 	public static NList<T> NEmptyList<T>(int length) where T : unmanaged => NList<T>.EmptyListEnumerable(length);
-	public static NList<TResult> NFill<TResult>(TResult elem, int length) where TResult : unmanaged => NList<TResult>.FillEnumerable(elem, length);
 	public static NList<TResult> NFill<TResult>(Func<int, TResult> function, int length) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, length);
 	public static NList<TResult> NFill<TResult>(int length, Func<int, TResult> function) where TResult : unmanaged => NList<TResult>.FillEnumerable(function, length);
+	public static NList<TResult> NFill<TResult>(TResult elem, int length) where TResult : unmanaged => NList<TResult>.FillEnumerable(elem, length);
 	public static NList<T> NFilter<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.FilterEnumerable(source, function);
 	public static NList<T> NFilter<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.FilterEnumerable(source, function);
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
@@ -78226,7 +79137,7 @@ public static class RedStarLinq
 	public static NList<T> NShuffle<T>(this IEnumerable<T> source, Random random) where T : unmanaged => NList<T>.ShuffleEnumerable(source, random);
 	public static Slice<T> NSkipWhile<T>(this IEnumerable<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.SkipWhileEnumerable(source, function);
 	public static Slice<T> NSkipWhile<T>(this IEnumerable<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.SkipWhileEnumerable(source, function);
-	public static List<NList<T>> NSplitIntoEqual<T>(this NList<T> source, int fragmentLength) where T : unmanaged => NList<T>.SplitIntoEqualEnumerable(source, fragmentLength);
+	public static List<NList<T>> NSplitIntoEqual<T>(this G.IReadOnlyList<T> source, int fragmentLength) where T : unmanaged => NList<T>.SplitIntoEqualEnumerable(source, fragmentLength);
 	public static Slice<T> NTake<T>(this IEnumerable<T> source, int length) where T : unmanaged => NList<T>.TakeEnumerable(source, length);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);
 	public static Slice<T> NTakeWhile<T>(this IEnumerable<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.TakeWhileEnumerable(source, function);

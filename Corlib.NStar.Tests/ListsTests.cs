@@ -223,6 +223,55 @@ public class ListTests
 	}
 
 	[TestMethod]
+	public void TestAddSeries()
+	{
+		var a = list.ToList();
+		a.AddSeries("XXX", 0);
+		G.List<string> b = new(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries("XXX", 3);
+		b.AddRange(["XXX", "XXX", "XXX"]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries("XXX", 101);
+		b.AddRange(E.Repeat("XXX", 101));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries("XXX", -1));
+		a.Replace(list);
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 0);
+		b.Clear();
+		b.AddRange(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 3);
+		b.AddRange(["000", "001", "003"]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(index => (index ^ index >> 1).ToString("D3"), 101);
+		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(index => (index ^ index >> 1).ToString("D3"), -1));
+		a.Replace(list);
+		a.AddSeries(0, index => (index ^ index >> 1).ToString("D3"));
+		b.Clear();
+		b.AddRange(list);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(3, index => (index ^ index >> 1).ToString("D3"));
+		b.AddRange(["000", "001", "003"]);
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.AddSeries(101, index => (index ^ index >> 1).ToString("D3"));
+		b.AddRange(E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3")));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.AddSeries(-1, index => (index ^ index >> 1).ToString("D3")));
+	}
+
+	[TestMethod]
 	public void TestAppend()
 	{
 		var a = list.ToList();
@@ -428,6 +477,51 @@ public class ListTests
 	{
 		var a = list.ToList();
 		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestEquals();
+	}
+
+	[TestMethod]
+	public void TestFillInPlace()
+	{
+		var a = list.ToList();
+		a.FillInPlace("XXX", 0);
+		G.List<string> b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace("XXX", 3);
+		b = ["XXX", "XXX", "XXX"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace("XXX", 101);
+		b = [.. E.Repeat("XXX", 101)];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace("XXX", -1));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 0);
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 3);
+		b = ["000", "001", "003"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), 101);
+		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3"))];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(index => (index ^ index >> 1).ToString("D3"), -1));
+		a.FillInPlace(0, index => (index ^ index >> 1).ToString("D3"));
+		b = [];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(3, index => (index ^ index >> 1).ToString("D3"));
+		b = ["000", "001", "003"];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a.FillInPlace(101, index => (index ^ index >> 1).ToString("D3"));
+		b = [.. E.Select(E.Range(0, 101), index => (index ^ index >> 1).ToString("D3"))];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a.FillInPlace(-1, index => (index ^ index >> 1).ToString("D3")));
 	}
 
 	[TestMethod]

@@ -1,4 +1,6 @@
-﻿global using Mpir.NET;
+﻿global using ILGPU;
+global using ILGPU.Runtime;
+global using Mpir.NET;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
@@ -23,7 +25,7 @@ public enum PrimitiveType : byte
 
 public class Comparer<T>(Func<T, T, int> comparer) : IComparer<T>
 {
-	private readonly Func<T, T, int> comparer = comparer;
+	private protected readonly Func<T, T, int> comparer = comparer;
 
 	public int Compare(T? x, T? y)
 	{
@@ -46,8 +48,8 @@ public class Comparer<T>(Func<T, T, int> comparer) : IComparer<T>
 
 public class EComparer<T> : IEqualityComparer<T>
 {
-	private readonly Func<T, T, bool> equals;
-	private readonly Func<T, int> hashCode;
+	private protected readonly Func<T, T, bool> equals;
+	private protected readonly Func<T, int> hashCode;
 
 	public EComparer(Func<T, T, bool> equals)
 	{
@@ -95,8 +97,8 @@ public class ArrayEComparer<T> : IListEComparer<T>, IEqualityComparer<T[]>
 
 public class IListEComparer<T> : IEqualityComparer<G.IList<T>>
 {
-	private readonly Func<T, T, bool> equals;
-	private readonly Func<T, int> hashCode;
+	private protected readonly Func<T, T, bool> equals;
+	private protected readonly Func<T, int> hashCode;
 
 	public IListEComparer()
 	{
@@ -168,9 +170,9 @@ public class ListEComparer<T> : IListEComparer<T>, IEqualityComparer<List<T>>
 
 public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 {
-	private readonly Func<T, T, bool> equals;
-	private readonly Func<T, int> hashCode;
-	private readonly bool defaultEquals;
+	private protected readonly Func<T, T, bool> equals;
+	private protected readonly Func<T, int> hashCode;
+	private protected readonly bool defaultEquals;
 
 	public NListEComparer()
 	{
@@ -382,6 +384,12 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((MpzT)x).BitLength;
 
+	public static void Clear<T>(this ArrayView<T> source, Accelerator accel) where T : unmanaged =>
+		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>>((i, view) => view[i] = default)(source.IntExtent, source);
+
+	public static void Clear<T>(this MemoryBuffer1D<T, Stride1D.Dense> source, Accelerator accel) where T : unmanaged =>
+		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>>((i, view) => view[i] = default)(source.IntExtent, source.View);
+
 	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length));
 
 	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
@@ -399,6 +407,14 @@ public static unsafe partial class Extents
 		fixed (T* right2 = right)
 			return CompareMemory(left2 + leftIndex, right2 + rightIndex, length);
 	}
+
+	public static void CopyGPUMemory<T>(ArrayView<T> source, ArrayView<T> destination, int length, Accelerator accel) where T : unmanaged =>
+		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>, ArrayView<T>>((i, src, dest) => dest[i] = src[i])
+		((Index1D)length, source, destination);
+
+	public static void CopyGPUMemory<T>(MemoryBuffer1D<T, Stride1D.Dense> source, MemoryBuffer1D<T, Stride1D.Dense> destination, int length, Accelerator accel) where T : unmanaged =>
+		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>, ArrayView<T>>((i, src, dest) => dest[i] = src[i])
+		((Index1D)length, source.View, destination.View);
 
 	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
 
@@ -737,11 +753,11 @@ public static unsafe partial class Extents
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
 		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
-		for (var i = 0; i < length; i++)
+		Parallel.For(0, length, i =>
 		{
 			converted[i] = function(array[index + i]);
 			indexes[i] = i;
-		}
+		});
 		RadixSort(converted, indexes, length);
 		Marshal.FreeHGlobal((nint)converted);
 		var oldItems = (T*)Marshal.AllocHGlobal(sizeof(T) * length);
@@ -909,10 +925,14 @@ public static unsafe partial class Extents
 		FillMemory((byte*)counters, ValuesInByte * sizeof(T) * sizeof(int), 0);
 		var bp = (byte*)data;
 		var dataEnd = (byte*)(data + n);
-		int i;
-		while (bp != dataEnd)
-			for (i = 0; i < sizeof(T); i++)
-				counters[ValuesInByte * i + *bp++]++;
+		for (var i = 0; i < n; i++)
+		{
+			for (var j = 0; j < sizeof(T); j++)
+			{
+				var value = *(bp + i * sizeof(T) + j);
+				counters[ValuesInByte * j + value]++;
+			}
+		}
 	}
 
 	public static uint ReverseBits(uint n)

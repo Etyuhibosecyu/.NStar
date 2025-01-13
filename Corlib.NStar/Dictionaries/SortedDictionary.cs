@@ -15,16 +15,16 @@ namespace Corlib.NStar;
 /// </summary>
 public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue>
 {
-	private readonly List<TKey> keys;
-	private readonly List<TValue> values;
-	private readonly IComparer<TKey> comparer;
-	private KeyList? keyList;
-	private ValueList? valueList;
+	private protected readonly List<TKey> keys;
+	private protected readonly List<TValue> values;
+	private protected readonly IComparer<TKey> comparer;
+	private protected KeyList? keyList;
+	private protected ValueList? valueList;
 	[NonSerialized]
-	private object? _syncRoot;
+	private protected object? _syncRoot;
 
-	private const int _defaultCapacity = 32;
-	private const int _sortingThreshold = 65;
+	private protected const int _defaultCapacity = 32;
+	private protected const int _sortingThreshold = 65;
 
 	public SortedDictionary()
 	{
@@ -58,7 +58,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(G.IDictionary<TKey, TValue> dictionary, IComparer<TKey>? comparer) : this(dictionary != null ? dictionary.Count : throw new ArgumentNullException(nameof(dictionary)), comparer)
 	{
 		(keys, values) = dictionary.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
-		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -69,7 +69,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? List<TKey>.TryGetLengthEasilyEnumerable(keyCollection, out var length) && List<TValue>.TryGetLengthEasilyEnumerable(valueCollection, out var count2) ? Min(length, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
 	{
 		(keys, values) = (keyCollection, valueCollection).RemoveDoubles();
-		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -80,7 +80,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break();
-		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -91,7 +91,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
 		(keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
-		if (keys.Length > SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
 
@@ -367,7 +367,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
-		if (keys.Length <= SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length <= _sortingThreshold)
 			return keys.FindIndex(x => comparer.Compare(x, key) == 0);
 		var ret = Search(key);
 		return ret >= 0 ? ret : -1;
@@ -375,7 +375,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual int IndexOfValue(TValue value) => values.IndexOf(value, 0, keys.Length);
 
-	private void Insert(int index, TKey key, TValue value)
+	private protected void Insert(int index, TKey key, TValue value)
 	{
 		keys.Insert(index, key);
 		values.Insert(index, value);
@@ -404,7 +404,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values.FilterInPlace((x, index) => indexes.Contains(index));
 	}
 
-	private static bool IsCompatibleKey(object key)
+	private protected static bool IsCompatibleKey(object key)
 	{
 		ArgumentNullException.ThrowIfNull(key);
 		return key is TKey;
@@ -447,7 +447,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public virtual int Search(TKey key)
 	{
-		if (keys.Length <= SortedDictionary<TKey, TValue>._sortingThreshold)
+		if (keys.Length <= _sortingThreshold)
 		{
 			var index = keys.IndexOf(key);
 			return index >= 0 ? index : ~keys.Length;

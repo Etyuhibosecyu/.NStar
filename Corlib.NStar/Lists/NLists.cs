@@ -9,7 +9,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	private protected T* _items;
 	private protected int _capacity;
 
-	private static readonly T* _emptyArray = null;
+	private protected static readonly T* _emptyArray = null;
 
 	public NList() => _items = _emptyArray;
 
@@ -171,6 +171,21 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return new(_items + index, length);
 	}
 
+	public virtual int BinarySearch(int index, int length, T item) => BinarySearch(index, length, item, G.Comparer<T>.Default);
+
+	public virtual int BinarySearch(int index, int length, T item, IComparer<T> comparer)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException(null);
+		return new Span<T>(_items + index, length).BinarySearch(item, comparer);
+	}
+
+	public virtual int BinarySearch(T item) => BinarySearch(0, _size, item, G.Comparer<T>.Default);
+
+	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
+
 	private protected override void ClearInternal(int index, int length)
 	{
 		FillMemory(_items + index, length, 0);
@@ -257,7 +272,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		if (length == 0)
 			return [];
 		else if (!alwaysCopy && index == 0 && length == _size)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		if (!alwaysCopy)
 		{
 			var list = CapacityCreator(length);
@@ -287,7 +302,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (_size == Capacity)
 		{
 			var min = _size + 1;
@@ -321,7 +336,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
 		var length = span.Length;
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length == 0)
 			return this2;
 		if (Capacity < _size + length)
@@ -354,7 +369,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (collection is TCertain list)
 		{
 			var length = list._size;
@@ -483,7 +498,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		for (var i = 0; i < length / 2; i++)
 			(_items[index + i], _items[index + length - 1 - i]) = (_items[index + length - 1 - i], _items[index + i]);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -498,7 +513,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	{
 		var shiftedItems = _items + index;
 		RadixSort(shiftedItems, length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain Sort(Func<T, uint> function) => Sort(function, 0, _size);
@@ -506,7 +521,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	public virtual TCertain Sort(Func<T, uint> function, int index, int length)
 	{
 		NSort(_items, function, index, length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 }
 
@@ -637,7 +652,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public String(IEnumerable<char> collection) : base(collection) { }
 
-	public String(string s) : base(s.ToArray()) { }
+	public String(string s) : base([.. s]) { }
 
 	public String(params char[] array) : base(array) { }
 
@@ -652,7 +667,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
 
-	public String(int capacity, string s) : base(capacity, s.ToArray()) { }
+	public String(int capacity, string s) : base(capacity, [.. s]) { }
 
 	public String(int capacity, params char[] array) : base(capacity, array) { }
 

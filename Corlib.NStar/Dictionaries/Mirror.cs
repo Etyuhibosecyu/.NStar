@@ -434,7 +434,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		return newSize;
 	}
 
-	private static int Find(Entry[] entries, int otherCurrent, int bucket, bool mirrored = false)
+	private protected static int Find(Entry[] entries, int otherCurrent, int bucket, bool mirrored = false)
 	{
 		uint collisionCount = 0;
 		var last = -1;
@@ -655,7 +655,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		return value is TValue;
 	}
 
-	private static void ProcessLast(Entry[] entries, Entry entry, ref int bucket, int last, bool mirrored = false)
+	private protected static void ProcessLast(Entry[] entries, Entry entry, ref int bucket, int last, bool mirrored = false)
 	{
 		if (last < 0)
 			bucket = (mirrored ? entry.nextM : entry.next) + 1; // Value in buckets is 1-based
@@ -1138,7 +1138,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		return true;
 	}
 
-	private int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior, Entry[] entries, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> comparerM, uint hashCode, ref uint collisionCount, ref int current, bool mirrored = false)
+	private protected int TryInsertInternal(TKey key, TValue value, InsertionBehavior behavior, Entry[] entries, IEqualityComparer<TKey> comparer, IEqualityComparer<TValue> comparerM, uint hashCode, ref uint collisionCount, ref int current, bool mirrored = false)
 	{
 		if ((uint)current >= (uint)entries.Length)
 			return 0;

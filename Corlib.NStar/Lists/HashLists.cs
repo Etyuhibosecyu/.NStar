@@ -240,7 +240,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity) EnsureCapacity(_size + 1);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (index < _size)
 			Copy(this2, index, this2, index + 1, _size - index);
 		entries[index].item = item;
@@ -252,7 +252,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		var list = CollectionCreator(collection);
 		var length = list._size;
 		if (length > 0)
@@ -531,19 +531,19 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 
 	public override TCertain FilterInPlace(Func<T, bool> match)
 	{
-		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in (TCertain)this)
 			if (!match(item))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain FilterInPlace(Func<T, int, bool> match)
 	{
 		var i = 0;
-		foreach (var item in this as TCertain ?? throw new InvalidOperationException())
+		foreach (var item in (TCertain)this)
 			if (!match(item, i++))
 				RemoveValue(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain FixUpFakeIndexes()
@@ -571,7 +571,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		freeCount = 0;
 		freeList = 0;
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
@@ -611,16 +611,16 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		buckets[targetBucket] = ~index;
 		uniqueElements.TryAdd(item);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain RemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		var item = entries[index].item;
 		if (item == null)
-			return this as TCertain ?? throw new InvalidOperationException();
+			return (TCertain)this;
 		var hashCode = base.Comparer.GetHashCode(item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
 		if (bucket != index)
@@ -637,7 +637,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		if (!Contains(item))
 			uniqueElements.RemoveValue(item);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override bool RemoveValue(T? item)
@@ -864,14 +864,14 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 		buckets[targetBucket] = ~index;
 		uniqueElements.TryAdd(item);
 		Changed();
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public override TCertain RemoveAt(int index)
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		var item = entries[index].item;
 		_size--;
 		if (index < _size)

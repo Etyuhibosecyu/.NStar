@@ -61,7 +61,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if (_size == Capacity) EnsureCapacity(_size + 1);
 		SetInternal(_size++, item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	void G.ICollection<T>.Add(T item) => Add(item);
@@ -81,6 +81,30 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 
 	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
+
+	public virtual TCertain AddSeries(Func<int, T> function, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
+		for (var i = 0; i < length; i++)
+			Add(function(i));
+		return (TCertain)this;
+	}
+
+	public virtual TCertain AddSeries(int length, Func<int, T> function) => AddSeries(function, length);
+
+	public virtual TCertain AddSeries(T item, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
+		AddSeriesInternal(item, length);
+		return (TCertain)this;
+	}
+
+	private protected virtual void AddSeriesInternal(T item, int length)
+	{
+		EnsureCapacity(_size + length);
+		SetAllInternal(item, _size, _size + length);
+		_size += length;
+	}
 
 	public virtual TCertain Append(T item) => CollectionCreator(this).Add(item);
 
@@ -141,7 +165,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 				result2.Add(item);
 		}
 		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual (TCertain, TCertain) BreakFilterInPlace(Func<T, int, bool> match) => (BreakFilterInPlace(match, out var result2), result2);
@@ -163,10 +187,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 				result2.Add(item);
 		}
 		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
-	private protected void Changed() => ListChanged?.Invoke(this as TCertain ?? throw new InvalidOperationException());
+	private protected void Changed() => ListChanged?.Invoke((TCertain)this);
 
 	public virtual void Clear()
 	{
@@ -217,6 +241,31 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 	}
 
+	public virtual TCertain FillInPlace(Func<int, T> function, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
+		EnsureCapacity(length);
+		for (var i = 0; i < length; i++)
+			SetInternal(i, function(i));
+		if (_size > length)
+			ClearInternal(length, _size - length);
+		_size = length;
+		return (TCertain)this;
+	}
+
+	public virtual TCertain FillInPlace(int length, Func<int, T> function) => FillInPlace(function, length);
+
+	public virtual TCertain FillInPlace(T item, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
+		EnsureCapacity(length);
+		SetAllInternal(item, 0, length);
+		if (_size > length)
+			ClearInternal(length, _size - length);
+		_size = length;
+		return (TCertain)this;
+	}
+
 	public virtual TCertain Filter(Func<T, bool> match)
 	{
 		var result = CapacityCreator(_size / 2);
@@ -256,7 +305,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 		Clear(targetIndex, _size - targetIndex);
 		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain FilterInPlace(Func<T, int, bool> match)
@@ -270,7 +319,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 		Clear(targetIndex, _size - targetIndex);
 		_size = targetIndex;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual T GetAndRemove(Index index)
@@ -347,7 +396,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	private protected override TCertain GetRangeInternal(int index, int length)
 	{
 		var list = CapacityCreator(length);
-		Copy(this as TCertain ?? throw new InvalidOperationException(), index, list, 0, length);
+		Copy((TCertain)this, index, list, 0, length);
 		return list;
 	}
 
@@ -366,7 +415,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (_size == Capacity) EnsureCapacity(_size + 1);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (index < _size)
 			Copy(this2, index, this2, index + 1, _size - index);
 		SetInternal(index, item);
@@ -400,7 +449,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		var length = list._size;
 		if (length > 0)
 		{
@@ -423,7 +472,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain Pad(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		var result = CapacityCreator(length);
@@ -441,7 +490,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain PadInPlace(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		var left = (length - _size) >> 1;
@@ -459,7 +508,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain PadLeft(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		var result = CapacityCreator(length);
@@ -475,7 +524,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain PadLeftInPlace(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		var left = length - _size;
@@ -491,7 +540,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain PadRight(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		var result = CapacityCreator(length);
@@ -506,7 +555,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public virtual TCertain PadRightInPlace(int length, T value)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length <= _size)
 			return this2;
 		while (_size < length)
@@ -567,7 +616,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if ((uint)index >= (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		_size--;
 		if (index < _size)
 			Copy(this2, index + 1, this2, index, _size - index);
@@ -595,7 +644,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	private protected virtual TCertain RemoveInternal(int index, int length)
 	{
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length > 0)
 		{
 			_size -= length;
@@ -751,7 +800,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		for (var index = IndexOf(oldItem); index >= 0; index = IndexOf(oldItem, index + 1))
 			SetInternal(index, newItem);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 #pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
@@ -763,7 +812,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		for (var i = 0; i < _size; i++)
 			if (dic.TryGetValue(GetInternal(i), out var newItem))
 				SetInternal(i, newItem);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain ReplaceInPlace(Dictionary<T, TCertain> dic) => Replace(Replace(dic));
@@ -799,7 +848,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (list._size > 0)
 		{
 			EnsureCapacity(_size + list._size - length);
@@ -809,6 +858,20 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			_size += index + length < _size ? 0 : list._size - length;
 		}
 		return this2;
+	}
+
+	public virtual TCertain Resize(int newSize)
+	{
+		if (newSize == _size)
+			return (TCertain)this;
+		EnsureCapacity(newSize);
+		if (newSize > _size)
+		{
+			_size = newSize;
+			return (TCertain)this;
+		}
+		else
+			return Remove(newSize);
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -839,9 +902,14 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		if (index + length > _size)
 			throw new ArgumentException(null);
 		var endIndex = index + length;
+		SetAllInternal(value, index, endIndex);
+		return (TCertain)this;
+	}
+
+	private protected virtual void SetAllInternal(T value, int index, int endIndex)
+	{
 		for (var i = index; i < endIndex; i++)
 			SetInternal(i, value);
-		return this as TCertain ?? throw new InvalidOperationException();
 	}
 
 	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
@@ -861,7 +929,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		if (index == _size)
 			return Add(value);
 		SetInternal(index, value);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain SetRange(int index, IEnumerable<T> collection)
@@ -879,13 +947,13 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		SetRangeInternal(index, length, list);
 		_size = Max(_size, index + length);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	internal virtual TCertain SetRangeInternal(int index, int length, TCertain list)
 	{
 		EnsureCapacity(index + length);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (length > 0)
 			Copy(list, 0, this2, index, length);
 		return this2;
@@ -901,7 +969,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			SetInternal(swapIndex, GetInternal(i - 1));
 			SetInternal(i - 1, temp);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public static List<TCertain> Transpose(List<TCertain> list, bool widen = false)
@@ -927,7 +995,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		var threshold = (int)(Capacity * 0.9);
 		if (_size < threshold)
 			Capacity = _size;
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public static implicit operator BaseList<T, TCertain>(T x) => new TCertain().Add(x);
@@ -939,12 +1007,18 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	public override TCertain Add(T item)
 	{
 		TryAdd(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	bool ISet<T>.Add(T item) => TryAdd(item);
 
 	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
+
+	private protected override void AddSeriesInternal(T item, int length)
+	{
+		if (length != 0)
+			Add(item);
+	}
 
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
@@ -979,11 +1053,23 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	void ISet<T>.ExceptWith(IEnumerable<T> other) => ExceptWith(other);
 
+	public override TCertain FillInPlace(Func<int, T> function, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1, nameof(length));
+		return base.FillInPlace(function, length);
+	}
+
+	public override TCertain FillInPlace(T item, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, 1, nameof(length));
+		return base.FillInPlace(item, length);
+	}
+
 	public override TCertain Insert(int index, T item)
 	{
 		if (!Contains(item))
 			base.Insert(index, item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	public virtual TCertain IntersectWith(IEnumerable<T> other)
@@ -1070,7 +1156,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	public virtual TCertain SymmetricExceptWith(IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
-		var this2 = this as TCertain ?? throw new InvalidOperationException();
+		var this2 = (TCertain)this;
 		if (Length == 0)
 		{
 			UnionWith(other);
@@ -1091,7 +1177,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 			var result = Contains(item) ? RemoveValue(item) : TryAdd(item);
 			Debug.Assert(result);
 		}
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	void ISet<T>.SymmetricExceptWith(IEnumerable<T> other) => SymmetricExceptWith(other);
@@ -1106,7 +1192,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 	{
 		foreach (var item in other)
 			TryAdd(item);
-		return this as TCertain ?? throw new InvalidOperationException();
+		return (TCertain)this;
 	}
 
 	void ISet<T>.UnionWith(IEnumerable<T> other) => UnionWith(other);
