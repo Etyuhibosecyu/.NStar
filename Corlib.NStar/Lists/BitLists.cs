@@ -908,6 +908,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		Length = length;
 		_capacity = Length;
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -917,6 +918,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
 	}
 
 	public BigBitList(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
@@ -986,6 +989,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 			throw new ArgumentException(null, nameof(bits));
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -995,6 +999,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
 	}
 
 	public BigBitList(uint[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }

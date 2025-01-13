@@ -659,6 +659,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			CapacityFirstStepBitLength = capacityStepBitLength;
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		ConstructFromCapacity(capacity);
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -668,7 +669,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -676,6 +676,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : List<T>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : 0, capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		ConstructFromEnumerable(collection);
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -685,7 +686,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -693,6 +693,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		ConstructFromEnumerable(collection);
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -702,7 +703,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -710,6 +710,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	public BigList(ReadOnlySpan<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection.Length, capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		ConstructFromList(collection.ToArray());
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -719,7 +720,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -727,6 +727,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(RedStarLinq.Max(capacity, collection.Length), capacityFirstStepBitLength, capacityStepBitLength)
 	{
 		ConstructFromList(collection.ToArray());
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -736,7 +737,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -852,6 +852,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		end:
 			_capacity = value;
+#if VERIFY
 			if (low != null)
 				Debug.Assert(Length == low.Length);
 			else if (high != null && highLength != null)
@@ -861,7 +862,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else
 				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 			Verify();
 #endif
 		}
@@ -913,6 +913,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+#if VERIFY
 		if (low != null)
 		{
 			Length += 1;
@@ -925,7 +926,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 		return this2;
@@ -970,6 +970,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			high[quotient2].ClearInternal(0, length - previousPart);
 		}
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -979,7 +980,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -1118,9 +1118,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				}
 				Copy(source.high[index2], 0, destination, destinationIndex + previousPart, length - previousPart);
 			}
-			//destination.Length = RedStarLinq.Max(destination.Length, sourceIndex + length);
-			if (destination.high != null && destination.highLength != null)
-				Debug.Assert(destination.high.All(x => x.parent == destination));
 #if VERIFY
 			source.Verify();
 			destination.Verify();
@@ -1150,8 +1147,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				Copy(source, sourceIndex + previousPart, destination.high[index2], 0, length - previousPart);
 				destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength[index2] : 0, length - previousPart));
 			}
-			if (destination.high != null && destination.highLength != null)
-				Debug.Assert(destination.high.All(x => x.parent == destination));
 #if VERIFY
 			source.Verify();
 			destination.Verify();
@@ -1161,8 +1156,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (!(source.high != null && source.highLength != null && destination.high != null && destination.highLength != null && source.fragment == destination.fragment))
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Copy(source.high, source.highLength, sourceIndex, destination.high, destination.highLength, destinationIndex, length, source.fragment);
-		if (destination.high != null && destination.highLength != null)
-			Debug.Assert(destination.high.All(x => x.parent == destination));
 #if VERIFY
 		source.Verify();
 		destination.Verify();
@@ -1454,6 +1447,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -1463,7 +1457,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 	}
@@ -1481,6 +1474,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (index == Length)
 			return Add(value);
 		SetInternal(index, value);
+#if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
@@ -1490,7 +1484,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
 		Verify();
 #endif
 		return (TCertain)this;
