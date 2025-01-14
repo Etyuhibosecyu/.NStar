@@ -893,7 +893,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
 		if (low != null)
+		{
 			low.Add(item);
+			Length += 1;
+		}
 		else if (high != null && highLength != null)
 		{
 			var index = highLength.IndexOfNotGreaterSum(Length, out var sumExceedsBy);
@@ -915,10 +918,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 #if VERIFY
 		if (low != null)
-		{
-			Length += 1;
 			Debug.Assert(Length == low.Length);
-		}
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));

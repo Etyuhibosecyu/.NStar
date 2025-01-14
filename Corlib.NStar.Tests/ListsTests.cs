@@ -2102,8 +2102,39 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 	public static void ComplexTest(Func<(BaseSumList<T, TCertain>, G.List<T>, byte[])> create, Func<T> newValueFunc, Action<int> check, Action<byte[]> check2)
 	{
 		var counter = 0;
+		var toInsert = Array.Empty<T>();
 	l1:
 		var (sl, gl, bytes) = create();
+		var collectionActions = new[] { () =>
+		{
+			if (random.Next(2) == 0)
+			{
+				toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
+				sl.AddRange(toInsert);
+				gl.AddRange(toInsert);
+				Assert.IsTrue(sl.Equals(gl));
+				Assert.IsTrue(E.SequenceEqual(gl, sl));
+			}
+			else
+			{
+				var n = random.Next(sl.Length);
+				toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
+				sl.Insert(n, toInsert);
+				gl.InsertRange(n, toInsert);
+				Assert.IsTrue(sl.Equals(gl));
+				Assert.IsTrue(E.SequenceEqual(gl, sl));
+			}
+		}, () =>
+		{
+			var length = Min(random.Next(9), sl.Length);
+			if (sl.Length < length)
+				return;
+			var start = random.Next(sl.Length - length + 1);
+			sl.Remove(start, length);
+			gl.RemoveRange(start, length);
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
+		} };
 		var updateActions = new[] { (int key) =>
 		{
 			var newValue = newValueFunc();
@@ -2112,17 +2143,23 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 				gl.RemoveAt(key);
 			else
 				gl[key] = newValue;
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, key =>
 		{
 			sl.Increase(key);
 			gl[key]++;
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, key =>
 		{
-			if (sl[key] == T.One)
+			if (sl[key] <= T.One)
 				gl.RemoveAt(key);
 			else
 				gl[key]--;
 			sl.Decrease(key);
+			Assert.IsTrue(sl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		} };
 		var actions = new[] { () =>
 		{
@@ -2141,6 +2178,7 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 				gl.Insert(index, n);
 			}
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
@@ -2148,12 +2186,19 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 			gl.RemoveAt(index);
 			sl.RemoveAt(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
+		}, () =>
+		{
+			collectionActions.Random(random)();
+			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, () =>
 		{
 			if (sl.Length == 0) return;
 			var index = random.Next(sl.Length);
 			updateActions.Random(random)(index);
 			Assert.IsTrue(RedStarLinq.Equals(sl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 			check(index);
 		}, () =>
 		{
@@ -2164,6 +2209,7 @@ public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain :
 			if (sl.Length == 0) return;
 			var index = random.Next(sl.Length);
 			Assert.AreEqual(sl[index], gl[index]);
+			Assert.IsTrue(E.SequenceEqual(gl, sl));
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
@@ -2186,7 +2232,7 @@ public class SumListTests
 		gl = new(arr);
 		var bytes = new byte[16];
 		return (sl, gl, bytes);
-	}, () => random.Next(16), index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index))), bytes =>
+	}, () => random.Next(1, 16), index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), E.Sum(E.Take(gl, index))), bytes =>
 	{
 		var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
 		Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
@@ -2214,7 +2260,7 @@ public class BigSumListTests
 	}, () =>
 	{
 		random.NextBytes(bytes);
-		return new(bytes, 1);
+		return new([0, .. bytes], 1);
 	}, index => Assert.AreEqual(sl.GetLeftValuesSum(index, out var value), index == 0 ? 0 : E.Aggregate(E.Take(gl, index), (x, y) => x + y)), bytes =>
 	{
 		var index = sl.IndexOfNotGreaterSum(CreateVar(new MpzT(bytes, 1) % (sl.ValuesSum + 1), out var sum));

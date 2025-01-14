@@ -360,6 +360,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Insert(int index, T value)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value, nameof(value));
 		var this2 = (TCertain)this;
 		if (root == null)
 		{
@@ -440,6 +441,13 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		root.ColorBlack();
 		++_size;
 		return this2;
+	}
+
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	{
+		foreach (var item in collection)
+			Insert(index++, item);
+		return (TCertain)this;
 	}
 
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
@@ -1008,7 +1016,12 @@ public class SumList : BaseSumList<int, SumList>
 
 	public virtual long ValuesSum => (root as Node)?.ValuesSum ?? 0;
 
-	private protected override void ClearInternal(int index, int length) => new TreeSubSet(this, index, index + length - 1, true, true).Clear();
+	private protected override void ClearInternal(int index, int length)
+	{
+		_size += length;
+		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
+		subset.Clear();
+	}
 
 	private protected override void Copy(SumList source, int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
@@ -1019,16 +1032,20 @@ public class SumList : BaseSumList<int, SumList>
 			destination.SetOrAddInternal(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
-		var en = subset.GetEnumerator();
+		using TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
+		using SumList list = new(subset);
+		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
-			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true).InOrderTreeWalk(node =>
+		{
+			using var destSubSet = new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true);
+			destSubSet.InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
 				if (b)
 					node.Update(en.Current);
 				return b;
 			});
+		}
 		while (en.MoveNext())
 			destination.Add(en.Current);
 	}
@@ -1402,14 +1419,14 @@ public class SumList : BaseSumList<int, SumList>
 		public TreeSubSet(SumList Underlying, int Min, int Max, bool lowerBoundActive, bool upperBoundActive) : base()
 		{
 			_underlying = Underlying;
+			version = Underlying.version;
+			_countVersion = Underlying.version;
 			_min = Min;
 			_max = Max;
 			_lBoundActive = lowerBoundActive;
 			_uBoundActive = upperBoundActive;
-			root = _underlying.FindRange(_min, _max, _lBoundActive, _uBoundActive); // root is first element within range
-			_size = 0;
-			version = -1;
-			_countVersion = -1;
+			root = _underlying.root; // root is first element within range
+			_size = Max - Min + 1;
 		}
 
 		internal override int MaxInternal
@@ -1486,7 +1503,8 @@ public class SumList : BaseSumList<int, SumList>
 			if (Length == 0)
 				return;
 			NList<int> toRemove = [];
-			BreadthFirstTreeWalk(n => { toRemove.Add(n.Left?.LeavesCount ?? 0); return true; });
+			var i = 0;
+			InOrderTreeWalk(n => { toRemove.Add(_min + i++); return true; });
 			while (toRemove.Length != 0)
 			{
 				_underlying.RemoveAt(toRemove[^1]);
@@ -1507,6 +1525,8 @@ public class SumList : BaseSumList<int, SumList>
 #endif
 			return base.FindNode(index) as Node;
 		}
+
+		internal override int GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
 
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base
@@ -1529,35 +1549,63 @@ public class SumList : BaseSumList<int, SumList>
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
 			var current = root;
+			using var indexStack = Stack<int>.GetNew(2 * Log2(_size + 1));
+			var index = current.Left?.LeavesCount ?? 0;
+			using var flagStack = Stack<bool>.GetNew(2 * Log2(_size + 1));
 			while (current != null)
 			{
-				if (IsWithinRange(current.Left?.LeavesCount ?? 0))
+				if (IsWithinRange(index))
 				{
 					stack.Push(current as Node ?? throw new InvalidOperationException());
+					indexStack.Push(index);
+					flagStack.Push(true);
 					current = current.Left;
+					index -= (current?.Right?.LeavesCount ?? 0) + 1;
 				}
-				else if (_lBoundActive && Comparer.Compare(_min, current.Left?.LeavesCount ?? 0) > 0)
+				else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
+				{
 					current = current.Right;
+					index += (current?.Left?.LeavesCount ?? 0) + 1;
+				}
 				else
+				{
+					stack.Push(current as Node ?? throw new InvalidOperationException());
+					indexStack.Push(index);
+					flagStack.Push(false);
 					current = current.Left;
+					index -= (current?.Right?.LeavesCount ?? 0) + 1;
+				}
 			}
 			while (stack.Length != 0)
 			{
 				current = stack.Pop();
-				if (!action(current))
+				if (flagStack.Pop() && !action(current))
 					return false;
 				var node = current.Right;
+				index = indexStack.Pop() + (node?.Left?.LeavesCount ?? 0) + 1;
 				while (node != null)
 				{
-					if (IsWithinRange(node.Left?.LeavesCount ?? 0))
+					if (IsWithinRange(index))
 					{
 						stack.Push(node as Node ?? throw new InvalidOperationException());
+						indexStack.Push(index);
+						flagStack.Push(true);
 						node = node.Left;
+						index -= (node?.Right?.LeavesCount ?? 0) + 1;
 					}
-					else if (_lBoundActive && Comparer.Compare(_min, node.Left?.LeavesCount ?? 0) > 0)
+					else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
+					{
 						node = node.Right;
+						index += (node?.Left?.LeavesCount ?? 0) + 1;
+					}
 					else
+					{
+						stack.Push(node as Node ?? throw new InvalidOperationException());
+						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
+						flagStack.Push(false);
 						node = node.Left;
+						index -= (node?.Right?.LeavesCount ?? 0) + 1;
+					}
 				}
 			}
 			return true;
@@ -1567,10 +1615,10 @@ public class SumList : BaseSumList<int, SumList>
 		{
 			if (!IsWithinRange(index))
 				throw new ArgumentOutOfRangeException(nameof(value));
-			var ret = _underlying.Insert(index, value);
+			var ret = _underlying.Insert(_min + index, value);
 			VersionCheck();
 #if DEBUG
-			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
+			Debug.Assert(VersionUpToDate() && root == _underlying.root);
 #endif
 			return ret;
 		}
@@ -1583,6 +1631,8 @@ public class SumList : BaseSumList<int, SumList>
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
 			return comp >= 0;
 		}
+
+		internal override void SetInternal(int index, int value) => _underlying.SetInternal(_min + index, value);
 
 		/// <summary>
 		/// Returns the number of elements <c>length</c> of the parent list.
@@ -1697,16 +1747,20 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
-		var en = subset.GetEnumerator();
+		using TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
+		using BigSumList list = new(subset);
+		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
-			new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true).InOrderTreeWalk(node =>
+		{
+			using var destSubSet = new TreeSubSet(destination, destinationIndex, Min(destinationIndex + length, destination._size) - 1, true, true);
+			destSubSet.InOrderTreeWalk(node =>
 			{
 				var b = en.MoveNext();
 				if (b)
 					node.Update(en.Current);
 				return b;
 			});
+		}
 		while (en.MoveNext())
 			destination.Add(en.Current);
 	}
@@ -2115,7 +2169,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			_max = Max;
 			_lBoundActive = lowerBoundActive;
 			_uBoundActive = upperBoundActive;
-			root = _underlying.root/*FindRange(_min, _max, _lBoundActive, _uBoundActive)*/; // root is first element within range
+			root = _underlying.root; // root is first element within range
 			_size = Max - Min + 1;
 		}
 
@@ -2216,6 +2270,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return base.FindNode(index) as Node;
 		}
 
+		internal override MpzT GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
+
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base
 		// Cannot increase the bounds of the subset, can only decrease it
@@ -2239,41 +2295,61 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			var current = root;
 			using var indexStack = Stack<int>.GetNew(2 * Log2(_size + 1));
 			var index = current.Left?.LeavesCount ?? 0;
+			using var flagStack = Stack<bool>.GetNew(2 * Log2(_size + 1));
 			while (current != null)
 			{
 				if (IsWithinRange(index))
 				{
 					stack.Push(current as Node ?? throw new InvalidOperationException());
 					indexStack.Push(index);
+					flagStack.Push(true);
 					current = current.Left;
+					index -= (current?.Right?.LeavesCount ?? 0) + 1;
 				}
 				else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
 				{
-					index += (current.Left?.LeavesCount ?? 0) + 1;
 					current = current.Right;
+					index += (current?.Left?.LeavesCount ?? 0) + 1;
 				}
 				else
+				{
+					stack.Push(current as Node ?? throw new InvalidOperationException());
+					indexStack.Push(index);
+					flagStack.Push(false);
 					current = current.Left;
+					index -= (current?.Right?.LeavesCount ?? 0) + 1;
+				}
 			}
 			while (stack.Length != 0)
 			{
 				current = stack.Pop();
-				index = indexStack.Pop() + 1;
-				if (!action(current))
+				if (flagStack.Pop() && !action(current))
 					return false;
 				var node = current.Right;
+				index = indexStack.Pop() + (node?.Left?.LeavesCount ?? 0) + 1;
 				while (node != null)
 				{
 					if (IsWithinRange(index))
 					{
 						stack.Push(node as Node ?? throw new InvalidOperationException());
-						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
+						indexStack.Push(index);
+						flagStack.Push(true);
 						node = node.Left;
+						index -= (node?.Right?.LeavesCount ?? 0) + 1;
 					}
-					else if (_lBoundActive && Comparer.Compare(index, node.Left?.LeavesCount ?? 0) > 0)
+					else if (_lBoundActive && Comparer.Compare(index, _max) < 0)
+					{
 						node = node.Right;
+						index += (node?.Left?.LeavesCount ?? 0) + 1;
+					}
 					else
+					{
+						stack.Push(node as Node ?? throw new InvalidOperationException());
+						indexStack.Push((node.Left?.LeavesCount ?? 0) + index);
+						flagStack.Push(false);
 						node = node.Left;
+						index -= (node?.Right?.LeavesCount ?? 0) + 1;
+					}
 				}
 			}
 			return true;
@@ -2283,10 +2359,10 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		{
 			if (!IsWithinRange(index))
 				throw new ArgumentOutOfRangeException(nameof(value));
-			var ret = _underlying.Insert(index, value);
+			var ret = _underlying.Insert(_min + index, value);
 			VersionCheck();
 #if DEBUG
-			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
+			Debug.Assert(VersionUpToDate() && root == _underlying.root);
 #endif
 			return ret;
 		}
@@ -2299,6 +2375,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			comp = _uBoundActive ? Comparer.Compare(_max, index) : 1;
 			return comp >= 0;
 		}
+
+		internal override void SetInternal(int index, MpzT value) => _underlying.SetInternal(_min + index, value);
 
 		/// <summary>
 		/// Returns the number of elements <c>length</c> of the parent list.
