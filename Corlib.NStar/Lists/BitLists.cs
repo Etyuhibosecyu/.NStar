@@ -858,6 +858,15 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	}
 }
 
+/// <summary>
+/// Представляет компактный строго типизированный список бит (true или false), упорядоченных по индексу.
+/// В отличие от <see cref="BitList"/> и стандартного <see cref="BitArray"/>, имеет индекс типа <see cref="MpzT"/>, а не
+/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
+/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
+/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
+/// коллекции). Методы для поиска, сортировки и других манипуляций со списком находятся в разработке, на текущий момент
+/// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
+/// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigBitList : BigList<bool, BigBitList, BitList>
 {

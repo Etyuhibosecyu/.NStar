@@ -764,6 +764,15 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 }
 
+/// <summary>
+/// Представляет строго типизированный массив элементов, упорядоченных по индексу.
+/// В отличие от стандартного T[], имеет индекс типа <see cref="MpzT"/>, а не
+/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
+/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
+/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
+/// коллекции). Методы для поиска, сортировки и других манипуляций с массивом находятся в разработке, на текущий момент
+/// поддерживаются только установка элемента по индексу, копирование диапазона и копирование в обычный массив.
+/// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 {
@@ -786,6 +795,15 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }
 
+/// <summary>
+/// Представляет компактный строго типизированный массив бит (true или false), упорядоченных по индексу.
+/// В отличие от стандартного <see cref="BitArray"/>, имеет индекс типа <see cref="MpzT"/>, а не
+/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
+/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
+/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
+/// коллекции). Методы для поиска, сортировки и других манипуляций с массивом находятся в разработке, на текущий момент
+/// поддерживаются только установка элемента по индексу, копирование диапазона и копирование в обычный массив.
+/// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 {

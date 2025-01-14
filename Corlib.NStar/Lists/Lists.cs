@@ -939,6 +939,15 @@ public class List<T> : List<T, List<T>>
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
 }
 
+/// <summary>
+/// Представляет строго типизированный список элементов, упорядоченных по индексу.
+/// В отличие от <see cref="List{T}"/> и стандартного <see cref="G.List{T}"/>, имеет индекс типа <see cref="MpzT"/>, а не
+/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
+/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
+/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
+/// коллекции). Методы для поиска, сортировки и других манипуляций со списком находятся в разработке, на текущий момент
+/// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
+/// </summary>
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigList<T> : BigList<T, BigList<T>, List<T>>
 {

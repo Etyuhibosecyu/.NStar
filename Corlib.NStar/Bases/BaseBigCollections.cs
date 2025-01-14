@@ -510,12 +510,6 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return (TCertain)this;
 	}
 
-	internal virtual TCertain SetRangeAndSizeInternal(MpzT index, TCertain list)
-	{
-		SetRangeInternal(index, list);
-		return (TCertain)this;
-	}
-
 	private protected virtual TCertain SetRangeInternal(MpzT index, TCertain bigList)
 	{
 		var length = bigList.Length;
@@ -1248,7 +1242,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					buff.Remove(0, RedStarLinq.Min(currentLength, buff.Length));
 				}
 			}
-			destination[destinationEndIntIndex].SetRangeAndSizeInternal(0, buff.GetRangeInternal(0, destinationEndBitsIndex + 1));
+			destination[destinationEndIntIndex].SetRangeInternal(0, buff.GetRangeInternal(0, destinationEndBitsIndex + 1));
 			destinationLength.SetOrAdd(destinationEndIntIndex, RedStarLinq.Max(destinationLength.Length > destinationEndIntIndex ? destinationLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1));
 			buff.high = null;
 		}
@@ -1274,12 +1268,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				{
 					var currentLength2 = destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : currentLength;
 					destinationLength[destinationCurrentIntIndex] = RedStarLinq.Max(destinationLength[destinationCurrentIntIndex], currentLength2);
-					destination[destinationCurrentIntIndex--].SetRangeAndSizeInternal(0, buff.GetRange(buff.Length - currentLength2, true));
+					destination[destinationCurrentIntIndex--].SetRangeInternal(0, buff.GetRange(buff.Length - currentLength2, true));
 					buff.Remove(buff.Length - currentLength2);
 				}
 			}
 			destinationLength[destinationIntIndex] = RedStarLinq.Max(destinationLength[destinationIntIndex], fragment);
-			destination[destinationIntIndex].SetRangeAndSizeInternal(destinationBitsIndex, buff.GetRange(0, destinationLength[destinationIntIndex] - destinationBitsIndex, true));
+			destination[destinationIntIndex].SetRangeInternal(destinationBitsIndex, buff.GetRange(0, destinationLength[destinationIntIndex] - destinationBitsIndex, true));
 			buff.high = null;
 		}
 	}
