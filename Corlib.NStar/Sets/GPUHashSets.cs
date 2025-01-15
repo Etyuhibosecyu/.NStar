@@ -43,26 +43,26 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		Changed();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (source != destination || sourceIndex >= destinationIndex)
+		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		else
 		{
 			for (var i = length - destinationIndex + sourceIndex; i < length; i++)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 			for (var i = length - 1; i >= 0; i--)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		}
 	}
 
-	private protected static void CopyOne(TCertain source, int sourceIndex, TCertain destination, int destinationIndex)
+	private protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
 	{
-		var hashCode = source.hashCodes.View[sourceIndex];
+		var hashCode = hashCodes.View[sourceIndex];
 		if (hashCode < 0)
 		{
-			destination.SetInternal(destinationIndex, source.items.View[sourceIndex]);
+			destination.SetInternal(destinationIndex, items.View[sourceIndex]);
 			if (destination is ListHashSet<T> && destinationIndex == destination._size)
 				destination._size++;
 		}
@@ -210,8 +210,8 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 				return this2;
 			EnsureCapacity(_size + length);
 			if (index < _size)
-				Copy(this2, index, this2, index + length, _size - index);
-			Copy(set, 0, this2, index, length);
+				CopyToInternal(index, this2, index + length, _size - index);
+			set.CopyToInternal(0, this2, index, length);
 		}
 		return this2;
 	}
@@ -453,7 +453,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void Copy(GPUHashSet<T> source, int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, length);
+	private protected override void CopyToInternal(int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 

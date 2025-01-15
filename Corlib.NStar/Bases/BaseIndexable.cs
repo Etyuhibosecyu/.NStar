@@ -45,7 +45,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		if (length == 0 || !collection.Any())
 			return false;
@@ -63,7 +63,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		if (item == null)
 		{
 			for (var i = index; i < index + length; i++)
@@ -90,7 +90,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
@@ -108,7 +108,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
@@ -139,16 +139,16 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void CopyTo(Array array, int arrayIndex)
 	{
-		if (array != null && array.Rank != 1)
-			throw new ArgumentException(null);
 		ArgumentNullException.ThrowIfNull(array);
+		if (array.Rank != 1)
+			throw new RankException();
 		try
 		{
 			CopyToInternal(array, arrayIndex);
 		}
 		catch (ArrayTypeMismatchException)
 		{
-			throw new ArgumentException(null);
+			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 		}
 	}
 
@@ -157,11 +157,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(arrayIndex);
 		if (arrayIndex + length > array.Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		CopyToInternal(index, array, arrayIndex, length);
 	}
 
@@ -172,7 +172,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	private protected virtual void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
-			throw new ArgumentException(null, nameof(array));
+			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
@@ -360,7 +360,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return new();
 		return GetSliceInternal(index, length);
@@ -369,7 +369,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	public virtual Slice<T> GetSlice(Range range)
 	{
 		if (range.End.GetOffset(_size) > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		var (start, length) = range.GetOffsetAndLength(_size);
 		return GetSlice(start, length);
 	}
@@ -387,7 +387,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		if (_size == 0 || length == 0 || !collection.Any())
 		{
@@ -412,7 +412,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		return IndexOfInternal(item, index, length);
 	}
 
@@ -425,7 +425,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
@@ -443,7 +443,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		for (var i = index; i < index + length; i++)
@@ -468,7 +468,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(length));
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		if (_size == 0 || length == 0 || !collection.Any())
 		{
@@ -499,7 +499,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return -1;
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		return LastIndexOfInternal(item, index, length);
 	}
 
@@ -515,7 +515,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(length));
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		var startIndex = index + 1 - length;
@@ -537,7 +537,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			throw new ArgumentOutOfRangeException(nameof(length));
 		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, _size);
 		if (length > index + 1)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		var hs = collection.ToHashSet();
 		var startIndex = index + 1 - length;
@@ -678,10 +678,10 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сравниваемый диапазон выходит за текущий размер коллекции.");
 		ArgumentOutOfRangeException.ThrowIfNegative(otherIndex);
 		if (otherIndex + length > other._size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сравниваемый диапазон выходит за размер экстра-коллекции.");
 		return CompareInternal(index, other, otherIndex, length);
 	}
 
@@ -812,7 +812,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return new();
 		else if (!alwaysCopy && index == 0 && length == _size && this is TCertain thisList)
@@ -823,7 +823,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 	public virtual TCertain GetRange(Range range, bool alwaysCopy = false)
 	{
 		if (range.End.GetOffset(_size) > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		var (start, length) = range.GetOffsetAndLength(_size);
 		return GetRange(start, length, alwaysCopy);
 	}

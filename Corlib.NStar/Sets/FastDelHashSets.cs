@@ -98,7 +98,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			if (entries[index2].hashCode < 0 && (entries[index2].item?.Equals(value) ?? value == null))
 				return;
 			if (Contains(value))
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
 			SetInternal(index2, value);
 		}
 	}
@@ -490,7 +490,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void Copy(ParallelHashSet<T> source, int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.Copy, source, sourceIndex, destination, destinationIndex, length);
+	private protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 

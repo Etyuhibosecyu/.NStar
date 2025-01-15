@@ -199,12 +199,12 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				}
 				catch (InvalidCastException)
 				{
-					throw new ArgumentException(null, nameof(value));
+					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 				}
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(key));
+				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 			}
 		}
 	}
@@ -242,12 +242,12 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 			}
 		}
 		catch (InvalidCastException)
 		{
-			throw new ArgumentException(null, nameof(key));
+			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 		}
 	}
 
@@ -372,7 +372,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		if ((uint)index > (uint)array.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
-			throw new ArgumentException(null, nameof(index));
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		Debug.Assert(_entries != null);
 		var length = _count;
 		Debug.Assert(_entries != null);
@@ -390,11 +390,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		if (array.Rank != 1)
 			throw new RankException();
 		if (array.GetLowerBound(0) != 0)
-			throw new ArgumentException(null, nameof(array));
+			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if ((uint)index > (uint)array.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		if (array.Length - index < Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		Debug.Assert(_entries != null);
 		if (array is KeyValuePair<TKey, TValue>[] pairs)
 			CopyTo(pairs, index);
@@ -1149,7 +1149,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				{
 					InsertionBehavior.None => 2,
 					InsertionBehavior.OverwriteExisting => 1,
-					InsertionBehavior.ThrowOnExisting => throw new ArgumentException(null, mirrored ? nameof(value) : nameof(key)),
+					InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
 					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна."),
 				};
 			if (behavior == InsertionBehavior.OverwriteExisting)
@@ -1182,7 +1182,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 				}
 				return 1;
 			}
-			return behavior == InsertionBehavior.ThrowOnExisting ? throw new ArgumentException(null, mirrored ? nameof(value) : nameof(key)) : 2;
+			return behavior == InsertionBehavior.ThrowOnExisting ? throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)) : 2;
 		}
 		current = mirrored ? entries[current].nextM : entries[current].next;
 		collisionCount++;
@@ -1310,7 +1310,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (index < 0 || index > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException(null);
+				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
@@ -1324,11 +1324,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (array.Rank != 1)
 				throw new RankException();
 			if (array.GetLowerBound(0) != 0)
-				throw new ArgumentException(null, nameof(array));
+				throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 			if ((uint)index > (uint)array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException(null);
+				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			if (array is TKey[] keys)
 				CopyTo(keys, index);
 			else
@@ -1430,7 +1430,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if ((uint)index > array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException(null);
+				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			var length = _dictionary._count;
 			var entries = _dictionary._entries;
 			for (var i = 0; i < length; i++)
@@ -1444,11 +1444,11 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 			if (array.Rank != 1)
 				throw new RankException();
 			if (array.GetLowerBound(0) != 0)
-				throw new ArgumentException(null, nameof(array));
+				throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 			if ((uint)index > (uint)array.Length)
 				throw new ArgumentOutOfRangeException(nameof(index));
 			if (array.Length - index < _dictionary.Length)
-				throw new ArgumentException(null);
+				throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 			if (array is TValue[] values)
 				CopyTo(values, index);
 			else

@@ -315,7 +315,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		}
 		else
 		{
-			low = default;
+			low = null;
 			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
 			var quotient = (int)length.Divide(fragment, out var remainder);
 			var highCount = (int)GetArrayLength(length, fragment);
@@ -420,7 +420,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		try
 		{
 			throw new SlowOperationException();
@@ -451,8 +451,9 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected override void Copy(TCertain source, MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
+	private protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
+		var source = (TCertain)this;
 		CheckParams(source, sourceIndex, destination, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
 			return;
@@ -472,17 +473,17 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			int index = (int)sourceIndex.Divide(source.fragment, out var remainder), index2 = (int)((sourceIndex + length - 1) / source.fragment);
 			if (index == index2)
-				Copy(source.high[index], remainder, destination, destinationIndex, length);
+				source.high[index].CopyToInternal(remainder, destination, destinationIndex, length);
 			else
 			{
 				var firstPart = source.fragment - remainder;
-				Copy(source.high[index], remainder, destination, destinationIndex, firstPart);
+				source.high[index].CopyToInternal(remainder, destination, destinationIndex, firstPart);
 				for (var i = index + 1; i < index2; i++)
 				{
-					Copy(source, 0, destination, sourceIndex + firstPart, source.fragment);
+					source.CopyToInternal(0, destination, sourceIndex + firstPart, source.fragment);
 					firstPart += source.fragment;
 				}
-				Copy(source.high[index2], 0, destination, destinationIndex + firstPart, length - firstPart);
+				source.high[index2].CopyToInternal(0, destination, destinationIndex + firstPart, length - firstPart);
 			}
 			destination.Changed();
 #if VERIFY
@@ -495,17 +496,17 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			int index = (int)destinationIndex.Divide(destination.fragment, out var remainder), index2 = (int)((destinationIndex + length - 1) / destination.fragment);
 			if (index == index2)
-				Copy(source, sourceIndex, destination.high[index], remainder, length);
+				source.CopyToInternal(sourceIndex, destination.high[index], remainder, length);
 			else
 			{
 				var firstPart = destination.fragment - remainder;
-				Copy(source, sourceIndex, destination.high[index], remainder, firstPart);
+				source.CopyToInternal(sourceIndex, destination.high[index], remainder, firstPart);
 				for (var i = index + 1; i < index2; i++)
 				{
-					Copy(source, sourceIndex + firstPart, destination, 0, destination.fragment);
+					source.CopyToInternal(sourceIndex + firstPart, destination, 0, destination.fragment);
 					firstPart += destination.fragment;
 				}
-				Copy(source, sourceIndex + firstPart, destination.high[index2], 0, length - firstPart);
+				source.CopyToInternal(sourceIndex + firstPart, destination.high[index2], 0, length - firstPart);
 			}
 			destination.Changed();
 #if VERIFY
@@ -528,19 +529,19 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		if (destinationEndIntIndex == destinationIntIndex)
 		{
 			if (sourceEndIntIndex == sourceIntIndex)
-				Copy(sourceBits2[sourceIntIndex], sourceBitsIndex, destinationBits2[destinationIntIndex], destinationBitsIndex, length);
+				sourceBits2[sourceIntIndex].CopyToInternal(sourceBitsIndex, destinationBits2[destinationIntIndex], destinationBitsIndex, length);
 			else
 			{
 				var firstPart = fragment - sourceBitsIndex;
-				Copy(sourceBits2[sourceIntIndex], sourceBitsIndex, destinationBits2[destinationIntIndex], destinationBitsIndex, firstPart);
-				Copy(sourceBits2[sourceEndIntIndex], 0, destinationBits2[destinationIntIndex], destinationBitsIndex + firstPart, length - firstPart);
+				sourceBits2[sourceIntIndex].CopyToInternal(sourceBitsIndex, destinationBits2[destinationIntIndex], destinationBitsIndex, firstPart);
+				sourceBits2[sourceEndIntIndex].CopyToInternal(0, destinationBits2[destinationIntIndex], destinationBitsIndex + firstPart, length - firstPart);
 			}
 		}
 		else if (sourceIndex >= destinationIndex)
 		{
 			using var buff = CapacityCreator(fragment << 1);
-			Copy(destinationBits2[destinationIntIndex], 0, buff, 0, destinationBitsIndex);
-			Copy(sourceBits2[sourceIntIndex], sourceBitsIndex, buff, destinationBitsIndex, fragment - sourceBitsIndex);
+			destinationBits2[destinationIntIndex].CopyToInternal(0, buff, 0, destinationBitsIndex);
+			sourceBits2[sourceIntIndex].CopyToInternal(sourceBitsIndex, buff, destinationBitsIndex, fragment - sourceBitsIndex);
 			var buffBitsIndex = destinationBitsIndex + (fragment - sourceBitsIndex);
 			var secondPart = buffBitsIndex >= fragment;
 			if (secondPart)
@@ -549,7 +550,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			{
 				if (!secondPart)
 				{
-					Copy(sourceBits2[sourceCurrentIntIndex], 0, buff, buffBitsIndex, sourceCurrentIntIndex++ == sourceEndIntIndex ? sourceEndBitsIndex + 1 : fragment);
+					sourceBits2[sourceCurrentIntIndex].CopyToInternal(0, buff, buffBitsIndex, sourceCurrentIntIndex++ == sourceEndIntIndex ? sourceEndBitsIndex + 1 : fragment);
 					secondPart = true;
 				}
 				if (secondPart && destinationCurrentIntIndex < destinationEndIntIndex && buff.high != null)
@@ -559,13 +560,13 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 					secondPart = false;
 				}
 			}
-			Copy(buff, 0, destinationBits2[destinationEndIntIndex], 0, destinationEndBitsIndex + 1);
+			buff.CopyToInternal(0, destinationBits2[destinationEndIntIndex], 0, destinationEndBitsIndex + 1);
 		}
 		else
 		{
 			using var buff = CapacityCreator(fragment << 1);
-			Copy(sourceBits2[sourceEndIntIndex], 0, buff, 0, sourceEndBitsIndex + 1);
-			Copy(destinationBits2[destinationEndIntIndex], destinationEndBitsIndex + 1, buff, sourceEndBitsIndex + 1, RedStarLinq.Min(fragment, destinationBits2[destinationEndIntIndex].Length) - (destinationEndBitsIndex + 1));
+			sourceBits2[sourceEndIntIndex].CopyToInternal(0, buff, 0, sourceEndBitsIndex + 1);
+			destinationBits2[destinationEndIntIndex].CopyToInternal(destinationEndBitsIndex + 1, buff, sourceEndBitsIndex + 1, RedStarLinq.Min(fragment, destinationBits2[destinationEndIntIndex].Length) - (destinationEndBitsIndex + 1));
 			var buffBitsIndex = sourceEndBitsIndex + (fragment - destinationEndBitsIndex);
 			var secondPart = buffBitsIndex >= fragment;
 			if (buffBitsIndex >= fragment)
@@ -579,11 +580,11 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 				}
 				if (secondPart && destinationCurrentIntIndex > destinationIntIndex)
 				{
-					Copy(buff, buffBitsIndex, destinationBits2[destinationCurrentIntIndex], 0, RedStarLinq.Min(fragment, destinationBits2[destinationCurrentIntIndex--].Length));
+					buff.CopyToInternal(buffBitsIndex, destinationBits2[destinationCurrentIntIndex], 0, RedStarLinq.Min(fragment, destinationBits2[destinationCurrentIntIndex--].Length));
 					secondPart = false;
 				}
 			}
-			Copy(buff, 0, destinationBits2[destinationIntIndex], destinationBitsIndex, fragment - destinationBitsIndex);
+			buff.CopyToInternal(0, destinationBits2[destinationIntIndex], destinationBitsIndex, fragment - destinationBitsIndex);
 			buff.high = null;
 		}
 		destination.Changed();
@@ -704,7 +705,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		else if (!alwaysCopy && index == 0 && length == Length && this is TCertain thisList)
 			return thisList;
 		var list = CapacityCreator(length);
-		Copy((TCertain)this, index, list, 0, length);
+		CopyToInternal(index, list, 0, length);
 #if VERIFY
 		Verify();
 		list.Verify();
@@ -845,7 +846,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		ArraySize = length;
 	}
 
-	public BigBitArray(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(BitArray bitArray, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		if (capacityStepBitLength >= 2)
 			CapacityStepBitLength = capacityStepBitLength;
@@ -853,9 +854,77 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (bits == null)
-			throw new ArgumentNullException(nameof(bits));
-		else if (bits is BigBitArray bigBitArray)
+		if (bitArray == null)
+			throw new ArgumentNullException(nameof(bitArray));
+		else
+		{
+			using BitList bitList = new(bitArray);
+			BigBitArray array = new(bitList, base.CapacityStepBitLength, base.CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			ArraySize = array.Length;
+			fragment = array.fragment;
+		}
+	}
+
+	public BigBitArray(IEnumerable<byte> bytes, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (bytes == null)
+			throw new ArgumentNullException(nameof(bytes));
+		else if (bytes is byte[] byteArray && byteArray.Length <= int.MaxValue / BitsPerByte)
+		{
+			using BitList bitList = new(byteArray);
+			BigBitArray array = new(bitList, base.CapacityStepBitLength, base.CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			ArraySize = array.Length;
+			fragment = array.fragment;
+		}
+		else
+		{
+			var b = true;
+			using var en = bytes.GetEnumerator();
+			BigArray<uint> values = new(length: GetArrayLength(bytes.Length(), 4));
+			var n = 0;
+			while (b)
+			{
+				var i = 0;
+				uint value = 0;
+				for (; i < BytesPerInt; i++, n++)
+				{
+					if (!(b = en.MoveNext())) break;
+					value |= (uint)en.Current << BitsPerByte * i;
+				}
+				if (i != 0)
+					values[(n - 1) / 4] = value;
+			}
+			BigBitArray bigBitArray2 = new(values, CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray array = new(n * BitsPerByte, CapacityStepBitLength, CapacityFirstStepBitLength);
+			bigBitArray2.CopyToInternal(0, array, 0, n * BitsPerByte);
+			low = array.low;
+			high = array.high;
+			ArraySize = n * BitsPerByte;
+			fragment = array.fragment;
+		}
+	}
+
+	public BigBitArray(IEnumerable<bool> bools, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (bools == null)
+			throw new ArgumentNullException(nameof(bools));
+		else if (bools is BigBitArray bigBitArray)
 		{
 			if (bigBitArray.low != null)
 			{
@@ -867,14 +936,14 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else if (bigBitArray.high != null)
 			{
 				BigBitArray array = new(bigBitArray.Length, CapacityStepBitLength, CapacityFirstStepBitLength);
-				Copy(bigBitArray, 0, array, 0, bigBitArray.Length);
+				bigBitArray.CopyToInternal(0, array, 0, bigBitArray.Length);
 				low = array.low;
 				high = array.high;
 				ArraySize = array.Length;
 				fragment = array.fragment;
 			}
 		}
-		else if (bits is BitList bitList)
+		else if (bools is BitList bitList)
 		{
 			if (bitList.Length <= CapacityFirstStep)
 			{
@@ -899,7 +968,53 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			}
 			ArraySize = bitList.Length;
 		}
-		else if (bits is BigArray<uint> bigUIntArray)
+		else if (bools is bool[] boolArray)
+		{
+			BigBitArray array = new(new BitList(boolArray), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			ArraySize = array.Length;
+			fragment = array.fragment;
+		}
+		else
+		{
+			using var en = bools.GetEnumerator();
+			while (en.MoveNext())
+				Add(en.Current);
+		}
+	}
+
+	public BigBitArray(IEnumerable<int> ints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (ints == null)
+			throw new ArgumentNullException(nameof(ints));
+		else
+		{
+			BigBitArray array = new(new BigArray<uint>(ints.Select(x => (uint)x)), CapacityStepBitLength, CapacityFirstStepBitLength);
+			low = array.low;
+			high = array.high;
+			ArraySize = array.Length;
+			fragment = array.fragment;
+		}
+	}
+
+	public BigBitArray(IEnumerable<uint> uints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (uints == null)
+			throw new ArgumentNullException(nameof(uints));
+		else if (uints is BigArray<uint> bigUIntArray)
 		{
 			var length = bigUIntArray.Length;
 			if (length <= GetArrayLength(CapacityFirstStep, BitsPerInt))
@@ -923,7 +1038,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			}
 			ArraySize = length * BitsPerInt;
 		}
-		else if (bits is BigList<uint> bigUIntList)
+		else if (uints is BigList<uint> bigUIntList)
 		{
 			var length = bigUIntList.Length;
 			if (length <= CapacityFirstStep / BitsPerInt)
@@ -947,7 +1062,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			}
 			ArraySize = length * BitsPerInt;
 		}
-		else if (bits is IEnumerable<uint> uints)
+		else
 		{
 			BigBitArray array = new(new BigArray<uint>(uints), CapacityStepBitLength, CapacityFirstStepBitLength);
 			low = array.low;
@@ -955,56 +1070,6 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			ArraySize = array.Length;
 			fragment = array.fragment;
 		}
-		else if (bits is IEnumerable<int> ints)
-		{
-			BigBitArray array = new(new BigArray<uint>(ints.Select(x => (uint)x)), CapacityStepBitLength, CapacityFirstStepBitLength);
-			low = array.low;
-			high = array.high;
-			ArraySize = array.Length;
-			fragment = array.fragment;
-		}
-		else if (bits is IEnumerable<byte> bytes)
-		{
-			var b = true;
-			using var en = bytes.GetEnumerator();
-			BigArray<uint> values = new(length: GetArrayLength(bytes.Length(), 4));
-			var n = 0;
-			while (b)
-			{
-				var i = 0;
-				uint value = 0;
-				for (; i < BytesPerInt; i++, n++)
-				{
-					if (!(b = en.MoveNext())) break;
-					value |= (uint)en.Current << BitsPerByte * i;
-				}
-				if (i != 0)
-					values[(n - 1) / 4] = value;
-			}
-			BigBitArray bigBitArray2 = new(values, CapacityStepBitLength, CapacityFirstStepBitLength);
-			BigBitArray array = new(n * BitsPerByte, CapacityStepBitLength, CapacityFirstStepBitLength);
-			Copy(bigBitArray2, 0, array, 0, n * BitsPerByte);
-			low = array.low;
-			high = array.high;
-			ArraySize = n * BitsPerByte;
-			fragment = array.fragment;
-		}
-		else if (bits is BitArray or byte[] or bool[])
-		{
-			BigBitArray array = new(new BitList(bits), CapacityStepBitLength, CapacityFirstStepBitLength);
-			low = array.low;
-			high = array.high;
-			ArraySize = array.Length;
-			fragment = array.fragment;
-		}
-		else if (bits is IEnumerable<bool> bools)
-		{
-			using var en = bools.GetEnumerator();
-			while (en.MoveNext())
-				Add(en.Current);
-		}
-		else
-			throw new ArgumentException(null, nameof(bits));
 	}
 
 	private protected override Func<MpzT, BigBitArray> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
@@ -1019,7 +1084,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.And(value.low);
 		else if (high != null && value.high != null)
@@ -1034,11 +1099,11 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return 0;
 		if (length > BitsPerInt)
-			throw new ArgumentException(null, nameof(length));
+			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint, поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
 		if (low != null)
 			return low.GetSmallRange((int)index, length);
 		else if (high != null)
@@ -1074,7 +1139,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.Or(value.low);
 		else if (high != null && value.high != null)
@@ -1108,7 +1173,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.Xor(value.low);
 		else if (high != null && value.high != null)

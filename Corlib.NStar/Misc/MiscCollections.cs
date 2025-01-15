@@ -156,7 +156,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		var arrayLen = array.Length;
 		if (arrayLen - index < _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		var numToCopy = _size;
 		if (numToCopy == 0)
 			return;
@@ -400,7 +400,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(G.IList<T> @base, int start, int length) : this(@base, null, start, length) { }
 
-	public Slice(G.IList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
+	public Slice(G.IList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count
+		? throw new ArgumentException("Диапазон выходит за текущий размер коллекции.")
+		: @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
 
 	public Slice(G.IReadOnlyList<T> @base) : this(@base, 0, @base.Count) { }
 
@@ -410,7 +412,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(G.IReadOnlyList<T> @base, int start, int length) : this(null, @base, start, length) { }
 
-	public Slice(G.IReadOnlyList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
+	public Slice(G.IReadOnlyList<T> @base, Range range) : this(range.End.GetOffset(@base.Count) > @base.Count
+		? throw new ArgumentException("Диапазон выходит за текущий размер коллекции.")
+		: @base, CreateVar(range.GetOffsetAndLength(@base.Count), out var startAndLength).Offset, startAndLength.Length) { }
 
 	public Slice(List<T> @base) : this(@base, 0, @base.Length) { }
 
@@ -420,7 +424,9 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(List<T> @base, int start, int length) : this(@base, null, start, length) { }
 
-	public Slice(List<T> @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
+	public Slice(List<T> @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length
+		? throw new ArgumentException("Диапазон выходит за текущий размер коллекции.")
+		: @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
 
 	public Slice(T[] @base) : this(@base, 0, @base.Length) { }
 
@@ -430,14 +436,16 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public Slice(T[] @base, int start, int length) : this(@base, null, start, length) { }
 
-	public Slice(T[] @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length ? throw new ArgumentException(null) : @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
+	public Slice(T[] @base, Range range) : this(range.End.GetOffset(@base.Length) > @base.Length
+		? throw new ArgumentException("Диапазон выходит за текущий размер коллекции.")
+		: @base, CreateVar(range.GetOffsetAndLength(@base.Length), out var startAndLength).Offset, startAndLength.Length) { }
 
 	private protected Slice(G.IList<T>? @base, G.IReadOnlyList<T>? base2, int start, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(start);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (start + length > (@base?.Count ?? base2?.Count ?? 0))
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		if (@base == null && base2 == null)
 			throw new ArgumentNullException(nameof(@base));
 		if (@base is Slice<T> slice)
@@ -470,7 +478,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		return ((IEnumerable<T>?)_base ?? _base2 ?? throw new InvalidOperationException()).AsSpan(_start + index, length);
 	}
 
@@ -628,7 +636,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		Array.Copy(_array, 0, array, arrayIndex, _size);
 		Array.Reverse(array, arrayIndex, _size);
 	}
@@ -637,13 +645,13 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new ArgumentException(null);
+			throw new RankException();
 		if (array.GetLowerBound(0) != 0)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		try
 		{
 			Array.Copy(_array, 0, array, arrayIndex, _size);
@@ -651,7 +659,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 		}
 		catch (ArrayTypeMismatchException)
 		{
-			throw new ArgumentException(null);
+			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 		}
 	}
 

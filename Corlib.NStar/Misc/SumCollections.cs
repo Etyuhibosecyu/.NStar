@@ -326,16 +326,16 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	private protected override void Copy(SumSet<T> source, int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
 		if (length == 1)
 		{
-			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAdd(destinationIndex, GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, source.GetInternal(sourceIndex).Key, source.GetInternal(sourceIndex + length - 1).Key, true, true);
+		TreeSubSet subset = new(this, GetInternal(sourceIndex).Key, GetInternal(sourceIndex + length - 1).Key, true, true);
 		using var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex).Key, destination.GetInternal(Min(destinationIndex + length, destination._size) - 1).Key, true, true).InOrderTreeWalk(node =>
@@ -355,7 +355,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
@@ -628,7 +628,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	public virtual SumSet<T> GetViewBetween(T? lowerValue, T? upperValue)
 	{
 		if (Comparer2.Compare(lowerValue, upperValue) > 0)
-			throw new ArgumentException(null, nameof(lowerValue));
+			throw new ArgumentException("Максимум не может быть меньше минимума!");
 		return new TreeSubSet(this, lowerValue, upperValue, true, true);
 	}
 

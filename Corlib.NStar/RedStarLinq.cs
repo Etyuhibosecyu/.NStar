@@ -3117,6 +3117,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] FillArrayEnumerable<TResult>(TResult elem, int length)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
 			result[i] = elem;
@@ -3125,6 +3126,7 @@ public partial class List<T, TCertain>
 
 	internal static TResult[] FillArrayEnumerable<TResult>(Func<int, TResult> function, int length)
 	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		ArgumentNullException.ThrowIfNull(function);
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
@@ -21298,7 +21300,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21306,10 +21307,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21393,7 +21393,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21401,10 +21400,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21487,7 +21485,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -21495,10 +21492,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21582,7 +21578,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21590,10 +21585,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21677,7 +21671,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21685,10 +21678,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21771,7 +21763,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -21779,10 +21770,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21866,7 +21856,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21874,10 +21863,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -21961,7 +21949,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -21969,10 +21956,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22055,7 +22041,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -22063,10 +22048,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22150,7 +22134,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22158,10 +22141,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22245,7 +22227,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(TResult Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -22253,10 +22234,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22339,7 +22319,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<(T Key, int Count)> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -22347,10 +22326,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index] = (f, result._items[index].Count + 1);
 				else
-					result._items[j++] = (f, 1);
+					result.Add((f, 1));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -22516,90 +22494,6 @@ public partial class List<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result._items[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
-	internal static List<Group<T, T>> GroupEnumerable(IEnumerable<T> source)
-	{
-		ListHashSet<T> dic = [];
-		if (source is List<T> list)
-		{
-			var length = list._size;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result._items[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<Group<T, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result._items[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result._items[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<Group<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result._items[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<Group<T, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(item);
 				else
 					result.Add(new(32, item, f));
@@ -42882,7 +42776,7 @@ public partial class List<T, TCertain>
 	internal static List<List<T>> SplitIntoEqualEnumerable(IEnumerable<T> source, int fragmentLength)
 	{
 		if (fragmentLength <= 0)
-			throw new ArgumentException(null, nameof(fragmentLength));
+			throw new ArgumentException("Длина фрагмента должна быть положительной.", nameof(fragmentLength));
 		if (source is List<T> list)
 		{
 			var length = GetArrayLength(list._size, fragmentLength);
@@ -49667,24 +49561,6 @@ public partial class List<T, TCertain>
 		{
 			var item = source[i];
 			if (!dic.TryAdd(f = function(item, i), out var index))
-				result._items[index].Add(item);
-			else
-				result.Add(new(32, item, f));
-		}
-		result.TrimExcess();
-		return result;
-	}
-
-	internal static List<Group<T, T>> GroupEnumerable(ReadOnlySpan<T> source)
-	{
-		ListHashSet<T> dic = [];
-		var length = source.Length;
-		List<Group<T, T>> result = new(length);
-		T f;
-		for (var i = 0; i < length; i++)
-		{
-			var item = source[i];
-			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(item);
 			else
 				result.Add(new(32, item, f));
@@ -61837,90 +61713,6 @@ public unsafe partial class NList<T, TCertain>
 		}
 	}
 
-	internal static List<NGroup<T, T>> GroupEnumerable(IEnumerable<T> source)
-	{
-		ListHashSet<T> dic = [];
-		if (source is NList<T> list)
-		{
-			var length = list._size;
-			List<NGroup<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is T[] array)
-		{
-			List<NGroup<T, T>> result = new(array.Length);
-			T f;
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IList<T> list2)
-		{
-			var length = list2.Count;
-			List<NGroup<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<NGroup<T, T>> result = new(length);
-			T f;
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-			}
-			result.TrimExcess();
-			return result;
-		}
-		else
-		{
-			List<NGroup<T, T>> result = new(List<bool>.TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			T f;
-			var i = 0;
-			foreach (var item in source)
-			{
-				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
-				else
-					result.Add(new(32, item, f));
-				i++;
-			}
-			result.TrimExcess();
-			return result;
-		}
-	}
-
 	internal static List<NGroup<T, TResult>> GroupEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -71338,7 +71130,7 @@ public unsafe partial class NList<T, TCertain>
 	internal static List<NList<T>> SplitIntoEqualEnumerable(G.IReadOnlyList<T> source, int fragmentLength)
 	{
 		if (fragmentLength <= 0)
-			throw new ArgumentException(null, nameof(fragmentLength));
+			throw new ArgumentException("Длина фрагмента должна быть положительной.", nameof(fragmentLength));
 		var length = GetArrayLength(source.Count, fragmentLength);
 		List<NList<T>> result = new(length);
 		var count2 = source.Count / fragmentLength;
@@ -76073,7 +75865,8 @@ public static class RedStarLinq
 	public static Slice<T> GetROLSlice<T>(this G.IReadOnlyList<T> source, Range range) => new(source, range);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
-	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => List<T>.GroupEnumerable(source);
+	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
+	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => throw new NotSupportedException();
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable(source, comparer);
@@ -77750,9 +77543,12 @@ public static class RedStarLinq
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
-	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source) where T : notnull => List<T>.GroupEnumerable(source);
-	public static List<Group<T, T>> Group<T>(this Span<T> source) where T : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source);
-	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => List<T>.GroupEnumerable((G.IList<T>)source);
+	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в ReadOnlySpan, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
+	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source) where T : notnull => throw new NotSupportedException();
+	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в Span, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
+	public static List<Group<T, T>> Group<T>(this Span<T> source) where T : notnull => throw new NotSupportedException();
+	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в массиве, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
+	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => throw new NotSupportedException();
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, comparer);
@@ -79090,7 +78886,8 @@ public static class RedStarLinq
 	public static NList<T> NFindAll<T>(this NList<T> source, Func<T, int, bool> function) where T : unmanaged => NList<T>.FindAllEnumerable(source, function);
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
-	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source) where T : unmanaged => NList<T>.GroupEnumerable(source);
+	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source) where T : unmanaged => throw new NotSupportedException();
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
 	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : unmanaged => NList<T>.GroupEnumerable(source, comparer);

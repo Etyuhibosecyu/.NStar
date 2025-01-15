@@ -94,18 +94,11 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			CopyMemory(ptr, _items, values.Length);
 	}
 
-	public BitList(IEnumerable bits)
+	public BitList(BitArray bitArray)
 	{
-		if (bits == null)
-			throw new ArgumentNullException(nameof(bits));
-		else if (bits is BitList bitList)
-		{
-			var arrayLength = _capacity = GetArrayLength(bitList._size, BitsPerInt);
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
-			_size = bitList._size;
-			CopyMemory(bitList._items, _items, arrayLength);
-		}
-		else if (bits is BitArray bitArray)
+		if (bitArray == null)
+			throw new ArgumentNullException(nameof(bitArray));
+		else
 		{
 			var arrayLength = _capacity = GetArrayLength(bitArray.Length, BitsPerInt);
 			var array = new int[arrayLength];
@@ -115,24 +108,16 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				CopyMemory((uint*)array2, _items, arrayLength);
 			_size = bitArray.Length;
 		}
-		else if (bits is int[] intArray)
-		{
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * intArray.Length);
-			fixed (int* ptr = intArray)
-				CopyMemory((uint*)ptr, _items, intArray.Length);
-			_size = (_capacity = intArray.Length) * BitsPerInt;
-		}
-		else if (bits is uint[] uintArray)
-		{
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
-			fixed (uint* ptr = uintArray)
-				CopyMemory(ptr, _items, uintArray.Length);
-			_size = (_capacity = uintArray.Length) * BitsPerInt;
-		}
-		else if (bits is byte[] byteArray)
+	}
+
+	public BitList(IEnumerable<byte> bytes)
+	{
+		if (bytes == null)
+			throw new ArgumentNullException(nameof(bytes));
+		else if (bytes is byte[] byteArray)
 		{
 			if (byteArray.Length > int.MaxValue / BitsPerByte)
-				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
+				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bytes));
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(byteArray.Length, BytesPerInt)));
 			_size = byteArray.Length * BitsPerByte;
 			var i = 0;
@@ -145,10 +130,12 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 					((byteArray[j + 3] & 0xff) << BitsPerByte * 3));
 				j += 4;
 			}
+			if (byteArray.Length - j != 0)
+				_items[i] = 0;
 			switch (byteArray.Length - j)
 			{
 				case 3:
-				_items[i] = (uint)(byteArray[j + 2] & 0xff) << BitsPerByte * 2;
+				_items[i] |= (uint)(byteArray[j + 2] & 0xff) << BitsPerByte * 2;
 				goto case 2;
 				case 2:
 				_items[i] |= (uint)(byteArray[j + 1] & 0xff) << BitsPerByte;
@@ -158,35 +145,11 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 				break;
 			}
 		}
-		else if (bits is bool[] boolArray)
-		{
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(boolArray.Length, BitsPerInt)));
-			_size = boolArray.Length;
-			for (var i = 0; i < boolArray.Length; i++)
-				if (boolArray[i])
-					_items[i / BitsPerInt] |= (uint)1 << i % BitsPerInt;
-		}
-		else if (bits is IEnumerable<int> ints)
-		{
-			var toArray = List<int>.ToArrayEnumerable(ints);
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
-			fixed (int* ptr = toArray)
-				CopyMemory((uint*)ptr, _items, toArray.Length);
-			_size = (_capacity = toArray.Length) * BitsPerInt;
-		}
-		else if (bits is IEnumerable<uint> uints)
-		{
-			var toArray = List<uint>.ToArrayEnumerable(uints);
-			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
-			fixed (uint* ptr = toArray)
-				CopyMemory(ptr, _items, toArray.Length);
-			_size = (_capacity = toArray.Length) * BitsPerInt;
-		}
-		else if (bits is IEnumerable<byte> bytes)
+		else
 		{
 			var length = bytes.Length();
 			if (length > int.MaxValue / BitsPerByte)
-				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bits));
+				throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(bytes));
 			var arrayLength = _capacity = GetArrayLength(length, BytesPerInt);
 			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
 			FillMemory(_items, arrayLength, 0);
@@ -199,7 +162,36 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			}
 			_size = length * BitsPerByte;
 		}
-		else if (bits is IEnumerable<bool> bools)
+	}
+
+	public BitList(IEnumerable<bool> bools)
+	{
+		if (bools == null)
+			throw new ArgumentNullException(nameof(bools));
+		else if (bools is BitList bitList)
+		{
+			var arrayLength = _capacity = GetArrayLength(bitList._size, BitsPerInt);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * arrayLength);
+			_size = bitList._size;
+			CopyMemory(bitList._items, _items, arrayLength);
+		}
+		else if (bools is bool[] boolArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = GetArrayLength(boolArray.Length, BitsPerInt)));
+			_size = boolArray.Length;
+			for (var i = 0; i < boolArray.Length; i++)
+				if (boolArray[i])
+					_items[i / BitsPerInt] |= 1u << i % BitsPerInt;
+		}
+		else if (bools is IEnumerable<uint> uints)
+		{
+			var toArray = List<uint>.ToArrayEnumerable(uints);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
+			fixed (uint* ptr = toArray)
+				CopyMemory(ptr, _items, toArray.Length);
+			_size = (_capacity = toArray.Length) * BitsPerInt;
+		}
+		else
 		{
 			var length = bools.Length();
 			var arrayLength = _capacity = GetArrayLength(length, BitsPerInt);
@@ -211,12 +203,52 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			{
 				(var index, var remainder) = DivRem(i++, BitsPerInt);
 				if (en.Current)
-					_items[index] |= (uint)1 << remainder;
+					_items[index] |= 1u << remainder;
 			}
 			_size = length;
 		}
+	}
+
+	public BitList(IEnumerable<int> ints)
+	{
+		if (ints == null)
+			throw new ArgumentNullException(nameof(ints));
+		else if (ints is int[] intArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * intArray.Length);
+			fixed (int* ptr = intArray)
+				CopyMemory((uint*)ptr, _items, intArray.Length);
+			_size = (_capacity = intArray.Length) * BitsPerInt;
+		}
 		else
-			throw new ArgumentException(null, nameof(bits));
+		{
+			var toArray = List<int>.ToArrayEnumerable(ints);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
+			fixed (int* ptr = toArray)
+				CopyMemory((uint*)ptr, _items, toArray.Length);
+			_size = (_capacity = toArray.Length) * BitsPerInt;
+		}
+	}
+
+	public BitList(IEnumerable<uint> uints)
+	{
+		if (uints == null)
+			throw new ArgumentNullException(nameof(uints));
+		else if (uints is uint[] uintArray)
+		{
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * uintArray.Length);
+			fixed (uint* ptr = uintArray)
+				CopyMemory(ptr, _items, uintArray.Length);
+			_size = (_capacity = uintArray.Length) * BitsPerInt;
+		}
+		else
+		{
+			var toArray = List<uint>.ToArrayEnumerable(uints);
+			_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * toArray.Length);
+			fixed (uint* ptr = toArray)
+				CopyMemory(ptr, _items, toArray.Length);
+			_size = (_capacity = toArray.Length) * BitsPerInt;
+		}
 	}
 
 	public override int Capacity
@@ -224,7 +256,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		get => _capacity * BitsPerInt;
 		set
 		{
-			ArgumentOutOfRangeException.ThrowIfNegative(value);
+			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			var newints = GetArrayLength(value, BitsPerInt);
 			if (newints == _capacity)
 				return;
@@ -240,7 +272,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			if (value > _size)
 			{
 				(var last, var remainder) = DivRem(_size, BitsPerInt);
-				_items[last] &= ((uint)1 << remainder) - 1;
+				_items[last] &= (1u << remainder) - 1;
 				FillMemory(_items + (last + 1), newints - last - 1, 0);
 			}
 			Changed();
@@ -275,7 +307,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
 		for (var i = 0; i < ints; i++)
 			_items[i] &= value._items[i];
@@ -287,7 +319,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	private protected override void ClearInternal(int index, int length)
 	{
 		(var startIndex, var startRemainder) = DivRem(index, BitsPerInt);
-		var startMask = ((uint)1 << startRemainder) - 1;
+		var startMask = (1u << startRemainder) - 1;
 		(var endIndex, var endRemainder) = DivRem(index + length, BitsPerInt);
 		var endMask = ~0u << endRemainder;
 		if (startIndex == endIndex)
@@ -416,7 +448,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		{
 			destinationBits[destinationCurrentIntIndex] = (uint)buff;
 			buff >>= BitsPerInt;
-			if (sourceCurrentIntIndex < sourceBound) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << offset.BitsIndex;
+			if (sourceCurrentIntIndex < sourceBound)
+				buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << offset.BitsIndex;
 		}
 		var destinationMask = ((ulong)1 << destination.End.BitsIndex + 1) - 1;
 		buff &= destinationMask;
@@ -465,9 +498,9 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void Copy(BitList source, int sourceIndex, BitList destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, BitList destination, int destinationIndex, int length)
 	{
-		CopyBits(source._items, source._capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, length);
+		CopyBits(_items, _capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
 		destination.Changed();
@@ -489,13 +522,13 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		else if (array is bool[] boolArray)
 			CopyToInternal(boolArray, index);
 		else
-			throw new ArgumentException(null, nameof(array));
+			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 	}
 
 	private protected void CopyToInternal(bool[] array, int index)
 	{
 		if (array.Length - index < _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		CopyToInternal(index, array, 0, array.Length);
 	}
 
@@ -595,11 +628,11 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return new();
 		if (length > BitsPerInt)
-			throw new ArgumentException(null, nameof(length));
+			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint, поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
 		(var quotient, var remainder) = DivRem(index, BitsPerInt);
 		(var quotient2, var remainder2) = DivRem(index + length - 1, BitsPerInt);
 		uint result;
@@ -608,7 +641,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		else
 		{
 			result = _items[quotient] >> remainder;
-			result |= (_items[quotient + 1] & (((uint)1 << remainder2 + 1) - 1)) << BitsPerInt - remainder;
+			result |= (_items[quotient + 1] & ((1u << remainder2 + 1) - 1)) << BitsPerInt - remainder;
 		}
 		return result;
 	}
@@ -655,25 +688,85 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return false;
 	}
 
-	public virtual BitList Insert(int index, IEnumerable collection)
+	public virtual BitList Insert(int index, BitArray bitArray) => Insert(index, new BitList(bitArray));
+
+	public virtual BitList Insert(int index, IEnumerable<byte> bytes) => Insert(index, new BitList(bytes));
+
+	public virtual BitList Insert(int index, IEnumerable<int> ints)
 	{
-		ArgumentNullException.ThrowIfNull(collection);
+		ArgumentNullException.ThrowIfNull(ints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is BitList bitList)
+		if (ints is NList<int> intNList)
 		{
-			var length = bitList._size;
+			var length = intNList.Length * BitsPerInt;
 			if (length == 0)
 				return this;
 			EnsureCapacity(_size + length);
 			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
-			CopyBits(bitList._items, bitList._capacity, 0, _items, _capacity, index, length);
+			fixed (int* intPtr = intNList.AsSpan())
+				CopyBits((uint*)intPtr, intNList.Length, 0, _items, _capacity, index, length);
 			_size += length;
 			return this;
 		}
-		else if (collection is IEnumerable<bool> bools)
-			return InsertInternal(index, bools);
-		else if (collection is uint[] uintArray)
+		else if (ints is List<int> intList)
+		{
+			var length = intList.Length * BitsPerInt;
+			if (length == 0)
+				return this;
+			EnsureCapacity(_size + length);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+			fixed (int* intPtr = intList.AsSpan())
+				CopyBits((uint*)intPtr, intList.Length, 0, _items, _capacity, index, length);
+			_size += length;
+			return this;
+		}
+		else if (ints is int[] intArray)
+		{
+			var length = intArray.Length * BitsPerInt;
+			if (length == 0)
+				return this;
+			EnsureCapacity(_size + length);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+			fixed (int* intPtr = intArray)
+				CopyBits((uint*)intPtr, intArray.Length, 0, _items, _capacity, index, length);
+			_size += length;
+			return this;
+		}
+		else
+			return Insert(index, new BitList(ints));
+	}
+
+	public virtual BitList Insert(int index, IEnumerable<uint> uints)
+	{
+		ArgumentNullException.ThrowIfNull(uints);
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (uints is NList<uint> uintNList)
+		{
+			var length = uintNList.Length * BitsPerInt;
+			if (length == 0)
+				return this;
+			EnsureCapacity(_size + length);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+			fixed (uint* uintPtr = uintNList.AsSpan())
+				CopyBits(uintPtr, uintNList.Length, 0, _items, _capacity, index, length);
+			_size += length;
+			return this;
+		}
+		else if (uints is List<uint> uintList)
+		{
+			var length = uintList.Length * BitsPerInt;
+			if (length == 0)
+				return this;
+			EnsureCapacity(_size + length);
+			CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+			fixed (uint* uintPtr = uintList.AsSpan())
+				CopyBits(uintPtr, uintList.Length, 0, _items, _capacity, index, length);
+			_size += length;
+			return this;
+		}
+		else if (uints is uint[] uintArray)
 		{
 			var length = uintArray.Length * BitsPerInt;
 			if (length == 0)
@@ -686,7 +779,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return this;
 		}
 		else
-			return Insert(index, new BitList(collection));
+			return Insert(index, new BitList(uints));
 	}
 
 	private protected override int LastIndexOfInternal(bool item, int index, int length)
@@ -743,7 +836,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
 		for (var i = 0; i < ints; i++)
 			_items[i] |= value._items[i];
@@ -765,7 +858,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Устанавливаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return this;
 		SetAllInternal(value, index, length);
@@ -788,7 +881,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			var fillValue = value ? 0xffffffff : 0;
 			for (var i = intIndex + 1; i < endIntIndex; i++)
 				_items[i] = fillValue;
-			var endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : ((uint)1 << endBitsIndex + 1) - 1;
+			var endMask = endBitsIndex == BitsPerInt - 1 ? 0xffffffff : (1u << endBitsIndex + 1) - 1;
 			_items[endIntIndex] = value ? _items[endIntIndex] | endMask : _items[endIntIndex] & ~endMask;
 		}
 	}
@@ -796,27 +889,87 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	internal override void SetInternal(int index, bool value)
 	{
 		if (value)
-			_items[index / BitsPerInt] |= (uint)1 << index % BitsPerInt;
+			_items[index / BitsPerInt] |= 1u << index % BitsPerInt;
 		else
-			_items[index / BitsPerInt] &= ~((uint)1 << index % BitsPerInt);
+			_items[index / BitsPerInt] &= ~(1u << index % BitsPerInt);
 		Changed();
 	}
 
-	public virtual BitList SetRange(int index, IEnumerable collection)
+	public virtual BitList SetRange(int index, BitArray bitArray) => SetRange(index, new BitList(bitArray));
+
+	public virtual BitList SetRange(int index, IEnumerable<byte> bytes) => SetRange(index, new BitList(bytes));
+
+	public virtual BitList SetRange(int index, IEnumerable<int> ints)
 	{
-		ArgumentNullException.ThrowIfNull(collection);
+		ArgumentNullException.ThrowIfNull(ints);
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is BitList bitList)
+		if (ints is NList<int> intNList)
 		{
-			var length = bitList._size;
-			if (index + length > _size)
-				throw new ArgumentException(null);
-			if (length > 0)
-				CopyBits(bitList._items, bitList._capacity, 0, _items, _capacity, index, length);
+			if (index + intNList.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (intNList.Length <= 0)
+				return this;
+			fixed (int* intPtr = intNList.AsSpan())
+				CopyBits((uint*)intPtr, intNList.Length, 0, _items, _capacity, index, intNList.Length);
+		}
+		else if (ints is List<int> intList)
+		{
+			if (index + intList.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (intList.Length <= 0)
+				return this;
+			fixed (int* intPtr = intList.AsSpan())
+				CopyBits((uint*)intPtr, intList.Length, 0, _items, _capacity, index, intList.Length);
+		}
+		else if (ints is int[] intArray)
+		{
+			if (index + intArray.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (intArray.Length <= 0)
+				return this;
+			fixed (int* intPtr = intArray)
+				CopyBits((uint*)intPtr, intArray.Length, 0, _items, _capacity, index, intArray.Length);
 		}
 		else
-			SetRange(index, new BitList(collection));
+			SetRange(index, new BitList(ints));
+		return this;
+	}
+
+	public virtual BitList SetRange(int index, IEnumerable<uint> uints)
+	{
+		ArgumentNullException.ThrowIfNull(uints);
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (uints is NList<uint> uintNList)
+		{
+			if (index + uintNList.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (uintNList.Length <= 0)
+				return this;
+			fixed (uint* uintPtr = uintNList.AsSpan())
+				CopyBits(uintPtr, uintNList.Length, 0, _items, _capacity, index, uintNList.Length);
+		}
+		else if (uints is List<uint> uintList)
+		{
+			if (index + uintList.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (uintList.Length <= 0)
+				return this;
+			fixed (uint* uintPtr = uintList.AsSpan())
+				CopyBits(uintPtr, uintList.Length, 0, _items, _capacity, index, uintList.Length);
+		}
+		else if (uints is uint[] uintArray)
+		{
+			if (index + uintArray.Length > _size)
+				throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+			if (uintArray.Length <= 0)
+				return this;
+			fixed (uint* uintPtr = uintArray)
+				CopyBits(uintPtr, uintArray.Length, 0, _items, _capacity, index, uintArray.Length);
+		}
+		else
+			SetRange(index, new BitList(uints));
 		return this;
 	}
 
@@ -840,7 +993,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (_size != value._size)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		var ints = GetArrayLength(_size, BitsPerInt);
 		for (var i = 0; i < ints; i++)
 			_items[i] ^= value._items[i];
@@ -931,7 +1084,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(IEnumerable bits, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitList(BitArray bitArray, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
 	{
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
@@ -941,36 +1094,45 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			CapacityFirstStepBitLength = capacityFirstStepBitLength;
 		else if (capacityStepBitLength >= 2)
 			CapacityFirstStepBitLength = capacityStepBitLength;
-		if (bits == null)
-			throw new ArgumentNullException(nameof(bits));
-		else if (bits is BigBitList bigBitList)
+		if (bitArray == null)
+			throw new ArgumentNullException(nameof(bitArray));
+		else
 		{
-			if (bigBitList.low != null)
-				ConstructFromBitList(bigBitList.low);
-			else if (bigBitList.high != null && bigBitList.highLength != null)
-			{
-				ConstructFromCapacity(bigBitList.fragment * bigBitList.highLength.Length);
-				Copy(bigBitList, 0, this, 0, bigBitList.Length);
-			}
-		}
-		else if (bits is BitList bitList)
+			using BitList bitList = new(bitArray);
 			ConstructFromBitList(bitList);
-		else if (bits is BigList<uint> bigUIntList)
-			ConstructFromUIntList(bigUIntList);
-		else if (bits is int[] intArray && intArray.Length <= int.MaxValue / BitsPerInt
-			|| bits is byte[] byteArray && byteArray.Length <= int.MaxValue / BitsPerByte || bits is BitArray or bool[])
-			ConstructFromBitList(new(bits));
-		else if (bits is IEnumerable<uint> uints)
-		{
-			using BigList<uint> list = new(uints);
-			ConstructFromUIntList(list);
 		}
-		else if (bits is IEnumerable<int> ints)
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
 		{
-			using BigList<uint> list = new(ints.Select(x => (uint)x));
-			ConstructFromUIntList(list);
+			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(high.All(x => x.parent == this));
 		}
-		else if (bits is IEnumerable<byte> bytes)
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	public BigBitList(IEnumerable<byte> bytes, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (bytes == null)
+			throw new ArgumentNullException(nameof(bytes));
+		else if (bytes is byte[] byteArray && byteArray.Length <= int.MaxValue / BitsPerByte)
+		{
+			using BitList bitList = new(byteArray);
+			ConstructFromBitList(bitList);
+		}
+		else
 		{
 			var b = true;
 			using var en = bytes.GetEnumerator();
@@ -990,14 +1152,126 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			}
 			ConstructFromUIntList(values, n * BitsPerByte);
 		}
-		else if (bits is IEnumerable<bool> bools)
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(high.All(x => x.parent == this));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	public BigBitList(IEnumerable<bool> bools, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (bools == null)
+			throw new ArgumentNullException(nameof(bools));
+		else if (bools is BigBitList bigBitList)
+		{
+			if (bigBitList.low != null)
+				ConstructFromBitList(bigBitList.low);
+			else if (bigBitList.high != null && bigBitList.highLength != null)
+			{
+				ConstructFromCapacity(bigBitList.fragment * bigBitList.highLength.Length);
+				bigBitList.CopyToInternal(0, this, 0, bigBitList.Length);
+			}
+		}
+		else if (bools is BitList bitList)
+			ConstructFromBitList(bitList);
+		else if (bools is bool[] boolArray)
+		{
+			using BitList bitList2 = new(boolArray);
+			ConstructFromBitList(bitList2);
+		}
+		else
 		{
 			using var en = bools.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
 		}
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(high.All(x => x.parent == this));
+		}
 		else
-			throw new ArgumentException(null, nameof(bits));
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	public BigBitList(IEnumerable<int> ints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (ints == null)
+			throw new ArgumentNullException(nameof(ints));
+		else if (ints is int[] intArray && intArray.Length <= int.MaxValue / BitsPerInt)
+		{
+			using BitList bitList = new(intArray);
+			ConstructFromBitList(bitList);
+		}
+		else
+		{
+			using BigList<uint> list = new(ints.Select(x => (uint)x));
+			ConstructFromUIntList(list);
+		}
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(high.All(x => x.parent == this));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	public BigBitList(IEnumerable<uint> uints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	{
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityStepBitLength, BitsPerInt - 2);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(capacityFirstStepBitLength, BitsPerInt - 2);
+		if (capacityStepBitLength >= 2)
+			CapacityStepBitLength = capacityStepBitLength;
+		if (capacityFirstStepBitLength >= 5)
+			CapacityFirstStepBitLength = capacityFirstStepBitLength;
+		else if (capacityStepBitLength >= 2)
+			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (uints == null)
+			throw new ArgumentNullException(nameof(uints));
+		else if (uints is BigList<uint> bigUIntList)
+			ConstructFromUIntList(bigUIntList);
+		else if (uints is uint[] uintArray && uintArray.Length <= int.MaxValue / BitsPerInt)
+			ConstructFromBitList(new(uintArray));
+		else
+		{
+			using BigList<uint> list = new(uints);
+			ConstructFromUIntList(list);
+		}
 #if VERIFY
 		if (low != null)
 			Debug.Assert(Length == low.Length);
@@ -1040,22 +1314,35 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	private protected override int DefaultCapacity => 256;
 
-	public virtual BigBitList AddRange(IEnumerable bits)
+	public virtual BigBitList AddRange(BitArray bitArray)
 	{
-		if (bits is IEnumerable<bool> bools)
-			return base.AddRange(bools);
-		else
-		{
-			using BigBitList bitList = new(bits, CapacityStepBitLength, CapacityFirstStepBitLength);
-			return base.AddRange(bitList);
-		}
+		using BigBitList bitList = new(bitArray, CapacityStepBitLength, CapacityFirstStepBitLength);
+		return base.AddRange(bitList);
+	}
+
+	public virtual BigBitList AddRange(IEnumerable<byte> bytes)
+	{
+		using BigBitList bitList = new(bytes, CapacityStepBitLength, CapacityFirstStepBitLength);
+		return base.AddRange(bitList);
+	}
+
+	public virtual BigBitList AddRange(IEnumerable<int> ints)
+	{
+		using BigBitList bitList = new(ints, CapacityStepBitLength, CapacityFirstStepBitLength);
+		return base.AddRange(bitList);
+	}
+
+	public virtual BigBitList AddRange(IEnumerable<uint> uints)
+	{
+		using BigBitList bitList = new(uints, CapacityStepBitLength, CapacityFirstStepBitLength);
+		return base.AddRange(bitList);
 	}
 
 	public virtual BigBitList And(BigBitList value)
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.And(value.low);
 		else high = high != null && value.high != null
@@ -1147,11 +1434,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return 0;
 		if (length > BitsPerInt)
-			throw new ArgumentException(null, nameof(length));
+			throw new ArgumentException($"Метод GetSmallRange() возвращает одно число типа uint, поэтому необходим диапазон длиной не более {BitsPerInt} бит.", nameof(length));
 		if (low != null)
 			return low.GetSmallRange((int)index, length);
 		else if (high != null)
@@ -1187,7 +1474,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.Or(value.low);
 		else high = high != null && value.high != null
@@ -1220,7 +1507,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	{
 		ArgumentNullException.ThrowIfNull(value);
 		if (Length != value.Length)
-			throw new ArgumentException(null, nameof(value));
+			throw new ArgumentException("Для побитовых операций текущий и второй списки бит должны иметь одинаковую длину.", nameof(value));
 		if (low != null && value.low != null)
 			low.Xor(value.low);
 		else high = high != null && value.high != null

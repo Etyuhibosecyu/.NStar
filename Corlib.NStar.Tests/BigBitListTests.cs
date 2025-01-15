@@ -16,7 +16,7 @@ public class BigBitListTests
 		BigBitList bitList, bitList2;
 		BitList bitList3;
 		PerformIteration();
-		for (var i = 0; i < 1000; i++)
+		for (var i = 0; i < 5000; i++)
 		{
 			random.NextBytes(bytes);
 			length = random.Next(97);
@@ -29,7 +29,7 @@ public class BigBitListTests
 			bitList3 = new(bytes);
 			bitList = new(bitList3, 2, 6);
 			bitList2 = new(bitList, 2, 6);
-			bitList.SetRange(destinationIndex, bitList.GetRange(sourceIndex, length));
+			bitList.CopyTo(sourceIndex, bitList, destinationIndex, length);
 			Assert.IsTrue(bitList.GetRange(0, destinationIndex).Equals(bitList2.GetRange(0, destinationIndex)));
 			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(0, destinationIndex), E.Take(bitList2, destinationIndex)));
 			Assert.IsTrue(bitList.GetRange(destinationIndex, length).Equals(bitList2.GetRange(sourceIndex, length)));
@@ -67,7 +67,7 @@ public class BigBitListTests
 			() => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan(), 2, 6),
 			() => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan(), 2, 6),
 			() => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), 2, 6),
-			() => new((IEnumerable)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), 2, 6),
+			() => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), 2, 6),
 			() => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), 2, 6),
 			() => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), 2, 6),
 			() => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x), 2, 6),
@@ -97,7 +97,7 @@ public class BigBitListTests
 			() => new(new BigBitList(100, RedStarLinq.FillArray(random.Next(5, 50),
 				_ => (uint)random.Next()).AsSpan()), 2, 6),
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next())), 2, 6),
-			() => new(new BigBitList((IEnumerable)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), 2, 6),
+			() => new(new BigBitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), 2, 6),
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))), 2, 6),
 			() => new(new BigBitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)), 2, 6),
 			() => new(new BigBitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)), 2, 6),

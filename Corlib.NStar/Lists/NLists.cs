@@ -165,7 +165,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return new();
 		return new(_items + index, length);
@@ -178,7 +178,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		return new Span<T>(_items + index, length).BinarySearch(item, comparer);
 	}
 
@@ -194,9 +194,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	private protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		CopyMemory(source._items, sourceIndex, destination._items, destinationIndex, length);
+		CopyMemory(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
 		Changed();
@@ -268,14 +268,15 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return [];
 		else if (!alwaysCopy && index == 0 && length == _size)
 			return (TCertain)this;
 		if (!alwaysCopy)
 		{
-			var list = CapacityCreator(length);
+			var list = CapacityCreator(0);
+			list._capacity = length;
 			list._items = _items + index;
 			list._size = length;
 			return list;
@@ -324,7 +325,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		else
 		{
 			if (index < _size)
-				Copy(this2, index, this2, index + 1, _size - index);
+				CopyToInternal(index, this2, index + 1, _size - index);
 			else
 				_size++;
 			_items[index] = item;

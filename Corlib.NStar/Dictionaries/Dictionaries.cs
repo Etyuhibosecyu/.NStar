@@ -157,12 +157,12 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 				}
 				catch (InvalidCastException)
 				{
-					throw new ArgumentException(null, nameof(value));
+					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 				}
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(key));
+				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 			}
 		}
 	}
@@ -290,12 +290,12 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 			}
 		}
 		catch (InvalidCastException)
 		{
-			throw new ArgumentException(null, nameof(key));
+			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 		}
 	}
 

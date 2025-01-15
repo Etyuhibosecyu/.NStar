@@ -21,7 +21,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		{
 			var length = c.Count;
 			if (length == 0)
-				throw new ArgumentException(null, nameof(collection));
+				throw new ArgumentException("Коллекция нулевой длины недопустима в этом контексте.", nameof(collection));
 			else
 			{
 				_items = new T[length];
@@ -153,14 +153,14 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		Changed();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (source != destination || sourceIndex >= destinationIndex)
+		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		else
 			for (var i = length - 1; i >= 0; i--)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		destination.Changed();
 	}
 
@@ -226,7 +226,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 				_start = (_start + Capacity - 1) % Capacity;
 		}
 		if (index > 0 && index < _size)
-			Copy(this2, index, this2, index + 1, _size - index);
+			CopyToInternal(index, this2, index + 1, _size - index);
 		SetInternal(index, item);
 		if (_size < Capacity)
 			_size++;
@@ -247,7 +247,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		var toSkip = Max(0, length + _size - Capacity - index);
 		var index2 = _size + length - toSkip >= Capacity + index ? 0 : index;
 		if (index2 > 0 && index2 < _size)
-			Copy(this2, index2, this2, index2 + length - toSkip, _size - index2);
+			CopyToInternal(index2, this2, index2 + length - toSkip, _size - index2);
 		if (index2 == 0)
 			_start = (_start + Max(_size, Capacity - length + toSkip)) % Capacity;
 		var i = 0;
@@ -285,7 +285,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 			return this2;
 		}
 		else if (index < _size)
-			Copy(this2, index + 1, this2, index, _size - index);
+			CopyToInternal(index + 1, this2, index, _size - index);
 		SetInternal(_size, default!);
 		return this2;
 	}
@@ -527,7 +527,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		if (length == 0)
 			return new();
 		return MemoryExtensions.AsSpan(_items, index, length);
@@ -540,7 +540,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		return Array.BinarySearch(_items, index, length, item, comparer);
 	}
 
@@ -554,9 +554,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		Array.Copy(source._items, sourceIndex, destination._items, destinationIndex, length);
+		Array.Copy(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
 		Changed();
@@ -607,7 +607,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		else
 		{
 			if (index < _size)
-				Copy((TCertain)this, index, (TCertain)this, index + 1, _size - index);
+				CopyToInternal(index, (TCertain)this, index + 1, _size - index);
 			else
 				_size++;
 			_items[index] = item;
@@ -758,7 +758,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
 		if (this is List<byte> byteList)
 		{
 			byteList._items.NSort(index, length);
@@ -785,7 +785,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
 		_items.NSort(function, index, length);
 		return (TCertain)this;
 	}
@@ -814,7 +814,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
 		Array.Sort(_items, index, length, comparer);
 		return (TCertain)this;
 	}
@@ -843,9 +843,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за текущий размер коллекции.");
 		if (index + length > values._size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за размер экстра-коллекции.");
 		Array.Sort(_items, values._items, index, length, comparer);
 		return (TCertain)this;
 	}

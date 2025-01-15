@@ -46,26 +46,26 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		Changed();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (source != destination || sourceIndex >= destinationIndex)
+		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		else
 		{
 			for (var i = length - destinationIndex + sourceIndex; i < length; i++)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 			for (var i = length - 1; i >= 0; i--)
-				CopyOne(source, sourceIndex + i, destination, destinationIndex + i);
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		}
 	}
 
-	private protected static void CopyOne(TCertain source, int sourceIndex, TCertain destination, int destinationIndex)
+	private protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
 	{
-		var hashCode = source.entries[sourceIndex].hashCode;
+		var hashCode = entries[sourceIndex].hashCode;
 		if (hashCode < 0)
 		{
-			destination.SetInternal(destinationIndex, source.entries[sourceIndex].item);
+			destination.SetInternal(destinationIndex, entries[sourceIndex].item);
 			if (destination is ListHashSet<T> && destinationIndex == destination._size)
 				destination._size++;
 		}
@@ -155,8 +155,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 				return this2;
 			EnsureCapacity(_size + length);
 			if (index < _size)
-				Copy(this2, index, this2, index + length, _size - index);
-			Copy(set, 0, this2, index, length);
+				CopyToInternal(index, this2, index + length, _size - index);
+			set.CopyToInternal(0, this2, index, length);
 		}
 		return this2;
 	}
@@ -340,7 +340,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			if (entries[index2].item?.Equals(value) ?? value == null)
 				return;
 			if (Contains(value))
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
 			SetInternal(index2, value);
 		}
 	}
@@ -382,7 +382,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		var this2 = (TCertain)this;
 		_size--;
 		if (index < _size)
-			Copy(this2, index + 1, this2, index, _size - index);
+			CopyToInternal(index + 1, this2, index, _size - index);
 		SetNull(_size);
 		Changed();
 		return this2;
@@ -528,7 +528,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 			if (entries[IndexGetDirect(index2)].item?.Equals(value) ?? value == null)
 				return;
 			if (Contains(value))
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такой элемент уже был добавлен.", nameof(value));
 			SetInternal(index2, value);
 		}
 	}
@@ -543,15 +543,15 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		deleted.Clear();
 	}
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		int sourceIndex2 = IndexGetActual(sourceIndex), destinationIndex2 = IndexGetActual(destinationIndex);
-		if (source != destination || sourceIndex2 >= destinationIndex2)
+		if (this != destination || sourceIndex2 >= destinationIndex2)
 			for (var i = 0; i < length; i++)
-				destination.SetInternal(destinationIndex2 + i, source.GetInternal(sourceIndex2 + i));
+				destination.SetInternal(destinationIndex2 + i, GetInternal(sourceIndex2 + i));
 		else
 			for (var i = length - 1; i >= 0; i--)
-				destination.SetInternal(destinationIndex2 + i, source.GetInternal(sourceIndex2 + i));
+				destination.SetInternal(destinationIndex2 + i, GetInternal(sourceIndex2 + i));
 		if (destination._size < destinationIndex2 + length + deleted.Length)
 			destination._size = destinationIndex2 + length + deleted.Length;
 		destination.Changed();

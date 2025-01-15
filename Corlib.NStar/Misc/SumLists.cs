@@ -141,7 +141,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		if (array is T[] array2)
 			CopyToInternal(0, array2, arrayIndex, _size);
 		else
-			throw new ArgumentException(null, nameof(array));
+			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 	}
 
 	public virtual bool Decrease(int index) => Update(index, (dynamic?)GetInternal(index) - 1);
@@ -360,7 +360,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Insert(int index, T value)
 	{
-		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value, nameof(value));
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
 		var this2 = (TCertain)this;
 		if (root == null)
 		{
@@ -1023,16 +1023,16 @@ public class SumList : BaseSumList<int, SumList>
 		subset.Clear();
 	}
 
-	private protected override void Copy(SumList source, int sourceIndex, SumList destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
 		if (length == 1)
 		{
-			destination.SetOrAddInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAddInternal(destinationIndex, GetInternal(sourceIndex));
 			return;
 		}
-		using TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
+		using TreeSubSet subset = new(this, sourceIndex, sourceIndex + length - 1, true, true);
 		using SumList list = new(subset);
 		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
@@ -1056,7 +1056,7 @@ public class SumList : BaseSumList<int, SumList>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
@@ -1128,7 +1128,7 @@ public class SumList : BaseSumList<int, SumList>
 	public virtual SumList GetViewBetween(int lowerValue, int upperValue)
 	{
 		if (Comparer.Compare(lowerValue, upperValue) > 0)
-			throw new ArgumentException(null, nameof(lowerValue));
+			throw new ArgumentException("Максимум не может быть меньше минимума!");
 		return new TreeSubSet(this, lowerValue, upperValue, true, true);
 	}
 
@@ -1166,9 +1166,9 @@ public class SumList : BaseSumList<int, SumList>
 		return index - 1;
 	}
 
-	private protected override void SetAllInternal(int value, int index, int endIndex)
+	private protected override void SetAllInternal(int value, int index, int length)
 	{
-		var oldLength = _size;
+		int oldLength = _size, endIndex = index + length - 1;
 		for (var i = index; i < Min(_size, endIndex); i++)
 			SetInternal(i, value);
 		for (var i = _size; i < endIndex; i++)
@@ -1738,16 +1738,16 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		subset.Clear();
 	}
 
-	private protected override void Copy(BigSumList source, int sourceIndex, BigSumList destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
 		if (length == 1)
 		{
-			destination.SetOrAdd(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetOrAdd(destinationIndex, GetInternal(sourceIndex));
 			return;
 		}
-		using TreeSubSet subset = new(source, sourceIndex, sourceIndex + length - 1, true, true);
+		using TreeSubSet subset = new(this, sourceIndex, sourceIndex + length - 1, true, true);
 		using BigSumList list = new(subset);
 		using var en = list.GetEnumerator();
 		if (destinationIndex < destination._size)
@@ -1771,7 +1771,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
@@ -1851,7 +1851,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	public virtual BigSumList GetViewBetween(int lowerValue, int upperValue)
 	{
 		if (Comparer.Compare(lowerValue, upperValue) > 0)
-			throw new ArgumentException(null, nameof(lowerValue));
+			throw new ArgumentException("Максимум не может быть меньше минимума!");
 		return new TreeSubSet(this, lowerValue, upperValue, true, true);
 	}
 

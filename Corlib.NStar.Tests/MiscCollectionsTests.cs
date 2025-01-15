@@ -1055,10 +1055,12 @@ public class BigBitArrayTests
 		random.NextBytes(bytes);
 		BigBitArray a = new(bytes, 2, 6);
 		var b = E.ToArray(E.SelectMany(bytes, x => E.Select(E.Range(0, 8), y => (x & 1 << y) != 0)));
-		Assert.IsTrue(E.SequenceEqual(a, b));
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 		a.Clear(248, 431);
 		Array.Clear(b, 248, 431);
-		Assert.IsTrue(E.SequenceEqual(a, b));
+		Assert.IsTrue(RedStarLinq.Equals(a, b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
 
 	[TestMethod]
@@ -1080,6 +1082,8 @@ public class BigBitArrayTests
 	public void TestCopyTo()
 	{
 		var a = new BigBitArray(testBytes, 2, 6);
+		Assert.IsTrue(RedStarLinq.Equals(a, testBools));
+		Assert.IsTrue(E.SequenceEqual(testBools, a));
 		var bytes = new byte[256];
 		var b = E.ToArray(E.SelectMany(bytes, x => E.Select(E.Range(0, 8), y => (x & 1 << y) != 0)));
 		var c = (bool[])b.Clone();
@@ -1089,8 +1093,9 @@ public class BigBitArrayTests
 		new G.List<bool>(testBools).CopyTo(c);
 		a.CopyTo(d, 185);
 		new G.List<bool>(testBools).CopyTo(e, 185);
-		Assert.IsTrue(E.SequenceEqual(testBools, a));
+		Assert.IsTrue(RedStarLinq.Equals(b, c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
+		Assert.IsTrue(RedStarLinq.Equals(d, e));
 		Assert.IsTrue(E.SequenceEqual(e, d));
 	}
 

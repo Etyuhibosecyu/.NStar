@@ -30,7 +30,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такой элемент не подходит для этой коллекции.", nameof(value));
 			}
 		}
 	}
@@ -75,7 +75,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 		catch (InvalidCastException)
 		{
-			throw new ArgumentException(null, nameof(item));
+			throw new ArgumentException("Ошибка, такой элемент не подходит для этой коллекции.", nameof(item));
 		}
 		return _size - 1;
 	}
@@ -102,7 +102,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	private protected virtual void AddSeriesInternal(T item, int length)
 	{
 		EnsureCapacity(_size + length);
-		SetAllInternal(item, _size, _size + length);
+		SetAllInternal(item, _size, length);
 		_size += length;
 	}
 
@@ -206,7 +206,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Очищаемый диапазон выходит за текущий размер коллекции.");
 		ClearInternal(index, length);
 	}
 
@@ -228,7 +228,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain Copy() => CollectionCreator(this);
 
-	private protected abstract void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length);
+	private protected abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
 
 	private protected virtual void EnsureCapacity(int min)
 	{
@@ -396,7 +396,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	private protected override TCertain GetRangeInternal(int index, int length)
 	{
 		var list = CapacityCreator(length);
-		Copy((TCertain)this, index, list, 0, length);
+		CopyToInternal(index, list, 0, length);
 		return list;
 	}
 
@@ -417,7 +417,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		if (_size == Capacity) EnsureCapacity(_size + 1);
 		var this2 = (TCertain)this;
 		if (index < _size)
-			Copy(this2, index, this2, index + 1, _size - index);
+			CopyToInternal(index, this2, index + 1, _size - index);
 		SetInternal(index, item);
 		return this2;
 	}
@@ -433,7 +433,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 		catch (InvalidCastException)
 		{
-			throw new ArgumentException(null, nameof(item));
+			throw new ArgumentException("Ошибка, такой элемент не подходит для этой коллекции.", nameof(item));
 		}
 	}
 
@@ -455,14 +455,14 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		{
 			EnsureCapacity(_size + length);
 			if (index < _size)
-				Copy(this2, index, this2, index + length, _size - index);
+				CopyToInternal(index, this2, index + length, _size - index);
 			if (this == list)
 			{
-				Copy(this2, 0, this2, index, index);
-				Copy(this2, index + length, this2, index * 2, _size - index);
+				CopyToInternal(0, this2, index, index);
+				CopyToInternal(index + length, this2, index * 2, _size - index);
 			}
 			else
-				Copy(list, 0, this2, index, length);
+				list.CopyToInternal(0, this2, index, length);
 		}
 		return this2;
 	}
@@ -572,14 +572,14 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
 		return RemoveInternal(index, length);
 	}
 
 	public virtual TCertain Remove(Range range)
 	{
 		if (range.End.GetOffset(_size) > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
 		var (start, length) = range.GetOffsetAndLength(_size);
 		return Remove(start, length);
 	}
@@ -619,7 +619,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		var this2 = (TCertain)this;
 		_size--;
 		if (index < _size)
-			Copy(this2, index + 1, this2, index, _size - index);
+			CopyToInternal(index + 1, this2, index, _size - index);
 		SetInternal(_size, default!);
 		return this2;
 	}
@@ -635,7 +635,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		var pos = 0;
 		for (var i = 0; i < toRemove2._size; i++)
 		{
-			result.Copy(originalList, pos, result, pos - i, toRemove2[i] - pos);
+			originalList.CopyToInternal(pos, result, pos - i, toRemove2[i] - pos);
 			pos = toRemove2[i] + 1;
 		}
 		result._size = originalList._size - toRemove2._size;
@@ -649,7 +649,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		{
 			_size -= length;
 			if (index < _size)
-				Copy(this2, index + length, this2, index, _size - index);
+				CopyToInternal(index + length, this2, index, _size - index);
 			ClearInternal(_size, length);
 		}
 		return this2;
@@ -837,7 +837,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Заменяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
 		return ReplaceRangeInternal(index, length, collection);
 	}
@@ -853,8 +853,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		{
 			EnsureCapacity(_size + list._size - length);
 			if (index + length < _size)
-				Copy(this2, index + length, this2, index + list._size, _size - index - length);
-			Copy(list, 0, this2, index, list._size);
+				CopyToInternal(index + length, this2, index + list._size, _size - index - length);
+			list.CopyToInternal(0, this2, index, list._size);
 			_size += index + length < _size ? 0 : list._size - length;
 		}
 		return this2;
@@ -881,7 +881,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
 		return ReverseInternal(index, length);
 	}
 
@@ -900,15 +900,15 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
-		var endIndex = index + length;
-		SetAllInternal(value, index, endIndex);
+			throw new ArgumentException("Устанавливаемый диапазон выходит за текущий размер коллекции.");
+		SetAllInternal(value, index, length);
 		return (TCertain)this;
 	}
 
-	private protected virtual void SetAllInternal(T value, int index, int endIndex)
+	private protected virtual void SetAllInternal(T value, int index, int length)
 	{
-		for (var i = index; i < endIndex; i++)
+		var endIndex = index + length - 1;
+		for (var i = index; i <= endIndex; i++)
 			SetInternal(i, value);
 	}
 
@@ -940,7 +940,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
 		var length = list._size;
-		return index + length > _size ? throw new ArgumentException(null) : SetRangeInternal(index, length, list);
+		if (index + length > _size)
+			throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
+		return SetRangeInternal(index, length, list);
 	}
 
 	internal virtual TCertain SetRangeAndSizeInternal(int index, int length, TCertain list)
@@ -955,7 +957,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		EnsureCapacity(index + length);
 		var this2 = (TCertain)this;
 		if (length > 0)
-			Copy(list, 0, this2, index, length);
+			list.CopyToInternal(0, this2, index, length);
 		return this2;
 	}
 
@@ -975,7 +977,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	public static List<TCertain> Transpose(List<TCertain> list, bool widen = false)
 	{
 		if (list._size == 0)
-			throw new ArgumentException(null, nameof(list));
+			throw new ArgumentException("Невозможно транспонировать коллекцию нулевой длины.", nameof(list));
 		var yCount = widen ? list.Max(x => x._size) : list.Min(x => x._size);
 		List<TCertain> new_list = [];
 		for (var i = 0; i < yCount; i++)
@@ -1030,14 +1032,14 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (source != destination || sourceIndex >= destinationIndex)
+		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		else
 			for (var i = length - 1; i >= 0; i--)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
 		destination.Changed();

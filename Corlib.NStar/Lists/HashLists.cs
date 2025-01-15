@@ -103,14 +103,14 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	private protected override void Copy(TCertain source, int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
-		if (source != destination || sourceIndex >= destinationIndex)
+		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		else
 			for (var i = length - 1; i >= 0; i--)
-				destination.SetInternal(destinationIndex + i, source.GetInternal(sourceIndex + i));
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
 		if (destination._size < destinationIndex + length)
 			destination._size = destinationIndex + length;
 		destination.Changed();
@@ -147,7 +147,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		var endIndex = index + length;
 		for (var i = index; i < endIndex; i++)
 			if (Comparer.Equals(entries[i].item, item))
@@ -201,7 +201,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		if (buckets != null)
 		{
 			uint collisionCount = 0;
@@ -242,7 +242,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		if (_size == Capacity) EnsureCapacity(_size + 1);
 		var this2 = (TCertain)this;
 		if (index < _size)
-			Copy(this2, index, this2, index + 1, _size - index);
+			CopyToInternal(index, this2, index + 1, _size - index);
 		entries[index].item = item;
 		uniqueElements.TryAdd(item);
 		return this2;
@@ -259,8 +259,8 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			EnsureCapacity(_size + length);
 			if (index < entries.Length - length)
-				Copy(this2, index, this2, index + length, entries.Length - index - length);
-			Copy(list, 0, this2, index, length);
+				CopyToInternal(index, this2, index + length, entries.Length - index - length);
+			list.CopyToInternal(0, this2, index, length);
 		}
 		return this2;
 	}
@@ -309,7 +309,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		NList<int> result = [];
 		var endIndex = index + length;
 		for (var i = index; i < endIndex; i++)
@@ -621,7 +621,7 @@ public abstract class FastDelHashList<T, TCertain> : BaseHashList<T, TCertain> w
 		var item = entries[index].item;
 		if (item == null)
 			return (TCertain)this;
-		var hashCode = base.Comparer.GetHashCode(item ?? throw new ArgumentException(null)) & 0x7FFFFFFF;
+		var hashCode = base.Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
 		if (bucket != index)
 		{
@@ -875,7 +875,7 @@ public abstract class HashList<T, TCertain> : BaseHashList<T, TCertain> where TC
 		var item = entries[index].item;
 		_size--;
 		if (index < _size)
-			Copy(this2, index + 1, this2, index, _size - index);
+			CopyToInternal(index + 1, this2, index, _size - index);
 		SetNull(_size);
 		if (!Contains(item))
 			uniqueElements.RemoveValue(item);

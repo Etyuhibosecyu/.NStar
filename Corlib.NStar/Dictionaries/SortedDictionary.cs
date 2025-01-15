@@ -145,12 +145,12 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 				}
 				catch (InvalidCastException)
 				{
-					throw new ArgumentException(null, nameof(value));
+					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 				}
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(key));
+				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 			}
 		}
 	}
@@ -201,7 +201,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			throw new ArgumentNullException(nameof(key));
 		var i = Search(key);
 		if (i >= 0)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Ошибка, элемент с таким ключом уже был добавлен.", nameof(key));
 		Insert(~i, key, value);
 	}
 
@@ -219,12 +219,12 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			}
 			catch (InvalidCastException)
 			{
-				throw new ArgumentException(null, nameof(value));
+				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
 			}
 		}
 		catch (InvalidCastException)
 		{
-			throw new ArgumentException(null, nameof(key));
+			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
 		}
 	}
 
@@ -261,7 +261,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		for (var i = 0; i < Length; i++)
 		{
 			KeyValuePair<TKey, TValue> entry = new(keys[i], values[i]);
@@ -273,20 +273,20 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
-			throw new ArgumentException(null);
+			throw new RankException();
 		if (array.GetLowerBound(0) != 0)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Нижняя граница массива должна быть равной нулю.", nameof(array));
 		if (arrayIndex < 0 || arrayIndex > array.Length)
 			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
 		if (array.Length - arrayIndex < Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		if (array is KeyValuePair<TKey, TValue>[] keyValuePairArray)
 			for (var i = 0; i < Length; i++)
 				keyValuePairArray[i + arrayIndex] = new(keys[i], values[i]);
 		else
 		{
 			if (array is not object[] objects)
-				throw new ArgumentException(null);
+				throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 			try
 			{
 				for (var i = 0; i < Length; i++)
@@ -294,7 +294,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			}
 			catch (ArrayTypeMismatchException)
 			{
-				throw new ArgumentException(null);
+				throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 			}
 		}
 	}
@@ -725,14 +725,14 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new ArgumentException(null);
+				throw new RankException();
 			try
 			{
 				((ICollection)_dict.keys).CopyTo(array, arrayIndex);
 			}
 			catch (ArrayTypeMismatchException)
 			{
-				throw new ArgumentException(null);
+				throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 			}
 		}
 
@@ -786,14 +786,14 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			ArgumentNullException.ThrowIfNull(array);
 			if (array.Rank != 1)
-				throw new ArgumentException(null);
+				throw new RankException();
 			try
 			{
 				((ICollection)_dict.values).CopyTo(array, arrayIndex);
 			}
 			catch (ArrayTypeMismatchException)
 			{
-				throw new ArgumentException(null);
+				throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 			}
 		}
 

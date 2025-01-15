@@ -698,7 +698,7 @@ public static unsafe partial class Extents
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > array.Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за размер исходного массива.");
 		fixed (T* items = array)
 		{
 			var shiftedItems = items + index;
@@ -730,7 +730,7 @@ public static unsafe partial class Extents
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > array.Length)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Сортируемый диапазон выходит за размер исходного массива.");
 		var converted = (T2*)Marshal.AllocHGlobal(sizeof(T2) * length);
 		var indexes = (int*)Marshal.AllocHGlobal(sizeof(int) * length);
 		for (var i = 0; i < length; i++)

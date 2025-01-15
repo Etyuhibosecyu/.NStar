@@ -346,8 +346,7 @@ internal static class HashHelpers
 
 	public static int GetPrime(int min)
 	{
-		if (min < 0)
-			throw new ArgumentException(null, nameof(min));
+		ArgumentOutOfRangeException.ThrowIfNegative(min);
 		foreach (var prime in Primes)
 			if (prime >= min)
 				return prime;

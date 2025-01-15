@@ -311,16 +311,16 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	private protected override void Copy(TreeSet<T> source, int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
 		if (length == 1)
 		{
-			destination.SetInternal(destinationIndex, source.GetInternal(sourceIndex));
+			destination.SetInternal(destinationIndex, GetInternal(sourceIndex));
 			return;
 		}
-		TreeSubSet subset = new(source, source.GetInternal(sourceIndex), source.GetInternal(sourceIndex + length - 1), true, true);
+		TreeSubSet subset = new(this, GetInternal(sourceIndex), GetInternal(sourceIndex + length - 1), true, true);
 		var en = subset.GetEnumerator();
 		if (destinationIndex < destination._size)
 			new TreeSubSet(destination, destination.GetInternal(destinationIndex), destination.GetInternal(Min(destinationIndex + length, destination._size) - 1), true, true).InOrderTreeWalk(node =>
@@ -340,7 +340,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (length > array.Length - index)
-			throw new ArgumentException(null);
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		length += index; // Make `length` the upper bound.
 		var i = 0;
 		InOrderTreeWalk(node =>
@@ -593,7 +593,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	public virtual TreeSet<T> GetViewBetween(T? lowerValue, T? upperValue)
 	{
 		if (Comparer.Compare(lowerValue, upperValue) > 0)
-			throw new ArgumentException(null, nameof(lowerValue));
+			throw new ArgumentException("Максимум не может быть меньше минимума!");
 		return new TreeSubSet(this, lowerValue, upperValue, true, true);
 	}
 
