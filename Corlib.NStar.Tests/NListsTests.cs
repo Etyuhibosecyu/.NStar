@@ -1268,7 +1268,7 @@ public class NListTests
 	public void TestRemove()
 	{
 		var a = nList.ToNList();
-		var b = new NList<(char, char, char)>(a).Remove(6);
+		var b = new NList<(char, char, char)>(a).RemoveEnd(6);
 		var c = new G.List<(char, char, char)>(nList);
 		c.RemoveRange(6, 1);
 		Assert.IsTrue(a.Equals(nList));
@@ -3465,7 +3465,7 @@ public class StringTests
 	public void TestRemove()
 	{
 		var a = nString.ToNString();
-		var b = new String(a).Remove(6);
+		var b = new String(a).RemoveEnd(6);
 		var c = new string(E.ToArray(nString));
 		c = c.Remove(6, 1);
 		Assert.IsTrue(a.Equals(nString));

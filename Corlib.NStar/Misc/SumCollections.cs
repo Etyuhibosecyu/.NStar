@@ -234,7 +234,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return result;
 	}
 
-	public override void Clear()
+	public override void Clear(bool _)
 	{
 		root?.Dispose();
 		root = null;
@@ -326,7 +326,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1121,7 +1121,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		var actuallyRemoved = 0;
 		for (var i = matches.Length - 1; i >= 0; i--)
 		{
-			if (RemoveValue(matches[i]))
+			if (RemoveValue(matches.GetInternal(i)))
 				actuallyRemoved++;
 		}
 		return actuallyRemoved;
@@ -1229,6 +1229,11 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	internal override void SetInternal(int index, (T Key, int Value) value)
 	{
+		if (value.Value == 0)
+		{
+			RemoveAt(index);
+			return;
+		}
 		var current = root;
 		while (current != null)
 		{
@@ -2164,7 +2169,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return true;
 		}
 
-		public override void Clear()
+		public override void Clear(bool _)
 		{
 			if (Length == 0)
 				return;

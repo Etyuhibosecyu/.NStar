@@ -153,7 +153,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -195,7 +195,11 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override void EnsureCapacity(int min) => throw new NotSupportedException();
+	private protected override void EnsureCapacity(int min) =>
+		throw new NotSupportedException("Вы докопались до этого метода? Поздравляем, ваши знания C# выше уровня Hello world!"
+		+ " Вот только для данной коллекции он неуместен, так как при исчерпании емкости она удаляет элементы,"
+		+ " а не увеличивает емкость. Если вам нужно изменить емкость, такие извращения не нужны,"
+		+ " достаточно Capacity = value.");
 
 	internal override T GetInternal(int index, bool invoke = true)
 	{
@@ -554,7 +558,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		Array.Copy(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -664,7 +668,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
@@ -698,7 +703,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);
@@ -726,7 +732,8 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = new T[newCapacity];
 				if (index > 0)
 					Array.Copy(_items, 0, newItems, 0, index);

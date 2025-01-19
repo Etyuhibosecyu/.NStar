@@ -46,7 +46,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -543,7 +543,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		deleted.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		int sourceIndex2 = IndexGetActual(sourceIndex), destinationIndex2 = IndexGetActual(destinationIndex);
 		if (this != destination || sourceIndex2 >= destinationIndex2)

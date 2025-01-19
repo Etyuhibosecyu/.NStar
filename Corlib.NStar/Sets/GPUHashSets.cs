@@ -43,7 +43,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -453,7 +453,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void CopyToInternal(int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
+	internal override void CopyToInternal(int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
@@ -525,8 +525,6 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		ArrayView<Index1D> nexts, ArrayView<T> items, VariableView<int> freeList, VariableView<int> freeCount,
 		VariableView<int> length, T item, VariableView<int> index, int hashCode)
 	{
-		//if (!buckets.IsValid)
-		//	BaseGPUHashSet<T, GPUHashSet<T>>.Initialize(0, out buckets, out hashCodes, out nexts, out items);
 		if (!buckets.IsValid)
 		{
 			index.Value = -2147483648;
@@ -619,12 +617,6 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 	}
 
 	public virtual bool IsValidIndex(int index) => hashCodes.View[index] < 0;
-
-	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
-	{
-		lock (lockObj)
-			return base.LastIndexOf(collection, index, length, out collectionLength);
-	}
 
 	public override bool Overlaps(IEnumerable<T> other)
 	{
@@ -719,7 +711,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 				return false;
 			Parallel.For(0, set.Length, (i, pls) =>
 			{
-				if (!Contains(set[i]))
+				if (!Contains(set.GetInternal(i)))
 				{
 					result = false;
 					pls.Stop();
@@ -867,8 +859,6 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		ArrayView<Index1D> nexts, ArrayView<T> items, VariableView<int> freeList, VariableView<int> freeCount,
 		VariableView<int> length, T item, VariableView<int> index, int hashCode)
 	{
-		//if (!buckets.IsValid)
-		//	BaseGPUHashSet<T, GPUHashSet<T>>.Initialize(0, out buckets, out hashCodes, out nexts, out items);
 		if (!buckets.IsValid)
 		{
 			index.Value = -2147483648;
@@ -888,10 +878,6 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 				index.Value = -2147483648;
 				return;
 			}
-			//{
-			//	UnsafeResize(buckets, hashCodes, nexts, items, length.Value);
-			//	targetBucket = hashCode % buckets.IntExtent;
-			//}
 			index.Value = length.Value;
 			length.Value++;
 		}

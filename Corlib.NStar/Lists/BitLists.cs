@@ -314,7 +314,9 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		return this;
 	}
 
-	public override Span<bool> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<bool> AsSpan(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте GetSlice() вместо него.");
 
 	private protected override void ClearInternal(int index, int length)
 	{
@@ -379,10 +381,12 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		buff |= (ulong)(sourceBits[source.End.IntIndex] & sourceEndMask) << (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex ? BitsPerInt * 2 : BitsPerInt) - offset.BitsIndex;
 		for (int sourceCurrentIntIndex = source.End.IntIndex - 1, destinationCurrentIntIndex = destination.End.IntIndex; destinationCurrentIntIndex > destination.Start.IntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
 		{
-			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
+			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex)
+				buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
 			destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
 			buff <<= BitsPerInt;
-			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex) buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
+			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex)
+				buff |= ((ulong)sourceBits[sourceCurrentIntIndex]) << BitsPerInt - offset.BitsIndex;
 		}
 		if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex)
 			buff |= (ulong)sourceBits[source.Start.IntIndex] << BitsPerInt - offset.BitsIndex;
@@ -400,10 +404,12 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		buff |= (ulong)(sourceBits[source.End.IntIndex] & sourceEndMask) << (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex ? 0 : BitsPerInt) + offset.BitsIndex;
 		for (int sourceCurrentIntIndex = source.End.IntIndex - 1, destinationCurrentIntIndex = destination.End.IntIndex; destinationCurrentIntIndex > destination.Start.IntIndex; sourceCurrentIntIndex--, destinationCurrentIntIndex--)
 		{
-			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
+			if (source.End.IntIndex + offset.IntIndex == destination.End.IntIndex)
+				buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
 			destinationBits[destinationCurrentIntIndex] = (uint)(buff >> BitsPerInt);
 			buff <<= BitsPerInt;
-			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex && sourceCurrentIntIndex >= 0) buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
+			if (source.End.IntIndex + offset.IntIndex != destination.End.IntIndex && sourceCurrentIntIndex >= 0)
+				buff |= (ulong)sourceBits[sourceCurrentIntIndex] << offset.BitsIndex;
 		}
 		var destinationMask = ~0ul << BitsPerInt + destination.Start.BitsIndex;
 		buff &= destinationMask;
@@ -498,7 +504,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, BitList destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, BitList destination, int destinationIndex, int length)
 	{
 		CopyBits(_items, _capacity, sourceIndex, destination._items, destination._capacity, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -846,7 +852,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	private protected override BitList ReverseInternal(int index, int length)
 	{
 		for (var i = 0; i < length / 2; i++)
-			(this[index + i], this[index + length - i - 1]) = (this[index + length - i - 1], this[index + i]);
+			(this[index + i], this[index + length - i - 1]) = (GetInternal(index + length - i - 1), GetInternal(index + i));
 		Changed();
 		return this;
 	}
@@ -1075,7 +1081,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1106,7 +1112,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1157,7 +1163,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1206,7 +1212,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1242,7 +1248,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1277,7 +1283,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
 		{
-			Debug.Assert(Length == highLength.Sum() && Length == high.Sum(x => x.Length));
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
@@ -1395,7 +1401,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			low = new(bigUIntList);
 			if (overrideLength != 0)
-				low.Remove(overrideLength);
+				low.RemoveEnd(overrideLength);
 			high = null;
 			highLength = null;
 			fragment = 1;
@@ -1421,7 +1427,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				high[^1].parent = this;
 				high[^1].AddRange(bigUIntList.GetRange(index));
 				var rest = length == 0 || overrideLength % fragment == 0 ? (length - index) * BitsPerInt : overrideLength % fragment;
-				high[^1].Remove(rest);
+				high[^1].RemoveEndInternal(rest);
 				highLength.Add(rest);
 			}
 		}
@@ -1447,11 +1453,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			var quotient2 = (int)(index + length - 1).Divide(fragment, out var remainder2);
 			uint result;
 			if (quotient == quotient2)
-				result = high[quotient].GetSmallRange(remainder, length);
+				result = high.GetInternal(quotient).GetSmallRange(remainder, length);
 			else
 			{
-				result = high[quotient].GetSmallRange(remainder, (int)(fragment - remainder));
-				result |= high[quotient + 1].GetSmallRange(0, (int)remainder2) << (int)(BitsPerInt - remainder);
+				result = high.GetInternal(quotient).GetSmallRange(remainder, (int)(fragment - remainder));
+				result |= high.GetInternal(quotient + 1).GetSmallRange(0, (int)remainder2) << (int)(BitsPerInt - remainder);
 			}
 			return result;
 		}

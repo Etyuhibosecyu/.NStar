@@ -371,19 +371,29 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
 
-	public override MpzT Length { get => ArraySize; private protected set => throw new NotSupportedException(); }
+	public override MpzT Length {
+		get => ArraySize;
+		private protected set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
+			+ " Если оно нужно вам, используйте один из видов списков или множеств, а не массивов.");
+	}
 
-	public override TCertain Add(T item) => throw new NotSupportedException();
+	public override TCertain Add(T item) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	private protected override void ClearInternal()
+	public override TCertain AddRange(IEnumerable<T> collection) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
+
+	private protected override void ClearInternal(bool verify = true)
 	{
 		if (low != null)
-			low.Clear();
+			low.Clear(false);
 		else if (high != null)
 			Array.Clear(high);
 		Changed();
 #if VERIFY
-		Verify();
+		if (verify)
+			Verify();
 #endif
 	}
 
@@ -624,7 +634,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			var index2 = (int)index;
 			for (var i = 0; i < length; i++)
-				array[arrayIndex + i] = low[index2 + i];
+				array[arrayIndex + i] = low.GetInternal(index2 + i);
 		}
 		else if (high != null)
 		{
@@ -653,7 +663,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			int index2 = (int)index, count2 = (int)length;
 			for (var i = 0; i < count2; i++)
-				list[listIndex + i] = low[index2 + i];
+				list[listIndex + i] = low.GetInternal(index2 + i);
 		}
 		else if (high != null)
 		{
@@ -713,23 +723,11 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		return list;
 	}
 
-	private protected override void RemoveFromEnd(MpzT index)
-	{
-		if (low != null)
-			low.Clear((int)index, low.Length - (int)index);
-		else if (high != null)
-		{
-			var quotient = (int)index.Divide(fragment, out var remainder);
-			for (var i = high.Length - 1; i > quotient; i--)
-				high[i].Clear();
-			high[quotient].Remove(remainder);
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-#if VERIFY
-		Verify();
-#endif
-	}
+	private protected override void RemoveInternal(MpzT index, MpzT length) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
+
+	private protected override void RemoveEndInternal(MpzT index) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
 	private protected override void SetInternal(MpzT index, T value)
 	{

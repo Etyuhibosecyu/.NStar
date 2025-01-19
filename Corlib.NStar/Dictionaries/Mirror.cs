@@ -1298,9 +1298,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		object System.Collections.ICollection.SyncRoot => ((System.Collections.ICollection)_dictionary).SyncRoot;
 
-		void G.ICollection<TKey>.Add(TKey item) => throw new NotSupportedException();
+		void G.ICollection<TKey>.Add(TKey item) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		void G.ICollection<TKey>.Clear() => throw new NotSupportedException();
+		void G.ICollection<TKey>.Clear() =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
 		public bool Contains(TKey item) => _dictionary.ContainsKey(item);
 
@@ -1348,7 +1352,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TKey>)this).GetEnumerator();
 
-		bool ICollection<TKey>.RemoveValue(TKey item) => throw new NotSupportedException();
+		bool ICollection<TKey>.RemoveValue(TKey item) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте метод Remove() оригинального словаря.");
 	}
 
 	public struct KeyEnumerator : IEnumerator<TKey>, IEnumerator
@@ -1418,9 +1424,13 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		object System.Collections.ICollection.SyncRoot => ((System.Collections.ICollection)_dictionary).SyncRoot;
 
-		void G.ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+		void G.ICollection<TValue>.Add(TValue item) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		void G.ICollection<TValue>.Clear() => throw new NotSupportedException();
+		void G.ICollection<TValue>.Clear() =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
 		bool G.ICollection<TValue>.Contains(TValue item) => _dictionary.ContainsValue(item);
 
@@ -1468,7 +1478,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 		IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable<TValue>)this).GetEnumerator();
 
-		bool ICollection<TValue>.RemoveValue(TValue item) => throw new NotSupportedException();
+		bool ICollection<TValue>.RemoveValue(TValue item) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте метод Remove() оригинального словаря.");
 	}
 
 	public struct ValueEnumerator : IEnumerator<TValue>, IEnumerator

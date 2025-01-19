@@ -1196,7 +1196,7 @@ public class ListTests
 	public void TestRemove()
 	{
 		var a = list.ToList();
-		var b = new List<string>(a).Remove(6);
+		var b = new List<string>(a).RemoveEnd(6);
 		var c = new G.List<string>(list);
 		c.RemoveRange(6, 1);
 		Assert.IsTrue(a.Equals(list));

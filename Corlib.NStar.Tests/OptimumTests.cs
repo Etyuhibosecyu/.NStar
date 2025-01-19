@@ -33,7 +33,7 @@ public class OptimumTests
 			ProcessA(a, list3);
 			a = E.SkipWhile(list2, _ => random.Next(10) == -1);
 			ProcessA(a, list3);
-			bytes2.Clear();
+			bytes2.Clear(false);
 		}
 		{
 			var (list2, list3) = RedStarLinq.FillArray(16, _ =>
@@ -287,7 +287,7 @@ public class OptimumTests
 			ProcessA(a, list3);
 			a = E.SkipWhile(list2, _ => random.Next(10) == -1);
 			ProcessA(a, list3);
-			bytes2.Clear();
+			bytes2.Clear(false);
 		}
 		{
 			var (list2, list3) = RedStarLinq.FillArray(16, _ =>
@@ -537,7 +537,7 @@ public class OptimumTests
 			ProcessA(a, list3);
 			a = list2.ToList().Insert(0, 12345678901234567890).GetSlice(1);
 			ProcessA(a, list3);
-			bytes2.Clear();
+			bytes2.Clear(false);
 		}
 		{
 			var (list2, list3) = RedStarLinq.FillArray(16, _ =>

@@ -125,12 +125,24 @@ public class BigBitListTests
 		for (var i = 0; i < array.Length; i++)
 		{
 			array[i] = functions.Random(random)();
+			G.List<bool> gl = new(array[i]);
 			MpzT oldLength = new(array[i].Length);
 			for (var j = 0; j < 2400; j++)
 			{
-				array[i].Add(random.Next(2) == 1);
-				Assert.IsTrue(array[i].Capacity >= array[i].Length);
-				Assert.AreEqual(array[i].Length, oldLength + j + 1);
+				var fullCheck = array[i].Capacity == array[i].Length;
+				var item = random.Next(2) == 1;
+				array[i].Add(item);
+				gl.Add(item);
+				if (fullCheck)
+				{
+					Assert.IsTrue(RedStarLinq.Equals(array[i], gl));
+					Assert.IsTrue(E.SequenceEqual(gl, array[i]));
+				}
+				else
+				{
+					Assert.IsTrue(array[i].Capacity >= array[i].Length);
+					Assert.AreEqual(array[i].Length, oldLength + j + 1);
+				}
 			}
 		}
 		Thread.Sleep(50);

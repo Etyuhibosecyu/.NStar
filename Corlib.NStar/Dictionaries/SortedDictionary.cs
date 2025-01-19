@@ -103,7 +103,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			var i = IndexOfKey(key);
 			if (i >= 0)
-				return values[i];
+				return values.GetInternal(i);
 			throw new KeyNotFoundException();
 		}
 		set
@@ -128,7 +128,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			{
 				var i = IndexOfKey((TKey)key);
 				if (i >= 0)
-					return values[i];
+					return values.GetInternal(i);
 			}
 			return null;
 		}
@@ -239,7 +239,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		var index = IndexOfKey(keyValuePair.Key);
-		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
+		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), keyValuePair.Value))
 			return true;
 		return false;
 	}
@@ -264,7 +264,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		for (var i = 0; i < Length; i++)
 		{
-			KeyValuePair<TKey, TValue> entry = new(keys[i], values[i]);
+			KeyValuePair<TKey, TValue> entry = new(keys.GetInternal(i), values.GetInternal(i));
 			array[arrayIndex + i] = entry;
 		}
 	}
@@ -282,7 +282,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		if (array is KeyValuePair<TKey, TValue>[] keyValuePairArray)
 			for (var i = 0; i < Length; i++)
-				keyValuePairArray[i + arrayIndex] = new(keys[i], values[i]);
+				keyValuePairArray[i + arrayIndex] = new(keys.GetInternal(i), values.GetInternal(i));
 		else
 		{
 			if (array is not object[] objects)
@@ -290,7 +290,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			try
 			{
 				for (var i = 0; i < Length; i++)
-					objects[i + arrayIndex] = new KeyValuePair<TKey, TValue>(keys[i], values[i]);
+					objects[i + arrayIndex] = new KeyValuePair<TKey, TValue>(keys.GetInternal(i), values.GetInternal(i));
 			}
 			catch (ArrayTypeMismatchException)
 			{
@@ -324,7 +324,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	{
 		if (index < 0 || index >= keys.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		return values[index];
+		return values.GetInternal(index);
 	}
 
 	public virtual Enumerator GetEnumerator() => new(this, Enumerator.KeyValuePair);
@@ -338,7 +338,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public virtual TKey GetKey(int index)
 	{
 		if (index < 0 || index >= keys.Length) throw new ArgumentOutOfRangeException(nameof(index));
-		return keys[index];
+		return keys.GetInternal(index);
 	}
 
 	internal KeyList GetKeyListHelper()
@@ -358,7 +358,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public virtual int IndexOf((TKey Key, TValue Value) item)
 	{
 		var index = IndexOfKey(item.Key);
-		if (index == -1 || EqualityComparer<TValue>.Default.Equals(values[index], item.Value))
+		if (index == -1 || EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), item.Value))
 			return index;
 		return -1;
 	}
@@ -433,7 +433,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		var index = IndexOfKey(keyValuePair.Key);
-		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
+		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), keyValuePair.Value))
 		{
 			RemoveAt(index);
 			return true;
@@ -487,7 +487,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		var i = IndexOfKey(key);
 		if (i >= 0)
 		{
-			value = values[i];
+			value = values.GetInternal(i);
 			return true;
 		}
 		value = default!;
@@ -563,8 +563,8 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				key = _sortedDictionary.keys[index];
-				value = _sortedDictionary.values[index];
+				key = _sortedDictionary.keys.GetInternal(index);
+				value = _sortedDictionary.values.GetInternal(index);
 				index++;
 				return true;
 			}
@@ -617,7 +617,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				currentKey = _sortedDictionary.keys[index];
+				currentKey = _sortedDictionary.keys.GetInternal(index);
 				index++;
 				return true;
 			}
@@ -680,7 +680,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				currentValue = _sortedDictionary.values[index];
+				currentValue = _sortedDictionary.values.GetInternal(index);
 				index++;
 				return true;
 			}
@@ -703,7 +703,11 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		internal KeyList(SortedDictionary<TKey, TValue> dictionary) => _dict = dictionary;
 
-		public TKey this[int index] { get => _dict.GetKey(index); set => throw new NotSupportedException(); }
+		public TKey this[int index] {
+			get => _dict.GetKey(index);
+			set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
+			+ " Если оно нужно вам, используйте индексатор или методы Add(), TryAdd() оригинального словаря.");
+		}
 
 		public int Length => _dict.Length;
 
@@ -713,9 +717,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		object System.Collections.ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
 
-		public void Add(TKey key) => throw new NotSupportedException();
+		public void Add(TKey key) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public void Clear() => throw new NotSupportedException();
+		public void Clear() =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
 		public bool Contains(TKey key) => _dict.ContainsKey(key);
 
@@ -750,11 +758,17 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			return i >= 0 ? i : -1;
 		}
 
-		public void Insert(int index, TKey value) => throw new NotSupportedException();
+		public void Insert(int index, TKey value) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public void RemoveAt(int index) => throw new NotSupportedException();
+		public void RemoveAt(int index) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public bool RemoveValue(TKey key) => throw new NotSupportedException();
+		public bool RemoveValue(TKey key) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 	}
 
 	[DebuggerDisplay("Length = {Length}"), Serializable]
@@ -774,9 +788,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		object System.Collections.ICollection.SyncRoot => ((ICollection)_dict).SyncRoot;
 
-		public void Add(TValue key) => throw new NotSupportedException();
+		public void Add(TValue key) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public void Clear() => throw new NotSupportedException();
+		public void Clear() =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
 		public bool Contains(TValue value) => _dict.ContainsValue(value);
 
@@ -805,10 +823,16 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 		public int IndexOf(TValue value) => _dict.values.IndexOf(value, 0, _dict.Length);
 
-		public void Insert(int index, TValue value) => throw new NotSupportedException();
+		public void Insert(int index, TValue value) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public void RemoveAt(int index) => throw new NotSupportedException();
+		public void RemoveAt(int index) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 
-		public bool RemoveValue(TValue value) => throw new NotSupportedException();
+		public bool RemoveValue(TValue value) =>
+			throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Вместо этого используйте одноименный метод оригинального словаря.");
 	}
 }

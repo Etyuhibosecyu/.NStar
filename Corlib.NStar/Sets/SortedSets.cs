@@ -7,7 +7,8 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 	public override T this[Index index, bool invoke = true]
 	{
 		get => base[index, invoke];
-		set => throw new NotSupportedException();
+		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
+			+ " Если оно нужно вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 	}
 
 	public abstract IComparer<T> Comparer { get; }
@@ -34,19 +35,29 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		return ret >= 0 ? ret : ~ret;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection) => throw new NotSupportedException();
+	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
-	public override TCertain Insert(int index, T item) => throw new NotSupportedException();
+	public override TCertain Insert(int index, T item) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
 	internal abstract void InsertInternal(int index, T item);
 
-	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) => throw new NotSupportedException();
+	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
 	public abstract int Search(T item);
 
-	internal override TCertain SetRangeInternal(int index, int length, TCertain list) => throw new NotSupportedException();
+	internal override TCertain SetRangeInternal(int index, int length, TCertain list) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
-	public override TCertain Shuffle() => throw new NotSupportedException();
+	public override TCertain Shuffle() =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
 	public override bool TryAdd(T item, out int index)
 	{

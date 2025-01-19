@@ -26018,7 +26018,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -26109,7 +26109,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -26200,7 +26200,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -26291,7 +26291,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -26382,7 +26382,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -26473,7 +26473,7 @@ public partial class List<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29080,7 +29080,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29171,7 +29171,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29262,7 +29262,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29353,7 +29353,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29444,7 +29444,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -29535,7 +29535,7 @@ public partial class List<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -31741,7 +31741,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -31813,7 +31813,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -31885,7 +31885,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -31957,7 +31957,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -32029,7 +32029,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -32101,7 +32101,7 @@ public partial class List<T, TCertain>
 			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34341,7 +34341,7 @@ public partial class List<T, TCertain>
 			decimal f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34413,7 +34413,7 @@ public partial class List<T, TCertain>
 			double f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34485,7 +34485,7 @@ public partial class List<T, TCertain>
 			int f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34557,7 +34557,7 @@ public partial class List<T, TCertain>
 			uint f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34629,7 +34629,7 @@ public partial class List<T, TCertain>
 			long f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -34701,7 +34701,7 @@ public partial class List<T, TCertain>
 			MpzT f;
 			for (var i = length - 1; i >= 0; i--)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -45122,28 +45122,6 @@ public partial class List<T, TCertain>
 		return result;
 	}
 
-	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		List<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = function(source[i]);
-		result._size = length;
-		return result;
-	}
-
-	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
-	{
-		ArgumentNullException.ThrowIfNull(function);
-		var length = source.Length;
-		List<TResult> result = new(length);
-		for (var i = 0; i < length; i++)
-			result._items[i] = function(source[i], i);
-		result._size = length;
-		return result;
-	}
-
 	internal static List<TResult> ConvertAndJoinEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, IEnumerable<TResult>> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
@@ -53079,65 +53057,65 @@ public partial class List<T, TCertain>
 
 	internal static decimal MedianEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static decimal MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, decimal> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static double MedianEnumerable(ReadOnlySpan<T> source, Func<T, double> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static double MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, double> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static int MedianEnumerable(ReadOnlySpan<T> source, Func<T, int> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static int MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, int> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static uint MedianEnumerable(ReadOnlySpan<T> source, Func<T, uint> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static uint MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, uint> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static long MedianEnumerable(ReadOnlySpan<T> source, Func<T, long> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static long MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, long> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? default : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static MpzT MedianEnumerable(ReadOnlySpan<T> source, Func<T, int, MpzT> function) => function == null
 			? throw new ArgumentNullException(nameof(function))
-			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort()[(source.Length - 1) / 2];
+			: source.Length == 0 ? 0 : ToListEnumerable(source, function).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static decimal MedianEnumerable(ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new NList<decimal>(source).Sort()[(source.Length - 1) / 2];
+	internal static decimal MedianEnumerable(ReadOnlySpan<decimal> source) => source.Length == 0 ? default : new NList<decimal>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static double MedianEnumerable(ReadOnlySpan<double> source) => source.Length == 0 ? default : new NList<double>(source).Sort()[(source.Length - 1) / 2];
+	internal static double MedianEnumerable(ReadOnlySpan<double> source) => source.Length == 0 ? default : new NList<double>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static int MedianEnumerable(ReadOnlySpan<int> source) => source.Length == 0 ? default : new NList<int>(source).Sort()[(source.Length - 1) / 2];
+	internal static int MedianEnumerable(ReadOnlySpan<int> source) => source.Length == 0 ? default : new NList<int>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static uint MedianEnumerable(ReadOnlySpan<uint> source) => source.Length == 0 ? default : new NList<uint>(source).Sort()[(source.Length - 1) / 2];
+	internal static uint MedianEnumerable(ReadOnlySpan<uint> source) => source.Length == 0 ? default : new NList<uint>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static long MedianEnumerable(ReadOnlySpan<long> source) => source.Length == 0 ? default : new NList<long>(source).Sort()[(source.Length - 1) / 2];
+	internal static long MedianEnumerable(ReadOnlySpan<long> source) => source.Length == 0 ? default : new NList<long>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static MpzT MedianEnumerable(ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new NList<MpzT>(source).Sort()[(source.Length - 1) / 2];
+	internal static MpzT MedianEnumerable(ReadOnlySpan<MpzT> source) => source.Length == 0 ? 0 : new NList<MpzT>(source).Sort().GetInternal((source.Length - 1) / 2);
 
-	internal static T? MedianEnumerable(ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort()[(source.Length - 1) / 2];
+	internal static T? MedianEnumerable(ReadOnlySpan<T> source) => source.Length == 0 ? default : new List<T>(source).Sort().GetInternal((source.Length - 1) / 2);
 
 	internal static decimal MinEnumerable(ReadOnlySpan<T> source, Func<T, decimal> function)
 	{
@@ -54086,6 +54064,28 @@ public partial class List<T, TCertain>
 		var result = new TResult[length];
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], i);
+		return result;
+	}
+
+	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		List<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i]);
+		result._size = length;
+		return result;
+	}
+
+	internal static List<TResult> ToListEnumerable<TResult>(ReadOnlySpan<T> source, Func<T, int, TResult> function)
+	{
+		ArgumentNullException.ThrowIfNull(function);
+		var length = source.Length;
+		List<TResult> result = new(length);
+		for (var i = 0; i < length; i++)
+			result._items[i] = function(source[i], i);
+		result._size = length;
 		return result;
 	}
 
@@ -55278,7 +55278,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 			}
@@ -55359,7 +55359,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 			}
@@ -55437,7 +55437,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<T> result = new(length);
 			NList<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
-				(result._items[i], result2._items[i]) = list[i];
+				(result._items[i], result2._items[i]) = list.GetInternal(i);
 			result._size = length;
 			result2._size = length;
 			return (result, result2);
@@ -55490,7 +55490,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				(result._items[i], result2._items[i]) = function(item);
 			}
 			result._size = length;
@@ -55565,7 +55565,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				(result._items[i], result2._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -55643,7 +55643,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item);
 				result2._items[i] = function2(item);
 				result3._items[i] = function3(item);
@@ -55739,7 +55739,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item, i);
 				result2._items[i] = function2(item, i);
 				result3._items[i] = function3(item, i);
@@ -55832,7 +55832,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<T2> result2 = new(length);
 			NList<T3> result3 = new(length);
 			for (var i = 0; i < length; i++)
-				(result._items[i], result2._items[i], result3._items[i]) = list[i];
+				(result._items[i], result2._items[i], result3._items[i]) = list.GetInternal(i);
 			result._size = length;
 			result2._size = length;
 			result3._size = length;
@@ -55893,7 +55893,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				(result._items[i], result2._items[i], result3._items[i]) = function(item);
 			}
 			result._size = length;
@@ -55978,7 +55978,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				(result._items[i], result2._items[i], result3._items[i]) = function(item, i);
 			}
 			result._size = length;
@@ -56408,8 +56408,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -56468,8 +56468,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -56527,8 +56527,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<(T, T2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -56588,9 +56588,9 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
+				var item3 = list3.GetInternal(i);
 				result._items[i] = function(item, item2, item3);
 			}
 			result._size = length;
@@ -56653,9 +56653,9 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
+				var item3 = list3.GetInternal(i);
 				result._items[i] = function(item, item2, item3, i);
 			}
 			result._size = length;
@@ -56717,9 +56717,9 @@ public unsafe partial class NList<T, TCertain>
 			NList<(T, T2, T3)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list2[i];
-				var item3 = list3[i];
+				var item = list.GetInternal(i);
+				var item2 = list2.GetInternal(i);
+				var item3 = list3.GetInternal(i);
 				result._items[i] = (item, item2, item3);
 			}
 			result._size = length;
@@ -57026,7 +57026,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<int> result = new(length);
 			var j = 0;
 			for (var i = 0; i < length; i++)
-				if (function(list[i]))
+				if (function(list.GetInternal(i)))
 					result._items[j++] = i;
 			result._size = j;
 			result.TrimExcess();
@@ -57092,7 +57092,7 @@ public unsafe partial class NList<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (function(item, i))
 					result._items[j++] = i;
 			}
@@ -57171,7 +57171,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -57289,7 +57289,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -57313,7 +57313,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -57431,7 +57431,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -57455,7 +57455,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -57573,7 +57573,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -57597,7 +57597,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -57715,7 +57715,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -57739,7 +57739,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -57857,7 +57857,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -57881,7 +57881,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -57999,7 +57999,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58023,7 +58023,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -58141,7 +58141,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58165,7 +58165,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -58283,7 +58283,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58307,7 +58307,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -58425,7 +58425,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58449,7 +58449,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -58567,7 +58567,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58591,7 +58591,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -58709,7 +58709,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -58733,7 +58733,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -58851,7 +58851,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -59851,7 +59851,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -59969,7 +59969,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -59993,7 +59993,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -60111,7 +60111,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60135,7 +60135,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -60253,7 +60253,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60277,7 +60277,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -60395,7 +60395,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60419,7 +60419,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -60537,7 +60537,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60561,7 +60561,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -60679,7 +60679,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60703,7 +60703,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -60821,7 +60821,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60845,7 +60845,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -60963,7 +60963,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -60987,7 +60987,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -61105,7 +61105,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -61129,7 +61129,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -61247,7 +61247,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -61271,7 +61271,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -61389,7 +61389,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -61413,7 +61413,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -61531,7 +61531,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -61556,7 +61556,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61571,7 +61571,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61587,7 +61587,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61603,7 +61603,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61618,7 +61618,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -61641,7 +61641,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61656,7 +61656,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61672,7 +61672,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61688,7 +61688,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61703,7 +61703,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -61726,7 +61726,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61741,7 +61741,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61757,7 +61757,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61773,7 +61773,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61788,7 +61788,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -61811,7 +61811,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61826,7 +61826,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61842,7 +61842,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61858,7 +61858,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61873,7 +61873,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -61895,7 +61895,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61910,7 +61910,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61926,7 +61926,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61942,7 +61942,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61957,7 +61957,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -61980,7 +61980,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -61995,7 +61995,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62011,7 +62011,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62027,7 +62027,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62042,7 +62042,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62065,7 +62065,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62080,7 +62080,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62096,7 +62096,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62112,7 +62112,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62127,7 +62127,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62149,7 +62149,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62164,7 +62164,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62180,7 +62180,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62196,7 +62196,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62211,7 +62211,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62234,7 +62234,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62249,7 +62249,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62265,7 +62265,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62281,7 +62281,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62296,7 +62296,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62319,7 +62319,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62334,7 +62334,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62350,7 +62350,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62366,7 +62366,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62381,7 +62381,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = function(item, i), out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62403,7 +62403,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list._items[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62418,7 +62418,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = array[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62434,7 +62434,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list2[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62450,7 +62450,7 @@ public unsafe partial class NList<T, TCertain>
 			{
 				var item = list3[i];
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 			}
@@ -62465,7 +62465,7 @@ public unsafe partial class NList<T, TCertain>
 			foreach (var item in source)
 			{
 				if (!dic.TryAdd(f = item, out var index))
-					result[index].Add(item);
+					result.GetInternal(index).Add(item);
 				else
 					result.Add(new(32, item, f));
 				i++;
@@ -62484,7 +62484,7 @@ public unsafe partial class NList<T, TCertain>
 			var j = 0;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (item?.Equals(target) ?? false)
 					result._items[j++] = i;
 			}
@@ -62575,7 +62575,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -62665,7 +62665,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -62688,7 +62688,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -62778,7 +62778,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -62801,7 +62801,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -62891,7 +62891,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -62914,7 +62914,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63004,7 +63004,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63027,7 +63027,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63117,7 +63117,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63140,7 +63140,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63230,7 +63230,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63409,7 +63409,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63499,7 +63499,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63522,7 +63522,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63612,7 +63612,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63635,7 +63635,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63725,7 +63725,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63748,7 +63748,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63838,7 +63838,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63861,7 +63861,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -63951,7 +63951,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -63974,7 +63974,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = item;
@@ -64064,7 +64064,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = item) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64088,7 +64088,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -64206,7 +64206,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64230,7 +64230,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -64348,7 +64348,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64372,7 +64372,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -64490,7 +64490,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64514,7 +64514,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -64632,7 +64632,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64656,7 +64656,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -64774,7 +64774,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64798,7 +64798,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -64916,7 +64916,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -64940,7 +64940,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -65058,7 +65058,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -65082,7 +65082,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -65200,7 +65200,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -65224,7 +65224,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -65342,7 +65342,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -65366,7 +65366,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -65484,7 +65484,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -65508,7 +65508,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -65626,7 +65626,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -65650,7 +65650,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -65768,7 +65768,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) > indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -66812,7 +66812,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -66930,7 +66930,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -66954,7 +66954,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -67072,7 +67072,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67096,7 +67096,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -67214,7 +67214,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67238,7 +67238,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -67356,7 +67356,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67380,7 +67380,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -67498,7 +67498,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67522,7 +67522,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -67640,7 +67640,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67664,7 +67664,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -67782,7 +67782,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67806,7 +67806,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -67924,7 +67924,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -67948,7 +67948,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -68066,7 +68066,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -68090,7 +68090,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -68208,7 +68208,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -68232,7 +68232,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item);
@@ -68350,7 +68350,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -68374,7 +68374,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 				{
 					indicator = function(item, i);
@@ -68492,7 +68492,7 @@ public unsafe partial class NList<T, TCertain>
 				else if ((f = function(item, i)) < indicator!)
 				{
 					indicator = f;
-					result.Clear();
+					result.Clear(false);
 					result.Add(i);
 				}
 				else if (f == indicator!)
@@ -68524,7 +68524,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -68620,7 +68620,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -68716,7 +68716,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -68812,7 +68812,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -68908,7 +68908,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -69004,7 +69004,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) > indicator!)
@@ -69131,7 +69131,7 @@ public unsafe partial class NList<T, TCertain>
 			decimal f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69227,7 +69227,7 @@ public unsafe partial class NList<T, TCertain>
 			double f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69323,7 +69323,7 @@ public unsafe partial class NList<T, TCertain>
 			int f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69419,7 +69419,7 @@ public unsafe partial class NList<T, TCertain>
 			uint f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69515,7 +69515,7 @@ public unsafe partial class NList<T, TCertain>
 			long f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69611,7 +69611,7 @@ public unsafe partial class NList<T, TCertain>
 			MpzT f;
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				if (i == 0)
 					indicator = item;
 				else if ((f = item) < indicator!)
@@ -69699,8 +69699,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list[i + offset];
+				var item = list.GetInternal(i);
+				var item2 = list.GetInternal(i + offset);
 				result._items[i] = function(item, item2);
 			}
 			result._size = length;
@@ -69787,8 +69787,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list[i + offset];
+				var item = list.GetInternal(i);
+				var item2 = list.GetInternal(i + offset);
 				result._items[i] = function(item, item2, i);
 			}
 			result._size = length;
@@ -69874,8 +69874,8 @@ public unsafe partial class NList<T, TCertain>
 			NList<(T, T)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				var item2 = list[i + offset];
+				var item = list.GetInternal(i);
+				var item2 = list.GetInternal(i + offset);
 				result._items[i] = (item, item2);
 			}
 			result._size = length;
@@ -70696,11 +70696,11 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			if (length == 0)
 				return result;
-			result._items[0] = function(list[0]);
+			result._items[0] = function(list.GetInternal(0));
 			int blend;
 			for (var i = 1; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				blend = random.Next(i + 1);
 				if (blend == i)
 					result._items[i] = function(item);
@@ -70833,11 +70833,11 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			if (length == 0)
 				return result;
-			result._items[0] = function(list[0], 0);
+			result._items[0] = function(list.GetInternal(0), 0);
 			int blend;
 			for (var i = 1; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				blend = random.Next(i + 1);
 				if (blend == i)
 					result._items[i] = function(item, i);
@@ -70969,11 +70969,11 @@ public unsafe partial class NList<T, TCertain>
 			NList<T> result = new(length);
 			if (length == 0)
 				return result;
-			result._items[0] = list[0];
+			result._items[0] = list.GetInternal(0);
 			int blend;
 			for (var i = 1; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				blend = random.Next(i + 1);
 				if (blend == i)
 					result._items[i] = item;
@@ -71139,16 +71139,16 @@ public unsafe partial class NList<T, TCertain>
 		{
 			result.Add(new(fragmentLength));
 			for (var j = 0; j < fragmentLength; j++)
-				result[i]._items[j] = source[index++];
-			result[i]._size = fragmentLength;
+				result.GetInternal(i)._items[j] = source[index++];
+			result.GetInternal(i)._size = fragmentLength;
 		}
 		var rest = source.Count % fragmentLength;
 		if (rest != 0)
 		{
 			result.Add(new(rest));
 			for (var j = 0; j < rest; j++)
-				result[count2]._items[j] = source[index++];
-			result[count2]._size = rest;
+				result.GetInternal(count2)._items[j] = source[index++];
+			result.GetInternal(count2)._size = rest;
 		}
 		return result;
 	}
@@ -71681,7 +71681,7 @@ public unsafe partial class NList<T, TCertain>
 			var length = list.Length;
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
-				result._items[i] = function(list[i]);
+				result._items[i] = function(list.GetInternal(i));
 			result._size = length;
 			return result;
 		}
@@ -71736,7 +71736,7 @@ public unsafe partial class NList<T, TCertain>
 			NList<TResult> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -71848,7 +71848,7 @@ public unsafe partial class NList<T, TCertain>
 			var length = list.Length;
 			String result = new(length);
 			for (var i = 0; i < length; i++)
-				result._items[i] = function(list[i]);
+				result._items[i] = function(list.GetInternal(i));
 			result._size = length;
 			return result;
 		}
@@ -71903,7 +71903,7 @@ public unsafe partial class NList<T, TCertain>
 			String result = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
+				var item = list.GetInternal(i);
 				result._items[i] = function(item, i);
 			}
 			result._size = length;
@@ -75866,7 +75866,7 @@ public static class RedStarLinq
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable(source, function);
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
-	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => throw new NotSupportedException();
+	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source) where T : notnull => throw new NotSupportedException("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.");
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, T>> Group<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.GroupEnumerable(source, comparer);
@@ -76586,13 +76586,13 @@ public static class RedStarLinq
 	public static List<(T, T2, T3)> Combine<T, T2, T3>(this Span<T> source, Span<T2> source2, Span<T3> source3) => List<T>.CombineEnumerable((ReadOnlySpan<T>)source, (ReadOnlySpan<T2>)source2, (ReadOnlySpan<T3>)source3);
 	public static Slice<(T, T2, T3)> Combine<T, T2, T3>(this T[] source, T2[] source2, T3[] source3) => List<T>.CombineEnumerable(source, source2, source3);
 	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
-	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => throw new NotSupportedException();
+	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => throw new NotSupportedException("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().");
 	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
-	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => throw new NotSupportedException();
+	public static List<TResult> Convert<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => throw new NotSupportedException("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().");
 	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
-	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, TResult> function) => throw new NotSupportedException();
+	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, TResult> function) => throw new NotSupportedException("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().");
 	[Obsolete("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().", true)]
-	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => throw new NotSupportedException();
+	public static List<TResult> Convert<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => throw new NotSupportedException("Этот метод устарел. Мы рекомендуем заменить Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()), но в крайнем случае вы можете использовать прямой аналог - ToList().");
 	public static Slice<TResult> Convert<T, TResult>(this T[] source, Func<T, TResult> function) => List<T>.ConvertEnumerable(source, function);
 	public static Slice<TResult> Convert<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.ConvertEnumerable(source, function);
 	public static List<TResult> ConvertAndJoin<T, TResult>(this ReadOnlySpan<T> source, Func<T, IEnumerable<TResult>> function) => List<T>.ConvertAndJoinEnumerable(source, function);
@@ -77544,11 +77544,11 @@ public static class RedStarLinq
 	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
 	public static List<Group<T, TResult>> Group<T, TResult>(this T[] source, Func<T, int, TResult> function) where TResult : notnull => List<T>.GroupEnumerable((G.IList<T>)source, function);
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в ReadOnlySpan, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
-	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source) where T : notnull => throw new NotSupportedException();
+	public static List<Group<T, T>> Group<T>(this ReadOnlySpan<T> source) where T : notnull => throw new NotSupportedException("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в ReadOnlySpan, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.");
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в Span, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
-	public static List<Group<T, T>> Group<T>(this Span<T> source) where T : notnull => throw new NotSupportedException();
+	public static List<Group<T, T>> Group<T>(this Span<T> source) where T : notnull => throw new NotSupportedException("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в Span, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.");
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в массиве, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
-	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => throw new NotSupportedException();
+	public static List<Group<T, T>> Group<T>(this T[] source) where T : notnull => throw new NotSupportedException("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в массиве, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.");
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable(source, function, comparer);
 	public static List<Group<T, TResult>> Group<T, TResult>(this Span<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where TResult : notnull => List<T>.GroupEnumerable((ReadOnlySpan<T>)source, function, comparer);
@@ -78887,7 +78887,7 @@ public static class RedStarLinq
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function);
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]
-	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source) where T : unmanaged => throw new NotSupportedException();
+	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source) where T : unmanaged => throw new NotSupportedException("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.");
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
 	public static List<NGroup<T, TResult>> NGroup<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function, IEqualityComparer<TResult> comparer) where T : unmanaged where TResult : notnull => NList<T>.GroupEnumerable(source, function, comparer);
 	public static List<NGroup<T, T>> NGroup<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : unmanaged => NList<T>.GroupEnumerable(source, comparer);

@@ -78,7 +78,9 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual TCertain Add(T item, out int index) => Insert(item, false, out index);
 
-	public override Span<T> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<T> AsSpan(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте GetSlice() вместо него.");
 
 	private protected override void ClearInternal()
 	{
@@ -103,7 +105,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)

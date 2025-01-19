@@ -1159,28 +1159,23 @@ public class ListHashSetTests
 	public void TestLastIndexOfAny()
 	{
 		var a = list.ToHashSet();
-		var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 3);
-		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
-		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
+		int b;
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM")));
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP")));
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 3));
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ")));
+		Assert.ThrowsException<NotSupportedException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
 	public void TestLastIndexOfAnyExcluding()
 	{
 		var a = list.ToHashSet();
-		var b = a.LastIndexOfAnyExcluding(new List<string>("BBB", "EEE", "DDD"));
-		Assert.AreEqual(b, 2);
-		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 4);
-		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
-		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
+		int b;
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAnyExcluding(new List<string>("BBB", "EEE", "DDD")));
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ")));
+		Assert.ThrowsException<NotSupportedException>(() => b = a.LastIndexOfAnyExcluding(a));
+		Assert.ThrowsException<NotSupportedException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
 	[TestMethod]
@@ -1188,7 +1183,7 @@ public class ListHashSetTests
 	{
 		var length = E.ToHashSet(list).Count;
 		var a = list.ToHashSet();
-		var b = new ListHashSet<string>(a).Remove(4);
+		var b = new ListHashSet<string>(a).RemoveEnd(4);
 		var c = new G.List<string>(E.Distinct(list));
 		c.RemoveRange(4, 1);
 		Assert.IsTrue(a.Equals(E.Distinct(list)));

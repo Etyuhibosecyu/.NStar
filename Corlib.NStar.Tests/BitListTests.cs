@@ -1143,7 +1143,7 @@ public class BitListTests
 	public void TestRemove()
 	{
 		var a = new BitList(bitList);
-		var b = new BitList(a).Remove(70);
+		var b = new BitList(a).RemoveEnd(70);
 		var c = new G.List<bool>(bitList);
 		c.RemoveRange(70, 1);
 		Assert.IsTrue(a.Equals(bitList));

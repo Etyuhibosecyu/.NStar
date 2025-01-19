@@ -213,7 +213,7 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 		if (x.Length != y.Length)
 			return false;
 		for (var i = 0; i < x.Length; i++)
-			if (!equals(x[i], y[i]))
+			if (!equals(x.GetInternal(i), y.GetInternal(i)))
 				return false;
 		return true;
 	}
@@ -776,7 +776,7 @@ public static unsafe partial class Extents
 			throw new ArgumentException("Множество должно иметь стандартный для int компаратор.", nameof(set));
 		if (set.Length == 0)
 			return n;
-		if (set[0] < 0)
+		if (set.GetInternal(0) < 0)
 			throw new ArgumentException("Не допускается множество, содержащее отрицательные значения.", nameof(set));
 		var lo = 0;
 		var hi = set.Length - 1;
@@ -788,7 +788,7 @@ public static unsafe partial class Extents
 			int c;
 			try
 			{
-				c = comparer.Compare(set[i] - i, n);
+				c = comparer.Compare(set.GetInternal(i) - i, n);
 			}
 			catch (Exception ex)
 			{
@@ -797,7 +797,7 @@ public static unsafe partial class Extents
 			if (c == 0)
 			{
 				var result = n + i + 1;
-				while (++i < set.Length && set[i] == result)
+				while (++i < set.Length && set.GetInternal(i) == result)
 					result++;
 				return result;
 			}

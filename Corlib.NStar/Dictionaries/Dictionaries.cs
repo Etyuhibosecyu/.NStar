@@ -583,7 +583,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	public virtual bool Contains(KeyValuePair<TKey, TValue> item)
 	{
 		var index = IndexOfKey(item.Key);
-		return index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], item.Value);
+		return index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), item.Value);
 	}
 
 	public virtual bool ContainsKey(TKey key) => keys.Contains(key);
@@ -607,7 +607,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		var index = IndexOfKey(key);
 		if (index >= 0)
 		{
-			value = values[index];
+			value = values.GetInternal(index);
 			return true;
 		}
 		else
@@ -636,7 +636,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		{
 			if (index < _dict.Length)
 			{
-				Current = new(_dict.keys[index], _dict.values[index++]);
+				Current = new(_dict.keys.GetInternal(index), _dict.values.GetInternal(index++));
 				return true;
 			}
 			else

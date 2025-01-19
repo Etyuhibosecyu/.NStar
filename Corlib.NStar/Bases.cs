@@ -192,13 +192,13 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	private protected void Changed() => ListChanged?.Invoke((TCertain)this);
 
-	public virtual void Clear()
+	public virtual void Clear() => Clear(true);
+
+	public virtual void Clear(bool full)
 	{
-		if (_size > 0)
-		{
+		if (full && _size > 0)
 			ClearInternal();
-			_size = 0;
-		}
+		_size = 0;
 	}
 
 	public virtual void Clear(int index, int length)
@@ -228,7 +228,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain Copy() => CollectionCreator(this);
 
-	private protected abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
+	internal abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
 
 	private protected virtual void EnsureCapacity(int min)
 	{
@@ -236,7 +236,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		{
 			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
+			if (newCapacity < min)
+				newCapacity = min;
 			Capacity = newCapacity;
 		}
 	}
@@ -391,7 +392,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return GetOrAddInternal(index, value);
 	}
 
-	private protected virtual T GetOrAddInternal(int index, T value) => index == _size ? Add(value)[index] : GetInternal(index);
+	private protected virtual T GetOrAddInternal(int index, T value) => index == _size ? Add(value).GetInternal(index) : GetInternal(index);
 
 	private protected override TCertain GetRangeInternal(int index, int length)
 	{
@@ -563,9 +564,17 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return this2;
 	}
 
-	public virtual TCertain Remove(Index index) => Remove(index.GetOffset(_size));
+	[Obsolete("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо использовать Remove()"
+		+ " с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().", true)]
+	public virtual TCertain Remove(Index index) =>
+		throw new NotSupportedException("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо"
+			+ " использовать Remove() с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().");
 
-	public virtual TCertain Remove(int index) => Remove(index, _size - index);
+	[Obsolete("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо использовать Remove()"
+		+ " с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().", true)]
+	public virtual TCertain Remove(int index) =>
+		throw new NotSupportedException("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо"
+			+ " использовать Remove() с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().");
 
 	public virtual TCertain Remove(int index, int length)
 	{
@@ -628,6 +637,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	void G.IList<T>.RemoveAt(int index) => RemoveAt(index);
 
+	public virtual TCertain RemoveEnd(Index index) => RemoveEnd(index.GetOffset(_size));
+
+	public virtual TCertain RemoveEnd(int index) => Remove(index, _size - index);
+
 	internal static TCertain RemoveIndexes(TCertain originalList, Queue<int> toRemove)
 	{
 		var toRemove2 = toRemove.ToList().Sort();
@@ -635,8 +648,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		var pos = 0;
 		for (var i = 0; i < toRemove2._size; i++)
 		{
-			originalList.CopyToInternal(pos, result, pos - i, toRemove2[i] - pos);
-			pos = toRemove2[i] + 1;
+			originalList.CopyToInternal(pos, result, pos - i, toRemove2.GetInternal(i) - pos);
+			pos = toRemove2.GetInternal(i) + 1;
 		}
 		result._size = originalList._size - toRemove2._size;
 		return result;
@@ -731,10 +744,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			buffer.Add(GetInternal(i));
 			if (!buffer.IsFull)
 				continue;
-			if (dic.TryGetValue((buffer[0], buffer[1]), out var newCollection))
+			if (dic.TryGetValue((buffer.GetInternal(0), buffer.GetInternal(1)), out var newCollection))
 			{
 				result.AddRange(newCollection);
-				buffer.Clear();
+				buffer.Clear(false);
 			}
 			else
 				result.Add(buffer.GetAndRemove(0));
@@ -756,10 +769,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			buffer.Add(GetInternal(i));
 			if (!buffer.IsFull)
 				continue;
-			if (dic.TryGetValue((buffer[0], buffer[1], buffer[2]), out var newCollection))
+			if (dic.TryGetValue((buffer.GetInternal(0), buffer.GetInternal(1), buffer.GetInternal(2)), out var newCollection))
 			{
 				result.AddRange(newCollection);
-				buffer.Clear();
+				buffer.Clear(false);
 			}
 			else
 				result.Add(buffer.GetAndRemove(0));
@@ -871,7 +884,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			return (TCertain)this;
 		}
 		else
-			return Remove(newSize);
+			return RemoveEnd(newSize);
 	}
 
 	public virtual TCertain Reverse() => Reverse(0, _size);
@@ -982,11 +995,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		List<TCertain> new_list = [];
 		for (var i = 0; i < yCount; i++)
 		{
-			new_list.Add(list[0].CapacityCreator(list._size));
+			new_list.Add(list.GetInternal(0).CapacityCreator(list._size));
 			for (var j = 0; j < list._size; j++)
 			{
-				var temp = list[j];
-				new_list[i].Add(temp._size <= i ? default! : temp[i]);
+				var temp = list.GetInternal(j);
+				new_list.GetInternal(i).Add(temp._size <= i ? default! : temp.GetInternal(i));
 			}
 		}
 		return new_list;
@@ -1032,7 +1045,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -1097,7 +1110,18 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return true;
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int length) => throw new NotSupportedException();
+	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.");
+
+	public override int LastIndexOfAny(IEnumerable<T> collection, int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOfAny() вместо него.");
+
+	public override int LastIndexOfAnyExcluding(IEnumerable<T> collection, int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте IndexOfAnyExcluding() вместо него.");
+
+	private protected override int LastIndexOfInternal(T item, int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.");
 
 	public virtual bool Overlaps(IEnumerable<T> other)
 	{
@@ -1107,17 +1131,29 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return false;
 	}
 
-	public override TCertain Pad(int length, T value) => throw new NotSupportedException();
+	public override TCertain Pad(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
-	public override TCertain PadInPlace(int length, T value) => throw new NotSupportedException();
+	public override TCertain PadInPlace(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
-	public override TCertain PadLeft(int length, T value) => throw new NotSupportedException();
+	public override TCertain PadLeft(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
-	public override TCertain PadLeftInPlace(int length, T value) => throw new NotSupportedException();
+	public override TCertain PadLeftInPlace(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
-	public override TCertain PadRight(int length, T value) => throw new NotSupportedException();
+	public override TCertain PadRight(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
-	public override TCertain PadRightInPlace(int length, T value) => throw new NotSupportedException();
+	public override TCertain PadRightInPlace(int length, T value) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
 	public override TCertain Repeat(int length) => length switch
 	{
@@ -1128,7 +1164,9 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) => base.ReplaceRangeInternal(index, length, collection is TCertain list ? list : CollectionCreator(collection).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)));
 
-	private protected override TCertain ReverseInternal(int index, int length) => throw new NotSupportedException();
+	private protected override TCertain ReverseInternal(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
 	public virtual bool SetEquals(IEnumerable<T> other)
 	{

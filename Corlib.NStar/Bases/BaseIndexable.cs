@@ -17,7 +17,8 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 				throw new IndexOutOfRangeException();
 			return GetInternal(index2, invoke);
 		}
-		set => throw new NotSupportedException();
+		set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
+			+ " Если оно нужно вам, используйте один из видов коллекций, наследующихся от BaseList.");
 	}
 
 	T G.IReadOnlyList<T>.this[int index] => this[index];
@@ -122,7 +123,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		var j = 0;
 		for (var i = 0; i - j <= length - list.Count; i++)
 		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
+			if (GetInternal(index + i)?.Equals(list[j]) ?? list[j] == null)
 			{
 				j++;
 				if (j >= list.Count)
@@ -239,8 +240,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		ArgumentNullException.ThrowIfNull(match);
 		for (var i = 0; i < _size; i++)
-			if (match(this[i]))
-				return this[i];
+		{
+			var item = GetInternal(i);
+			if (match(item))
+				return item;
+		}
 		return default;
 	}
 
@@ -249,8 +253,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentNullException.ThrowIfNull(match);
 		List<T> list = [];
 		for (var i = 0; i < _size; i++)
-			if (match(this[i]))
-				list.Add(this[i]);
+		{
+			var item = GetInternal(i);
+			if (match(item))
+				list.Add(item);
+		}
 		return list;
 	}
 
@@ -263,7 +270,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		ArgumentNullException.ThrowIfNull(match);
 		var endIndex = startIndex + length;
 		for (var i = startIndex; i < endIndex; i++)
-			if (match(this[i]))
+			if (match(GetInternal(i)))
 				return i;
 		return -1;
 	}
@@ -276,8 +283,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		ArgumentNullException.ThrowIfNull(match);
 		for (var i = _size - 1; i >= 0; i--)
-			if (match(this[i]))
-				return this[i];
+		{
+			var item = GetInternal(i);
+			if (match(item))
+				return item;
+		}
 		return default;
 	}
 
@@ -292,7 +302,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			ArgumentOutOfRangeException.ThrowIfNotEqual(startIndex, -1);
 		var endIndex = startIndex - length;
 		for (var i = startIndex; i > endIndex; i--)
-			if (match(this[i]))
+			if (match(GetInternal(i)))
 				return i;
 		return -1;
 	}
@@ -305,22 +315,30 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void ForEach(Action<T> action, int index) => ForEach(action, index, _size - index);
 
-	public virtual void ForEach(Action<T> action, int index, int count)
+	public virtual void ForEach(Action<T> action, int index, int length)
 	{
 		ArgumentNullException.ThrowIfNull(action);
-		for (var i = index; i < index + count; i++)
-			action(this[i]);
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
+		for (var i = index; i < index + length; i++)
+			action(GetInternal(i));
 	}
 
 	public virtual void ForEach(Action<T, int> action) => ForEach(action, 0, _size);
 
 	public virtual void ForEach(Action<T, int> action, int index) => ForEach(action, index, _size - index);
 
-	public virtual void ForEach(Action<T, int> action, int index, int count)
+	public virtual void ForEach(Action<T, int> action, int index, int length)
 	{
 		ArgumentNullException.ThrowIfNull(action);
-		for (var i = index; i < index + count; i++)
-			action(this[i], i);
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > _size)
+			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
+		for (var i = index; i < index + length; i++)
+			action(GetInternal(i), i);
 	}
 
 	public virtual IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
@@ -549,9 +567,9 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	private protected abstract int LastIndexOfInternal(T item, int index, int length);
 
-	public virtual T Random() => this[random.Next(_size)];
+	public virtual T Random() => GetInternal(random.Next(_size));
 
-	public virtual T Random(Random randomObj) => this[randomObj.Next(_size)];
+	public virtual T Random(Random randomObj) => GetInternal(randomObj.Next(_size));
 
 	public virtual Slice<T> Skip(int length) => GetSlice(Clamp(length, 0, _size));
 
@@ -604,7 +622,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 	{
 		ArgumentNullException.ThrowIfNull(match);
 		for (var i = 0; i < _size; i++)
-			if (!match(this[i]))
+			if (!match(GetInternal(i)))
 				return false;
 		return true;
 	}
@@ -632,7 +650,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			var localCollection = collection;
 			if ((uint)index < (uint)localCollection._size)
 			{
-				current = localCollection[index++];
+				current = localCollection.GetInternal(index++);
 				return true;
 			}
 			return MoveNextRare();

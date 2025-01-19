@@ -40,21 +40,21 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return;
 		}
 		int length;
-		var elements = collection.ToArray();
+		var elements = collection.ToList();
 		length = elements.Length;
 		if (length > 0)
 		{
 			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			comparer = Comparer;
-			Array.Sort(elements, 0, length, Comparer);
+			elements.Sort(0, length, Comparer);
 			// Overwrite duplicates while shifting the distinct elements towards
 			// the front of the array.
 			var index = 1;
 			for (var i = 1; i < length; i++)
 			{
-				if (comparer.Compare(elements[i], elements[i - 1]) != 0)
-					elements[index++] = elements[i];
+				if (comparer.Compare(elements.GetInternal(i), elements.GetInternal(i - 1)) != 0)
+					elements[index++] = elements.GetInternal(i);
 			}
 			length = index;
 			root = ConstructRootFromSortedArray(elements, 0, length - 1, null);
@@ -232,14 +232,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return result;
 	}
 
-	public override void Clear()
+	public override void Clear(bool _)
 	{
 		root = null;
 		_size = 0;
 		++version;
 	}
 
-	private protected static Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
+	private protected static Node? ConstructRootFromSortedArray(G.IList<T> arr, int startIndex, int endIndex, Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -311,7 +311,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1051,7 +1051,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var actuallyRemoved = 0;
 		for (var i = matches.Length - 1; i >= 0; i--)
 		{
-			if (RemoveValue(matches[i]))
+			if (RemoveValue(matches.GetInternal(i)))
 				actuallyRemoved++;
 		}
 		return actuallyRemoved;
@@ -2015,7 +2015,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			return true;
 		}
 
-		public override void Clear()
+		public override void Clear(bool _)
 		{
 			if (Length == 0)
 				return;

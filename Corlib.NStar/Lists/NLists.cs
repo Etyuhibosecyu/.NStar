@@ -194,7 +194,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	private protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		CopyMemory(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -309,7 +309,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			var min = _size + 1;
 			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
+			if (newCapacity < min)
+				newCapacity = min;
 			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 			if (index > 0)
 				CopyMemory(_items, 0, newItems, 0, index);
@@ -345,7 +346,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			var min = _size + length;
 			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-			if (newCapacity < min) newCapacity = min;
+			if (newCapacity < min)
+				newCapacity = min;
 			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 			if (index > 0)
 				CopyMemory(_items, 0, newItems, 0, index);
@@ -381,7 +383,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
@@ -424,7 +427,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
@@ -456,7 +460,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 				var min = _size + length;
 				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
 				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
-				if (newCapacity < min) newCapacity = min;
+				if (newCapacity < min)
+					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
 				if (index > 0)
 					CopyMemory(_items, 0, newItems, 0, index);
@@ -646,6 +651,13 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 {
 	private protected static readonly CompareInfo CurrentCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.CurrentCulture.LCID);
 	private protected static readonly CompareInfo DefaultCompareInfo = CompareInfo.GetCompareInfo(CultureInfo.InvariantCulture.LCID);
+	private const string CompareMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
+			+ " Используйте strA.CompareTo(strB, ...).";
+	private const string CompareRangeMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
+		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
+		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.";
+	private const string CompareTrivialMessage = "Этот метод не работает в .NStar и всегда выбрасывает исключение."
+		+ " Используйте strA.CompareTo(strB).";
 
 	public String() : base() { }
 
@@ -678,61 +690,54 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB).", true)]
-	public static int Compare(String? strA, String? strB) => throw new NotSupportedException();
+	[Obsolete(CompareTrivialMessage, true)]
+	public static int Compare(String? strA, String? strB) =>
+		throw new NotSupportedException(CompareTrivialMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB, ...).", true)]
-	public static int Compare(String? strA, String? strB, bool ignoreCase) => throw new NotSupportedException();
+	[Obsolete(CompareMessage, true)]
+	public static int Compare(String? strA, String? strB, bool ignoreCase) =>
+		throw new NotSupportedException(CompareMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB, ...).", true)]
+	[Obsolete(CompareMessage, true)]
 	public static int Compare(String? strA, String? strB, bool ignoreCase, CultureInfo culture) =>
-		throw new NotSupportedException();
+		throw new NotSupportedException(CompareMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB, ...).", true)]
-	public static int Compare(String? strA, String? strB, CultureInfo culture) => throw new NotSupportedException();
+	[Obsolete(CompareMessage, true)]
+	public static int Compare(String? strA, String? strB, CultureInfo culture) =>
+		throw new NotSupportedException(CompareMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB, ...).", true)]
+	[Obsolete(CompareMessage, true)]
 	public static int Compare(String? strA, String? strB, CultureInfo culture, CompareOptions options) =>
-		throw new NotSupportedException();
+		throw new NotSupportedException(CompareMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте strA.CompareTo(strB, ...).", true)]
-	public static int Compare(String? strA, String? strB, StringComparison comparisonType) => throw new NotSupportedException();
+	[Obsolete(CompareMessage, true)]
+	public static int Compare(String? strA, String? strB, StringComparison comparisonType) =>
+		throw new NotSupportedException(CompareMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length) =>
-		throw new NotSupportedException();
+		throw new NotSupportedException(CompareRangeMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length, bool ignoreCase) =>
-		throw new NotSupportedException();
+		throw new NotSupportedException(CompareRangeMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length, bool ignoreCase,
-		CultureInfo culture) => throw new NotSupportedException();
+		CultureInfo culture) => throw new NotSupportedException(CompareRangeMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length, CultureInfo culture) =>
-		throw new NotSupportedException();
+		throw new NotSupportedException(CompareRangeMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length, CultureInfo culture,
-		CompareOptions options) => throw new NotSupportedException();
+		CompareOptions options) => throw new NotSupportedException(CompareRangeMessage);
 
-	[Obsolete("Этот метод не работает в .NStar и всегда выбрасывает исключение. Используйте"
-		+ " strA.GetRange(indexA, length).CompareTo(strB.GetRange(indexB, length), ...) - в нативных коллекциях, какой является"
-		+ " Corlib.NStar.String, метод GetRange() использует арифметику указателей и работает очень быстро.", true)]
+	[Obsolete(CompareRangeMessage, true)]
 	public static int Compare(String? strA, int indexA, String? strB, int indexB, int length,
-		StringComparison comparisonType) => throw new NotSupportedException();
+		StringComparison comparisonType) =>
+		throw new NotSupportedException(CompareRangeMessage);
 
 	public virtual int CompareTo(object? other) => other switch
 	{
@@ -959,7 +964,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		for (var i = _size - 1; i >= 0; i--)
 			if (!char.IsWhiteSpace(GetInternal(i)))
 			{
-				Remove(i + 1);
+				RemoveEnd(i + 1);
 				return this;
 			}
 		Clear();
@@ -971,7 +976,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		for (var i = _size - 1; i >= 0; i--)
 			if (GetInternal(i) != c)
 			{
-				Remove(i + 1);
+				RemoveEnd(i + 1);
 				return this;
 			}
 		Clear();
@@ -986,7 +991,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		for (var i = _size - 1; i >= 0; i--)
 			if (!set.Contains(GetInternal(i)))
 			{
-				Remove(i + 1);
+				RemoveEnd(i + 1);
 				return this;
 			}
 		Clear();

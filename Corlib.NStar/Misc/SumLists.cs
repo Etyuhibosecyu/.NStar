@@ -43,7 +43,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Add(T value) => Insert(_size, value);
 
-	public override Span<T> AsSpan(int index, int length) => throw new NotSupportedException();
+	public override Span<T> AsSpan(int index, int length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+		+ " Используйте GetSlice() вместо него.");
 
 	/// <summary>
 	/// Does a left-to-right breadth-first tree walk and calls the delegate for each node.
@@ -73,8 +75,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return true;
 	}
 
-	public override void Clear()
+	public override void Clear(bool _)
 	{
+		root?.Dispose();
 		root = null;
 		_size = 0;
 		++version;
@@ -318,7 +321,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public virtual bool Increase(int index) => Update(index, (dynamic?)GetInternal(index) + 1);
 
-	private protected override int IndexOfInternal(T value, int index, int length) => throw new NotSupportedException();
+	private protected override int IndexOfInternal(T value, int index, int length) =>
+		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
+			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
 
 	/// <summary>
 	/// Does an in-order tree walk and calls the delegate for each node.
@@ -360,8 +365,10 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public override TCertain Insert(int index, T value)
 	{
-		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+		ArgumentOutOfRangeException.ThrowIfNegative(value);
 		var this2 = (TCertain)this;
+		if (value == T.Zero)
+			return this2;
 		if (root == null)
 		{
 			// The tree is empty and this is the first value.
@@ -483,7 +490,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	// Virtual function for TreeSubSet, which may need to do range checks.
 	internal virtual bool IsWithinRange(int index) => true;
 
-	private protected override int LastIndexOfInternal(T value, int index, int length) => throw new NotSupportedException();
+	private protected override int LastIndexOfInternal(T value, int index, int length) =>
+		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
+			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
 
 	// Used for set checking operations (using enumerables) that rely on counting
 	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
@@ -563,7 +572,9 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 #endif
 	}
 
-	private protected override TCertain ReverseInternal(int index, int length) => throw new NotSupportedException();
+	private protected override TCertain ReverseInternal(int index, int length) =>
+		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
+			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
 
 	// Virtual function for TreeSubSet, which may need the length variable of the parent list.
 	internal virtual int TotalCount() => Length;
@@ -1023,7 +1034,7 @@ public class SumList : BaseSumList<int, SumList>
 		subset.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1178,6 +1189,11 @@ public class SumList : BaseSumList<int, SumList>
 
 	internal override void SetInternal(int index, int value)
 	{
+		if (value == 0)
+		{
+			RemoveAt(index);
+			return;
+		}
 		var current = root;
 		while (current != null)
 		{
@@ -1498,7 +1514,7 @@ public class SumList : BaseSumList<int, SumList>
 			return true;
 		}
 
-		public override void Clear()
+		public override void Clear(bool _)
 		{
 			if (Length == 0)
 				return;
@@ -1711,7 +1727,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		get => base[index, invoke];
 		set
 		{
-			Debug.Assert(value > 0);
+			ArgumentOutOfRangeException.ThrowIfNegative(value);
 			base[index, invoke] = value;
 		}
 	}
@@ -1738,7 +1754,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		subset.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
+	internal override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1895,6 +1911,11 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	internal override void SetInternal(int index, MpzT value)
 	{
+		if (value == 0)
+		{
+			RemoveAt(index);
+			return;
+		}
 		var current = root;
 		while (current != null)
 		{
@@ -2242,7 +2263,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return true;
 		}
 
-		public override void Clear()
+		public override void Clear(bool _)
 		{
 			if (Length == 0)
 				return;

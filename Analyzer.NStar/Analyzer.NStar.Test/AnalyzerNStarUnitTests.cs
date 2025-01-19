@@ -1,23 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using VerifyCS = Analyzer.NStar.Test.CSharpCodeFixVerifier<
-	Analyzer.NStar.AnalyzerNStarAnalyzer,
-	Analyzer.NStar.AnalyzerNStarCodeFixProvider>;
 
 namespace Analyzer.NStar.Test;
 
 [TestClass]
 public class AnalyzerNStarUnitTest
 {
-	//No diagnostics expected to show up
-	[TestMethod]
-	public async Task TestMethod1()
-	{
-		var test = @"";
-
-		await VerifyCS.VerifyAnalyzerAsync(test);
-	}
-
 	//[TestMethod]
 	//public async Task TestMethod2()
 	//{

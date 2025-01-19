@@ -490,7 +490,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
+	internal override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
@@ -617,12 +617,6 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				if (!Contains(item))
 					return false;
 		return result;
-	}
-
-	public override int LastIndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
-	{
-		lock (lockObj)
-			return base.LastIndexOf(collection, index, length, out collectionLength);
 	}
 
 	public override bool Overlaps(IEnumerable<T> other)
