@@ -23282,7 +23282,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23299,7 +23299,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23317,7 +23317,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23335,7 +23335,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23344,7 +23344,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23352,10 +23351,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23377,7 +23375,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23394,7 +23392,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23412,7 +23410,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23430,7 +23428,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23439,7 +23437,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23447,10 +23444,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23471,7 +23467,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23488,7 +23484,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23506,7 +23502,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23524,7 +23520,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23533,7 +23529,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -23541,10 +23536,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23566,7 +23560,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23583,7 +23577,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23601,7 +23595,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23619,7 +23613,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23628,7 +23622,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23636,10 +23629,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23661,7 +23653,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23678,7 +23670,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23696,7 +23688,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23714,7 +23706,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23723,7 +23715,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23731,10 +23722,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23755,7 +23745,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23772,7 +23762,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23790,7 +23780,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23808,7 +23798,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23817,7 +23807,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -23825,10 +23814,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23850,7 +23838,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23867,7 +23855,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23885,7 +23873,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23903,7 +23891,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23912,7 +23900,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -23920,10 +23907,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -23945,7 +23931,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23962,7 +23948,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23980,7 +23966,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -23998,7 +23984,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24007,7 +23993,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -24015,10 +24000,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -24039,7 +24023,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24056,7 +24040,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24074,7 +24058,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24092,7 +24076,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24101,7 +24085,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -24109,10 +24092,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -24134,7 +24116,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24151,7 +24133,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24169,7 +24151,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24187,7 +24169,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24196,7 +24178,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -24204,10 +24185,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -24229,7 +24209,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24246,7 +24226,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24264,7 +24244,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24282,7 +24262,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24291,7 +24271,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, TResult>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			TResult f;
 			var i = 0;
 			foreach (var item in source)
@@ -24299,10 +24278,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = function(item, i), out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -24323,7 +24301,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24340,7 +24318,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24358,7 +24336,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24376,7 +24354,7 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result._items[j++] = new(32, i, f);
 			}
 			result._size = j;
 			result.TrimExcess();
@@ -24385,7 +24363,6 @@ public partial class List<T, TCertain>
 		else
 		{
 			List<Group<int, T>> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var j = 0;
 			T f;
 			var i = 0;
 			foreach (var item in source)
@@ -24393,10 +24370,9 @@ public partial class List<T, TCertain>
 				if (!dic.TryAdd(f = item, out var index))
 					result._items[index].Add(i);
 				else
-					result._items[j++] = new((List<int>)i, f);
+					result.Add(new(32, i, f));
 				i++;
 			}
-			result._size = j;
 			result.TrimExcess();
 			return result;
 		}
@@ -49729,7 +49705,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49750,7 +49726,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49770,7 +49746,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49791,7 +49767,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49812,7 +49788,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49832,7 +49808,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49853,7 +49829,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49874,7 +49850,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49894,7 +49870,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49915,7 +49891,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49936,7 +49912,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = function(item, i), out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();
@@ -49956,7 +49932,7 @@ public partial class List<T, TCertain>
 			if (!dic.TryAdd(f = item, out var index))
 				result._items[index].Add(i);
 			else
-				result._items[j++] = new((List<int>)i, f);
+				result._items[j++] = new(32, i, f);
 		}
 		result._size = j;
 		result.TrimExcess();

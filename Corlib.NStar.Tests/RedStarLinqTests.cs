@@ -1075,6 +1075,135 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
+	public void TestGroupIndexes()
+	{
+		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
+		for (var i = 0; i < 1000; i++)
+		{
+			var original = E.ToArray(E.Select(E.Range(0, random.Next(101)), _ => random.Next(-30, 30)));
+			G.IEnumerable<int> a = new List<int>(original);
+			ProcessA(a);
+			a = RedStarLinq.ToArray(original);
+			ProcessA(a);
+			a = E.ToList(original);
+			ProcessA(a);
+			a = new List<int>(original).Insert(0, -42).GetSlice(1);
+			ProcessA(a);
+			a = E.Select(original, x => x);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) == -1);
+			ProcessA(a);
+			a = E.SkipWhile(original, _ => random.Next(10) != -1);
+			ProcessA(a);
+		}
+		void ProcessA(G.IEnumerable<int> a)
+		{
+			var c = a.GroupIndexes(x => x);
+			var d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(comparer);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, comparer);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, comparer);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x, equalFunction: (x, y) => x / 3 == y / 3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(comparer2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x, comparer2);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, comparer2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, comparer2);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => 42);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer2), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(comparer3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x, comparer3);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, comparer3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, comparer3);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x / 2, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem / 2, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes((x, index) => x + index / 10, equalFunction: (x, y) => x / 3 == y / 3, x => x / 4);
+			d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem + x.index / 10, comparer3), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+		}
+	}
+
+	[TestMethod]
 	public void TestPairs() => Test(a =>
 	{
 		var c = a.Pairs((x, y) => x + y);
