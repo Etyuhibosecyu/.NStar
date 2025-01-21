@@ -272,6 +272,51 @@ public class BigBitListTests
 		Assert.AreNotEqual(bitList.Length, (uint)bitList.Length);
 		Assert.AreEqual(bitList.Length, (long)bitList.Length);
 	}
+
+	[TestMethod]
+	public void TestCopy()
+	{
+		var bytes = new byte[1250];
+		random.NextBytes(bytes);
+		var length = 435;
+		var sourceIndex = 123;
+		var destinationIndex = 272;
+		BigBitList destination, source;
+		BitList bitList3;
+		PerformIteration();
+		for (var i = 0; i < 100; i++)
+		{
+			random.NextBytes(bytes);
+			length = random.Next(801);
+			sourceIndex = random.Next(bytes.Length - length + 1);
+			destinationIndex = random.Next(bytes.Length - length + 1);
+			PerformIteration();
+		}
+		void PerformIteration()
+		{
+			bitList3 = new(bytes);
+			destination = new(bitList3, random.Next(2, 5), random.Next(5, 11));
+			source = new(destination, random.Next(2, 5), random.Next(5, 11));
+			Assert.IsTrue(destination.Equals(source));
+			source.CopyTo(sourceIndex, destination, destinationIndex, length);
+			var sourceStart = source.GetRange(0, destinationIndex);
+			var destinationStart = destination.GetRange(0, destinationIndex);
+			Assert.IsTrue(destinationStart.Equals(sourceStart));
+			Assert.IsTrue(E.SequenceEqual(destinationStart, E.Take(source, destinationIndex)));
+			var sourceMain = source.GetRange(sourceIndex, length);
+			var destinationMain = destination.GetRange(destinationIndex, length);
+			Assert.IsTrue(destinationMain.Equals(sourceMain));
+			Assert.IsTrue(E.SequenceEqual(destinationMain, E.Take(E.Skip(source, sourceIndex), length)));
+			if (sourceIndex >= 1 && destinationIndex >= 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1).Equals(source.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(source, sourceIndex - 1), length + 1)));
+			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1).Equals(source.GetRange(sourceIndex, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex, length + 1), E.Take(E.Skip(source, sourceIndex), length + 1)));
+			var sourceEnd = source.GetRange(destinationIndex + length);
+			var destinationEnd = destination.GetRange(destinationIndex + length);
+			Assert.IsTrue(destinationEnd.Equals(sourceEnd));
+			Assert.IsTrue(E.SequenceEqual(destinationEnd, E.Skip(source, destinationIndex + length)));
+		}
+	}
 }
 
 [TestClass]
@@ -337,4 +382,53 @@ public class BigListTests
 		var bytes = new byte[16];
 		return (bl, gl, bytes);
 	}, () => random.Next(16), 2);
+
+	[TestMethod]
+	public void TestCopy()
+	{
+		var bytes = new byte[1250];
+		random.NextBytes(bytes);
+		var length = 435;
+		var sourceIndex = 123;
+		var destinationIndex = 272;
+		BigList<byte> destination, source;
+		NList<byte> bitList3;
+		PerformIteration();
+		for (var i = 0; i < 1000; i++)
+		{
+			random.NextBytes(bytes);
+			length = random.Next(801);
+			sourceIndex = random.Next(bytes.Length - length + 1);
+			destinationIndex = random.Next(bytes.Length - length + 1);
+			PerformIteration();
+		}
+		void PerformIteration()
+		{
+			bitList3 = new(bytes);
+			destination = new(bitList3, random.Next(2, 5), random.Next(2, 7));
+			source = new(destination, random.Next(2, 5), random.Next(2, 7));
+			Assert.IsTrue(destination.Equals(source));
+			source.CopyTo(sourceIndex, destination, destinationIndex, length);
+			Assert.IsTrue(destination.GetRange(0, destinationIndex).Equals(source.GetRange(0, destinationIndex)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(0, destinationIndex), E.Take(source, destinationIndex)));
+			Assert.IsTrue(destination.GetRange(destinationIndex, length).Equals(source.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex, length), E.Take(E.Skip(source, sourceIndex), length)));
+			if (sourceIndex >= 1 && destinationIndex >= 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1).Equals(source.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(source, sourceIndex - 1), length + 1)));
+			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1).Equals(source.GetRange(sourceIndex, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex, length + 1), E.Take(E.Skip(source, sourceIndex), length + 1)));
+			Assert.IsTrue(destination.GetRange(destinationIndex + length).Equals(source.GetRange(destinationIndex + length)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length), E.Skip(source, destinationIndex + length)));
+			Assert.IsTrue(destination.GetRange(0, destinationIndex).Equals(bitList3.GetRange(0, destinationIndex)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(0, destinationIndex), E.Take(bitList3, destinationIndex)));
+			Assert.IsTrue(destination.GetRange(destinationIndex, length).Equals(bitList3.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex, length), E.Take(E.Skip(bitList3, sourceIndex), length)));
+			if (sourceIndex >= 1 && destinationIndex >= 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex - 1, length + 1).Equals(bitList3.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(bitList3, sourceIndex - 1), length + 1)));
+			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
+				Assert.AreEqual(destination.GetRange(destinationIndex, length + 1).Equals(bitList3.GetRange(sourceIndex, length + 1)), E.SequenceEqual(destination.GetRange(destinationIndex, length + 1), E.Take(E.Skip(bitList3, sourceIndex), length + 1)));
+			Assert.IsTrue(destination.GetRange(destinationIndex + length).Equals(bitList3.GetRange(destinationIndex + length)));
+			Assert.IsTrue(E.SequenceEqual(destination.GetRange(destinationIndex + length), E.Skip(bitList3, destinationIndex + length)));
+		}
+	}
 }
