@@ -184,13 +184,17 @@ public class RedStarLinqTests
 		Assert.AreEqual(b, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string, int, bool>)null!));
 	});
-		var c = new[] { 3, 3, 3, 3, 3 }.AllEqual();
+		int[] arr = [3, 3, 3, 3, 3];
+		var c = arr.AllEqual();
 		Assert.AreEqual(c, true);
-		c = new[] { 3, 4, 5, 6, 7 }.AllEqual();
+		arr = [3, 4, 5, 6, 7];
+		c = arr.AllEqual();
 		Assert.AreEqual(c, false);
-		c = new[] { 3, 3, 3, 3, -42 }.AllEqual();
+		arr = [3, 3, 3, 3, -42];
+		c = arr.AllEqual();
 		Assert.AreEqual(c, false);
-		c = new[] { 3, 4, 5, 6, 4 }.AllUnique();
+		arr = [3, 4, 5, 6, 4];
+		c = arr.AllUnique();
 		Assert.AreEqual(c, false);
 	}
 

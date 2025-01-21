@@ -82,6 +82,36 @@ public class BitListTests
 		b.AddRange(defaultBitCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultByteCollection);
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultByteCollection, x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultByteCollection.Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultByteCollection.Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultIntCollection);
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultIntCollection.Take(1..));
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultUIntCollection);
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultUIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).AddRange(defaultUIntCollection.Take(1..));
+		b = new G.List<bool>(bitList);
+		b.AddRange(E.ToArray(E.SelectMany(defaultUIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
 
 	[TestMethod]
@@ -870,6 +900,36 @@ public class BitListTests
 		b.InsertRange(2, defaultBitCollection.Skip(2).Take(3));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultByteCollection);
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultByteCollection, x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultByteCollection.Take(2..4));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultByteCollection.Skip(2).Take(2), x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultIntCollection);
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultIntCollection.Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(4, defaultUIntCollection);
+		b = new G.List<bool>(bitList);
+		b.InsertRange(4, E.ToArray(E.SelectMany(defaultUIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).Insert(2, defaultUIntCollection.Take(1..));
+		b = new G.List<bool>(bitList);
+		b.InsertRange(2, E.ToArray(E.SelectMany(defaultUIntCollection.Skip(1), x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0))));
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = new BitList(bitList).Insert(1000, defaultBit));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => new BitList(bitList).Insert(-1, defaultBitCollection));
 		Assert.ThrowsException<ArgumentNullException>(() => new BitList(bitList).Insert(1, (BitArray)null!));
@@ -1406,11 +1466,30 @@ public class BitListTests
 	[TestMethod]
 	public void TestSetRange()
 	{
+		var a = new BitList(bitList).SetRange(2, defaultBitCollection);
 		var newList = E.ToList(defaultBitCollection);
-		var a = new BitList(bitList).SetRange(2, newList);
 		var b = new G.List<bool>(bitList);
 		for (var i = 0; i < newList.Count; i++)
 			b[i + 2] = newList[i];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).SetRange(7, defaultByteCollection);
+		var newList2 = E.ToList(E.SelectMany(defaultByteCollection, x => E.Select(E.Range(0, BitsPerByte), y => (x & 1 << y) != 0)));
+		b = new G.List<bool>(bitList);
+		for (var i = 0; i < newList2.Count; i++)
+			b[i + 7] = newList2[i];
+		Assert.IsTrue(a.Equals(b));
+		Assert.IsTrue(E.SequenceEqual(b, a));
+		a = new BitList(bitList).SetRange(5, defaultIntCollection);
+		var newList3 = E.ToList(E.SelectMany(defaultIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0)));
+		b = new G.List<bool>(bitList);
+		for (var i = 0; i < newList3.Count; i++)
+			b[i + 5] = newList3[i];
+		a = new BitList(bitList).SetRange(4, defaultUIntCollection);
+		var newList4 = E.ToList(E.SelectMany(defaultUIntCollection, x => E.Select(E.Range(0, BitsPerInt), y => (x & 1 << y) != 0)));
+		b = new G.List<bool>(bitList);
+		for (var i = 0; i < newList4.Count; i++)
+			b[i + 4] = newList4[i];
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsException<ArgumentException>(() => a = new BitList(bitList).SetRange(60, newList));

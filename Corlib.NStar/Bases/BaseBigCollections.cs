@@ -676,14 +676,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		ConstructFromCapacity(capacity);
 #if VERIFY
@@ -692,7 +686,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -712,7 +705,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -730,7 +722,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -747,7 +738,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -764,7 +754,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -789,10 +778,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (value <= CapacityFirstStep)
 			{
+				if (high != null && highLength != null)
+					ReduceCapacityExponential(CapacityFirstStep);
+				if (high != null && highLength != null)
+					Compactify();
 				var first = this;
-				for (; first.high != null; first = first.high.GetInternal(0))
+				for (; first.high != null; first = first.high.GetInternal(0), first.parent?.high?.Dispose())
 				{
-					first.parent?.high?.Dispose();
 					Debug.Assert(first.highLength != null);
 					first.high[1..].ForEach(x => x.Dispose());
 					first.highLength.Dispose();
@@ -812,7 +804,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					fragment <<= CapacityStepBitLength;
 				var highCount = (int)GetArrayLength(value, fragment);
 				high = new(highCount);
-				highLength = [];
 				for (MpzT i = 0; i < value / fragment; i++)
 				{
 					high.Add(CapacityCreator(fragment));
@@ -827,79 +818,39 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				low = null;
 				Length = 0;
 				var first = this;
-				for (; first.high != null; first = first.high.GetInternal(0)) ;
+				for (; first.high != null; first = first.high.GetInternal(0))
+					first.highLength = [preservedLow.Length];
 				ArgumentNullException.ThrowIfNull(first.low);
 				first.low.AddRange(preservedLow);
 				if (preservedLow.Length != 0)
-				{
 					first.Length = preservedLow.Length;
-					highLength.Add(preservedLow.Length);
-				}
 			}
 			else if (high != null && highLength != null)
 			{
-				var oldFragment = fragment;
-				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength,
+				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength,
 					CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				while (fragment << CapacityStepBitLength < value)
-					fragment <<= CapacityStepBitLength;
-				if (fragment > oldFragment)
-					goto l0;
-				if (fragment < oldFragment)
-					goto l1;
-				var oldHigh = high;
-				var oldHighLength = highLength;
-				var oldLength = Length;
-				Length = 0;
-				high = new((int)GetArrayLength(value, fragment));
-				for (var i = 0; i < high.Capacity; i++)
+				while (newFragment << CapacityStepBitLength < value)
+					newFragment <<= CapacityStepBitLength;
+				if (newFragment > fragment)
+					IncreaseCapacityExponential(value, newFragment);
+				else if (newFragment < fragment)
 				{
-					high.Add(CapacityCreator(fragment));
-					high[^1].parent = this2;
+					ReduceCapacityExponential(newFragment);
+					AddCapacity((fragment << CapacityStepBitLength) - _capacity);
+					ReduceCapacityLinear(value);
 				}
-				highLength = [];
-				oldHigh.ForEach(x => x.parent = null);
-				Copy(oldHigh, oldHighLength, 0, high, highLength, 0, oldLength, fragment);
-				goto end;
-			l0:
-				do
-				{
-					var highCount = (int)RedStarLinq.Min(GetArrayLength(value, oldFragment << CapacityStepBitLength), CapacityStep);
-					oldHigh = high;
-					oldHighLength = highLength;
-					oldLength = Length;
-					high = new(highCount) { CapacityCreator(oldFragment << CapacityStepBitLength) };
-					high.GetInternal(0).fragment = oldFragment;
-					oldFragment <<= CapacityStepBitLength;
-					high.GetInternal(0).low = null;
-					oldHigh.ForEach(x => x.parent = null);
-					Debug.Assert(high.GetInternal(0).high != null && high.GetInternal(0).highLength != null);
-					Copy(oldHigh, oldHighLength, 0, high.GetInternal(0).high!, high.GetInternal(0).highLength!, 0, Length, high.GetInternal(0).fragment);
-					high.GetInternal(0).parent = this2;
-					new Chain(1, high.Capacity - 2).ForEach(_ => high.Add(CapacityCreator(oldFragment))[^1].parent = this2);
-					high.Add(CapacityCreator(value % oldFragment == 0 ? oldFragment : value % oldFragment));
-					high[^1].parent = this2;
-					highLength = [Length];
-				} while (oldFragment < fragment);
-				goto end;
-			l1:
-				do
-				{
-					oldFragment >>= CapacityStepBitLength;
-					high = high.GetInternal(0).high!;
-					high.ForEach(x => x.parent = this2);
-				} while (oldFragment > fragment);
-				high.GetInternal(0).Capacity = value;
+				else if (value > _capacity)
+					IncreaseCapacityLinear(value);
+				else
+					ReduceCapacityLinear(value);
 			}
-		end:
-			_capacity = value;
+			AddCapacity(value - _capacity);
 #if VERIFY
 			if (low != null)
 				Debug.Assert(Length == low.Length);
 			else if (high != null && highLength != null)
 			{
 				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-				Debug.Assert(high.All(x => x.parent == this));
 			}
 			else
 				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -933,6 +884,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
+	start:
 		if (low != null)
 		{
 			low.Add(item);
@@ -940,20 +892,29 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (high != null && highLength != null)
 		{
-			var index = highLength.IndexOfNotGreaterSum(Length, out var sumExceedsBy);
-			if (index != 0 && high.GetInternal(index - 1).Capacity != high.GetInternal(index - 1).Length)
-				index--;
-			if (high.Length == index)
+			var intIndex = highLength.IndexOfNotGreaterSum(Length, out var bitsIndex);
+			if (intIndex != 0 && high.GetInternal(intIndex - 1).Capacity != high.GetInternal(intIndex - 1).Length)
+				intIndex--;
+			if (high.Length == intIndex)
 			{
-				Debug.Assert(high.Length * fragment < Capacity);
-				high.Add(CapacityCreator(fragment));
-				high[^1].parent = this2;
+				if (high.Length < CapacityStep && high[^1].Capacity == fragment)
+				{
+					high.Capacity = Min(high.Capacity << 1, CapacityStep);
+					high.Add(CapacityCreator(fragment));
+					high[^1].parent = this2;
+					AddCapacity(fragment);
+				}
+				else
+				{
+					Compactify();
+					goto start;
+				}
 			}
-			high.GetInternal(index).Add(item);
-			if (highLength.Length == index)
+			high.GetInternal(intIndex).Add(item);
+			if (highLength.Length == intIndex)
 				highLength.Add(1);
 			else
-				highLength[index]++;
+				highLength[intIndex]++;
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -963,13 +924,20 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 		return this2;
+	}
+
+	private protected virtual void AddCapacity(MpzT increment)
+	{
+		if (increment == 0)
+			return;
+		for (var list = this; list != null; list = list.parent)
+			list._capacity += increment;
 	}
 
 	private protected override void ClearInternal(bool verify = true)
@@ -1018,7 +986,60 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	private protected virtual void Compactify()
+	{
+		Debug.Assert(high != null && highLength != null);
+		for (var i = 1; i < highLength.Length; i++)
+		{
+			if (highLength.GetInternal(i - 1) == fragment)
+				continue;
+			var amount = fragment - highLength.GetInternal(i - 1);
+			var highElementI = high.GetInternal(i);
+			var highLengthElementI = highLength.GetInternal(i);
+			var highElementBeforeI = high.GetInternal(i - 1);
+			if (highElementBeforeI.high != null && highElementBeforeI.highLength != null
+				&& highElementBeforeI.highLength.ValuesSum + highElementBeforeI.fragment - highElementBeforeI.highLength[^1]
+				!= highElementBeforeI.highLength.Length * highElementBeforeI.fragment)
+				highElementBeforeI.Compactify();
+			if (highLengthElementI > amount)
+			{
+				highElementI.CopyToInternal(0, highElementBeforeI, highLength.GetInternal(i - 1), amount);
+				highElementI.RemoveInternal(0, amount);
+				highLength[i - 1] = fragment;
+				highLength[i] -= amount;
+			}
+			else
+			{
+				highElementI.CopyToInternal(0, highElementBeforeI,
+					highLength.GetInternal(i - 1), highLengthElementI);
+				var temp = highElementI;
+				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
+				if (i != highLength.Length - 1)
+				{
+					high.CopyToInternal(i + 1, high, i, high.Length - i - offsetFromEnd - 1);
+					high[^(offsetFromEnd + 1)] = temp;
+				}
+				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
+				high[^1].ClearInternal(false);
+				highLength[i - 1] += highLengthElementI;
+				highLength.RemoveAt(i);
+				i--;
+			}
+		}
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1035,6 +1056,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high = null;
 			highLength = null;
 			fragment = 1;
+			AddCapacity(capacity - _capacity);
 		}
 		else
 		{
@@ -1051,16 +1073,25 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			{
 				high.Add(CapacityCreator(fragment));
 				high[^1].parent = this2;
+				AddCapacity(fragment);
 			}
 			if (remainder != 0)
 			{
 				high.Add(CapacityCreator(remainder));
 				high[^1].parent = this2;
+				AddCapacity(remainder);
 			}
 		}
 		Length = 0;
-		_capacity = capacity;
 #if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1093,12 +1124,62 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected virtual void ConstructFromList(G.IReadOnlyList<T> list)
 	{
-		if (list.Count <= CapacityFirstStep)
+		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
+		{
+			ConstructFromListFromScratch(list);
+			return;
+		}
+		if (list.Count <= CapacityFirstStep && low != null && high == null && highLength == null && fragment == 1)
+		{
+			if (low == null)
+			low = CollectionLowCreator(list);
+			else
+			low.AddRange(CollectionLowCreator(list));
+			Length = list.Count;
+		}
+		else
+		{
+			Debug.Assert(low == null && high != null && highLength != null && fragment != 1);
+			var fragment2 = (int)fragment;
+			var i = 0;
+			var index = 0;
+			for (; index <= list.Count - fragment2; index += fragment2)
+			{
+				high[i++].ConstructFromList(list.GetROLSlice(index, fragment2));
+				highLength.Add(fragment);
+			}
+			var rest = list.Count - index;
+			Debug.Assert(rest < fragment);
+			if (rest != 0)
+			{
+				high[i].ConstructFromList(list.GetROLSlice(index));
+				highLength.Add(rest);
+			}
+		}
+		AddCapacity(Length - _capacity);
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	private protected virtual void ConstructFromListFromScratch(G.IReadOnlyList<T> list)
+	{
+		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
+		if (list.Count <= CapacityFirstStep && high == null && highLength == null && fragment == 1)
 		{
 			low = CollectionLowCreator(list);
 			high = null;
 			highLength = null;
 			fragment = 1;
+			AddCapacity(list.Count);
 			Length = list.Count;
 		}
 		else
@@ -1112,190 +1193,31 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var index = 0;
 			for (; index <= list.Count - fragment2; index += fragment2)
 			{
-				highLength.Add(fragment2);
-				high.Add(CapacityCreator(fragment));
+				high.Add(CapacityCreator(0));
 				high[^1].parent = (TCertain)this;
-				high[^1].AddRange(list.GetROLSlice(index, fragment2));
+				high[^1].ConstructFromListFromScratch(list.GetROLSlice(index, fragment2));
+				highLength.Add(fragment);
 			}
 			if (list.Count % fragment2 != 0)
 			{
-				highLength.Add(list.Count - index);
-				high.Add(CapacityCreator(fragment));
+				var rest = list.Count - index;
+				high.Add(CapacityCreator(0));
 				high[^1].parent = (TCertain)this;
-				high[^1].AddRange(list.GetROLSlice(index));
+				high[^1].ConstructFromListFromScratch(list.GetROLSlice(index));
+				highLength.Add(rest);
 			}
 		}
-		_capacity = Length;
-	}
-
-	private protected virtual void Copy(List<TCertain> source, BigSumList sourceLength, MpzT sourceIndex, List<TCertain> destination, BigSumList destinationLength, MpzT destinationIndex, MpzT length, MpzT fragment)
-	{
-		CheckParams(source, sourceIndex, destination, destinationIndex, length);
-		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
-			return;
-		if (source == destination && sourceIndex == destinationIndex)
-			return;
-		var sourceIntIndex = sourceLength.IndexOfNotGreaterSum(sourceIndex, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
-		var destinationIntIndex = destinationLength.IndexOfNotGreaterSum(destinationIndex, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
-		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
-		var sourceEndIntIndex = sourceLength.IndexOfNotGreaterSum(sourceEndIndex, out var sourceEndBitsIndex);  // Индекс инта последнего бита.
-		while (sourceEndBitsIndex >= fragment)
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
 		{
-			sourceEndIntIndex++;
-			sourceEndBitsIndex -= fragment;
-		}
-		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
-		var destinationEndIntIndexA = destinationLength.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndBitsIndexA);  // Индекс инта последнего бита.
-		var destinationEndIntIndexB = (int)destinationEndIndex.Divide(fragment, out var destinationEndBitsIndexB);
-		var (destinationEndIntIndex, destinationEndBitsIndex) = destinationEndIntIndexA > destinationEndIntIndexB ? (destinationEndIntIndexA, destinationEndBitsIndexA) : (destinationEndIntIndexB, destinationEndBitsIndexB);
-		while (destinationEndBitsIndex >= fragment)
-		{
-			destinationEndIntIndex++;
-			destinationEndBitsIndex -= fragment;
-		}
-		if (destinationIntIndex != 0 && destinationBitsIndex == 0 && destinationLength[destinationIntIndex - 1] != fragment)
-		{
-			destinationIntIndex--;
-			destinationBitsIndex = destinationLength[^1];
-		}
-		if (sourceEndIntIndex == sourceIntIndex)
-		{
-			int index = (int)destinationIndex.Divide(fragment, out var remainder), index2 = (int)(destinationIndex + length - 1).Divide(fragment);
-			if (index == index2)
-			{
-				source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex, destination.GetInternal(index), remainder, length);
-				destinationLength.SetOrAdd(index, RedStarLinq.Max(destinationLength.Length > index ? destinationLength[index] : 0, remainder + length));
-			}
-			else if (sourceIndex >= destinationIndex)
-			{
-				var previousPart = RedStarLinq.Max(destinationLength.Length > index ? destinationLength[index] : 0, fragment) - remainder;
-				source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex, destination.GetInternal(index), remainder, previousPart);
-				destinationLength.SetOrAdd(index, RedStarLinq.Max(destinationLength.Length > index ? destinationLength[index] : 0, remainder + previousPart));
-				for (var i = index + 1; i < index2; i++)
-				{
-					source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex + previousPart, destination.GetInternal(i), 0, destinationLength.Length > i ? destinationLength[i] : 0);
-					destinationLength.SetOrAdd(i, RedStarLinq.Max(destinationLength.Length > i ? destinationLength[i] : 0, fragment));
-					previousPart += RedStarLinq.Max(destinationLength.Length > i ? destinationLength[i] : 0, fragment);
-				}
-				source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex + previousPart, destination.GetInternal(index2), 0, length - previousPart);
-				destinationLength.SetOrAdd(index2, RedStarLinq.Max(destinationLength.Length > index2 ? destinationLength[index2] : 0, length - previousPart));
-			}
-			else
-			{
-				for (var i = destinationLength.Length; i < index2 + 1; i++)
-					destinationLength.Add(1);
-				var previousPart = RedStarLinq.Max(destinationLength.Length > index ? destinationLength[index] : 0, fragment) - remainder + (index2 - index - 1) * fragment;
-				source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex + previousPart, destination.GetInternal(index2), 0, length - previousPart);
-				destinationLength[index2] = RedStarLinq.Max(destinationLength.Length > index2 ? destinationLength[index2] : 0, length - previousPart);
-				for (var i = index2 - 1; i > index; i--)
-				{
-					source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex + previousPart, destination.GetInternal(i), 0, destinationLength.Length > i ? destinationLength[i] : 0);
-					destinationLength[i] = RedStarLinq.Max(destinationLength.Length > i ? destinationLength[i] : 0, fragment);
-					previousPart -= RedStarLinq.Max(destinationLength.Length > i ? destinationLength[i] : 0, fragment);
-				}
-				source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex, destination.GetInternal(index), remainder, previousPart);
-				destinationLength[index] = RedStarLinq.Max(destinationLength.Length > index ? destinationLength[index] : 0, remainder + previousPart);
-			}
-		}
-		else if (destinationEndIntIndex == destinationIntIndex)
-		{
-			int index = sourceLength.IndexOfNotGreaterSum(sourceIndex, out var remainder), index2 = sourceLength.IndexOfNotGreaterSum(sourceIndex + length - 1);
-			if (index == index2)
-				source.GetInternal(index).CopyToInternal(remainder, destination.GetInternal(destinationIntIndex), destinationIndex, length);
-			else if (sourceIndex >= destinationIndex)
-			{
-				var previousPart = (sourceLength.Length > index ? sourceLength[index] : 0) - remainder;
-				source.GetInternal(index).CopyToInternal(remainder, destination.GetInternal(destinationIntIndex), destinationBitsIndex, previousPart);
-				for (var i = index + 1; i < index2; i++)
-				{
-					source.GetInternal(i).CopyToInternal(0, destination.GetInternal(destinationIntIndex), destinationBitsIndex + previousPart, sourceLength.Length > i ? sourceLength[i] : 0);
-					previousPart += sourceLength.Length > i ? sourceLength[i] : 0;
-				}
-				source.GetInternal(index2).CopyToInternal(0, destination.GetInternal(destinationIntIndex), destinationBitsIndex + previousPart, length - previousPart);
-				destinationLength.SetOrAdd(destinationIntIndex, RedStarLinq.Max(destinationLength.Length > destinationIntIndex ? destinationLength[destinationIntIndex] : 0, destinationBitsIndex + length));
-			}
-			else
-			{
-				var previousPart = (sourceLength.Length > index ? sourceLength[index] : 0) - remainder;
-				for (var i = index + 1; i < index2; i++)
-					previousPart += sourceLength.Length > i ? sourceLength[i] : 0;
-				source.GetInternal(index2).CopyToInternal(0, destination.GetInternal(destinationIntIndex), destinationBitsIndex + previousPart, length - previousPart);
-				destinationLength.SetOrAdd(destinationIntIndex, RedStarLinq.Max(destinationLength.Length > destinationIntIndex ? destinationLength[destinationIntIndex] : 0, destinationBitsIndex + length));
-				for (var i = index2 - 1; i > index; i--)
-				{
-					source.GetInternal(i).CopyToInternal(0, destination.GetInternal(destinationIntIndex), destinationBitsIndex + previousPart, sourceLength.Length > i ? sourceLength[i] : 0);
-					previousPart -= sourceLength.Length > i ? sourceLength[i] : 0;
-				}
-				source.GetInternal(index).CopyToInternal(remainder, destination.GetInternal(destinationIntIndex), destinationBitsIndex, previousPart);
-			}
-		}
-		else if (sourceIndex >= destinationIndex)
-			goto l1;
-		else
-		{
-			using var buff = source.GetInternal(sourceEndIntIndex).GetRangeInternal(0, sourceEndBitsIndex + 1, true);
-			buff.Capacity = fragment << 1;
-			for (var i = destinationLength.Length; i < destinationEndIntIndex + 1; i++)
-				destinationLength.SetOrAdd(i, 1);
-			for (int sourceCurrentIntIndex = sourceEndIntIndex - 1, destinationCurrentIntIndex = destinationEndIntIndex; sourceCurrentIntIndex > sourceIntIndex - 1 || destinationCurrentIntIndex > destinationIntIndex;)
-			{
-				var currentLength = RedStarLinq.Max(destinationLength.Length > destinationCurrentIntIndex ? destinationLength[destinationCurrentIntIndex] : 0, fragment);
-				if (buff.Length < currentLength)
-				{
-					var sourceElem = source.GetInternal(sourceCurrentIntIndex--).Copy();
-					buff.Length += sourceElem.Length;
-					Debug.Assert(buff.high != null && buff.highLength != null);
-					buff.highLength.Insert(0, sourceElem.Length);
-					buff.high.Insert(0, sourceElem);
-					buff.high.GetInternal(0).parent = buff;
-				}
-				if (buff.Length >= currentLength && destinationCurrentIntIndex > destinationIntIndex)
-				{
-					var currentLength2 = destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : currentLength;
-					destinationLength[destinationCurrentIntIndex] = RedStarLinq.Max(destinationLength[destinationCurrentIntIndex], currentLength2);
-					buff.CopyToInternal(buff.Length - currentLength2, destination.GetInternal(destinationCurrentIntIndex--), 0, currentLength2);
-					buff.RemoveEnd(buff.Length - currentLength2);
-				}
-			}
-			destinationLength[destinationIntIndex] = RedStarLinq.Max(destinationLength[destinationIntIndex], fragment);
-			buff.CopyToInternal(buff.Length - (destinationLength[destinationIntIndex] - destinationBitsIndex), destination.GetInternal(destinationIntIndex), destinationBitsIndex, destinationLength[destinationIntIndex] - destinationBitsIndex);
-			buff.high = null;
-		}
-		return;
-	l1:
-		if (sourceBitsIndex >= destinationBitsIndex)
-		{
-			source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex, destination.GetInternal(destinationIntIndex), destinationBitsIndex, fragment - sourceBitsIndex);
-			for (int sourceCurrentIntIndex = sourceIntIndex + 1, destinationCurrentIntIndex = destinationIntIndex; sourceCurrentIntIndex < sourceEndIntIndex + 1 || destinationCurrentIntIndex < destinationEndIntIndex;)
-			{
-				source.GetInternal(sourceCurrentIntIndex).CopyToInternal(0, destination.GetInternal(destinationCurrentIntIndex),
-					fragment - (sourceBitsIndex - destinationBitsIndex), destinationCurrentIntIndex < destinationEndIntIndex
-					? sourceBitsIndex - destinationBitsIndex : sourceEndBitsIndex + 1);
-				destinationLength.SetOrAdd(destinationCurrentIntIndex++,
-					RedStarLinq.Max(destinationLength.Length > destinationCurrentIntIndex
-					? destinationLength[destinationCurrentIntIndex] : 0, fragment));
-				if (destinationCurrentIntIndex < destinationEndIntIndex + (destinationEndBitsIndex > sourceEndBitsIndex ? 1 : 0))
-					source.GetInternal(sourceCurrentIntIndex).CopyToInternal(sourceBitsIndex - destinationBitsIndex, destination.GetInternal(destinationCurrentIntIndex), 0, fragment - (sourceBitsIndex - destinationBitsIndex));
-				sourceCurrentIntIndex++;
-			}
-			if (sourceBitsIndex >= destinationBitsIndex && sourceEndIntIndex + destinationIntIndex - sourceIntIndex == destinationEndIntIndex)
-				source.GetInternal(sourceEndIntIndex).CopyToInternal(sourceBitsIndex - destinationBitsIndex, destination.GetInternal(destinationEndIntIndex), 0, destinationEndBitsIndex + 1);
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 		}
 		else
-		{
-			source.GetInternal(sourceIntIndex).CopyToInternal(sourceBitsIndex, destination.GetInternal(destinationIntIndex), destinationBitsIndex, fragment - destinationBitsIndex);
-			for (int sourceCurrentIntIndex = sourceIntIndex, destinationCurrentIntIndex = destinationIntIndex + 1; sourceCurrentIntIndex < sourceEndIntIndex || destinationCurrentIntIndex < destinationEndIntIndex + 1;)
-			{
-				source.GetInternal(sourceCurrentIntIndex).CopyToInternal(fragment - (destinationBitsIndex - sourceBitsIndex),
-					destination.GetInternal(destinationCurrentIntIndex), 0, sourceCurrentIntIndex < sourceEndIntIndex
-					? destinationBitsIndex - sourceBitsIndex : destinationEndBitsIndex + 1);
-				sourceCurrentIntIndex++;
-				if (sourceCurrentIntIndex < sourceEndIntIndex + 1)
-					source.GetInternal(sourceCurrentIntIndex).CopyToInternal(0, destination.GetInternal(destinationCurrentIntIndex), destinationBitsIndex - sourceBitsIndex, destinationCurrentIntIndex < destinationEndIntIndex ? fragment - (destinationBitsIndex - sourceBitsIndex) : sourceEndBitsIndex + 1);
-				destinationLength.SetOrAdd(destinationCurrentIntIndex++, RedStarLinq.Max(destinationLength.Length > destinationCurrentIntIndex ? destinationLength[destinationCurrentIntIndex] : 0, fragment));
-			}
-		}
-		destinationLength.SetOrAdd(destinationEndIntIndex, RedStarLinq.Max(destinationLength.Length > destinationEndIntIndex ? destinationLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1));
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
 	}
 
 	private protected static void CheckParams(List<TCertain> source, MpzT sourceIndex, List<TCertain> destination, MpzT destinationIndex, MpzT length)
@@ -1322,10 +1244,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
+		CheckParams(sourceIndex, destination, destinationIndex, length);
 #if VERIFY
 		MpzT oldLength = new(destination.Length);
 #endif
-		CheckParams(sourceIndex, destination, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
 			return;
 		if (this == destination && sourceIndex == destinationIndex)
@@ -1350,12 +1272,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high.GetInternal(index).CopyToInternal(remainder, destination, destinationIndex, length);
 			else
 			{
-				var previousPart = (highLength.Length > index ? highLength.GetInternal(index) : 0) - remainder;
+				var previousPart = (highLength.Length > index ? highLength[index] : 0) - remainder;
 				high.GetInternal(index).CopyToInternal(remainder, destination, destinationIndex, previousPart);
 				for (var i = index + (isReversed ? -1 : 1); isReversed ? i > index2 : i < index2; i += isReversed ? -1 : 1)
 				{
-					high.GetInternal(i).CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength.GetInternal(i) : 0);
-					previousPart += highLength.Length > i ? highLength.GetInternal(i) : 0;
+					high.GetInternal(i).CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength[i] : 0);
+					previousPart += highLength.Length > i ? highLength[i] : 0;
 				}
 				high.GetInternal(index2).CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart);
 			}
@@ -1368,38 +1290,72 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if ((low != null || destination.fragment > fragment) && destination.high != null && destination.highLength != null)
 		{
-			int index = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var remainder), index2A = destination.highLength.IndexOfNotGreaterSum(destinationIndex + length - 1, out var remainder2A);
-			var index2B = (int)(destinationIndex + length - 1).Divide(destination.fragment, out var remainder2B);
-			var (index2, remainder2) = index2A > index2B ? (index2A, remainder2A) : (index2B, remainder2B);
-			if (index != 0 && index == destination.highLength.Length && remainder == 0 && destination.highLength[^1] != destination.fragment)
+			var fragment = destination.fragment;
+		destinationFragmentBigger:
+			var index = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var remainder);
+			var index2 = destination.highLength.IndexOfNotGreaterSum(destinationIndex + length - 1, out var remainder2);
+			if (index != 0 && index == destination.highLength.Length && remainder == 0 && destination.highLength[^1] != fragment)
 			{
 				index--;
 				remainder = destination.highLength[^1];
 			}
-			if (index2 != 0 && index2 == destination.highLength.Length && remainder2 == 0 && index2A > index2B && destination.highLength[^1] != destination.fragment)
-				index2--;
+			if (index2 != 0 && index2 == destination.highLength.Length)
+			{
+				if (remainder2 >= fragment - destination.highLength[^1])
+					remainder2 -= fragment - destination.highLength[^1];
+				else
+				{
+					index2--;
+					remainder2 += destination.highLength[^1];
+				}
+			}
+			while (remainder2 >= fragment)
+			{
+				index2++;
+				remainder2 -= fragment;
+			}
+			if (index2 >= destination.high.Length || destination.highLength.Length != 0 && destination.highLength.ValuesSum + fragment - destination.highLength[^1] + (destination.high.Length - destination.highLength.Length - 1) * fragment + destination.high[^1].Capacity < destinationIndex + length)
+			{
+				destination.Compactify();
+				goto destinationFragmentBigger;
+			}
 			if (index == index2)
 			{
 				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, length);
 				destination.highLength.SetOrAdd(index, RedStarLinq.Max(destination.highLength.Length
-					> index ? destination.highLength.GetInternal(index) : 0, remainder + length));
+					> index ? destination.highLength[index] : 0, remainder + length));
 			}
-			else
+			else if (sourceIndex >= destinationIndex)
 			{
-				var previousPart = RedStarLinq.Max(destination.highLength.Length > index
-					? destination.highLength.GetInternal(index) : 0, fragment) - remainder;
+				var previousPart = RedStarLinq.Min((destination.highLength.Length > index
+					? destination.highLength[index] : fragment) - remainder, length);
 				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, previousPart);
 				destination.highLength.SetOrAdd(index, RedStarLinq.Max(destination.highLength.Length
-					> index ? destination.highLength.GetInternal(index) : 0, remainder + previousPart));
+					> index ? destination.highLength[index] : 0, remainder + previousPart));
 				for (var i = index + 1; i < index2; i++)
 				{
-					CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(i), 0, destination.highLength.Length > i ? destination.highLength.GetInternal(i) : 0);
-					destination.highLength.SetOrAdd(i, RedStarLinq.Max(destination.highLength.Length > i ? destination.highLength.GetInternal(i) : 0, fragment));
-					previousPart += destination.highLength.Length > i ? destination.highLength.GetInternal(i) : 0;
+					CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(i), 0, destination.highLength.Length > i ? destination.highLength[i] : 0);
+					destination.highLength.SetOrAdd(i, (destination.highLength.Length > i ? destination.highLength[i] : fragment));
+					previousPart += destination.highLength.Length > i ? destination.highLength[i] : 0;
 				}
 				CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(index2), 0, length - previousPart);
 				if (length != previousPart)
-					destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength.GetInternal(index2) : 0, length - previousPart));
+					destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength[index2] : 0, length - previousPart));
+			}
+			else
+			{
+				var previousPart = RedStarLinq.Min(fragment - remainder, length) + (index2 - index - 1) * fragment;
+				CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(index2), 0, length - previousPart);
+				if (length != previousPart)
+					destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength[index2] : 0, length - previousPart));
+				for (var i = index2 - 1; i > index; i--)
+				{
+					CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(i), 0, destination.highLength.Length > i ? destination.highLength[i] : 0);
+					destination.highLength.SetOrAdd(i, RedStarLinq.Max(destination.highLength.Length > i ? destination.highLength[i] : 0, fragment));
+					previousPart += destination.highLength.Length > i ? destination.highLength[i] : 0;
+				}
+				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, previousPart);
+				destination.highLength.SetOrAdd(index, RedStarLinq.Max(destination.highLength.Length > index ? destination.highLength[index] : 0, remainder + previousPart));
 			}
 #if VERIFY
 			Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndex + length));
@@ -1410,7 +1366,144 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		if (!(high != null && highLength != null && destination.high != null && destination.highLength != null && fragment == destination.fragment))
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		Copy(high, highLength, sourceIndex, destination.high, destination.highLength, destinationIndex, length, fragment);
+		var compactified = false;
+	sameFragment:
+		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
+			return;
+		var sourceIntIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
+		var destinationIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
+		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+		var sourceEndIntIndex = highLength.IndexOfNotGreaterSum(sourceEndIndex, out var sourceEndBitsIndex);  // Индекс инта последнего бита.
+		while (sourceEndBitsIndex >= fragment)
+		{
+			sourceEndIntIndex++;
+			sourceEndBitsIndex -= fragment;
+		}
+		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
+		var destinationEndIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndBitsIndex);  // Индекс инта последнего бита.
+		if (destination.highLength.Length != 0 && destinationEndIntIndex == destination.highLength.Length)
+			destinationEndBitsIndex -= fragment - destination.highLength[^1];
+		while (destinationEndBitsIndex >= fragment)
+		{
+			destinationEndIntIndex++;
+			destinationEndBitsIndex -= fragment;
+		}
+		if (destinationIntIndex != 0 && destinationIntIndex == destination.highLength.Length && destinationBitsIndex == 0 && destination.highLength[destinationIntIndex - 1] != fragment)
+		{
+			destinationIntIndex--;
+			destinationBitsIndex = destination.highLength[^1];
+		}
+		if (destinationEndIntIndex != 0 && destinationEndBitsIndex < 0)
+		{
+			destinationEndIntIndex--;
+			destinationEndBitsIndex += fragment;
+		}
+		if (destinationEndIntIndex >= destination.high.Length || destinationEndBitsIndex < 0
+			|| destination.highLength.Length != 0 && destination.highLength.ValuesSum + fragment - destination.highLength[^1]
+			+ (destination.high.Length - destination.highLength.Length - 1) * fragment
+			+ destination.high[^1].Capacity < destinationIndex + length)
+		{
+			Debug.Assert(!compactified);
+			destination.Compactify();
+			compactified = true;
+			goto sameFragment;
+		}
+		else
+		{
+			Debug.Assert(sourceIntIndex >= 0 && sourceIntIndex < highLength.Length
+				&& sourceEndIntIndex >= 0 && sourceEndIntIndex < highLength.Length
+				&& destinationIntIndex >= 0 && destinationIntIndex < destination.high.Length
+				&& destinationEndIntIndex >= 0 && destinationEndIntIndex < destination.high.Length
+				&& sourceBitsIndex >= 0 && sourceEndBitsIndex >= 0 && destinationBitsIndex >= 0 && destinationEndBitsIndex >= 0);
+			if (sourceIndex >= destinationIndex || destinationIndex == destination.Length)
+				goto l1;
+			else
+			{
+				for (var i = destination.highLength.Length; i < destinationEndIntIndex + 1; i++)
+					destination.highLength.Add(1);
+				goto l2;
+			}
+		}
+	l1:
+		var sourceCurrentBitsIndex = sourceBitsIndex;
+		var destinationCurrentBitsIndex = destinationBitsIndex;
+		var sourceCurrentIntIndex = sourceIntIndex;
+		var destinationCurrentIntIndex = destinationIntIndex;
+		var bitsIndexDiff = (sourceBitsIndex - destinationBitsIndex).Abs();
+		bitsIndexDiff = RedStarLinq.Max(bitsIndexDiff, fragment - bitsIndexDiff);
+		MpzT step = 0;
+		var leftLength = length;
+		while (leftLength > 0)
+		{
+			var destinationMax = destination.highLength.Length > destinationCurrentIntIndex + 1
+				? destination.highLength[destinationCurrentIntIndex] : fragment;
+			step = RedStarLinq.Min(highLength[sourceCurrentIntIndex] - step, bitsIndexDiff,
+				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : fragment) - step,
+				highLength[sourceCurrentIntIndex] - sourceCurrentBitsIndex, destinationMax - destinationCurrentBitsIndex, leftLength);
+			if (step <= 0)
+			{
+				step = 0;
+				continue;
+			}
+			high.GetInternal(sourceCurrentIntIndex).CopyToInternal(sourceCurrentBitsIndex,
+				destination.high.GetInternal(destinationCurrentIntIndex), destinationCurrentBitsIndex, step);
+			var sourceThresholdReached = (sourceCurrentBitsIndex += step) == highLength[sourceCurrentIntIndex];
+			var destinationThresholdReached = (destinationCurrentBitsIndex += step) == destinationMax;
+			leftLength -= step;
+			if (sourceThresholdReached)
+			{
+				sourceCurrentIntIndex++;
+				sourceCurrentBitsIndex = 0;
+			}
+			if (destinationThresholdReached)
+			{
+				destination.highLength.SetOrAdd(destinationCurrentIntIndex, destinationCurrentBitsIndex);
+				destinationCurrentIntIndex++;
+				destinationCurrentBitsIndex = 0;
+			}
+		}
+		destination.highLength.SetOrAdd(destinationEndIntIndex, RedStarLinq.Max(destination.highLength.Length
+			> destinationEndIntIndex ? destination.highLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1));
+		return;
+	l2:
+		sourceCurrentBitsIndex = sourceEndBitsIndex + 1;
+		destinationCurrentBitsIndex = destinationEndBitsIndex + 1;
+		sourceCurrentIntIndex = sourceEndIntIndex;
+		destinationCurrentIntIndex = destinationEndIntIndex;
+		bitsIndexDiff = (sourceBitsIndex - destinationBitsIndex).Abs();
+		bitsIndexDiff = RedStarLinq.Max(bitsIndexDiff, fragment - bitsIndexDiff);
+		step = 0;
+		destination.highLength[destinationEndIntIndex] = RedStarLinq.Max(destination.highLength.Length > destinationEndIntIndex
+			? destination.highLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1);
+		leftLength = length;
+		while (leftLength > 0)
+		{
+			step = RedStarLinq.Min(highLength[sourceCurrentIntIndex] - step, bitsIndexDiff,
+				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : fragment)
+				- step, sourceCurrentBitsIndex, destinationCurrentBitsIndex, leftLength);
+			if (step <= 0)
+			{
+				step = 0;
+				continue;
+			}
+			var sourceThresholdReached = (sourceCurrentBitsIndex -= step) == 0;
+			var destinationThresholdReached = (destinationCurrentBitsIndex -= step) == 0;
+			high.GetInternal(sourceCurrentIntIndex).CopyToInternal(sourceCurrentBitsIndex,
+				destination.high.GetInternal(destinationCurrentIntIndex), destinationCurrentBitsIndex, step);
+			leftLength -= step;
+			if (sourceThresholdReached)
+			{
+				sourceCurrentIntIndex--;
+				sourceCurrentBitsIndex = sourceCurrentIntIndex >= sourceIntIndex ? highLength[sourceCurrentIntIndex] : fragment;
+			}
+			if (destinationThresholdReached)
+			{
+				destinationCurrentIntIndex--;
+				destination.highLength[destinationCurrentIntIndex] = destinationCurrentBitsIndex = fragment;
+			}
+		}
+		goto end;
+	end:
 #if VERIFY
 		Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndex + length));
 		Verify();
@@ -1509,6 +1602,180 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
+	private protected virtual void IncreaseCapacityExponential(MpzT value, MpzT targetFragment)
+	{
+		var this2 = (TCertain)this;
+		Debug.Assert(high != null && highLength != null);
+		do
+		{
+			var newFragment = fragment << CapacityStepBitLength;
+			if (_capacity < newFragment)
+				IncreaseCapacityLinear(newFragment);
+			var highCount = (int)RedStarLinq.Min(GetArrayLength(value, newFragment), CapacityStep);
+			var oldHigh = high;
+			var oldHighLength = highLength;
+			var oldLength = Length;
+			high = new(highCount) { CapacityCreator(0) };
+			var first = high.GetInternal(0);
+			first.fragment = fragment;
+			fragment = newFragment;
+			first.low = null;
+			first.high = oldHigh;
+			first.highLength = oldHighLength;
+			first.Length = oldHighLength.ValuesSum;
+			first._capacity = _capacity;
+			Debug.Assert(first.high != null && first.highLength != null);
+			first.parent = this2;
+			oldHigh.ForEach(x => x.parent = first);
+			for (var i = 1; i < high.Capacity - 1; i++)
+			{
+				high.Add(CapacityCreator(fragment));
+				high[^1].parent = this2;
+				AddCapacity(fragment);
+			}
+			var leftCapacity = value % fragment;
+			if (leftCapacity == 0)
+				leftCapacity = fragment;
+			high.Add(CapacityCreator(leftCapacity));
+			high[^1].parent = this2;
+			AddCapacity(leftCapacity);
+			highLength = [Length];
+		} while (fragment < targetFragment);
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	private protected virtual void IncreaseCapacityLinear(MpzT value)
+	{
+		var this2 = (TCertain)this;
+		Debug.Assert(high != null && highLength != null);
+		if (GetArrayLength(value, fragment) == GetArrayLength(_capacity, fragment))
+		{
+			high[^1].Capacity = value % fragment == 0 ? fragment : value % fragment;
+			return;
+		}
+		if (_capacity < fragment * high.Length)
+		{
+			high[^1].Capacity = fragment;
+			if (_capacity == value)
+				return;
+		}
+		var highCount = (int)GetArrayLength(value - _capacity, fragment);
+		high.Capacity = Max(high.Capacity, high.Length + highCount);
+		for (var i = 0; i < highCount - 1; i++)
+		{
+			high.Add(CapacityCreator(fragment));
+			high[^1].parent = this2;
+			AddCapacity(fragment);
+		}
+		var leftCapacity = (value - _capacity) % fragment;
+		if (leftCapacity == 0)
+			leftCapacity = fragment;
+		high.Add(CapacityCreator(leftCapacity));
+		high[^1].parent = this2;
+		AddCapacity(leftCapacity);
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	private protected virtual void ReduceCapacityExponential(MpzT newFragment)
+	{
+		var this2 = (TCertain)this;
+		do
+		{
+			Debug.Assert(high != null && highLength != null);
+			if (high.Length > 1 && high[1].Length != 0)
+				Compactify();
+			fragment >>= CapacityStepBitLength;
+			var oldHigh = high;
+			var oldHighLength = highLength;
+			oldHigh[1..].ForEach(x => x.Dispose());
+			highLength.Dispose();
+			low = oldHigh.GetInternal(0).low;
+			high = oldHigh.GetInternal(0).high;
+			highLength = oldHigh.GetInternal(0).highLength;
+			AddCapacity(oldHigh[0].Capacity - _capacity);
+			oldHigh.Dispose();
+			oldHighLength.Dispose();
+			if (high == null || highLength == null)
+			{
+				Debug.Assert(low != null);
+				return;
+			}
+			high.ForEach(x => x.parent = this2);
+		} while (fragment > newFragment);
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	private protected virtual void ReduceCapacityLinear(MpzT value)
+	{
+		Debug.Assert(high != null && highLength != null);
+		var highCount = (int)GetArrayLength(value, fragment);
+		if (highCount == high.Length || high.GetInternal(highCount).Length != 0)
+			Compactify();
+		for (var i = high.Length - 1; i >= highCount; i--)
+		{
+			AddCapacity(-high[i].Capacity);
+			high.GetInternal(i).Dispose();
+		}
+		high.RemoveEnd(highCount);
+		var leftCapacity = value % fragment;
+		if (leftCapacity == 0)
+			leftCapacity = fragment;
+		if (high[^1].Length > leftCapacity)
+			Compactify();
+		high[^1].Capacity = leftCapacity == 0 ? fragment : leftCapacity;
+#if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		Verify();
+#endif
+	}
+
+	public override TCertain Remove(MpzT index, MpzT length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > Length)
+			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
+		RemoveInternal(index, length);
+		return (TCertain)this;
+	}
+
 	private protected override void RemoveAtInternal(MpzT index)
 	{
 		if (low != null)
@@ -1522,9 +1789,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (quotient != highLength.Length - 1 && highLength.GetInternal(quotient) == 1)
 			{
 				var temp = high.GetInternal(quotient);
-				high.CopyToInternal(quotient + 1, high, quotient, high.Length - quotient - 1);
-				temp.Clear();
-				high[^1] = temp;
+				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
+				high.CopyToInternal(quotient + 1, high, quotient, high.Length - quotient - offsetFromEnd - 1);
+				high[^(offsetFromEnd + 1)] = temp;
+				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
+				high[^1].ClearInternal(false);
 				highLength.RemoveAt(quotient);
 			}
 			else
@@ -1541,7 +1811,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1580,7 +1849,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1591,13 +1859,85 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected override void RemoveInternal(MpzT index, MpzT length)
 	{
 		var this2 = (TCertain)this;
-		if (length > 0)
+		if (length == 0)
+			return;
+		if (low != null)
 		{
-			if (index < Length - length)
-				CopyToInternal(index + length, this2, index, Length - index - length);
-			RemoveEnd(Length - length);
+			low.Remove((int)index, (int)length);
+			Length -= length;
+#if VERIFY
+			Verify();
+#endif
+			return;
+		}
+		Debug.Assert(high != null && highLength != null);
+		var endIndex = index + length - 1;
+		var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
+		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+		if (intIndex == endIntIndex)
+		{
+			if (intIndex != highLength.Length - 1 && bitsIndex == 0 && endBitsIndex == highLength.GetInternal(intIndex) - 1)
+			{
+				var temp = high.GetInternal(intIndex);
+				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
+				high.CopyToInternal(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
+				high[^(offsetFromEnd + 1)] = temp;
+				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
+				high[^1].ClearInternal(false);
+				if (offsetFromEnd != 0)
+					highLength[intIndex] = highLength.GetInternal(intIndex + 1);
+				highLength.RemoveAt(intIndex + offsetFromEnd);
+			}
+			else
+			{
+				high.GetInternal(intIndex).RemoveInternal(bitsIndex, length);
+				highLength[intIndex] -= length;
+			}
+		}
+		else
+		{
+			var startOffset = bitsIndex == 0 ? 0 : 1;
+			var endOffset = endBitsIndex + 1 == highLength.GetInternal(endIntIndex) ? 1 : 0;
+			if (startOffset == 1)
+			{
+				high.GetInternal(intIndex).RemoveEndInternal(bitsIndex);
+				highLength[intIndex] = bitsIndex;
+			}
+			var tempRange = high.GetRange(intIndex + startOffset, endIntIndex + endOffset - (intIndex + startOffset));
+			var tempOffset = Capacity == high.Length * fragment ? 0 : 1;
+			var copyLength = high.Length - (endIntIndex + endOffset) - tempOffset;
+			if (copyLength > 0)
+			{
+				high.CopyToInternal(endIntIndex + endOffset, high, intIndex + startOffset, copyLength);
+				tempRange.CopyToInternal(0, high, high.Length + intIndex + startOffset - (endIntIndex + endOffset) - tempOffset, tempRange.Length);
+			}
+			if (tempRange.Length != 0)
+			{
+				tempRange[0].RemoveEndInternal(RedStarLinq.Min(high[^1].Length, tempRange[0].Length));
+				high[^1].CopyToInternal(0, tempRange[0], 0, high[^1].Length);
+				high[^1].ClearInternal(false);
+			}
+			highLength.Remove((intIndex + startOffset)..(endIntIndex + endOffset));
+			for (var i = high.Length - tempRange.Length; i < high.Length; i++)
+				high.GetInternal(i).ClearInternal(false);
+			Length = highLength.ValuesSum;
+			if (endOffset == 0)
+			{
+				high.GetInternal(intIndex + startOffset).RemoveInternal(0, endBitsIndex + 1);
+				if (highLength.Length > intIndex + startOffset)
+					highLength[intIndex + startOffset] -= endBitsIndex + 1;
+			}
 		}
 #if VERIFY
+		if (low != null)
+			Debug.Assert(Length == low.Length);
+		else if (high != null && highLength != null)
+		{
+			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+		}
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1619,7 +1959,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1646,7 +1985,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1676,7 +2014,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (low != null)
 			Debug.Assert(Length == low.Length);
 		else if (high != null && highLength != null)
+		{
 			Debug.Assert(Length == high.Sum(x => x.Length));
+			Debug.Assert(high.All(x => x.parent == this));
+			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
+			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
+		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}

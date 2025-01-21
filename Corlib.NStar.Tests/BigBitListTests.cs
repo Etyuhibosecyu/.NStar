@@ -3,6 +3,107 @@
 namespace Corlib.NStar.Tests;
 
 [TestClass]
+public class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+{
+	public static void ComplexTest(Func<(BigList<T, TCertain, TLow>, G.List<T>, byte[])> create, Func<T> newValueFunc, int multiplier)
+	{
+		var counter = 0;
+		var toInsert = Array.Empty<T>();
+	l1:
+		var (bl, gl, bytes) = create();
+		var collectionActions = new[] { () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 6), _ => newValueFunc());
+			var bl2 = bl.AddRange(toInsert);
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+		}, () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 6), _ => newValueFunc());
+			var bl2 = bl.AddRange(toInsert);
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+			//var n = random.Next(sl.Length);
+			//toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
+			//sl.Insert(n, toInsert);
+			//gl.InsertRange(n, toInsert);
+			//Assert.IsTrue(sl.Equals(gl));
+			//Assert.IsTrue(E.SequenceEqual(gl, sl));
+		}, () =>
+		{
+			var length = Min(random.Next(multiplier * 9), (int)bl.Length);
+			if (bl.Length < length)
+				return;
+			var start = random.Next((int)bl.Length - length + 1);
+			var bl2 = bl.Remove(start, length);
+			gl.RemoveRange(start, length);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+		}, () =>
+		{
+			var length = (int)bl.Length;
+			if (length == 0)
+				return;
+			var start = random.Next(1, length + 1);
+			var bl2 = bl.RemoveEnd(start);
+			gl.RemoveRange(start, length - start);
+			if (random.Next(2) == 1)
+				bl.TrimExcess();
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+		} };
+		var actions = new[] { () =>
+		{
+			var n = newValueFunc();
+			//if (random.Next(2) == 0)
+			//{
+				var bl2 = bl.Add(n);
+				gl.Add(n);
+			//}
+			//else
+			//{
+			//	var index = random.Next((int)sl.Length + 1);
+			//	sl.Insert(index, n);
+			//	gl.Insert(index, n);
+			//}
+			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+		}, () =>
+		{
+			if (bl.Length == 0) return;
+			var index = random.Next((int)bl.Length);
+			var bl2 = bl.RemoveAt(index);
+			gl.RemoveAt(index);
+			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+			Assert.IsTrue(bl == bl2);
+		}, () =>
+		{
+			collectionActions.Random(random)();
+			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			if (bl.Length == 0) return;
+			var index = random.Next((int)bl.Length);
+			Assert.AreEqual(bl[index], gl[index]);
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 250)
+			goto l1;
+	}
+}
+
+[TestClass]
 public class BigBitListTests
 {
 	[TestMethod]
@@ -52,6 +153,19 @@ public class BigBitListTests
 			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(destinationIndex + length), E.Skip(bitList3, destinationIndex + length)));
 		}
 	}
+
+	private BigBitList bl = default!;
+	private G.List<bool> gl = default!;
+
+	[TestMethod]
+	public void ComplexTest2() => BaseBigListTests<bool, BigBitList, BitList>.ComplexTest(() =>
+	{
+		var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 1);
+		bl = new(arr, 2, 6);
+		gl = new(arr);
+		var bytes = new byte[16];
+		return (bl, gl, bytes);
+	}, () => random.Next(2) == 1, BitsPerInt);
 
 	[TestMethod]
 	public void ConstructionTest()
@@ -158,4 +272,69 @@ public class BigBitListTests
 		Assert.AreNotEqual(bitList.Length, (uint)bitList.Length);
 		Assert.AreEqual(bitList.Length, (long)bitList.Length);
 	}
+}
+
+[TestClass]
+public class BigListTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var bytes = new byte[40];
+		random.NextBytes(bytes);
+		var length = 2;
+		var sourceIndex = 5;
+		var destinationIndex = 9;
+		BigList<byte> bitList, bitList2;
+		NList<byte> bitList3;
+		PerformIteration();
+		for (var i = 0; i < 5000; i++)
+		{
+			random.NextBytes(bytes);
+			length = random.Next(13);
+			sourceIndex = random.Next(bytes.Length - length + 1);
+			destinationIndex = random.Next(bytes.Length - length + 1);
+			PerformIteration();
+		}
+		void PerformIteration()
+		{
+			bitList3 = new(bytes);
+			bitList = new(bitList3, 2, 2);
+			bitList2 = new(bitList, 2, 2);
+			bitList.CopyTo(sourceIndex, bitList, destinationIndex, length);
+			Assert.IsTrue(bitList.GetRange(0, destinationIndex).Equals(bitList2.GetRange(0, destinationIndex)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(0, destinationIndex), E.Take(bitList2, destinationIndex)));
+			Assert.IsTrue(bitList.GetRange(destinationIndex, length).Equals(bitList2.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(destinationIndex, length), E.Take(E.Skip(bitList2, sourceIndex), length)));
+			if (sourceIndex >= 1 && destinationIndex >= 1)
+				Assert.AreEqual(bitList.GetRange(destinationIndex - 1, length + 1).Equals(bitList2.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(bitList.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(bitList2, sourceIndex - 1), length + 1)));
+			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
+				Assert.AreEqual(bitList.GetRange(destinationIndex, length + 1).Equals(bitList2.GetRange(sourceIndex, length + 1)), E.SequenceEqual(bitList.GetRange(destinationIndex, length + 1), E.Take(E.Skip(bitList2, sourceIndex), length + 1)));
+			Assert.IsTrue(bitList.GetRange(destinationIndex + length).Equals(bitList2.GetRange(destinationIndex + length)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(destinationIndex + length), E.Skip(bitList2, destinationIndex + length)));
+			Assert.IsTrue(bitList.GetRange(0, destinationIndex).Equals(bitList3.GetRange(0, destinationIndex)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(0, destinationIndex), E.Take(bitList3, destinationIndex)));
+			Assert.IsTrue(bitList.GetRange(destinationIndex, length).Equals(bitList3.GetRange(sourceIndex, length)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(destinationIndex, length), E.Take(E.Skip(bitList3, sourceIndex), length)));
+			if (sourceIndex >= 1 && destinationIndex >= 1)
+				Assert.AreEqual(bitList.GetRange(destinationIndex - 1, length + 1).Equals(bitList3.GetRange(sourceIndex - 1, length + 1)), E.SequenceEqual(bitList.GetRange(destinationIndex - 1, length + 1), E.Take(E.Skip(bitList3, sourceIndex - 1), length + 1)));
+			if (sourceIndex + length < bytes.Length - 1 && destinationIndex + length < bytes.Length - 1)
+				Assert.AreEqual(bitList.GetRange(destinationIndex, length + 1).Equals(bitList3.GetRange(sourceIndex, length + 1)), E.SequenceEqual(bitList.GetRange(destinationIndex, length + 1), E.Take(E.Skip(bitList3, sourceIndex), length + 1)));
+			Assert.IsTrue(bitList.GetRange(destinationIndex + length).Equals(bitList3.GetRange(destinationIndex + length)));
+			Assert.IsTrue(E.SequenceEqual(bitList.GetRange(destinationIndex + length), E.Skip(bitList3, destinationIndex + length)));
+		}
+	}
+
+	private BigList<int> bl = default!;
+	private G.List<int> gl = default!;
+
+	[TestMethod]
+	public void ComplexTest2() => BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
+	{
+		var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
+		bl = new(arr, 2, 2);
+		gl = new(arr);
+		var bytes = new byte[16];
+		return (bl, gl, bytes);
+	}, () => random.Next(16), 2);
 }
