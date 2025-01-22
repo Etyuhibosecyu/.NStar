@@ -26673,34 +26673,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26712,34 +26712,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26751,34 +26751,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26790,34 +26790,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26829,34 +26829,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26868,34 +26868,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26907,34 +26907,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -26946,34 +26946,34 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToListEnumerable(source, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -27030,23 +27030,23 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return List<int>.IndexOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return List<int>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return List<int>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -27055,23 +27055,23 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return List<uint>.IndexOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return List<uint>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return List<uint>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -27080,23 +27080,23 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / Math.Max(list.Length, 1));
 			return List<long>.IndexOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / Math.Max(array.Length, 1));
 			return List<long>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / Math.Max(list2.Count, 1));
 			return List<long>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -27105,23 +27105,23 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = NList<bool>.SumEnumerable(list) / list.Length;
+			var value = NList<bool>.SumEnumerable(list) / Math.Max(list.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = SumEnumerable(array.AsSpan()) / array.Length;
+			var value = SumEnumerable(array.AsSpan()) / Math.Max(array.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = NList<bool>.SumEnumerable(list2) / list2.Count;
+			var value = NList<bool>.SumEnumerable(list2) / Math.Max(list2.Count, 1);
 			return List<MpzT>.IndexOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.IndexOfEnumerable(list_, value);
 		}
 	}
@@ -32270,28 +32270,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32305,28 +32305,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32340,28 +32340,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32375,28 +32375,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32410,28 +32410,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32445,28 +32445,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32480,28 +32480,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32515,28 +32515,28 @@ public partial class List<T, TCertain>
 		{
 			var length = list._size;
 			var list_ = ToListEnumerable(list, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToListEnumerable(array.AsSpan(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ConvertEnumerable(list2.GetSlice(), function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ConvertEnumerable(list3, function);
-			var value = NList<bool>.SumEnumerable(list_) / list_.Length;
+			var value = NList<bool>.SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list_, value);
 		}
 		else
@@ -32589,17 +32589,17 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return List<int>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return List<int>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return List<int>.LastIndexOfEnumerable(list2, value);
 		}
 		else
@@ -32610,17 +32610,17 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return List<uint>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return List<uint>.LastIndexOfEnumerable(list2, value);
 		}
 		else
@@ -32631,17 +32631,17 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / Math.Max(list.Length, 1));
 			return List<long>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / Math.Max(array.Length, 1));
 			return List<long>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / Math.Max(list2.Count, 1));
 			return List<long>.LastIndexOfEnumerable(list2, value);
 		}
 		else
@@ -32652,17 +32652,17 @@ public partial class List<T, TCertain>
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = NList<bool>.SumEnumerable(list) / list.Length;
+			var value = NList<bool>.SumEnumerable(list) / Math.Max(list.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = SumEnumerable(array.AsSpan()) / array.Length;
+			var value = SumEnumerable(array.AsSpan()) / Math.Max(array.Length, 1);
 			return List<MpzT>.LastIndexOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = NList<bool>.SumEnumerable(list2) / list2.Count;
+			var value = NList<bool>.SumEnumerable(list2) / Math.Max(list2.Count, 1);
 			return List<MpzT>.LastIndexOfEnumerable(list2, value);
 		}
 		else
@@ -50419,7 +50419,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<int>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50428,7 +50428,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<int>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50437,7 +50437,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<uint>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50446,7 +50446,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<uint>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50455,7 +50455,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return List<long>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50464,7 +50464,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return List<long>.IndexOfEnumerable(list_, value);
 	}
 
@@ -50502,19 +50502,19 @@ public partial class List<T, TCertain>
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<int> source)
 	{
-		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return List<int>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return List<uint>.IndexOfEnumerable(source, value);
 	}
 
 	internal static int IndexOfMeanEnumerable(ReadOnlySpan<long> source)
 	{
-		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / Math.Max(source.Length, 1));
 		return List<long>.IndexOfEnumerable(source, value);
 	}
 
@@ -51735,7 +51735,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51744,7 +51744,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<int>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51753,7 +51753,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51762,7 +51762,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return List<uint>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51771,7 +51771,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51780,7 +51780,7 @@ public partial class List<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return List<long>.LastIndexOfEnumerable(list_, value);
 	}
 
@@ -51818,19 +51818,19 @@ public partial class List<T, TCertain>
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<int> source)
 	{
-		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return List<int>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return List<uint>.LastIndexOfEnumerable(source, value);
 	}
 
 	internal static int LastIndexOfMeanEnumerable(ReadOnlySpan<long> source)
 	{
-		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / Math.Max(source.Length, 1));
 		return List<long>.LastIndexOfEnumerable(source, value);
 	}
 
@@ -63278,23 +63278,23 @@ public unsafe partial class NList<T, TCertain>
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (int)(List<int>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return IndexesOfEnumerable(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (int)(List<int>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (int)(List<int>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -63303,23 +63303,23 @@ public unsafe partial class NList<T, TCertain>
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / list.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list, x => (long)x) / Math.Max(list.Length, 1));
 			return IndexesOfEnumerable(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / array.Length);
+			var value = (uint)(List<uint>.SumEnumerable(array.AsSpan(), x => (long)x) / Math.Max(array.Length, 1));
 			return IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / list2.Count);
+			var value = (uint)(List<uint>.SumEnumerable(list2, x => (long)x) / Math.Max(list2.Count, 1));
 			return IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -63328,23 +63328,23 @@ public unsafe partial class NList<T, TCertain>
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / list.Length);
+			var value = (long)(List<long>.SumEnumerable(list, x => (MpzT)x) / Math.Max(list.Length, 1));
 			return IndexesOfEnumerable(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / array.Length);
+			var value = (long)(List<long>.SumEnumerable(array.AsSpan(), x => (MpzT)x) / Math.Max(array.Length, 1));
 			return IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / list2.Count);
+			var value = (long)(List<long>.SumEnumerable(list2, x => (MpzT)x) / Math.Max(list2.Count, 1));
 			return IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -63353,23 +63353,23 @@ public unsafe partial class NList<T, TCertain>
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = SumEnumerable(list) / list.Length;
+			var value = SumEnumerable(list) / Math.Max(list.Length, 1);
 			return IndexesOfEnumerable(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = List<T_>.SumEnumerable(array.AsSpan()) / array.Length;
+			var value = List<T_>.SumEnumerable(array.AsSpan()) / Math.Max(array.Length, 1);
 			return IndexesOfEnumerable(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = SumEnumerable(list2) / list2.Count;
+			var value = SumEnumerable(list2) / Math.Max(list2.Count, 1);
 			return IndexesOfEnumerable(list2, value);
 		}
 		else
 		{
 			var list_ = ReturnOrConstruct(source);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -65919,34 +65919,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -65958,34 +65958,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -65997,34 +65997,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -66036,34 +66036,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+			var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -66075,34 +66075,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -66114,34 +66114,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+			var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -66153,34 +66153,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -66192,34 +66192,34 @@ public unsafe partial class NList<T, TCertain>
 		{
 			var length = list.Length;
 			var list_ = ToNListEnumerable(list, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is T_[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNListEnumerable(array.AsSpan(), function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IList<T_> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNListEnumerable(list2, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T_> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNListEnumerable(list3, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 		else
 		{
 			var list_ = ToNListEnumerable(source, function);
-			var value = SumEnumerable(list_) / list_.Length;
+			var value = SumEnumerable(list_) / Math.Max(list_.Length, 1);
 			return IndexesOfEnumerable(list_, value);
 		}
 	}
@@ -73508,7 +73508,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73517,7 +73517,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (int)(List<int>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73526,7 +73526,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73535,7 +73535,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / list_.Length);
+		var value = (uint)(List<uint>.SumEnumerable(list_, x => (long)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73544,7 +73544,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73553,7 +73553,7 @@ public unsafe partial class NList<T, TCertain>
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNListEnumerable(source, function);
-		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / list_.Length);
+		var value = (long)(List<long>.SumEnumerable(list_, x => (MpzT)x) / Math.Max(list_.Length, 1));
 		return IndexesOfEnumerable(list_, value);
 	}
 
@@ -73589,19 +73589,19 @@ public unsafe partial class NList<T, TCertain>
 
 	internal static NList<int> IndexesOfMeanEnumerable<T_>(ReadOnlySpan<int> source)
 	{
-		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (int)(List<int>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return IndexesOfEnumerable(source, value);
 	}
 
 	internal static NList<int> IndexesOfMeanEnumerable<T_>(ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / source.Length);
+		var value = (uint)(List<uint>.SumEnumerable(source, x => (long)x) / Math.Max(source.Length, 1));
 		return IndexesOfEnumerable(source, value);
 	}
 
 	internal static NList<int> IndexesOfMeanEnumerable<T_>(ReadOnlySpan<long> source)
 	{
-		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / source.Length);
+		var value = (long)(List<long>.SumEnumerable(source, x => (MpzT)x) / Math.Max(source.Length, 1));
 		return IndexesOfEnumerable(source, value);
 	}
 
