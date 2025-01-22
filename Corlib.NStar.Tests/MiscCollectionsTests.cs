@@ -157,14 +157,14 @@ public class SliceTests
 			var d = c.Find(x => x.Length != 3);
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 		}
 	}
 
@@ -197,14 +197,14 @@ public class SliceTests
 			var d = c.FindIndex(x => x.Length != 3);
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 		}
 	}
 
@@ -225,14 +225,14 @@ public class SliceTests
 			var d = c.FindLast(x => x.Length != 3);
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 		}
 	}
 
@@ -253,14 +253,14 @@ public class SliceTests
 			var d = c.FindLastIndex(x => x.Length != 3);
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 			c = new G.List<string>(list);
 			c.InsertRange(3, ["$", "###"]);
 			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 			Assert.IsTrue(a.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(b, d);
+			Assert.AreEqual(d, b);
 		}
 	}
 

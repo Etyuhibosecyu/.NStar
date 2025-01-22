@@ -291,10 +291,10 @@ public class ListTests
 		var c = new G.List<string>(list);
 		c.Sort();
 		var d = c.BinarySearch("MMM");
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.BinarySearch("NNN");
 		d = c.BinarySearch("NNN");
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -581,7 +581,7 @@ public class ListTests
 		var d = c.Find(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -589,7 +589,7 @@ public class ListTests
 		d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -609,7 +609,7 @@ public class ListTests
 		var d = c.FindIndex(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -617,7 +617,7 @@ public class ListTests
 		d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -630,7 +630,7 @@ public class ListTests
 		var d = c.FindLast(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -638,7 +638,7 @@ public class ListTests
 		d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -651,7 +651,7 @@ public class ListTests
 		var d = c.FindLastIndex(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -659,7 +659,7 @@ public class ListTests
 		d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1286,7 +1286,7 @@ public class ListTests
 		var d = c.RemoveAll(x => x.Length != 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = list.ToList().Insert(3, new List<string>("$", "###"));
 		b = a.RemoveAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<string>(list);
@@ -1294,7 +1294,7 @@ public class ListTests
 		d = c.RemoveAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1971,17 +1971,17 @@ public class ListTests
 		var d = c.TrueForAll(x => x.Length == 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x.Length <= 3);
 		d = c.TrueForAll(x => x.Length <= 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x.Length > 3);
 		d = c.TrueForAll(x => x.Length > 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]

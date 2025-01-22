@@ -137,23 +137,23 @@ public class RedStarLinqTests
 	{
 		var c = a.All(x => x.Length > 0);
 		var d = E.All(a, x => x.Length > 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.All(x => x.StartsWith('#'));
 		d = E.All(a, x => x.StartsWith('#'));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.All(x => x.StartsWith('M'));
 		d = E.All(a, x => x.StartsWith('M'));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, bool>)null!));
 		c = a.All((x, index) => x.Length > 0 && index >= 0);
 		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.All((x, index) => index < 0);
 		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.All((x, index) => x.StartsWith('M') && index > 0);
 		d = E.All(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.All((Func<string, int, bool>)null!));
 	});
 
@@ -164,24 +164,24 @@ public class RedStarLinqTests
 	{
 		var b = a.AllEqual();
 		var c = E.All(E.Zip(a, E.Skip(a, 1)), x => x.First == x.Second);
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string>)null!));
 		b = a.AllEqual((x, y) => x == y);
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string, bool>)null!));
 		b = a.AllEqual(x => x.Length);
 		c = E.All(E.Zip(a, E.Skip(a, 1)), x => x.First.Length == x.Second.Length);
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		b = a.AllEqual((x, y) => x.Length == y.Length);
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		b = a.AllEqual((x, y, index) => x.Length == y.Length && index < 10);
 		c = E.All(E.Zip(a, E.Skip(a, 1)), x => x.First.Length == x.Second.Length) && E.Count(a) <= 11;
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		b = a.AllEqual((x, y, index) => x.Length == y.Length && index < 0);
 		c = E.Count(a) <= 1;
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		b = a.AllEqual((x, y, index) => x.Length == y.Length && index > 0);
-		Assert.AreEqual(b, c);
+		Assert.AreEqual(c, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.AllEqual((Func<string, string, int, bool>)null!));
 	});
 		int[] arr = [3, 3, 3, 3, 3];
@@ -205,12 +205,12 @@ public class RedStarLinqTests
 		{
 			var b = a.AllUnique(x => x.Length);
 			var c = E.Count(E.Distinct(E.Select(a, x => x.Length))) == E.Count(E.Select(a, x => x.Length));
-			Assert.AreEqual(b, c);
+			Assert.AreEqual(c, b);
 			b = a.AllUnique((x, index) => index);
 			Assert.IsTrue(b);
 			b = a.AllUnique();
 			c = E.Count(E.Distinct(a)) == E.Count(a);
-			Assert.AreEqual(b, c);
+			Assert.AreEqual(c, b);
 			b = E.Distinct(a).AllUnique(x => x);
 			Assert.IsTrue(b);
 			b = E.Distinct(a).AllUnique();
@@ -248,35 +248,35 @@ public class RedStarLinqTests
 	{
 		var c = a.Any(x => x.Length > 0);
 		var d = E.Any(a, x => x.Length > 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Any(x => x.StartsWith('#'));
 		d = E.Any(a, x => x.StartsWith('#'));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Any(x => x.StartsWith('M'));
 		d = E.Any(a, x => x.StartsWith('M'));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, bool>)null!));
 		c = a.Any((x, index) => x.Length > 0 && index >= 0);
 		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.Length > 0 && x.index >= 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Any((x, index) => index < 0);
 		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.index < 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Any((x, index) => x.StartsWith('M') && index > 0);
 		d = E.Any(E.Select(a, (elem, index) => (elem, index)), x => x.elem.StartsWith('M') && x.index > 0);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Any((Func<string, int, bool>)null!));
 		c = a.Any();
 		d = E.Any(a);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		a = RedStarLinq.ToArray(list);
 		c = a.Any();
 		d = E.Any(a);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		a = E.ToList(list);
 		c = a.Any();
 		d = E.Any(a);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 	});
 
 	[TestMethod]
@@ -564,31 +564,31 @@ public class RedStarLinqTests
 		{
 			var c = a.Contains(s);
 			var d = E.Contains(a, s);
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, new EComparer<string>((x, y) => x == y));
 			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, (x, y) => x == y);
 			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, new EComparer<string>((x, y) => x == y, x => 42));
 			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, (x, y) => x == y, x => 42);
 			d = E.Contains(a, s, new EComparer<string>((x, y) => x == y, x => 42));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, new EComparer<string>((x, y) => false));
 			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, (x, y) => false);
 			d = E.Contains(a, s, new EComparer<string>((x, y) => false));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, new EComparer<string>((x, y) => false, x => 42));
 			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			c = a.Contains(s, (x, y) => false, x => 42);
 			d = E.Contains(a, s, new EComparer<string>((x, y) => false, x => 42));
-			Assert.AreEqual(c, d);
+			Assert.AreEqual(d, c);
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (G.IEqualityComparer<string>)null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (Func<string, string, bool>)null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.Contains(s, (x, y) => x == y, null!));
@@ -640,18 +640,18 @@ public class RedStarLinqTests
 	{
 		var c = a.Count("MMM");
 		var d = E.Count(a, x => x == "MMM");
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Count(x => x is "MMM" or "PPP");
 		d = E.Count(a, x => x is "MMM" or "PPP");
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, bool>)null!));
 		c = a.Count((x, index) => (x[0] + index) % 2 == 1);
 		d = E.Count(E.Where(a, (x, index) => (x[0] + index) % 2 == 1));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, int, bool>)null!));
 		c = a.Length();
 		d = E.Count(a);
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 	});
 
 	[TestMethod]
@@ -659,20 +659,20 @@ public class RedStarLinqTests
 	{
 		var c = a.Count("MMM");
 		var d = E.Count(a, x => x == "MMM");
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		c = a.Count(x => x is "MMM" or "PPP");
 		d = E.Count(a, x => x is "MMM" or "PPP");
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, bool>)null!));
 		c = a.Count((x, index) => (x[0] + index) % 2 == 1);
 		d = E.Count(E.Where(a, (x, index) => (x[0] + index) % 2 == 1));
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, int, bool>)null!));
 		c = a.Length();
 #pragma warning disable
 		d = E.Count(a);
 #pragma warning restore
-		Assert.AreEqual(c, d);
+		Assert.AreEqual(d, c);
 	});
 
 	[TestMethod]

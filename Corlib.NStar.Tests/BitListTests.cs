@@ -544,7 +544,7 @@ public class BitListTests
 		var d = c.Find(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = new BitList(bitList).Insert(3, [false, true]);
 		b = a.Find(x => x ^ x);
 		c = new G.List<bool>(bitList);
@@ -552,7 +552,7 @@ public class BitListTests
 		d = c.Find(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -588,7 +588,7 @@ public class BitListTests
 		var d = c.FindIndex(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = new BitList(bitList).Insert(3, [false, true]);
 		b = a.FindIndex(x => x ^ x);
 		c = new G.List<bool>(bitList);
@@ -596,7 +596,7 @@ public class BitListTests
 		d = c.FindIndex(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -609,7 +609,7 @@ public class BitListTests
 		var d = c.FindLast(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = new BitList(bitList).Insert(3, [false, true]);
 		b = a.FindLast(x => x ^ x);
 		c = new G.List<bool>(bitList);
@@ -617,7 +617,7 @@ public class BitListTests
 		d = c.FindLast(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -630,7 +630,7 @@ public class BitListTests
 		var d = c.FindLastIndex(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = new BitList(bitList).Insert(3, [false, true]);
 		b = a.FindLastIndex(x => x ^ x);
 		c = new G.List<bool>(bitList);
@@ -638,7 +638,7 @@ public class BitListTests
 		d = c.FindLastIndex(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1356,7 +1356,7 @@ public class BitListTests
 		var d = c.RemoveAll(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = new BitList(bitList).Insert(3, [false, true]);
 		b = a.RemoveAll(x => x);
 		c = new G.List<bool>(bitList);
@@ -1364,7 +1364,7 @@ public class BitListTests
 		d = c.RemoveAll(x => x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1770,16 +1770,16 @@ public class BitListTests
 		var d = c.TrueForAll(x => x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x ^ !x);
 		d = c.TrueForAll(x => x ^ !x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x ^ x);
 		d = c.TrueForAll(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 }

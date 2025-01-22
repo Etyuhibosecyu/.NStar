@@ -616,7 +616,7 @@ public class NListTests
 		var d = c.Find(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.Find(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -624,7 +624,7 @@ public class NListTests
 		d = c.Find(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -660,7 +660,7 @@ public class NListTests
 		var d = c.FindIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -668,7 +668,7 @@ public class NListTests
 		d = c.FindIndex(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -681,7 +681,7 @@ public class NListTests
 		var d = c.FindLast(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindLast(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -689,7 +689,7 @@ public class NListTests
 		d = c.FindLast(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -702,7 +702,7 @@ public class NListTests
 		var d = c.FindLastIndex(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.FindLastIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -710,7 +710,7 @@ public class NListTests
 		d = c.FindLastIndex(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1360,7 +1360,7 @@ public class NListTests
 		var d = c.RemoveAll(x => x.Item1 == '\0' || x.Item2 == '\0' || x.Item3 == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nList.ToNList().Insert(3, new NList<(char, char, char)>(('$', '\0', '\0'), ('#', '#', '#')));
 		b = a.RemoveAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
@@ -1368,7 +1368,7 @@ public class NListTests
 		d = c.RemoveAll(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -1787,17 +1787,17 @@ public class NListTests
 		var d = c.TrueForAll(x => x.Item1 != '\0' && x.Item2 != '\0' && x.Item3 != '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x.Item1 != '\0');
 		d = c.TrueForAll(x => x.Item1 != '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => new[] { x.Item1, x.Item2, x.Item3 }.Length > 3);
 		d = c.TrueForAll(x => new[] { x.Item1, x.Item2, x.Item3 }.Length > 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -2781,7 +2781,7 @@ public class StringTests
 		var d = c.Find(x => x == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nString.ToNString().Insert(3, new String('$', '#'));
 		b = a.Find(x => x is not (>= 'A' and <= 'Z'));
 		c = new(nString);
@@ -2789,7 +2789,7 @@ public class StringTests
 		d = c.Find(x => x is not (>= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -2825,7 +2825,7 @@ public class StringTests
 		var d = c.FindIndex(x => x == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nString.ToNString().Insert(3, new String('$', '#'));
 		b = a.FindIndex(x => x is not (>= 'A' and <= 'Z'));
 		c = new G.List<char>(nString);
@@ -2833,7 +2833,7 @@ public class StringTests
 		d = c.FindIndex(x => x is not (>= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -2846,7 +2846,7 @@ public class StringTests
 		var d = c.FindLast(x => x == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nString.ToNString().Insert(3, new String('$', '#'));
 		b = a.FindLast(x => x is not (>= 'A' and <= 'Z'));
 		c = new G.List<char>(nString);
@@ -2854,7 +2854,7 @@ public class StringTests
 		d = c.FindLast(x => x is not (>= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -2867,7 +2867,7 @@ public class StringTests
 		var d = c.FindLastIndex(x => x == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nString.ToNString().Insert(3, new String('$', '#'));
 		b = a.FindLastIndex(x => x is not (>= 'A' and <= 'Z'));
 		c = new G.List<char>(nString);
@@ -2875,7 +2875,7 @@ public class StringTests
 		d = c.FindLastIndex(x => x is not (>= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -3557,7 +3557,7 @@ public class StringTests
 		var d = c.RemoveAll(x => x == '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		a = nString.ToNString().Insert(3, new String('$', '#'));
 		b = a.RemoveAll(x => x is not (>= 'A' and <= 'Z'));
 		c = new G.List<char>(nString);
@@ -3565,7 +3565,7 @@ public class StringTests
 		d = c.RemoveAll(x => x is not (>= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]
@@ -4234,17 +4234,17 @@ public class StringTests
 		var d = c.TrueForAll(x => x != '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => x != '\0');
 		d = c.TrueForAll(x => x != '\0');
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 		b = a.TrueForAll(x => new[] { x }.Length > 3);
 		d = c.TrueForAll(x => new[] { x }.Length > 3);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
-		Assert.AreEqual(b, d);
+		Assert.AreEqual(d, b);
 	}
 
 	[TestMethod]

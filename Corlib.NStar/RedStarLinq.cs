@@ -30579,7 +30579,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30601,7 +30601,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30623,7 +30623,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30645,7 +30645,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30674,7 +30674,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30696,7 +30696,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30718,7 +30718,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30740,7 +30740,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30769,7 +30769,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30791,7 +30791,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30813,7 +30813,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30835,7 +30835,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30864,7 +30864,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30886,7 +30886,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30908,7 +30908,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30930,7 +30930,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -30959,7 +30959,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -30981,7 +30981,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31003,7 +31003,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31025,7 +31025,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31054,7 +31054,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31076,7 +31076,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31098,7 +31098,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31120,7 +31120,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31149,7 +31149,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31171,7 +31171,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31193,7 +31193,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31215,7 +31215,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31244,7 +31244,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31266,7 +31266,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31288,7 +31288,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31310,7 +31310,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31339,7 +31339,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31361,7 +31361,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31383,7 +31383,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31405,7 +31405,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31434,7 +31434,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31456,7 +31456,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31478,7 +31478,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31500,7 +31500,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31529,7 +31529,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31551,7 +31551,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31573,7 +31573,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31595,7 +31595,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -31624,7 +31624,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31646,7 +31646,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31668,7 +31668,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31690,7 +31690,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -31718,7 +31718,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31740,7 +31740,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31762,7 +31762,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31790,7 +31790,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31812,7 +31812,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31834,7 +31834,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31862,7 +31862,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31884,7 +31884,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31906,7 +31906,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31934,7 +31934,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31956,7 +31956,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -31978,7 +31978,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32006,7 +32006,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32028,7 +32028,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32050,7 +32050,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32078,7 +32078,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32100,7 +32100,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -32122,7 +32122,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -33179,7 +33179,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33201,7 +33201,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33223,7 +33223,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33245,7 +33245,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33274,7 +33274,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33296,7 +33296,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33318,7 +33318,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33340,7 +33340,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33369,7 +33369,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33391,7 +33391,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33413,7 +33413,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33435,7 +33435,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33464,7 +33464,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33486,7 +33486,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33508,7 +33508,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33530,7 +33530,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33559,7 +33559,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33581,7 +33581,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33603,7 +33603,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33625,7 +33625,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33654,7 +33654,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33676,7 +33676,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33698,7 +33698,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33720,7 +33720,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33749,7 +33749,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33771,7 +33771,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33793,7 +33793,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33815,7 +33815,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33844,7 +33844,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33866,7 +33866,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33888,7 +33888,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33910,7 +33910,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -33939,7 +33939,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33961,7 +33961,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -33983,7 +33983,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34005,7 +34005,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34034,7 +34034,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34056,7 +34056,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34078,7 +34078,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34100,7 +34100,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34129,7 +34129,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34151,7 +34151,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34173,7 +34173,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34195,7 +34195,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item);
 					result = i;
@@ -34224,7 +34224,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list._items[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34246,7 +34246,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34268,7 +34268,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34290,7 +34290,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list3[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = function(item, i);
 					result = i;
@@ -34318,7 +34318,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34340,7 +34340,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34362,7 +34362,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34390,7 +34390,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34412,7 +34412,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34434,7 +34434,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34462,7 +34462,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34484,7 +34484,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34506,7 +34506,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34534,7 +34534,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34556,7 +34556,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34578,7 +34578,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34606,7 +34606,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34628,7 +34628,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34650,7 +34650,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34678,7 +34678,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list.GetInternal(i);
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34700,7 +34700,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = array[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -34722,7 +34722,7 @@ public partial class List<T, TCertain>
 			for (var i = length - 1; i >= 0; i--)
 			{
 				var item = list2[i];
-				if (i == 0)
+				if (i == length - 1)
 				{
 					indicator = item;
 					result = i;
@@ -51258,7 +51258,7 @@ public partial class List<T, TCertain>
 	internal static int LastIndexOfEnumerable(ReadOnlySpan<T> source, T target)
 	{
 		var length = source.Length;
-		for (var i = 0; i < length; i++)
+		for (var i = length - 1; i >= 0; i--)
 			if (source[i]?.Equals(target) ?? false)
 				return i;
 		return -1;
@@ -51271,10 +51271,10 @@ public partial class List<T, TCertain>
 		var result = -1;
 		decimal indicator = 0;
 		decimal f;
-		for (var i = 0; i < length; i++)
+		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51298,7 +51298,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51322,7 +51322,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51346,7 +51346,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51370,7 +51370,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51394,7 +51394,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51418,7 +51418,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51442,7 +51442,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51466,7 +51466,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51490,7 +51490,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51514,7 +51514,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51538,7 +51538,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -51561,7 +51561,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51584,7 +51584,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51607,7 +51607,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51630,7 +51630,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51653,7 +51653,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51676,7 +51676,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -51958,7 +51958,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -51982,7 +51982,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52006,7 +52006,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -52030,7 +52030,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52054,7 +52054,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -52078,7 +52078,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52102,7 +52102,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -52126,7 +52126,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52150,7 +52150,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -52174,7 +52174,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52198,7 +52198,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item);
 				result = i;
@@ -52222,7 +52222,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = function(item, i);
 				result = i;
@@ -52245,7 +52245,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -52268,7 +52268,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -52291,7 +52291,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -52314,7 +52314,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -52337,7 +52337,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
@@ -52360,7 +52360,7 @@ public partial class List<T, TCertain>
 		for (var i = length - 1; i >= 0; i--)
 		{
 			var item = source[i];
-			if (i == 0)
+			if (i == length - 1)
 			{
 				indicator = item;
 				result = i;
