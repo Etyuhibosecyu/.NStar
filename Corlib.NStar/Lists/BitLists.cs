@@ -42,18 +42,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		CopyMemory(ptr, _items, uints);
 	}
 
-	public BitList(uint[] values)
-	{
-		ArgumentNullException.ThrowIfNull(values);
-		var uints = values.Length;
-		// this value is chosen to prevent overflow when computing m_length
-		if (uints > int.MaxValue / BitsPerInt)
-			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
-		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
-		_size = uints * BitsPerInt;
-		fixed (uint* ptr = values)
-			CopyMemory(ptr, _items, uints);
-	}
+	public BitList(uint[] values) : this(values.AsSpan()) { }
 
 	public BitList(int length, params uint[] values)
 	{
@@ -63,6 +52,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		if (uints > int.MaxValue / BitsPerInt)
 			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		if (uints > values.Length)
+			FillMemory(_items + values.Length, uints - values.Length, 0);
 		_size = length;
 		fixed (uint* ptr = values)
 			CopyMemory(ptr, _items, values.Length);
@@ -89,6 +80,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		if (uints > int.MaxValue / BitsPerInt)
 			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		if (uints > values.Length)
+			FillMemory(_items + values.Length, uints - values.Length, 0);
 		_size = length;
 		fixed (uint* ptr = values)
 			CopyMemory(ptr, _items, values.Length);
@@ -610,7 +603,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		for (int sourceCurrentIntIndex = start.IntIndex + 1, destinationCurrentIntIndex = 0; destinationCurrentIntIndex < destinationEnd.IntIndex; sourceCurrentIntIndex++, destinationCurrentIntIndex++)
 		{
 			buff |= ((ulong)_items[sourceCurrentIntIndex]) << BitsPerInt - start.BitsIndex;
-			if (bitList._items[destinationCurrentIntIndex] != (uint)buff) return false;
+			if (bitList._items[destinationCurrentIntIndex] != (uint)buff)
+				return false;
 			buff >>= BitsPerInt;
 		}
 		if (sourceEndIntIndex - start.IntIndex != destinationEnd.IntIndex)
@@ -874,6 +868,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override void SetAllInternal(bool value, int index, int length)
 	{
+		if (length == 0)
+			return;
 		(var intIndex, var bitsIndex) = DivRem(index, BitsPerInt);
 		(var endIntIndex, var endBitsIndex) = DivRem(index + length - 1, BitsPerInt);
 		if (intIndex == endIntIndex)
@@ -1037,14 +1033,14 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 
 	public BigBitList() : this(-1) { }
 
-	public BigBitList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitList(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(MpzT length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (length <= CapacityFirstStep)
+		if (length <= LeafSize)
 		{
 			low = new((int)length, defaultValue);
 			high = null;
@@ -1054,18 +1050,18 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			high = new((int)GetArrayLength(length, fragment));
 			highLength = [];
 			for (MpzT i = 0; i < high.Capacity - 1; i++)
 			{
-				high.Add(new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
+				high.Add(new(fragment, defaultValue, SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				AddCapacity(fragment);
 				highLength.Add(fragment);
 			}
 			var rest = length % fragment == 0 ? fragment : length % fragment;
-			high.Add(new(rest, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength));
+			high.Add(new(rest, defaultValue, SubbranchesBitLength, LeafSizeBitLength));
 			high[^1].parent = this;
 			AddCapacity(rest);
 			highLength.Add(rest);
@@ -1079,7 +1075,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 		}
 		else
@@ -1088,7 +1084,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(BitArray bitArray, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bitArray == null)
 			throw new ArgumentNullException(nameof(bitArray));
@@ -1104,7 +1100,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 		}
 		else
@@ -1113,7 +1109,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(IEnumerable<byte> bytes, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bytes == null)
 			throw new ArgumentNullException(nameof(bytes));
@@ -1149,7 +1145,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 		}
 		else
@@ -1158,7 +1154,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(IEnumerable<bool> bools, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (bools == null)
 			throw new ArgumentNullException(nameof(bools));
@@ -1192,7 +1188,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 		}
 		else
@@ -1201,7 +1197,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(IEnumerable<int> ints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (ints == null)
 			throw new ArgumentNullException(nameof(ints));
@@ -1222,7 +1218,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		{
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 		}
 		else
@@ -1231,7 +1227,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(IEnumerable<uint> uints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		if (uints == null)
 			throw new ArgumentNullException(nameof(uints));
@@ -1261,9 +1257,9 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(uint[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitList(uint[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(ReadOnlySpan<uint> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.Length * BitsPerInt, capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(ReadOnlySpan<uint> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.Length * BitsPerInt, subbranchesBitLength, leafSizeBitLength)
 	{
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
@@ -1280,13 +1276,13 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	public BigBitList(MpzT capacity, uint[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitList(MpzT capacity, uint[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(RedStarLinq.Max(capacity, values.Length * BitsPerInt), values.AsSpan(),
-		capacityStepBitLength, capacityFirstStepBitLength) { }
+		subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitList(MpzT capacity, ReadOnlySpan<uint> values, int capacityStepBitLength = -1,
-		int capacityFirstStepBitLength = -1) : this(RedStarLinq.Max(capacity, values.Length * BitsPerInt),
-		capacityStepBitLength, capacityFirstStepBitLength)
+	public BigBitList(MpzT capacity, ReadOnlySpan<uint> values, int subbranchesBitLength = -1,
+		int leafSizeBitLength = -1) : this(RedStarLinq.Max(capacity, values.Length * BitsPerInt),
+		subbranchesBitLength, leafSizeBitLength)
 	{
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
@@ -1303,39 +1299,39 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	private protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override int CapacityFirstStepBitLength { get; init; } = 20;
+	private protected override int LeafSizeBitLength { get; init; } = 20;
 
 	private protected override Func<int, BitList> CapacityLowCreator => x => new(x);
 
 	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
 
-	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override int DefaultCapacity => 256;
 
 	public virtual BigBitList AddRange(BitArray bitArray)
 	{
-		using BigBitList bitList = new(bitArray, CapacityStepBitLength, CapacityFirstStepBitLength);
+		using BigBitList bitList = new(bitArray, SubbranchesBitLength, LeafSizeBitLength);
 		return base.AddRange(bitList);
 	}
 
 	public virtual BigBitList AddRange(IEnumerable<byte> bytes)
 	{
-		using BigBitList bitList = new(bytes, CapacityStepBitLength, CapacityFirstStepBitLength);
+		using BigBitList bitList = new(bytes, SubbranchesBitLength, LeafSizeBitLength);
 		return base.AddRange(bitList);
 	}
 
 	public virtual BigBitList AddRange(IEnumerable<int> ints)
 	{
-		using BigBitList bitList = new(ints, CapacityStepBitLength, CapacityFirstStepBitLength);
+		using BigBitList bitList = new(ints, SubbranchesBitLength, LeafSizeBitLength);
 		return base.AddRange(bitList);
 	}
 
 	public virtual BigBitList AddRange(IEnumerable<uint> uints)
 	{
-		using BigBitList bitList = new(uints, CapacityStepBitLength, CapacityFirstStepBitLength);
+		using BigBitList bitList = new(uints, SubbranchesBitLength, LeafSizeBitLength);
 		return base.AddRange(bitList);
 	}
 
@@ -1360,7 +1356,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			return;
 		}
 		Debug.Assert(bitList.Length <= _capacity);
-		if (bitList.Length <= CapacityFirstStep && low != null && high == null && highLength == null && fragment == 1)
+		if (bitList.Length <= LeafSize && low != null && high == null && highLength == null && fragment == 1)
 		{
 			low.AddRange(bitList);
 			Length = bitList.Length;
@@ -1389,7 +1385,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	private protected virtual void ConstructFromBitListFromScratch(BitList bitList)
 	{
 		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
-		if (bitList.Length <= CapacityFirstStep && high == null && highLength == null && fragment == 1)
+		if (bitList.Length <= LeafSize && high == null && highLength == null && fragment == 1)
 		{
 			if (low == null)
 				low = new(bitList);
@@ -1404,14 +1400,14 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var fragment2 = (int)fragment;
 			high = new(GetArrayLength(bitList.Length, fragment2));
 			highLength = [];
 			var index = 0;
 			for (; index <= bitList.Length - fragment2; index += fragment2)
 			{
-				high.Add(new(CapacityStepBitLength, CapacityFirstStepBitLength));
+				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromBitListFromScratch(bitList.GetRange(index, fragment2));
 				highLength.Add(fragment);
@@ -1419,7 +1415,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			if (bitList.Length % fragment2 != 0)
 			{
 				var rest = bitList.Length - index;
-				high.Add(new(CapacityStepBitLength, CapacityFirstStepBitLength));
+				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromBitListFromScratch(bitList.GetRange(index));
 				highLength.Add(rest);
@@ -1438,7 +1434,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		var length = bigUIntList.Length;
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt : (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
 		Debug.Assert(bitLength <= _capacity);
-		if (length <= CapacityFirstStep / BitsPerInt && low != null && high == null && highLength == null && fragment == 1)
+		if (length <= LeafSize / BitsPerInt && low != null && high == null && highLength == null && fragment == 1)
 		{
 			low.AddRange(bigUIntList);
 			low.RemoveEnd((int)bitLength);
@@ -1473,7 +1469,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
 		var length = bigUIntList.Length;
 		var bitLength = length == 0 || overrideLength % BitsPerInt == 0 ? length * BitsPerInt : (length - 1) * BitsPerInt + overrideLength % BitsPerInt;
-		if (bitLength <= CapacityFirstStep && high == null && highLength == null && fragment == 1)
+		if (bitLength <= LeafSize && high == null && highLength == null && fragment == 1)
 		{
 			if (low == null)
 				low = new(bigUIntList);
@@ -1489,14 +1485,14 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else
 		{
 			low = null;
-			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var uintsFragment = fragment / BitsPerInt;
 			high = new((int)GetArrayLength(length, uintsFragment));
 			highLength = [];
 			MpzT index = 0;
 			for (; index < length - uintsFragment; index += uintsFragment)
 			{
-				high.Add(new(CapacityStepBitLength, CapacityFirstStepBitLength));
+				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromUIntListFromScratch(bigUIntList.GetRange(index, uintsFragment));
 				highLength.Add(fragment);
@@ -1506,7 +1502,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				var rest = bitLength % fragment;
 				if (rest == 0)
 					rest = fragment;
-				high.Add(new(CapacityStepBitLength, CapacityFirstStepBitLength));
+				high.Add(new(SubbranchesBitLength, LeafSizeBitLength));
 				high[^1].parent = this;
 				high[^1].ConstructFromUIntListFromScratch(bigUIntList.GetRange(index), overrideLength);
 				high[^1].RemoveEndInternal(rest);

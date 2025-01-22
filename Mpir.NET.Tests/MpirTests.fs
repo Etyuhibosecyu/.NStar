@@ -35,97 +35,97 @@ type ``MpzT - literals`` () =
     static member ``Large literal`` () =
         let z = bigNumLiteral1
         let zStr = Mpir.MpzGetString(10u, z)
-        Assert.AreEqual(bigNumStr1, zStr)
+        Assert.That(bigNumStr1, Is.EqualTo(zStr))
 
 type ``MpzT - import and export`` () =
     [<Test>]
     static member ``Importing BigInteger`` () =
         let z = new MpzT(bigint1.ToByteArray(), -1)
         let zStr = Mpir.MpzGetString(10u, z)
-        Assert.AreEqual(bigNumStr1, zStr)
+        Assert.That(bigNumStr1, Is.EqualTo(zStr))
 
     [<Test>]
     static member ``Exporting BigInteger`` () =
         let z = new MpzT(bigNumStr1)
         let t = z.ToBigInteger()
-        Assert.AreEqual(bigint1, t)
+        Assert.That(bigint1, Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting byte`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (byte)z
-        Assert.AreEqual(byte1, t)
+        Assert.That(byte1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (byte)z
-            Assert.AreEqual(byteArray[0], t)
+            Assert.That(byteArray[0], Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting short`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (int16)z
-        Assert.AreEqual(short1, t)
+        Assert.That(short1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (int16)z
-            Assert.AreEqual(((int16)byteArray[1] <<< 8) + (int16)byteArray[0], t)
+            Assert.That(((int16)byteArray[1] <<< 8) + (int16)byteArray[0], Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting ushort`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (uint16)z
-        Assert.AreEqual(ushort1, t)
+        Assert.That(ushort1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (uint16)z
-            Assert.AreEqual(((uint16)byteArray[1] <<< 8) + (uint16)byteArray[0], t)
+            Assert.That(((uint16)byteArray[1] <<< 8) + (uint16)byteArray[0], Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting int`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (int32)z
-        Assert.AreEqual(int1, t)
+        Assert.That(int1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (int32)z
-            Assert.AreEqual(((((int32)byteArray[3] <<< 8) + (int32)byteArray[2] <<< 8) + (int32)byteArray[1] <<< 8) + (int32)byteArray[0], t)
+            Assert.That(((((int32)byteArray[3] <<< 8) + (int32)byteArray[2] <<< 8) + (int32)byteArray[1] <<< 8) + (int32)byteArray[0], Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting uint`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (uint32)z
-        Assert.AreEqual(uint1, t)
+        Assert.That(uint1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (uint32)z
-            Assert.AreEqual(((((uint32)byteArray[3] <<< 8) + (uint32)byteArray[2] <<< 8) + (uint32)byteArray[1] <<< 8) + (uint32)byteArray[0], t)
+            Assert.That(((((uint32)byteArray[3] <<< 8) + (uint32)byteArray[2] <<< 8) + (uint32)byteArray[1] <<< 8) + (uint32)byteArray[0], Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting long`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (int64)z
-        Assert.AreEqual(long1, t)
+        Assert.That(long1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (int64)z
-            Assert.AreEqual(BitConverter.ToInt64(byteArray), t)
+            Assert.That(BitConverter.ToInt64(byteArray), Is.EqualTo(t))
 
     [<Test>]
     static member ``Exporting ulong`` () =
         let mutable z = new MpzT(bigNumStr1)
         let mutable t = (uint64)z
-        Assert.AreEqual(ulong1, t)
+        Assert.That(ulong1, Is.EqualTo(t))
         for i in 0..1000 do
             random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             t <- (uint64)z
-            Assert.AreEqual(BitConverter.ToUInt64(byteArray), t)
+            Assert.That(BitConverter.ToUInt64(byteArray), Is.EqualTo(t))
 
     [<Test>]
     static member ``Importing bigint bytes, big endian`` () =
@@ -134,16 +134,16 @@ type ``MpzT - import and export`` () =
         let mutable z = new MpzT(byteArray |> Array.rev, 1)
         let mutable zStr = Mpir.MpzGetString(10u, z)
         let mutable arr = z.ToByteArray(1) |> Array.rev
-        Assert.AreEqual(bigNumStr1, zStr)
-        Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+        Assert.That(bigNumStr1, Is.EqualTo(zStr))
+        Assert.That(Enumerable.SequenceEqual(byteArray, arr))
         for i in 0..10000 do
             while byteArray[byteArray.Length - 1] = (byte)0 || byteArray[byteArray.Length - 1] = (byte)255 do
                 random.NextBytes byteArray
             z <- new MpzT(byteArray |> Array.rev, 1)
             zStr <- Mpir.MpzGetString(10u, z)
             arr <- z.ToByteArray(1) |> Array.rev
-            Assert.AreEqual((new bigint(byteArray)).ToString(), zStr)
-            Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+            Assert.That((new bigint(byteArray)).ToString(), Is.EqualTo(zStr))
+            Assert.That(Enumerable.SequenceEqual(byteArray, arr))
 
     [<Test>]
     static member ``Importing bigint bytes, little endian`` () =
@@ -152,16 +152,16 @@ type ``MpzT - import and export`` () =
         let mutable z = new MpzT(byteArray, -1)
         let mutable zStr = Mpir.MpzGetString(10u, z)
         let mutable arr = z.ToByteArray(-1)
-        Assert.AreEqual(bigNumStr1, zStr)
-        Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+        Assert.That(bigNumStr1, Is.EqualTo(zStr))
+        Assert.That(Enumerable.SequenceEqual(byteArray, arr))
         for i in 0..10000 do
             while byteArray[0] = (byte)0 || byteArray[0] = (byte)255 do
                 random.NextBytes byteArray
             z <- new MpzT(byteArray, -1)
             zStr <- Mpir.MpzGetString(10u, z)
             arr <- z.ToByteArray(-1)
-            Assert.AreEqual((new bigint(byteArray)).ToString(), zStr)
-            Assert.IsTrue(Enumerable.SequenceEqual(byteArray, arr))
+            Assert.That((new bigint(byteArray)).ToString(), Is.EqualTo(zStr))
+            Assert.That(Enumerable.SequenceEqual(byteArray, arr))
 
     [<Test>]
     static member ``Exporting mpz, big endian`` () =
@@ -174,7 +174,7 @@ type ``MpzT - import and export`` () =
         let bytes = z.ToByteArray(1)
         let exportStr = (bigint( [|0uy|] ++ bytes |> Array.rev )).ToString()
 
-        Assert.AreEqual(bigNumStr1, exportStr)
+        Assert.That(bigNumStr1, Is.EqualTo(exportStr))
 
     [<Test>]
     static member ``Exporting mpz, little endian`` () =
@@ -184,7 +184,7 @@ type ``MpzT - import and export`` () =
         let bytes = z.ToByteArray(-1)
         let exportStr = (bigint(bytes)).ToString()
 
-        Assert.AreEqual(bigNumStr1, exportStr)
+        Assert.That(bigNumStr1, Is.EqualTo(exportStr))
 
     [<TestCase(18446744073709551615UL)>]
     [<TestCase( 9223372036854775807UL)>] 
@@ -198,7 +198,7 @@ type ``MpzT - import and export`` () =
         let z = new MpzT(bigEndianBytes, 1)
 
         let zStr = Mpir.MpzGetString(10u, z)
-        Assert.AreEqual(n.ToString(), zStr)
+        Assert.That(n.ToString(), Is.EqualTo(zStr))
 
     [<TestCase(18446744073709551615UL)>]
     [<TestCase( 9223372036854775807UL)>] 
@@ -212,7 +212,7 @@ type ``MpzT - import and export`` () =
         let z = new MpzT(littleEndianBytes, -1)
 
         let zStr = Mpir.MpzGetString(10u, z)
-        Assert.AreEqual(n.ToString(), zStr)
+        Assert.That(n.ToString(), Is.EqualTo(zStr))
 
 
 type ``MpzT - casts`` () =
@@ -221,14 +221,14 @@ type ``MpzT - casts`` () =
         let tstVal : int64 = 0x7F00ABCDEA007851L
         let a = new MpzT(tstVal)
         let b = (int64 a)
-        Assert.AreEqual(tstVal, b)
+        Assert.That(tstVal, Is.EqualTo(b))
 
     [<Test>]
     static member ``MpzT to ulong`` () =
         let tstVal : uint64 = 0xFF00ABCDEA007851UL
         let a = new MpzT(tstVal)
         let b = (uint64 a)
-        Assert.AreEqual(tstVal, b)
+        Assert.That(tstVal, Is.EqualTo(b))
 
 
 type ``MpzT - operations`` () =
@@ -239,7 +239,7 @@ type ``MpzT - operations`` () =
         let za = new MpzT(a)
         let zb = new MpzT(b)
         let result = za.Abs()
-        Assert.AreEqual(result, zb)
+        Assert.That(result, Is.EqualTo(zb))
 
     [<TestCase("43967907490790576908375907590346925623895", "67907490790576908375907590346925623895")>]
     [<TestCase("43967907490790576908375907590346925623895", "-99943967907490790576908375907590346925623895")>]
@@ -248,7 +248,7 @@ type ``MpzT - operations`` () =
         let za = new MpzT(a)
         let zb = new MpzT(b)
         let max = Mpir.Max(za, zb)
-        Assert.AreEqual(za, max)
+        Assert.That(za, Is.EqualTo(max))
 
     [<TestCase("43967907490790576908375907590346925623895", "67907490790576908375907590346925623895")>]
     [<TestCase("43967907490790576908375907590346925623895", "-99943967907490790576908375907590346925623895")>]
@@ -257,7 +257,7 @@ type ``MpzT - operations`` () =
         let za = new MpzT(a)
         let zb = new MpzT(b)
         let min = Mpir.Min(za, zb)
-        Assert.AreEqual(zb, min)
+        Assert.That(zb, Is.EqualTo(min))
 
     [<Test>]
     static member ``PowerMod with negative exponent``() =
@@ -265,14 +265,14 @@ type ``MpzT - operations`` () =
         let zb = 7Z
         let actual = za.PowerMod(-1, zb)
         let expected = 5Z
-        Assert.AreEqual(expected, actual)
+        Assert.That(expected, Is.EqualTo(actual))
 
     [<Test>]
     static member ``Very big BitLength``() =
         let za = 3Z
         let actual = za.Power(2147483647).GetFullBitLength()
         let expected = 3403681052Z
-        Assert.AreEqual(expected, actual)
+        Assert.That(expected, Is.EqualTo(actual))
 [<EntryPoint>]
 let main _ =
     0

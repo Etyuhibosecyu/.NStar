@@ -960,25 +960,25 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 {
 	public BigList() : this(-1) { }
 
-	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(values, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, T[] values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacity, values.AsEnumerable(), capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(capacity, values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigList(MpzT capacity, ReadOnlySpan<T> values, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacity, values, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigList(MpzT capacity, ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, values, subbranchesBitLength, leafSizeBitLength) { }
 
-	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
 

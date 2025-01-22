@@ -173,11 +173,11 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		var b = TestCollection.Contains("MMM");
 		Assert.IsTrue(b);
 		b = TestCollection.Contains("BBB", 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = TestCollection.Contains(new List<string>("PPP", "DDD", "MMM"));
 		Assert.IsTrue(b);
 		b = TestCollection.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
 	}
 
@@ -188,9 +188,9 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "DDD"));
 		Assert.IsTrue(b);
 		b = TestCollection.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	public void TestEquals()
@@ -200,11 +200,11 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
 		Assert.IsTrue(b);
 		b = TestCollection.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	public void TestFindAll()
@@ -230,19 +230,19 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 	public void TestIndexOf()
 	{
 		var b = TestCollection.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = TestCollection.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = TestCollection.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = TestCollection.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = TestCollection.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1, 5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", 3, -5));
@@ -257,19 +257,19 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 	public void TestLastIndexOf()
 	{
 		var b = TestCollection.LastIndexOf("MMM");
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = TestCollection.LastIndexOf("BBB", 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = TestCollection.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = TestCollection.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = TestCollection.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1, 5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", 3, -5));

@@ -36,7 +36,7 @@ public class PrependTests
 			b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
 			Assert.IsTrue(b);
 			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 		}
 	}
 
@@ -58,7 +58,7 @@ public class PrependTests
 			b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.IsTrue(b);
 			b = a.ContainsAnyExcluding(a);
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 		}
 	}
 
@@ -419,13 +419,13 @@ public class PrependTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 0);
+			Assert.AreEqual(0, b);
 			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(b, 2);
+			Assert.AreEqual(2, b);
 			b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
@@ -444,11 +444,11 @@ public class PrependTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 1);
+			Assert.AreEqual(1, b);
 			b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, 0);
+			Assert.AreEqual(0, b);
 			b = a.IndexOfAnyExcluding(a);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
@@ -478,13 +478,13 @@ public class PrependTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 6);
+			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(b, 2);
+			Assert.AreEqual(2, b);
 			b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
@@ -503,11 +503,11 @@ public class PrependTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 5);
+			Assert.AreEqual(5, b);
 			b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, 6);
+			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAnyExcluding(a);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
@@ -642,7 +642,7 @@ public class PrependTests
 			b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
 			Assert.IsTrue(b);
 			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
 		}
 	}

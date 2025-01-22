@@ -626,11 +626,11 @@ public class ListHashSetTests
 		var b = a.Contains("MMM");
 		Assert.IsTrue(b);
 		b = a.Contains("BBB", 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new List<string>("PPP", "DDD", "EEE"));
 		Assert.IsTrue(b);
 		b = a.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<string>)null!));
 	}
 
@@ -643,7 +643,7 @@ public class ListHashSetTests
 		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -655,7 +655,7 @@ public class ListHashSetTests
 		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -701,9 +701,9 @@ public class ListHashSetTests
 		b = a.EndsWith(new List<string>("PPP", "DDD", "EEE"));
 		Assert.IsTrue(b);
 		b = a.EndsWith(new List<string>("MMM", "DDD", "EEE"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -715,11 +715,11 @@ public class ListHashSetTests
 		b = a.Equals(new List<string>("BBB", "PPP", "DDD"), 1);
 		Assert.IsTrue(b);
 		b = a.Equals(new List<string>("PPP", "DDD", "NNN"), 1);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Equals(new List<string>("BBB", "PPP", "DDD"), 1, true);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -1091,19 +1091,19 @@ public class ListHashSetTests
 	{
 		var a = list.ToHashSet();
 		var b = a.IndexOf("MMM");
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOf("BBB", 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOf(new List<string>("PPP", "DDD", "EEE"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf(new[] { "DDD", "EEE" }, 3);
-		Assert.AreEqual(b, 3);
+		Assert.AreEqual(3, b);
 		b = a.IndexOf(new[] { "DDD", "EEE" }, 0, 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<string>)null!));
 	}
 
@@ -1112,13 +1112,13 @@ public class ListHashSetTests
 	{
 		var a = list.ToHashSet();
 		var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 	}
 
@@ -1127,11 +1127,11 @@ public class ListHashSetTests
 	{
 		var a = list.ToHashSet();
 		var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
@@ -1538,7 +1538,7 @@ public class ListHashSetTests
 		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
 		Assert.IsTrue(b);
 		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
 	}
 

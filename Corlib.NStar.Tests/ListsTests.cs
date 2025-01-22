@@ -365,14 +365,14 @@ public class ListTests
 			do
 				b[n] = random.Next(1000).ToString("D3");
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b) == n);
+			Assert.AreEqual(n, a.Compare(b));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
 			b = new(a);
 			n = random.Next(2, a.Length);
 			do
 				b[n] = random.Next(1000).ToString("D3");
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			Assert.AreEqual(n - 1, a.Compare(b, n - 1));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
 			b = new(a);
 			var length = a.Length;
@@ -383,8 +383,8 @@ public class ListTests
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
 			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
 			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
-			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
 	}
 
@@ -416,7 +416,7 @@ public class ListTests
 		b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -428,7 +428,7 @@ public class ListTests
 		b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -802,13 +802,13 @@ public class ListTests
 	{
 		var a = list.ToList();
 		var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOfAny(["LLL", "NNN", "PPP"], 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 	}
 
@@ -817,11 +817,11 @@ public class ListTests
 	{
 		var a = list.ToList();
 		var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
@@ -951,13 +951,13 @@ public class ListTests
 	{
 		var a = list.ToList();
 		var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.LastIndexOfAny(["LLL", "NNN", "EEE"], 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
 	}
 
@@ -966,11 +966,11 @@ public class ListTests
 	{
 		var a = list.ToList();
 		var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(b, 5);
+		Assert.AreEqual(5, b);
 		b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
@@ -1862,7 +1862,7 @@ public class ListTests
 		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
 		Assert.IsTrue(b);
 		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
 	}
 

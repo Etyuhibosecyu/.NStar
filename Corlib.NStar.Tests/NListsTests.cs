@@ -261,14 +261,14 @@ public class NListTests
 			do
 				b[n] = Next();
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b) == n);
+			Assert.AreEqual(n, a.Compare(b));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
 			b = new(a);
 			n = random.Next(2, a.Length);
 			do
 				b[n] = Next();
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			Assert.AreEqual(n - 1, a.Compare(b, n - 1));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
 			b = new(a);
 			var length = a.Length;
@@ -279,8 +279,8 @@ public class NListTests
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
 			a.Insert(0, E.Select(E.Range(0, index), _ => Next()));
 			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => Next()));
-			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
 		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
 	}
@@ -304,11 +304,11 @@ public class NListTests
 		var b = a.Contains(('M', 'M', 'M'));
 		Assert.IsTrue(b);
 		b = a.Contains(('B', 'B', 'B'), 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
 		Assert.IsTrue(b);
 		b = a.Contains(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('N', 'N', 'N')));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -321,7 +321,7 @@ public class NListTests
 		b = a.ContainsAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('M', 'M', 'M'), ('N', 'N', 'N')));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -333,7 +333,7 @@ public class NListTests
 		b = a.ContainsAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -371,8 +371,8 @@ public class NListTests
 			Assert.IsTrue(E.SequenceEqual(a, b));
 			index = random.Next(a.Length);
 			a[index] = ((char)(a[index].Item1 + 1), (char)(a[index].Item2 + 1), (char)(a[index].Item3 + 1));
-			Assert.IsTrue(!RedStarLinq.Equals(a, b));
-			Assert.IsTrue(!E.SequenceEqual(a, b));
+			Assert.IsFalse(RedStarLinq.Equals(a, b));
+			Assert.IsFalse(E.SequenceEqual(a, b));
 		}
 	}
 
@@ -403,9 +403,9 @@ public class NListTests
 		b = a.EndsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('E', 'E', 'E'), ('D', 'D', 'D')));
 		Assert.IsTrue(b);
 		b = a.EndsWith(new NList<(char, char, char)>(('P', 'P', 'P'), ('E', 'E', 'E'), ('D', 'D', 'D')));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.EndsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('E', 'E', 'E'), ('N', 'N', 'N')));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -846,19 +846,19 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.IndexOf(('M', 'M', 'M'));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOf(('B', 'B', 'B'), 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf(('B', 'B', 'B'), 1, 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOf(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOf(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('N', 'N', 'N')));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = a.IndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 0, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -867,13 +867,13 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.IndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('N', 'N', 'N'), ('P', 'P', 'P')));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOfAny(new[] { ('L', 'L', 'L'), ('N', 'N', 'N'), ('P', 'P', 'P') }, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -882,11 +882,11 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.IndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOfAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -1013,19 +1013,19 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.LastIndexOf(('M', 'M', 'M'));
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = a.LastIndexOf(('B', 'B', 'B'), 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.LastIndexOf(('B', 'B', 'B'), 3, 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.LastIndexOf(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('N', 'N', 'N')));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf(new[] { ('M', 'M', 'M'), ('E', 'E', 'E') }, 5, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -1034,13 +1034,13 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.LastIndexOfAny(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAny(new NList<(char, char, char)>(('L', 'L', 'L'), ('N', 'N', 'N'), ('P', 'P', 'P')));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.LastIndexOfAny(new[] { ('L', 'L', 'L'), ('N', 'N', 'N'), ('E', 'E', 'E') }, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -1049,11 +1049,11 @@ public class NListTests
 	{
 		var a = nList.ToNList();
 		var b = a.LastIndexOfAnyExcluding(new NList<(char, char, char)>(('P', 'P', 'P'), ('D', 'D', 'D'), ('M', 'M', 'M')));
-		Assert.AreEqual(b, 5);
+		Assert.AreEqual(5, b);
 		b = a.LastIndexOfAnyExcluding(new NList<(char, char, char)>(('X', 'X', 'X'), ('Y', 'Y', 'Y'), ('Z', 'Z', 'Z')));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -1678,7 +1678,7 @@ public class NListTests
 		b = a.StartsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('B', 'B', 'B'), ('P', 'P', 'P')));
 		Assert.IsTrue(b);
 		b = a.StartsWith(new NList<(char, char, char)>(('M', 'M', 'M'), ('B', 'B', 'B'), ('X', 'X', 'X')));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<(char, char, char)>)null!));
 	}
 
@@ -2170,14 +2170,14 @@ public class StringTests
 			do
 				b[n] = Next();
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b) == n);
+			Assert.AreEqual(n, a.Compare(b));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
 			b = new(a);
 			n = random.Next(2, a.Length);
 			do
 				b[n] = Next();
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			Assert.AreEqual(n - 1, a.Compare(b, n - 1));
 			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => Next()));
 			b = new(a);
 			var length = a.Length;
@@ -2188,8 +2188,8 @@ public class StringTests
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
 			a.Insert(0, E.Select(E.Range(0, index), _ => Next()));
 			b = b.Insert(0, E.Select(E.Range(0, otherIndex), _ => Next()));
-			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
 		static char Next() => (char)random.Next(1000);
 	}
@@ -2453,11 +2453,11 @@ public class StringTests
 		var b = a.Contains('M');
 		Assert.IsTrue(b);
 		b = a.Contains('B', 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new String('P', 'D', 'M'));
 		Assert.IsTrue(b);
 		b = a.Contains(new String('P', 'D', 'N'));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<char>)null!));
 	}
 
@@ -2470,7 +2470,7 @@ public class StringTests
 		b = a.ContainsAny(new String('L', 'M', 'N'));
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new String('X', 'Y', 'Z'));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -2482,7 +2482,7 @@ public class StringTests
 		b = a.ContainsAnyExcluding(new String('X', 'Y', 'Z'));
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -2520,8 +2520,8 @@ public class StringTests
 			Assert.IsTrue(E.SequenceEqual(a, b));
 			index = random.Next(a.Length);
 			a[index] = (char)(a[index] + 1);
-			Assert.IsTrue(!RedStarLinq.Equals(a, b));
-			Assert.IsTrue(!E.SequenceEqual(a, b));
+			Assert.IsFalse(RedStarLinq.Equals(a, b));
+			Assert.IsFalse(E.SequenceEqual(a, b));
 		}
 	}
 
@@ -2552,9 +2552,9 @@ public class StringTests
 		b = a.EndsWith(new String('M', 'E', 'D'));
 		Assert.IsTrue(b);
 		b = a.EndsWith(new String('P', 'E', 'D'));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.EndsWith(new String('M', 'E', 'N'));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -3011,19 +3011,19 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.IndexOf('M');
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOf('B', 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf('B', 1, 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOf(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOf(new String('P', 'D', 'N'));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf("ME", 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = a.IndexOf("ME", 0, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<char>)null!));
 	}
 
@@ -3032,13 +3032,13 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.IndexOfAny(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAny(new String('L', 'N', 'P'));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOfAny("LNP", 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new String('X', 'Y', 'Z'));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<char>)null!));
 	}
 
@@ -3047,11 +3047,11 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.IndexOfAnyExcluding(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOfAnyExcluding(new String('X', 'Y', 'Z'));
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<char>)null!));
 	}
 
@@ -3226,19 +3226,19 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.LastIndexOf('M');
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = a.LastIndexOf('B', 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.LastIndexOf('B', 3, 2);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.LastIndexOf(new String('P', 'D', 'N'));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf("ME", 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOf("ME", 5, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<char>)null!));
 	}
 
@@ -3247,13 +3247,13 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.LastIndexOfAny(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAny(new String('L', 'N', 'P'));
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.LastIndexOfAny("LNE", 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new String('X', 'Y', 'Z'));
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<char>)null!));
 	}
 
@@ -3262,11 +3262,11 @@ public class StringTests
 	{
 		var a = nString.ToNString();
 		var b = a.LastIndexOfAnyExcluding(new String('P', 'D', 'M'));
-		Assert.AreEqual(b, 5);
+		Assert.AreEqual(5, b);
 		b = a.LastIndexOfAnyExcluding(new String('X', 'Y', 'Z'));
-		Assert.AreEqual(b, 6);
+		Assert.AreEqual(6, b);
 		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<char>)null!));
 	}
 
@@ -3914,7 +3914,7 @@ public class StringTests
 		b = a.StartsWith(new String('M', 'B', 'P'));
 		Assert.IsTrue(b);
 		b = a.StartsWith(new String('M', 'B', 'X'));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<char>)null!));
 	}
 

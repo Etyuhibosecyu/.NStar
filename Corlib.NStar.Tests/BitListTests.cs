@@ -45,19 +45,80 @@ public class BitListTests
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var funcs = new[]
+		{
+			(Random random) => new BitList(), random => new(1600), random => new(1600, false),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())),
+			random => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())),
+			random => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next())),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan()),
+			random => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan()),
+			random => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan()),
+			random => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next())),
+			random => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())),
+			random => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))),
+			random => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x)),
+			random => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1)),
+			random => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1)),
+			random => new(new BitArray(1600)), random => new(new BitArray(1600, false)),
+			random => new(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
+			random => new(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))),
+			random => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))),
+			random => new(new BitList()), random => new(new BitList(1600)), random => new(new BitList(1600, false)),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
+			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
+			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()))),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan())),
+			random => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan())),
+			random => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan())),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))),
+			random => new(new BitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))),
+			random => new(new BitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x))),
+			random => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1))),
+			random => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1))),
+			random => new(new BitList(new BitArray(1600))), random => new(new BitList(new BitArray(1600, false))),
+			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next())))),
+			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))))),
+			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))))
+		};
 		var array = new BitList[3200];
+		var seed = Global.random.Next();
+		Random random = new(seed), random2 = new(seed);
 		for (var i = 0; i < array.Length; i++)
 		{
-			array[i] = new[] { () => new BitList(), () => new(1600), () => new(1600, false), () => new(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), () => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), () => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next())), () => new(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan()), () => new(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan()), () => new(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan()), () => new(RedStarLinq.FillArray(random.Next(50), _ => random.Next())), () => new((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next())), () => new(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))), () => new(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)), () => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x)), () => new(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x)), () => new(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x)), () => new(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x)), () => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1)), () => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1)), () => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1)), () => new(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1)), () => new(new BitArray(1600)), () => new(new BitArray(1600, false)), () => new(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))), () => new(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))), () => new(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))), () => new(new BitList()), () => new(new BitList(1600)), () => new(new BitList(1600, false)), () => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))), () => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))), () => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()))), () => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan())), () => new(new BitList(1600, RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()).AsSpan())), () => new(new BitList(100, RedStarLinq.FillArray(random.Next(5, 50), _ => (uint)random.Next()).AsSpan())), () => new(new BitList(RedStarLinq.FillArray(random.Next(50), _ => random.Next()))), () => new(new BitList((G.IEnumerable<uint>)RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()))), () => new(new BitList(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)))), () => new(new BitList(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))), () => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), x => x))), () => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), x => x))), () => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), x => x))), () => new(new BitList(E.Select(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), x => x))), () => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => random.Next()), _ => random.Next(10) == -1))), () => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(50), _ => (uint)random.Next()), _ => random.Next(10) == -1))), () => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256)), _ => random.Next(10) == -1))), () => new(new BitList(E.SkipWhile(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1), _ => random.Next(10) == -1))), () => new(new BitList(new BitArray(1600))), () => new(new BitList(new BitArray(1600, false))), () => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(50), _ => random.Next())))), () => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(200), _ => (byte)random.Next(256))))), () => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1)))) }.Random(random)();
+			array[i] = funcs.Random(random)(random);
+			var testBitList = funcs.Random(random2)(random2);
+			Assert.IsTrue(array[i].Equals(testBitList));
+			Assert.IsTrue(E.SequenceEqual(testBitList, array[i]));
+			var testBitList2 = new BitList(E.ToArray(testBitList));
+			testBitList.Dispose();
+			Assert.IsTrue(array[i].Equals(testBitList2));
+			Assert.IsTrue(E.SequenceEqual(testBitList2, array[i]));
+			testBitList2.Dispose();
+			var length = array[i].Length;
 			for (var j = 0; j < 3200; j++)
 			{
-				array[i].Add(random.Next(2) == 1);
+				array[i].Add(Global.random.Next(2) == 1);
 				Assert.IsTrue(array[i].Capacity >= array[i].Length);
+				Assert.AreEqual(array[i].Length, length + j + 1);
 			}
 		}
 		Thread.Sleep(50);
 		for (var i = 0; i < array.Length; i++)
-			array[i].Add(random.Next(2) == 1);
+			array[i].Add(Global.random.Next(2) == 1);
 	}
 
 	[TestMethod]
@@ -243,14 +304,14 @@ public class BitListTests
 			do
 				b[n] = random.Next(2) == 1;
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b) == n);
+			Assert.AreEqual(n, a.Compare(b));
 			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
 			b = new(a);
 			n = random.Next(2, a.Length);
 			do
 				b[n] = random.Next(2) == 1;
 			while (b[n] == a[n]);
-			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			Assert.AreEqual(n - 1, a.Compare(b, n - 1));
 			a = new(E.Select(E.Range(0, random.Next(5, 3000)), _ => random.Next(2) == 1));
 			b = new(a);
 			var length = a.Length;
@@ -261,8 +322,8 @@ public class BitListTests
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
 			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(2) == 1));
 			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(2) == 1));
-			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
+			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
 	}
 
@@ -285,11 +346,11 @@ public class BitListTests
 		var b = a.Contains(true);
 		Assert.IsTrue(b);
 		b = a.Contains(false, 65);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new G.List<bool>() { false, true, true });
 		Assert.IsTrue(b);
 		b = a.Contains(new G.List<bool>() { false, true, false }, 3, 3);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
 	}
 
@@ -302,7 +363,7 @@ public class BitListTests
 		b = a.ContainsAny(new G.List<bool>() { true, true, false });
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new G.List<bool>() { false, false, false }, 65);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -310,11 +371,11 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.ContainsAnyExcluding(new G.List<bool>() { false, true, true });
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.ContainsAnyExcluding(new G.List<bool>() { false, false, false }, 65);
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -360,9 +421,9 @@ public class BitListTests
 		b = a.EndsWith(new G.List<bool>() { true, true, true });
 		Assert.IsTrue(b);
 		b = a.EndsWith(new G.List<bool>() { true, true, false });
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.EndsWith(new G.List<bool>() { false, false, false });
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -374,11 +435,11 @@ public class BitListTests
 		b = a.Equals(new G.List<bool>() { false, false, false }, 2);
 		Assert.IsTrue(b);
 		b = a.Equals(new G.List<bool>() { false, true, false }, 2);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Equals(new G.List<bool>() { false, true, true }, 3);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Equals(new G.List<bool>() { false, true, true }, 2, true);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -838,19 +899,19 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.IndexOf(false);
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOf(false, 65);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf(a[1], 1, 2);
-		Assert.AreEqual(b, 1);
+		Assert.AreEqual(1, b);
 		b = a.IndexOf(new G.List<bool>() { false, false, false });
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOf(new G.List<bool>() { false, true, false }, 65);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 4);
-		Assert.AreEqual(b, 4);
+		Assert.AreEqual(4, b);
 		b = a.IndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 0, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<bool>)null!));
 	}
 
@@ -859,13 +920,13 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.IndexOfAny(new G.List<bool>() { false, true, true });
-		Assert.AreEqual(b, 0);
+		Assert.AreEqual(0, b);
 		b = a.IndexOfAny(new G.List<bool>() { a[9], a[2], a[45] }, 2);
-		Assert.AreEqual(b, 2);
+		Assert.AreEqual(2, b);
 		b = a.IndexOfAny(new G.List<bool>() { true, true, true }, 0, 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAny(new G.List<bool>() { false, false, false }, 65);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<bool>)null!));
 	}
 
@@ -874,11 +935,11 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.IndexOfAnyExcluding(new G.List<bool>() { false, true, true });
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.IndexOfAnyExcluding(new G.List<bool>() { false, false, false }, 65);
-		Assert.AreEqual(b, 65);
+		Assert.AreEqual(65, b);
 		b = a.IndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<bool>)null!));
 	}
 
@@ -957,17 +1018,17 @@ public class BitListTests
 		{
 			var a = new BitList(bitList);
 			var b = a.LastIndexOf(new[] { a[1], a[2] }, 2);
-			Assert.AreEqual(b, 1);
+			Assert.AreEqual(1, b);
 			b = a.LastIndexOf(new BitList(5, true), 3, 2);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.LastIndexOf(new G.List<bool>() { false, true, true });
-			Assert.AreEqual(b, 63);
+			Assert.AreEqual(63, b);
 			b = a.LastIndexOf(new G.List<bool>() { false, true, false });
-			Assert.AreEqual(b, 54);
+			Assert.AreEqual(54, b);
 			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] }, 3);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.LastIndexOf(new[] { a[4], a[5], a[6], a[7], a[8] });
-			Assert.AreEqual(b, 56);
+			Assert.AreEqual(56, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOf((G.IEnumerable<bool>)null!));
 		}
 	}
@@ -977,13 +1038,13 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.LastIndexOfAny(new G.List<bool>() { false, true, true });
-		Assert.AreEqual(b, 70);
+		Assert.AreEqual(70, b);
 		b = a.LastIndexOfAny(new G.List<bool>() { a[9], a[2], a[45] }, 9);
-		Assert.AreEqual(b, 9);
+		Assert.AreEqual(9, b);
 		b = a.LastIndexOfAny(new BitList(3, true), 4);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAny(new G.List<bool>() { true, true, true }, 3);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<bool>)null!));
 	}
 
@@ -992,11 +1053,11 @@ public class BitListTests
 	{
 		var a = new BitList(bitList);
 		var b = a.LastIndexOfAnyExcluding(new G.List<bool>() { false, true, true });
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		b = a.LastIndexOfAnyExcluding(new G.List<bool>() { true, true, true }, 3);
-		Assert.AreEqual(b, 3);
+		Assert.AreEqual(3, b);
 		b = a.LastIndexOfAnyExcluding(a);
-		Assert.AreEqual(b, -1);
+		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<bool>)null!));
 	}
 
@@ -1600,7 +1661,7 @@ public class BitListTests
 		b = a.StartsWith(new G.List<bool>() { false, false, false, false, false });
 		Assert.IsTrue(b);
 		b = a.StartsWith(new G.List<bool>() { false, false, false, false, true });
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<bool>)null!));
 	}
 

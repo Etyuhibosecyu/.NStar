@@ -657,14 +657,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	public BigList() : this(-1) { }
 
-	public BigList(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 2)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		low = new();
 		high = null;
 		highLength = null;
@@ -676,7 +676,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(capacityStepBitLength, capacityFirstStepBitLength)
+	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(subbranchesBitLength, leafSizeBitLength)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		ConstructFromCapacity(capacity);
@@ -693,10 +693,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigList(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(collection == null ? throw new ArgumentNullException(nameof(collection))
 			  : List<T>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : 0,
-			  capacityFirstStepBitLength, capacityStepBitLength)
+			  leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
@@ -712,8 +712,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, IEnumerable<T> collection, int capacityStepBitLength = -1,
-		int capacityFirstStepBitLength = -1) : this(capacity, capacityFirstStepBitLength, capacityStepBitLength)
+	public BigList(MpzT capacity, IEnumerable<T> collection, int subbranchesBitLength = -1,
+		int leafSizeBitLength = -1) : this(capacity, leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
@@ -729,7 +729,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(ReadOnlySpan<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection.Length, capacityFirstStepBitLength, capacityStepBitLength)
+	public BigList(ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(collection.Length, leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
@@ -745,7 +745,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(RedStarLinq.Max(capacity, collection.Length), capacityFirstStepBitLength, capacityStepBitLength)
+	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(RedStarLinq.Max(capacity, collection.Length), leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
@@ -776,10 +776,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				high = null;
 				highLength = null;
 			}
-			else if (value <= CapacityFirstStep)
+			else if (value <= LeafSize)
 			{
 				if (high != null && highLength != null)
-					ReduceCapacityExponential(CapacityFirstStep);
+					ReduceCapacityExponential(LeafSize);
 				if (high != null && highLength != null)
 					Compactify();
 				var first = this;
@@ -798,10 +798,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (low != null)
 			{
-				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength,
-					CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				while (fragment << CapacityStepBitLength < value)
-					fragment <<= CapacityStepBitLength;
+				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
+					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
+				while (fragment << SubbranchesBitLength < value)
+					fragment <<= SubbranchesBitLength;
 				var highCount = (int)GetArrayLength(value, fragment);
 				high = new(highCount);
 				for (MpzT i = 0; i < value / fragment; i++)
@@ -827,16 +827,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (high != null && highLength != null)
 			{
-				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - CapacityFirstStepBitLength,
-					CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-				while (newFragment << CapacityStepBitLength < value)
-					newFragment <<= CapacityStepBitLength;
+				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
+					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
+				while (newFragment << SubbranchesBitLength < value)
+					newFragment <<= SubbranchesBitLength;
 				if (newFragment > fragment)
 					IncreaseCapacityExponential(value, newFragment);
 				else if (newFragment < fragment)
 				{
 					ReduceCapacityExponential(newFragment);
-					AddCapacity((fragment << CapacityStepBitLength) - _capacity);
+					AddCapacity((fragment << SubbranchesBitLength) - _capacity);
 					ReduceCapacityLinear(value);
 				}
 				else if (value > _capacity)
@@ -859,13 +859,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected virtual int CapacityFirstStepBitLength { get; init; } = 16;
+	private protected virtual int LeafSizeBitLength { get; init; } = 16;
 
-	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
+	private protected virtual int LeafSize => 1 << LeafSizeBitLength;
 
-	private protected virtual int CapacityStepBitLength { get; init; } = 16;
+	private protected virtual int SubbranchesBitLength { get; init; } = 16;
 
-	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
+	private protected virtual int Subbranches => 1 << SubbranchesBitLength;
 
 	public override MpzT Length
 	{
@@ -897,9 +897,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				intIndex--;
 			if (high.Length == intIndex)
 			{
-				if (high.Length < CapacityStep && high[^1].Capacity == fragment)
+				if (high.Length < Subbranches && high[^1].Capacity == fragment)
 				{
-					high.Capacity = Min(high.Capacity << 1, CapacityStep);
+					high.Capacity = Min(high.Capacity << 1, Subbranches);
 					high.Add(CapacityCreator(fragment));
 					high[^1].parent = this2;
 					AddCapacity(fragment);
@@ -1053,7 +1053,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		AddCapacity(-_capacity);
 		var this2 = (TCertain)this;
-		if (capacity <= CapacityFirstStep)
+		if (capacity <= LeafSize)
 		{
 			low = CapacityLowCreator((int)capacity);
 			high = null;
@@ -1064,10 +1064,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength,
-				CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
-			while (fragment << CapacityStepBitLength < capacity)
-				fragment <<= CapacityStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength,
+				SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
+			while (fragment << SubbranchesBitLength < capacity)
+				fragment <<= SubbranchesBitLength;
 			var quotient = capacity.Divide(fragment, out var remainder);
 			var highCount = (int)GetArrayLength(capacity, fragment);
 			high = new(highCount);
@@ -1132,7 +1132,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			ConstructFromListFromScratch(list);
 			return;
 		}
-		if (list.Count <= CapacityFirstStep && low != null && high == null && highLength == null && fragment == 1)
+		if (list.Count <= LeafSize && low != null && high == null && highLength == null && fragment == 1)
 		{
 			if (low == null)
 			low = CollectionLowCreator(list);
@@ -1176,7 +1176,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected virtual void ConstructFromListFromScratch(G.IReadOnlyList<T> list)
 	{
 		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
-		if (list.Count <= CapacityFirstStep && high == null && highLength == null && fragment == 1)
+		if (list.Count <= LeafSize && high == null && highLength == null && fragment == 1)
 		{
 			low = CollectionLowCreator(list);
 			high = null;
@@ -1188,8 +1188,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 		{
 			low = null;
-			fragment = 1 << ((((MpzT)list.Count - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength)
-				/ CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = 1 << ((((MpzT)list.Count - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength)
+				/ SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var fragment2 = (int)fragment;
 			high = new(GetArrayLength(list.Count, fragment2));
 			highLength = [];
@@ -1634,10 +1634,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(high != null && highLength != null);
 		do
 		{
-			var newFragment = fragment << CapacityStepBitLength;
+			var newFragment = fragment << SubbranchesBitLength;
 			if (_capacity < newFragment)
 				IncreaseCapacityLinear(newFragment);
-			var highCount = (int)RedStarLinq.Min(GetArrayLength(value, newFragment), CapacityStep);
+			var highCount = (int)RedStarLinq.Min(GetArrayLength(value, newFragment), Subbranches);
 			var oldHigh = high;
 			var oldHighLength = highLength;
 			var oldLength = Length;
@@ -1730,7 +1730,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert(high != null && highLength != null);
 			if (high.Length > 1 && high[1].Length != 0)
 				Compactify();
-			fragment >>= CapacityStepBitLength;
+			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
 			oldHigh[1..].ForEach(x => x.Dispose());
@@ -2043,7 +2043,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			Debug.Assert(Length == high.Sum(x => x.Length));
 			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= CapacityStep);
+			Debug.Assert(high.Capacity <= Subbranches);
 			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
 			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
 		}

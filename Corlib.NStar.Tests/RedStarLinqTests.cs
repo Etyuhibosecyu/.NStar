@@ -186,16 +186,16 @@ public class RedStarLinqTests
 	});
 		int[] arr = [3, 3, 3, 3, 3];
 		var c = arr.AllEqual();
-		Assert.AreEqual(c, true);
+		Assert.IsTrue(c);
 		arr = [3, 4, 5, 6, 7];
 		c = arr.AllEqual();
-		Assert.AreEqual(c, false);
+		Assert.IsFalse(c);
 		arr = [3, 3, 3, 3, -42];
 		c = arr.AllEqual();
-		Assert.AreEqual(c, false);
+		Assert.IsFalse(c);
 		arr = [3, 4, 5, 6, 4];
 		c = arr.AllUnique();
-		Assert.AreEqual(c, false);
+		Assert.IsFalse(c);
 	}
 
 	[TestMethod]
@@ -207,14 +207,14 @@ public class RedStarLinqTests
 			var c = E.Count(E.Distinct(E.Select(a, x => x.Length))) == E.Count(E.Select(a, x => x.Length));
 			Assert.AreEqual(b, c);
 			b = a.AllUnique((x, index) => index);
-			Assert.AreEqual(b, true);
+			Assert.IsTrue(b);
 			b = a.AllUnique();
 			c = E.Count(E.Distinct(a)) == E.Count(a);
 			Assert.AreEqual(b, c);
 			b = E.Distinct(a).AllUnique(x => x);
-			Assert.AreEqual(b, true);
+			Assert.IsTrue(b);
 			b = E.Distinct(a).AllUnique();
-			Assert.AreEqual(b, true);
+			Assert.IsTrue(b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.AllUnique((Func<string, string>)null!));
 			Assert.ThrowsException<ArgumentNullException>(() => a.AllUnique((Func<string, int, string>)null!));
 		});
@@ -641,7 +641,7 @@ public class RedStarLinqTests
 		var c = a.Count("MMM");
 		var d = E.Count(a, x => x == "MMM");
 		Assert.AreEqual(c, d);
-		c = a.Count((x, index) => x is "MMM" or "PPP");
+		c = a.Count(x => x is "MMM" or "PPP");
 		d = E.Count(a, x => x is "MMM" or "PPP");
 		Assert.AreEqual(c, d);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, bool>)null!));
@@ -660,7 +660,7 @@ public class RedStarLinqTests
 		var c = a.Count("MMM");
 		var d = E.Count(a, x => x == "MMM");
 		Assert.AreEqual(c, d);
-		c = a.Count((x, index) => x is "MMM" or "PPP");
+		c = a.Count(x => x is "MMM" or "PPP");
 		d = E.Count(a, x => x is "MMM" or "PPP");
 		Assert.AreEqual(c, d);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Count((Func<string, bool>)null!));
@@ -1102,8 +1102,11 @@ public class RedStarLinqTests
 		}
 		void ProcessA(G.IEnumerable<int> a)
 		{
-			var c = a.GroupIndexes(x => x);
+			var c = a.GroupIndexes();
 			var d = E.Select(E.GroupBy(E.Select(a, (elem, index) => (elem, index)), x => x.elem), x => E.First(E.GroupBy(E.Select(x, y => y.index), y => x.Key)));
+			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
+			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
+			c = a.GroupIndexes(x => x);
 			Assert.IsTrue(c.Equals(d, (x, y) => x.Equals(y)));
 			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.SequenceEqual(x, y)), x => x));
 			c = a.GroupIndexes(x => x / 2);

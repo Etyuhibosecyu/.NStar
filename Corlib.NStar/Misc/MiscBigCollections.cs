@@ -9,15 +9,15 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	private protected MpzT _size;
 	private protected MpzT fragment;
 	private protected bool isHigh;
-	private protected const int CapacityStepBitLength = 16, CapacityFirstStepBitLength = 16;
-	private protected const int CapacityStep = 1 << CapacityStepBitLength, CapacityFirstStep = 1 << CapacityFirstStepBitLength;
+	private protected const int SubbranchesBitLength = 16, LeafSizeBitLength = 16;
+	private protected const int Subbranches = 1 << SubbranchesBitLength, LeafSize = 1 << LeafSizeBitLength;
 
 	public BigQueue() : this(32) { }
 
 	public BigQueue(MpzT capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		if (capacity <= CapacityFirstStep)
+		if (capacity <= LeafSize)
 		{
 			low = new((int)capacity);
 			high = null;
@@ -27,7 +27,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((capacity - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			high = new((int)GetArrayLength(capacity, fragment));
 			for (MpzT i = 0; i < capacity / fragment; i++)
 				high.Enqueue(new(fragment));
@@ -80,14 +80,14 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public virtual void Enqueue(T obj)
 	{
-		if (_size == CapacityFirstStep && !isHigh && low != null)
+		if (_size == LeafSize && !isHigh && low != null)
 		{
 			high = new(4);
-			high.Enqueue(new(CapacityStep) { low = low, _size = low.Length });
-			high.Enqueue(new(CapacityStep));
+			high.Enqueue(new(Subbranches) { low = low, _size = low.Length });
+			high.Enqueue(new(Subbranches));
 			high.GetElement(1).Enqueue(obj);
 			low = null;
-			fragment = CapacityFirstStep;
+			fragment = LeafSize;
 			isHigh = true;
 		}
 		else if (!isHigh && low != null)
@@ -95,18 +95,18 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else if (high != null)
 		{
 			var index = (int)(_size / fragment);
-			if (index == CapacityStep)
+			if (index == Subbranches)
 			{
 				var temp = high;
 				high = new(4);
 				high.Enqueue(new(_size) { high = temp, _size = temp.Length });
 				high.Enqueue(new(_size));
 				high.GetElement(high.Length - 1).Enqueue(obj);
-				fragment *= CapacityStep;
+				fragment *= Subbranches;
 			}
 			else if (high.GetElement(index)._size == fragment)
 			{
-				high.Enqueue(new(CapacityStep));
+				high.Enqueue(new(Subbranches));
 				high.GetElement(index).Enqueue(obj);
 			}
 			else
@@ -179,7 +179,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	internal T GetElement(MpzT i)
 	{
 		if (!isHigh && low != null)
-			return low.GetElement((int)(i % CapacityStep));
+			return low.GetElement((int)(i % Subbranches));
 		else if (high != null)
 			return high.GetElement((int)(i / fragment)).GetElement(i % fragment);
 		else
@@ -196,7 +196,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 
 	public virtual void TrimExcess()
 	{
-		if (_size <= CapacityFirstStep)
+		if (_size <= LeafSize)
 		{
 			low = PeekQueue();
 			low.TrimExcess();
@@ -281,14 +281,14 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public BigArray() : this(-1) { }
 
-	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 2)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		low = new();
 		high = null;
 		fragment = 1;
@@ -298,16 +298,16 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	public BigArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 2)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (length <= CapacityFirstStep)
+		if (length <= LeafSize)
 		{
 			low = CapacityLowCreator((int)length);
 			high = null;
@@ -316,7 +316,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			var quotient = (int)length.Divide(fragment, out var remainder);
 			var highCount = (int)GetArrayLength(length, fragment);
 			high = new TCertain[highCount];
@@ -331,7 +331,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), capacityFirstStepBitLength, capacityStepBitLength)
+	public BigArray(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), leafSizeBitLength, subbranchesBitLength)
 	{
 		using var en = collection.GetEnumerator();
 		MpzT i = 0;
@@ -345,7 +345,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	public BigArray(MpzT length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : this(length, capacityFirstStepBitLength, capacityStepBitLength)
+	public BigArray(MpzT length, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(length, leafSizeBitLength, subbranchesBitLength)
 	{
 		using var en = collection.GetEnumerator();
 		MpzT i = 0;
@@ -363,13 +363,13 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	public override MpzT Capacity { get => Length; set { } }
 
-	private protected virtual int CapacityFirstStepBitLength { get; init; } = 16;
+	private protected virtual int LeafSizeBitLength { get; init; } = 16;
 
-	private protected virtual int CapacityFirstStep => 1 << CapacityFirstStepBitLength;
+	private protected virtual int LeafSize => 1 << LeafSizeBitLength;
 
-	private protected virtual int CapacityStepBitLength { get; init; } = 16;
+	private protected virtual int SubbranchesBitLength { get; init; } = 16;
 
-	private protected virtual int CapacityStep => 1 << CapacityStepBitLength;
+	private protected virtual int Subbranches => 1 << SubbranchesBitLength;
 
 	public override MpzT Length {
 		get => ArraySize;
@@ -777,19 +777,19 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 {
 	public BigArray() { }
 
-	public BigArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(MpzT length, IEnumerable<T> collection, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, collection, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigArray(MpzT length, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	private protected override Func<MpzT, BigArray<T>> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigArray<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<int, List<T>> CapacityLowCreator => RedStarLinq.EmptyList<T>;
 
-	private protected override Func<IEnumerable<T>, BigArray<T>> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<IEnumerable<T>, BigArray<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }
@@ -813,20 +813,20 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	public BigBitArray() { }
 
-	public BigBitArray(int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitArray(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitArray(MpzT length, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1) : base(length, capacityStepBitLength, capacityFirstStepBitLength) { }
+	public BigBitArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigBitArray(MpzT length, bool defaultValue, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(MpzT length, bool defaultValue, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 2)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (length <= CapacityFirstStep)
+		if (length <= LeafSize)
 		{
 			low = new((int)length, defaultValue);
 			high = null;
@@ -834,30 +834,30 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		else
 		{
 			low = null;
-			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - CapacityFirstStepBitLength, CapacityStepBitLength) - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+			fragment = (MpzT)1 << (GetArrayLength((length - 1).BitLength - LeafSizeBitLength, SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 			high = new BigBitArray[(int)GetArrayLength(length, fragment)];
 			for (var i = 0; i < length / fragment; i++)
-				high[i] = new(fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength);
+				high[i] = new(fragment, defaultValue, SubbranchesBitLength, LeafSizeBitLength);
 			if (length % fragment != 0)
-				high[^1] = new(length % fragment, defaultValue, CapacityStepBitLength, CapacityFirstStepBitLength);
+				high[^1] = new(length % fragment, defaultValue, SubbranchesBitLength, LeafSizeBitLength);
 		}
 		ArraySize = length;
 	}
 
-	public BigBitArray(BitArray bitArray, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(BitArray bitArray, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 5)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 5)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		if (bitArray == null)
 			throw new ArgumentNullException(nameof(bitArray));
 		else
 		{
 			using BitList bitList = new(bitArray);
-			BigBitArray array = new(bitList, base.CapacityStepBitLength, base.CapacityFirstStepBitLength);
+			BigBitArray array = new(bitList, base.SubbranchesBitLength, base.LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -865,20 +865,20 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<byte> bytes, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 5)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 5)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		if (bytes == null)
 			throw new ArgumentNullException(nameof(bytes));
 		else if (bytes is byte[] byteArray && byteArray.Length <= int.MaxValue / BitsPerByte)
 		{
 			using BitList bitList = new(byteArray);
-			BigBitArray array = new(bitList, base.CapacityStepBitLength, base.CapacityFirstStepBitLength);
+			BigBitArray array = new(bitList, base.SubbranchesBitLength, base.LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -902,8 +902,8 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 				if (i != 0)
 					values[(n - 1) / 4] = value;
 			}
-			BigBitArray bigBitArray2 = new(values, CapacityStepBitLength, CapacityFirstStepBitLength);
-			BigBitArray array = new(n * BitsPerByte, CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray bigBitArray2 = new(values, SubbranchesBitLength, LeafSizeBitLength);
+			BigBitArray array = new(n * BitsPerByte, SubbranchesBitLength, LeafSizeBitLength);
 			bigBitArray2.CopyToInternal(0, array, 0, n * BitsPerByte);
 			low = array.low;
 			high = array.high;
@@ -912,14 +912,14 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<bool> bools, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 5)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 5)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		if (bools == null)
 			throw new ArgumentNullException(nameof(bools));
 		else if (bools is BigBitArray bigBitArray)
@@ -933,7 +933,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			}
 			else if (bigBitArray.high != null)
 			{
-				BigBitArray array = new(bigBitArray.Length, CapacityStepBitLength, CapacityFirstStepBitLength);
+				BigBitArray array = new(bigBitArray.Length, SubbranchesBitLength, LeafSizeBitLength);
 				bigBitArray.CopyToInternal(0, array, 0, bigBitArray.Length);
 				low = array.low;
 				high = array.high;
@@ -943,7 +943,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 		else if (bools is BitList bitList)
 		{
-			if (bitList.Length <= CapacityFirstStep)
+			if (bitList.Length <= LeafSize)
 			{
 				low = new(bitList);
 				high = null;
@@ -952,15 +952,15 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << ((((MpzT)bitList.Length - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				var fragment2 = (int)fragment;
 				high = new BigBitArray[GetArrayLength(bitList.Length, fragment2)];
 				int index = 0, i = 0;
 				for (; index <= bitList.Length - fragment2; index += fragment2)
-					high[i++] = new(bitList.GetRange(index, fragment2), CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i++] = new(bitList.GetRange(index, fragment2), SubbranchesBitLength, LeafSizeBitLength);
 				if (bitList.Length % fragment2 != 0)
 				{
-					high[i] = new(bitList.Length - index, CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i] = new(bitList.Length - index, SubbranchesBitLength, LeafSizeBitLength);
 					high[i].SetRangeInternal(0, CollectionCreator(bitList.GetRange(index)));
 				}
 			}
@@ -968,7 +968,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 		else if (bools is bool[] boolArray)
 		{
-			BigBitArray array = new(new BitList(boolArray), CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray array = new(new BitList(boolArray), SubbranchesBitLength, LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -982,19 +982,19 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<int> ints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 5)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 5)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		if (ints == null)
 			throw new ArgumentNullException(nameof(ints));
 		else
 		{
-			BigBitArray array = new(new BigArray<uint>(ints.Select(x => (uint)x)), CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray array = new(new BigArray<uint>(ints.Select(x => (uint)x)), SubbranchesBitLength, LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -1002,20 +1002,20 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<uint> uints, int capacityStepBitLength = -1, int capacityFirstStepBitLength = -1)
+	public BigBitArray(IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
-		if (capacityStepBitLength >= 2)
-			CapacityStepBitLength = capacityStepBitLength;
-		if (capacityFirstStepBitLength >= 5)
-			CapacityFirstStepBitLength = capacityFirstStepBitLength;
-		else if (capacityStepBitLength >= 2)
-			CapacityFirstStepBitLength = capacityStepBitLength;
+		if (subbranchesBitLength >= 2)
+			SubbranchesBitLength = subbranchesBitLength;
+		if (leafSizeBitLength >= 5)
+			LeafSizeBitLength = leafSizeBitLength;
+		else if (subbranchesBitLength >= 2)
+			LeafSizeBitLength = subbranchesBitLength;
 		if (uints == null)
 			throw new ArgumentNullException(nameof(uints));
 		else if (uints is BigArray<uint> bigUIntArray)
 		{
 			var length = bigUIntArray.Length;
-			if (length <= GetArrayLength(CapacityFirstStep, BitsPerInt))
+			if (length <= GetArrayLength(LeafSize, BitsPerInt))
 			{
 				low = new(bigUIntArray);
 				high = null;
@@ -1024,22 +1024,22 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				var uintsFragment = fragment / BitsPerInt;
 				high = new BigBitArray[(int)((length + uintsFragment - 1) / uintsFragment)];
 				MpzT index = 0;
 				var i = 0;
 				for (; index <= length - uintsFragment; index += uintsFragment)
-					high[i++] = new(bigUIntArray.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i++] = new(bigUIntArray.GetRange(index, uintsFragment), SubbranchesBitLength, LeafSizeBitLength);
 				if (index != length)
-					high[i] = new(bigUIntArray.GetRange(index, length - index), CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i] = new(bigUIntArray.GetRange(index, length - index), SubbranchesBitLength, LeafSizeBitLength);
 			}
 			ArraySize = length * BitsPerInt;
 		}
 		else if (uints is BigList<uint> bigUIntList)
 		{
 			var length = bigUIntList.Length;
-			if (length <= CapacityFirstStep / BitsPerInt)
+			if (length <= LeafSize / BitsPerInt)
 			{
 				low = new(bigUIntList);
 				high = null;
@@ -1048,21 +1048,21 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			else
 			{
 				low = null;
-				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + CapacityStepBitLength - 1 - CapacityFirstStepBitLength) / CapacityStepBitLength - 1) * CapacityStepBitLength + CapacityFirstStepBitLength;
+				fragment = 1 << (((length - 1).BitLength + ((MpzT)BitsPerInt - 1).BitLength + SubbranchesBitLength - 1 - LeafSizeBitLength) / SubbranchesBitLength - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				var uintsFragment = fragment / BitsPerInt;
 				high = new BigBitArray[(int)((length + uintsFragment - 1) / uintsFragment)];
 				MpzT index = 0;
 				var i = 0;
 				for (; index <= length - uintsFragment; index += uintsFragment)
-					high[i++] = new(bigUIntList.GetRange(index, uintsFragment), CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i++] = new(bigUIntList.GetRange(index, uintsFragment), SubbranchesBitLength, LeafSizeBitLength);
 				if (index != length)
-					high[i] = new(bigUIntList.GetRange(index, length - index), CapacityStepBitLength, CapacityFirstStepBitLength);
+					high[i] = new(bigUIntList.GetRange(index, length - index), SubbranchesBitLength, LeafSizeBitLength);
 			}
 			ArraySize = length * BitsPerInt;
 		}
 		else
 		{
-			BigBitArray array = new(new BigArray<uint>(uints), CapacityStepBitLength, CapacityFirstStepBitLength);
+			BigBitArray array = new(new BigArray<uint>(uints), SubbranchesBitLength, LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -1070,11 +1070,11 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	private protected override Func<MpzT, BigBitArray> CapacityCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<MpzT, BigBitArray> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<int, BitList> CapacityLowCreator => x => new(x, false);
 
-	private protected override Func<IEnumerable<bool>, BigBitArray> CollectionCreator => x => new(x, CapacityStepBitLength, CapacityFirstStepBitLength);
+	private protected override Func<IEnumerable<bool>, BigBitArray> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
 

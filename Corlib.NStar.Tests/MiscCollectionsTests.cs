@@ -15,14 +15,14 @@ public class SliceTests
 			do
 				b[n] = random.Next(1000).ToString("D3");
 			while (b[n] == a[n + 1]);
-			Assert.IsTrue(a.GetSlice(1).Compare(b.GetSlice()) == n);
+			Assert.AreEqual(n, a.GetSlice(1).Compare(b.GetSlice()));
 			a = new(E.Select(E.Range(0, random.Next(7, 102)), _ => random.Next(1000).ToString("D3")));
 			b = new(a.GetSlice(2));
 			n = random.Next(2, a.Length - 2);
 			do
 				b[n] = random.Next(1000).ToString("D3");
 			while (b[n] == a[n + 2]);
-			Assert.IsTrue(a.GetSlice(2).Compare(b.GetSlice(), n - 1) == n - 1);
+			Assert.AreEqual(n - 1, a.GetSlice(2).Compare(b.GetSlice(), n - 1));
 			a = new(E.Select(E.Range(0, random.Next(7, 102)), _ => random.Next(1000).ToString("D3")));
 			b = new(a.GetSlice(2));
 			var length = a.Length - 2;
@@ -33,8 +33,8 @@ public class SliceTests
 			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
 			a.Insert(2, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
 			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
-			Assert.IsTrue(a.GetSlice(2).Compare(index, b.GetSlice(), otherIndex) == n);
-			Assert.IsTrue(a.GetSlice(2).Compare(index, b.GetSlice(), otherIndex, length) == n);
+			Assert.AreEqual(n, a.GetSlice(2).Compare(index, b.GetSlice(), otherIndex));
+			Assert.AreEqual(n, a.GetSlice(2).Compare(index, b.GetSlice(), otherIndex, length));
 		}
 	}
 
@@ -66,7 +66,7 @@ public class SliceTests
 			b = a.ContainsAny(new List<string>("LLL", "MMM", "NNN"));
 			Assert.IsTrue(b);
 			b = a.ContainsAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 		}
 	}
 
@@ -86,7 +86,7 @@ public class SliceTests
 			b = a.ContainsAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.IsTrue(b);
 			b = a.ContainsAnyExcluding(a);
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 		}
 	}
 
@@ -421,13 +421,13 @@ public class SliceTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.IndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 0);
+			Assert.AreEqual(0, b);
 			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(b, 2);
+			Assert.AreEqual(2, b);
 			b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
@@ -444,11 +444,11 @@ public class SliceTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.IndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 1);
+			Assert.AreEqual(1, b);
 			b = a.IndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, 0);
+			Assert.AreEqual(0, b);
 			b = a.IndexOfAnyExcluding(a);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.IndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
@@ -476,13 +476,13 @@ public class SliceTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 6);
+			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(b, 2);
+			Assert.AreEqual(2, b);
 			b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
 		}
 	}
@@ -499,11 +499,11 @@ public class SliceTests
 		static void ProcessA(Slice<string> a)
 		{
 			var b = a.LastIndexOfAnyExcluding(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(b, 5);
+			Assert.AreEqual(5, b);
 			b = a.LastIndexOfAnyExcluding(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(b, 6);
+			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAnyExcluding(a);
-			Assert.AreEqual(b, -1);
+			Assert.AreEqual(-1, b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAnyExcluding((G.IEnumerable<string>)null!));
 		}
 	}
@@ -630,7 +630,7 @@ public class SliceTests
 			b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
 			Assert.IsTrue(b);
 			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-			Assert.IsTrue(!b);
+			Assert.IsFalse(b);
 			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
 		}
 	}
@@ -804,8 +804,8 @@ public class QueueTests
 					Assert.AreEqual(value, gq.Dequeue());
 				else
 				{
-					Assert.AreEqual(q.Length, 0);
-					Assert.AreEqual(gq.Count, 0);
+					Assert.AreEqual(0, q.Length);
+					Assert.AreEqual(0, gq.Count);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
 				Assert.IsTrue(E.SequenceEqual(gq, q));
@@ -827,8 +827,8 @@ public class QueueTests
 					Assert.AreEqual(value, gq.Peek());
 				else
 				{
-					Assert.AreEqual(q.Length, 0);
-					Assert.AreEqual(gq.Count, 0);
+					Assert.AreEqual(0, q.Length);
+					Assert.AreEqual(0, gq.Count);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(q, gq));
 				Assert.IsTrue(E.SequenceEqual(gq, q));
@@ -876,8 +876,8 @@ public class StackTests
 					Assert.AreEqual(value, gst.Pop());
 				else
 				{
-					Assert.AreEqual(st.Length, 0);
-					Assert.AreEqual(gst.Count, 0);
+					Assert.AreEqual(0, st.Length);
+					Assert.AreEqual(0, gst.Count);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
 				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
@@ -899,8 +899,8 @@ public class StackTests
 					Assert.AreEqual(value, gst.Peek());
 				else
 				{
-					Assert.AreEqual(st.Length, 0);
-					Assert.AreEqual(gst.Count, 0);
+					Assert.AreEqual(0, st.Length);
+					Assert.AreEqual(0, gst.Count);
 				}
 				Assert.IsTrue(RedStarLinq.Equals(st, E.Reverse(gst)));
 				Assert.IsTrue(E.SequenceEqual(E.Reverse(gst), st));
@@ -965,11 +965,11 @@ public class BigArrayTests
 		var b = a.Contains(199);
 		Assert.IsTrue(b);
 		b = a.Contains(171, 137);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new byte[] { 1, 66, 221 }.ToList());
 		Assert.IsTrue(b);
 		b = a.Contains(new byte[] { 1, 66, 220 }.ToList());
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<byte>)null!));
 	}
 
@@ -982,7 +982,7 @@ public class BigArrayTests
 		b = a.ContainsAny(new byte[] { 8, 6, 5 }.ToList());
 		Assert.IsTrue(b);
 		b = a.ContainsAny(new byte[] { 8, 6, 2 }.ToList());
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -994,7 +994,7 @@ public class BigArrayTests
 		b = a.ContainsAnyExcluding(new byte[] { 8, 6, 2 }.ToList());
 		Assert.IsTrue(b);
 		b = a.ContainsAnyExcluding(a);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 	}
 
 	[TestMethod]
@@ -1070,11 +1070,11 @@ public class BigBitArrayTests
 		var b = a.Contains(false);
 		Assert.IsTrue(b);
 		b = a.Contains(true, 1193);
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		b = a.Contains(new BitList(new byte[] { 1, 66, 221 }));
 		Assert.IsTrue(b);
 		b = a.Contains(new BitList(new byte[] { 1, 66, 220 }));
-		Assert.IsTrue(!b);
+		Assert.IsFalse(b);
 		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<bool>)null!));
 	}
 
