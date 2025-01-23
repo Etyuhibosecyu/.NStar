@@ -7,6 +7,7 @@ public class DictionaryTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(random.Next(1, 100), _ => (random.Next(100), random.Next(1, 100)));
@@ -90,6 +91,7 @@ public class MirrorTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.Fill(16, _ => (random.Next(16), random.Next(1, 16))).RemoveDoubles(x => x.Item1).RemoveDoubles(x => x.Item2).ToArray();
@@ -188,6 +190,7 @@ public class SortedDictionaryTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(random.Next(1, 100), _ => (random.Next(100), random.Next(1, 100)));

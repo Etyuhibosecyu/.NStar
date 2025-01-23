@@ -1034,7 +1034,7 @@ public class SumList : BaseSumList<int, SumList>
 		subset.Clear();
 	}
 
-	internal override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1754,7 +1754,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		subset.Clear();
 	}
 
-	internal override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;

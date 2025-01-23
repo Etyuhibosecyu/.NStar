@@ -7,6 +7,7 @@ public class SumSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => (random.Next(16), random.Next(1, 16)));
@@ -145,6 +146,7 @@ public class TreeSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));

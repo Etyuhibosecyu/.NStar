@@ -8,6 +8,7 @@ public class BufferTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
 		var toInsert = Array.Empty<int>();
 		Buffer<int> buf = new(16, arr);
@@ -357,6 +358,7 @@ public class ListTests
 	[TestMethod]
 	public void TestCompare()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new List<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
@@ -450,6 +452,7 @@ public class ListTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToList();
 		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 		var c = (string[])b.Clone();
@@ -977,6 +980,7 @@ public class ListTests
 	[TestMethod]
 	public void TestNSort()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var c = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 		var a = new List<string>(c);
 		var b = new List<string>(a).NSort(x => x[^1]);
@@ -1300,6 +1304,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToList();
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1319,6 +1324,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new Chain(15, 10).ToList(x => x.ToString());
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1337,6 +1343,7 @@ public class ListTests
 	[TestMethod]
 	public void TestRepeat()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 1001), _ => random.Next());
@@ -1374,6 +1381,7 @@ public class ListTests
 	[TestMethod]
 	public void TestReplace2()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
@@ -1498,6 +1506,7 @@ public class ListTests
 	[TestMethod]
 	public void TestReplaceInPlace()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = new char[1000];
@@ -1698,6 +1707,7 @@ public class ListTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToList();
 		var b = new G.List<string>(list);
 		for (var i = 0; i < 1000; i++)
@@ -1731,6 +1741,7 @@ public class ListTests
 	[TestMethod]
 	public void TestShuffle()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var toShuffle = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 		var a = new List<string>(toShuffle);
 		var b = new List<string>(a).Shuffle();
@@ -1834,6 +1845,7 @@ public class ListTests
 	[TestMethod]
 	public void TestSort()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var toSort = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 		var a = new List<string>(toSort);
 		var b = new List<string>(a).Sort();
@@ -1956,10 +1968,18 @@ public class ListTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => BaseListTests<string, List<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestToArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<string, List<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+	}
 
 	[TestMethod]
-	public void TestTrimExcess() => BaseListTests<string, List<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestTrimExcess()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<string, List<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+	}
 
 	[TestMethod]
 	public void TestTrueForAll()
@@ -2096,11 +2116,11 @@ public class ListTests
 	}
 }
 
-[TestClass]
 public class BaseSumListTests<T, TCertain> where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new()
 {
 	public static void ComplexTest(Func<(BaseSumList<T, TCertain>, G.List<T>, byte[])> create, Func<T> newValueFunc, Action<int> check, Action<byte[]> check2)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 		var toInsert = Array.Empty<T>();
 	l1:
@@ -2225,7 +2245,10 @@ public class SumListTests
 	private G.List<int> gl = default!;
 
 	[TestMethod]
-	public void ComplexTest() => BaseSumListTests<int, SumList>.ComplexTest(() =>
+	public void ComplexTest()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseSumListTests<int, SumList>.ComplexTest(() =>
 	{
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(1, 16));
 		sl = new(arr);
@@ -2237,6 +2260,7 @@ public class SumListTests
 		var index = sl.IndexOfNotGreaterSum(CreateVar((long)(new MpzT(bytes, 1) % (sl.ValuesSum + 1)), out var sum));
 		Assert.IsTrue(index == gl.Count && sum == E.Sum(gl) || CreateVar(E.Sum(E.Take(gl, index)), out var sum2) <= sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 	});
+	}
 }
 
 [TestClass]
@@ -2247,7 +2271,10 @@ public class BigSumListTests
 	private readonly byte[] bytes = new byte[20], bytes2 = new byte[48];
 
 	[TestMethod]
-	public void ComplexTest() => BaseSumListTests<MpzT, BigSumList>.ComplexTest(() =>
+	public void ComplexTest()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseSumListTests<MpzT, BigSumList>.ComplexTest(() =>
 	{
 		var arr = RedStarLinq.FillArray(16, _ =>
 		{
@@ -2266,4 +2293,5 @@ public class BigSumListTests
 		var index = sl.IndexOfNotGreaterSum(CreateVar(new MpzT(bytes, 1) % (sl.ValuesSum + 1), out var sum));
 		Assert.IsTrue(index == 0 && (gl.Count == 0 || sum < gl[0]) || index == gl.Count && sum == E.Aggregate(gl, (x, y) => x + y) || CreateVar(E.Aggregate(E.Take(gl, index + 1), (x, y) => x + y), out var sum2) > sum && (gl[index] == 0 || sum2 + gl[index] > sum));
 	});
+	}
 }

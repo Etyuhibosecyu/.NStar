@@ -1,11 +1,25 @@
-﻿using System.Threading;
+﻿global using Corlib.NStar;
+global using Corlib.NStar.Tests;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Mpir.NET;
+global using System;
+global using System.Collections;
+global using System.Collections.Immutable;
+global using System.Runtime.InteropServices;
+global using System.Threading;
+global using E = System.Linq.Enumerable;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static Corlib.NStar.Tests.Global;
+global using static System.Math;
 
-namespace Corlib.NStar.Tests;
+namespace BigCollections.NStar.Tests;
 
 public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
 	public static void ComplexTest(Func<(BigList<T, TCertain, TLow>, G.List<T>, byte[])> create, Func<T> newValueFunc, int multiplier)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 		var toInsert = Array.Empty<T>();
 	l1:
@@ -108,6 +122,7 @@ public class BigBitListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[40];
 		random.NextBytes(bytes);
 		var length = 10;
@@ -157,7 +172,10 @@ public class BigBitListTests
 	private G.List<bool> gl = default!;
 
 	[TestMethod]
-	public void ComplexTest2() => BaseBigListTests<bool, BigBitList, BitList>.ComplexTest(() =>
+	public void ComplexTest2()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseBigListTests<bool, BigBitList, BitList>.ComplexTest(() =>
 	{
 		var arr = RedStarLinq.FillArray(512, _ => random.Next(2) == 1);
 		bl = new(arr, 2, 6);
@@ -165,10 +183,12 @@ public class BigBitListTests
 		var bytes = new byte[16];
 		return (bl, gl, bytes);
 	}, () => random.Next(2) == 1, BitsPerInt);
+	}
 
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var array = new BigBitList[1000];
 		var functions = new[]
 		{
@@ -275,6 +295,7 @@ public class BigBitListTests
 	[TestMethod]
 	public void TestCopy()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[1250];
 		random.NextBytes(bytes);
 		var length = 435;
@@ -324,6 +345,7 @@ public class BigListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[40];
 		random.NextBytes(bytes);
 		var length = 2;
@@ -373,7 +395,10 @@ public class BigListTests
 	private G.List<int> gl = default!;
 
 	[TestMethod]
-	public void ComplexTest2() => BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
+	public void ComplexTest2()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseBigListTests<int, BigList<int>, List<int>>.ComplexTest(() =>
 	{
 		var arr = RedStarLinq.FillArray(32, _ => random.Next(16));
 		bl = new(arr, 2, 2);
@@ -381,10 +406,12 @@ public class BigListTests
 		var bytes = new byte[16];
 		return (bl, gl, bytes);
 	}, () => random.Next(16), 2);
+	}
 
 	[TestMethod]
 	public void TestCopy()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[1250];
 		random.NextBytes(bytes);
 		var length = 435;

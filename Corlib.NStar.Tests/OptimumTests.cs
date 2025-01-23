@@ -8,6 +8,7 @@ public class OptimumTests
 	[TestMethod]
 	public void TestDirect()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[21];
 		var bytes2 = new List<byte[]>();
 		for (var i = 0; i < 10000; i++)
@@ -262,6 +263,7 @@ public class OptimumTests
 	[TestMethod]
 	public void TestIndexesOf()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[21];
 		var bytes2 = new List<byte[]>();
 		for (var i = 0; i < 1000; i++)
@@ -382,17 +384,17 @@ public class OptimumTests
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean();
 			var optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean((x, index) => x.PowerMod(new MpzT(power * index), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), (x, y) => x + y) / list3.Length;
-			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
+			d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
 			Assert.IsTrue(RedStarLinq.Equals(c, d));
 			Assert.IsTrue(E.SequenceEqual(d, c));
 			c = a.IndexesOfMean(x => (decimal)((double)x / 1000000000000 / 1000000000000));
@@ -516,6 +518,7 @@ public class OptimumTests
 	[TestMethod]
 	public void TestIndexOf()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[21];
 		var bytes2 = new List<byte[]>();
 		for (var i = 0; i < 1000; i++)
@@ -623,15 +626,15 @@ public class OptimumTests
 			Assert.AreEqual(d, c);
 			c = a.IndexOfMean();
 			var optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (x, y) => x + y) / list3.Length;
-			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.IndexOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
-			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.IndexOfMean((x, index) => x.PowerMod(new MpzT(power * index), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), (x, y) => x + y) / list3.Length;
-			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.IndexOfMean(x => (decimal)((double)x / 1000000000000 / 1000000000000));
 			decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), (x, y) => x + y) / list3.Length;
@@ -731,6 +734,7 @@ public class OptimumTests
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[21];
 		var bytes2 = new List<byte[]>();
 		for (var i = 0; i < 1000; i++)
@@ -838,15 +842,15 @@ public class OptimumTests
 			Assert.AreEqual(d, c);
 			c = a.LastIndexOfMean();
 			var optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (x, y) => x + y) / list3.Length;
-			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.LastIndexOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
-			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.LastIndexOfMean((x, index) => x.PowerMod(new MpzT(power * index), new(mod)));
 			optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, (x, index) => BigInteger.ModPow(x, power * index, mod)), (x, y) => x + y) / list3.Length;
-			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) < Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
+			d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power * index, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 			Assert.AreEqual(d, c);
 			c = a.LastIndexOfMean(x => (decimal)((double)x / 1000000000000 / 1000000000000));
 			decimalOptimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => (decimal)((double)x / 1000000000000 / 1000000000000)), (x, y) => x + y) / list3.Length;
@@ -946,6 +950,7 @@ public class OptimumTests
 	[TestMethod]
 	public void TestPDirect()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[21];
 		var bytes2 = new List<byte[]>();
 		for (var i = 0; i < 10000; i++)

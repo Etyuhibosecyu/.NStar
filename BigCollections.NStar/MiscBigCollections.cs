@@ -1,8 +1,8 @@
 ﻿
-namespace Corlib.NStar;
+namespace BigCollections.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigQueue<T> : IEnumerable<T>, ICloneable
+public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 {
 	private protected Queue<T>? low;
 	private protected Queue<BigQueue<T>>? high;
@@ -37,7 +37,7 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		_size = 0;
 	}
 
-	public BigQueue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
+	public BigQueue(G.IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetLengthEasily(out var length) ? length : 32)
 	{
 		using var en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -84,8 +84,9 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		{
 			high = new(4);
 			high.Enqueue(new(Subbranches) { low = low, _size = low.Length });
-			high.Enqueue(new(Subbranches));
-			high.GetElement(1).Enqueue(obj);
+			BigQueue<T> tempQueue = new(Subbranches);
+			high.Enqueue(tempQueue);
+			tempQueue.Enqueue(obj);
 			low = null;
 			fragment = LeafSize;
 			isHigh = true;
@@ -100,24 +101,26 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 				var temp = high;
 				high = new(4);
 				high.Enqueue(new(_size) { high = temp, _size = temp.Length });
-				high.Enqueue(new(_size));
-				high.GetElement(high.Length - 1).Enqueue(obj);
+				BigQueue<T> tempQueue = new(_size);
+				high.Enqueue(tempQueue);
+				tempQueue.Enqueue(obj);
 				fragment *= Subbranches;
 			}
-			else if (high.GetElement(index)._size == fragment)
+			else if (E.ElementAt(high, index)._size == fragment)
 			{
-				high.Enqueue(new(Subbranches));
-				high.GetElement(index).Enqueue(obj);
+				BigQueue<T> tempQueue = new(Subbranches);
+				high.Enqueue(tempQueue);
+				tempQueue.Enqueue(obj);
 			}
 			else
-				high.GetElement(index).Enqueue(obj);
+				E.ElementAt(high, index).Enqueue(obj);
 		}
 		_size++;
 	}
 
 	public virtual Enumerator GetEnumerator() => new(this);
 
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+	G.IEnumerator<T> G.IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -167,8 +170,8 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 			return low.Contains(obj);
 		else if (high != null)
 		{
-			for (var i = 0; i < high.Length; i++)
-				if (high.GetElement(i).Contains(obj))
+			foreach (var subQueue in high)
+				if (subQueue.Contains(obj))
 					return true;
 			return false;
 		}
@@ -179,9 +182,9 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 	internal T GetElement(MpzT i)
 	{
 		if (!isHigh && low != null)
-			return low.GetElement((int)(i % Subbranches));
+			return E.ElementAt(low, (int)(i % Subbranches));
 		else if (high != null)
-			return high.GetElement((int)(i / fragment)).GetElement(i % fragment);
+			return E.ElementAt(high, (int)(i / fragment)).GetElement(i % fragment);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
@@ -204,12 +207,12 @@ public class BigQueue<T> : IEnumerable<T>, ICloneable
 		else if (high != null)
 		{
 			high.TrimExcess();
-			high.GetElement(high.Length - 1).TrimExcess();
+			E.ElementAt(high, high.Length - 1).TrimExcess();
 		}
 	}
 
 	[Serializable]
-	public struct Enumerator : IEnumerator<T>
+	public struct Enumerator : G.IEnumerator<T>
 	{
 		private readonly BigQueue<T> queue;
 		private MpzT index;
@@ -331,7 +334,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	public BigArray(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), leafSizeBitLength, subbranchesBitLength)
+	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(collection == null ? throw new ArgumentNullException(nameof(collection)) : collection.Length(), leafSizeBitLength, subbranchesBitLength)
 	{
 		using var en = collection.GetEnumerator();
 		MpzT i = 0;
@@ -345,7 +348,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	public BigArray(MpzT length, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(length, leafSizeBitLength, subbranchesBitLength)
+	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(length, leafSizeBitLength, subbranchesBitLength)
 	{
 		using var en = collection.GetEnumerator();
 		MpzT i = 0;
@@ -380,7 +383,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 	public override TCertain Add(T item) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	public override TCertain AddRange(IEnumerable<T> collection) =>
+	public override TCertain AddRange(G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
@@ -463,15 +466,16 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	private protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
-		var source = (TCertain)this;
-		CheckParams(source, sourceIndex, destination, destinationIndex, length);
+		CheckParams(sourceIndex, destination, destinationIndex, length);
 		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
 			return;
-		if (source == destination && sourceIndex == destinationIndex)
+		if (this == destination && sourceIndex == destinationIndex)
 			return;
-		if (source.low != null && destination.low != null)
+		if (low != null && destination.low != null)
 		{
-			destination.low.SetRangeInternal((int)destinationIndex, (int)length, source.low.GetRange((int)sourceIndex, (int)length));
+			if (destination.low.Length < destinationIndex + length)
+				destination.low.Resize((int)(destinationIndex + length));
+			destination.low.ReplaceRange((int)destinationIndex, (int)length, low.GetRange((int)sourceIndex, (int)length));
 			destination.Changed();
 #if VERIFY
 			source.Verify();
@@ -479,21 +483,21 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 			return;
 		}
-		if (source.fragment > destination.fragment && source.high != null)
+		if (this.fragment > destination.fragment && high != null)
 		{
-			int index = (int)sourceIndex.Divide(source.fragment, out var remainder), index2 = (int)((sourceIndex + length - 1) / source.fragment);
+			int index = (int)sourceIndex.Divide(this.fragment, out var remainder), index2 = (int)((sourceIndex + length - 1) / this.fragment);
 			if (index == index2)
-				source.high[index].CopyToInternal(remainder, destination, destinationIndex, length);
+				high[index].CopyToInternal(remainder, destination, destinationIndex, length);
 			else
 			{
-				var firstPart = source.fragment - remainder;
-				source.high[index].CopyToInternal(remainder, destination, destinationIndex, firstPart);
+				var firstPart = this.fragment - remainder;
+				high[index].CopyToInternal(remainder, destination, destinationIndex, firstPart);
 				for (var i = index + 1; i < index2; i++)
 				{
-					source.CopyToInternal(0, destination, sourceIndex + firstPart, source.fragment);
-					firstPart += source.fragment;
+					CopyToInternal(0, destination, sourceIndex + firstPart, this.fragment);
+					firstPart += this.fragment;
 				}
-				source.high[index2].CopyToInternal(0, destination, destinationIndex + firstPart, length - firstPart);
+				high[index2].CopyToInternal(0, destination, destinationIndex + firstPart, length - firstPart);
 			}
 			destination.Changed();
 #if VERIFY
@@ -502,21 +506,21 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 			return;
 		}
-		if (destination.fragment > source.fragment && destination.high != null)
+		if (destination.fragment > this.fragment && destination.high != null)
 		{
 			int index = (int)destinationIndex.Divide(destination.fragment, out var remainder), index2 = (int)((destinationIndex + length - 1) / destination.fragment);
 			if (index == index2)
-				source.CopyToInternal(sourceIndex, destination.high[index], remainder, length);
+				CopyToInternal(sourceIndex, destination.high[index], remainder, length);
 			else
 			{
 				var firstPart = destination.fragment - remainder;
-				source.CopyToInternal(sourceIndex, destination.high[index], remainder, firstPart);
+				CopyToInternal(sourceIndex, destination.high[index], remainder, firstPart);
 				for (var i = index + 1; i < index2; i++)
 				{
-					source.CopyToInternal(sourceIndex + firstPart, destination, 0, destination.fragment);
+					CopyToInternal(sourceIndex + firstPart, destination, 0, destination.fragment);
 					firstPart += destination.fragment;
 				}
-				source.CopyToInternal(sourceIndex + firstPart, destination.high[index2], 0, length - firstPart);
+				CopyToInternal(sourceIndex + firstPart, destination.high[index2], 0, length - firstPart);
 			}
 			destination.Changed();
 #if VERIFY
@@ -525,10 +529,10 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 			return;
 		}
-		if (!(source.high != null && destination.high != null && source.fragment == destination.fragment))
+		if (!(high != null && destination.high != null && this.fragment == destination.fragment))
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		TCertain[] sourceBits2 = source.high, destinationBits2 = destination.high;
-		var fragment = source.fragment;
+		TCertain[] sourceBits2 = high, destinationBits2 = destination.high;
+		var fragment = this.fragment;
 		var sourceIntIndex = (int)sourceIndex.Divide(fragment, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
 		var destinationIntIndex = (int)destinationIndex.Divide(fragment, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
 		var intOffset = destinationIntIndex - sourceIntIndex;       // Целое смещение.
@@ -604,25 +608,23 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 #endif
 	}
 
-	private protected static void CheckParams(TCertain sourceBits, MpzT sourceIndex, TCertain destinationBits, MpzT destinationIndex, MpzT length)
+	private protected void CheckParams(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
-		if (sourceBits == null)
-			throw new ArgumentNullException(nameof(sourceBits), "Исходный массив не может быть нулевым.");
-		if (sourceBits.Length == 0)
-			throw new ArgumentException("Исходный массив не может быть пустым.", nameof(sourceBits));
-		if (destinationBits == null)
-			throw new ArgumentNullException(nameof(destinationBits), "Целевой массив не может быть нулевым.");
-		if (destinationBits.Length == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destinationBits));
+		if (Length == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.");
+		if (destination == null)
+			throw new ArgumentNullException(nameof(destination), "Целевой массив не может быть нулевым.");
+		if (destination.Length == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(destination));
 		if (sourceIndex < 0)
 			throw new ArgumentOutOfRangeException(nameof(sourceIndex), "Индекс не может быть отрицательным.");
 		if (destinationIndex < 0)
 			throw new ArgumentOutOfRangeException(nameof(destinationIndex), "Индекс не может быть отрицательным.");
 		if (length < 0)
 			throw new ArgumentOutOfRangeException(nameof(length), "Длина не может быть отрицательной.");
-		if (sourceIndex + length > sourceBits.Length)
+		if (sourceIndex + length > Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
-		if (destinationIndex + length > destinationBits.Length)
+		if (destinationIndex + length > destination.Length)
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
@@ -634,7 +636,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			var index2 = (int)index;
 			for (var i = 0; i < length; i++)
-				array[arrayIndex + i] = low.GetInternal(index2 + i);
+				array[arrayIndex + i] = low[index2 + i];
 		}
 		else if (high != null)
 		{
@@ -663,7 +665,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		{
 			int index2 = (int)index, count2 = (int)length;
 			for (var i = 0; i < count2; i++)
-				list[listIndex + i] = low.GetInternal(index2 + i);
+				list[listIndex + i] = low[index2 + i];
 		}
 		else if (high != null)
 		{
@@ -697,10 +699,10 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		T item;
 		if (low != null)
 		{
-			item = low.GetInternal((int)index);
+			item = low[(int)index];
 		}
 		else if (high != null)
-			item = high[(int)(index / fragment)].GetInternal(index % fragment);
+			item = high[(int)(index / fragment)][index % fragment];
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		if (invoke)
@@ -733,7 +735,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 	{
 		if (low != null)
 		{
-			low.SetInternal((int)index, value);
+			low[(int)index] = value;
 		}
 		else if (high != null)
 			high[(int)(index / fragment)].SetInternal(index % fragment, value);
@@ -781,17 +783,17 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 
 	public BigArray(MpzT length, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	public BigArray(MpzT length, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
+	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
 
 	private protected override Func<MpzT, BigArray<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
 	private protected override Func<int, List<T>> CapacityLowCreator => RedStarLinq.EmptyList<T>;
 
-	private protected override Func<IEnumerable<T>, BigArray<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	private protected override Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
+	private protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }
 
 /// <summary>
@@ -865,7 +867,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigBitArray(G.IEnumerable<byte> bytes, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength >= 2)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -912,7 +914,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigBitArray(G.IEnumerable<bool> bools, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength >= 2)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -982,7 +984,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigBitArray(G.IEnumerable<int> ints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength >= 2)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -994,7 +996,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 			throw new ArgumentNullException(nameof(ints));
 		else
 		{
-			BigBitArray array = new(new BigArray<uint>(ints.Select(x => (uint)x)), SubbranchesBitLength, LeafSizeBitLength);
+			BigBitArray array = new(new BigArray<uint>(E.Select(ints, x => (uint)x)), SubbranchesBitLength, LeafSizeBitLength);
 			low = array.low;
 			high = array.high;
 			ArraySize = array.Length;
@@ -1002,7 +1004,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		}
 	}
 
-	public BigBitArray(IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigBitArray(G.IEnumerable<uint> uints, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 	{
 		if (subbranchesBitLength >= 2)
 			SubbranchesBitLength = subbranchesBitLength;
@@ -1074,9 +1076,9 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 
 	private protected override Func<int, BitList> CapacityLowCreator => x => new(x, false);
 
-	private protected override Func<IEnumerable<bool>, BigBitArray> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	private protected override Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override Func<IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
+	private protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
 
 	public virtual BigBitArray And(BigBitArray value)
 	{
@@ -1162,7 +1164,7 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		if (low != null)
 			return new(low.ToUIntList());
 		else if (high != null)
-			return new(high.SelectMany(x => x.ToUIntBigList()));
+			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}

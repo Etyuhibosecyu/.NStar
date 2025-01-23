@@ -7,6 +7,7 @@ public class ExtentsTests
 	[TestMethod]
 	public void TestNSort()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = RedStarLinq.FillArray(random.Next(1000), _ => random.Next());

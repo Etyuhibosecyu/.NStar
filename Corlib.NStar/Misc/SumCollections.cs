@@ -326,7 +326,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	internal override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;

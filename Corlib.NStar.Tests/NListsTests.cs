@@ -9,6 +9,7 @@ public class NListTests
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var array = new NList<int>[1000];
 		for (var i = 0; i < array.Length; i++)
 		{
@@ -209,8 +210,8 @@ public class NListTests
 		Assert.IsTrue(c.Equals(f));
 		Assert.IsTrue(E.SequenceEqual(f, c));
 		b = a.BreakFilter(x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'), out c);
-		e = E.ToList(E.Where(d, x => E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
-		f = E.ToList(E.Where(d, x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
+		e = E.ToList(E.Where(d, x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		f = E.ToList(E.Where(d, x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, a));
 		Assert.IsTrue(b.Equals(e));
@@ -233,8 +234,8 @@ public class NListTests
 		b = a.BreakFilterInPlace(x => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'), out c);
 		d = new G.List<(char, char, char)>(nList);
 		d.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		e = E.ToList(E.Where(d, x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
-		d = E.ToList(E.Where(d, x => E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
+		e = E.ToList(E.Where(d, x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.Where(d, x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
 		BaseListTests<(char, char, char), NList<(char, char, char)>>.BreakFilterInPlaceAsserts(a, b, c, d, e);
 	}
 
@@ -253,6 +254,7 @@ public class NListTests
 	[TestMethod]
 	public void TestCompare()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new NList<(char, char, char)>(E.Select(E.Range(0, random.Next(3, 100)), _ => Next()));
@@ -282,7 +284,7 @@ public class NListTests
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
-		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
+		(char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
 	}
 
 	[TestMethod]
@@ -355,6 +357,7 @@ public class NListTests
 	[TestMethod]
 	public void TestCopy()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, capacity;
 		NList<(char, char, char)> a;
 		NList<(char, char, char)> b;
@@ -379,6 +382,7 @@ public class NListTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nList.ToNList();
 		var b = RedStarLinq.FillArray(16, x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536)));
 		var c = ((char, char, char)[])b.Clone();
@@ -411,6 +415,7 @@ public class NListTests
 	[TestMethod]
 	public void TestEquals()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new NList<(char, char, char)>(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
@@ -511,7 +516,7 @@ public class NListTests
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 		}
-		static (char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
+		(char, char, char) Next() => ((char, char, char))RedStarLinq.ToList(random.Next(1000).ToString("D3"));
 	}
 
 	[TestMethod]
@@ -597,7 +602,7 @@ public class NListTests
 		b = a.FilterInPlace((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index >= 1);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		c = E.ToList(E.Where(c, (x, index) => E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z') && index >= 1));
+		c = E.ToList(E.Where(c, (x, index) => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z') && index >= 1));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(c));
@@ -621,7 +626,7 @@ public class NListTests
 		b = a.Find(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.Find(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.Find(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -643,7 +648,7 @@ public class NListTests
 		b = a.FindAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindAll(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.FindAll(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
@@ -665,7 +670,7 @@ public class NListTests
 		b = a.FindIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindIndex(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.FindIndex(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -686,7 +691,7 @@ public class NListTests
 		b = a.FindLast(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindLast(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.FindLast(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -707,7 +712,7 @@ public class NListTests
 		b = a.FindLastIndex(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.FindLastIndex(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.FindLastIndex(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -1365,7 +1370,7 @@ public class NListTests
 		b = a.RemoveAll(x => !new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z'));
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = c.RemoveAll(x => !E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z'));
+		d = c.RemoveAll(x => !E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
@@ -1374,6 +1379,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nList.ToNList();
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1393,6 +1399,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new Chain(15, 10).ToNList(x => ((char, char, char))(String)x.ToString("D3"));
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1411,6 +1418,7 @@ public class NListTests
 	[TestMethod]
 	public void TestRepeat()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 1001), _ => random.Next());
@@ -1524,6 +1532,7 @@ public class NListTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nList.ToNList();
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < 1000; i++)
@@ -1558,6 +1567,7 @@ public class NListTests
 	[TestMethod]
 	public void TestShuffle()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var toShuffle = new G.List<(char, char, char)>(new byte[256].ToArray(x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536))));
 		var a = new NList<(char, char, char)>(toShuffle);
 		var b = new NList<(char, char, char)>(a).Shuffle();
@@ -1651,7 +1661,7 @@ public class NListTests
 		b = a.SkipWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') || index < 1);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.SkipWhile(E.Skip(c, 1), x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
@@ -1661,6 +1671,7 @@ public class NListTests
 	[TestMethod]
 	public void TestSort()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var c = new G.List<(char, char, char)>(new byte[256].ToArray(x => ((char)random.Next(65536), (char)random.Next(65536), (char)random.Next(65536))));
 		var a = new NList<(char, char, char)>(c);
 		var b = new NList<(char, char, char)>(a).Sort(x => x.Item3);
@@ -1764,7 +1775,7 @@ public class NListTests
 		b = a.TakeWhile((x, index) => new[] { x.Item1, x.Item2, x.Item3 }.All(y => y is >= 'A' and <= 'Z') && index < 10);
 		c = new G.List<(char, char, char)>(nList);
 		c.InsertRange(3, [('$', '\0', '\0'), ('#', '#', '#')]);
-		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All(new[] { x.Item1, x.Item2, x.Item3 }, y => y is >= 'A' and <= 'Z')));
+		d = E.ToList(E.TakeWhile(E.Take(c, 10), x => E.All([x.Item1, x.Item2, x.Item3], y => y is >= 'A' and <= 'Z')));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
@@ -1772,10 +1783,18 @@ public class NListTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => BaseListTests<(char, char, char), NList<(char, char, char)>>.TestToArray(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
+	public void TestToArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<(char, char, char), NList<(char, char, char)>>.TestToArray(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
+	}
 
 	[TestMethod]
-	public void TestTrimExcess() => BaseListTests<(char, char, char), NList<(char, char, char)>>.TestTrimExcess(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
+	public void TestTrimExcess()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<(char, char, char), NList<(char, char, char)>>.TestTrimExcess(() => ((char)random.Next(33, 127), (char)random.Next(33, 127), (char)random.Next(33, 127)));
+	}
 
 	[TestMethod]
 	public void TestTrueForAll()
@@ -1918,6 +1937,7 @@ public class StringTests
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var array = new NList<int>[1000];
 		for (var i = 0; i < array.Length; i++)
 		{
@@ -2162,6 +2182,7 @@ public class StringTests
 	[TestMethod]
 	public void TestCompare()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new String(E.Select(E.Range(0, random.Next(3, 100)), _ => Next()));
@@ -2191,12 +2212,13 @@ public class StringTests
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex));
 			Assert.AreEqual(n, a.Compare(index, b, otherIndex, length));
 		}
-		static char Next() => (char)random.Next(1000);
+		char Next() => (char)random.Next(1000);
 	}
 
 	[TestMethod]
 	public void TestCompareTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
@@ -2407,7 +2429,7 @@ public class StringTests
 				Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(b.ToArray()), new string(E.ToArray(a))));
 			}
 		}
-		static char Next() => (char)random.Next(1000);
+		char Next() => (char)random.Next(1000);
 		static void FullCompare(String a, String b)
 		{
 			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
@@ -2504,6 +2526,7 @@ public class StringTests
 	[TestMethod]
 	public void TestCopy()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, capacity;
 		String a;
 		String b;
@@ -2528,6 +2551,7 @@ public class StringTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nString.ToNString();
 		var b = RedStarLinq.FillArray(16, x => (char)random.Next(65536));
 		var c = (char[])b.Clone();
@@ -2560,6 +2584,7 @@ public class StringTests
 	[TestMethod]
 	public void TestEquals()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
@@ -2676,7 +2701,7 @@ public class StringTests
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(a.Equals(b), E.SequenceEqual(a, b));
 		}
-		static char Next() => (char)random.Next(1000);
+		char Next() => (char)random.Next(1000);
 	}
 
 	[TestMethod]
@@ -3571,6 +3596,7 @@ public class StringTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nString.ToNString();
 		for (var i = 0; i < 1000; i++)
 		{
@@ -3590,6 +3616,7 @@ public class StringTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new Chain(15, 10).ToNString(x => (char)x);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -3608,6 +3635,7 @@ public class StringTests
 	[TestMethod]
 	public void TestRepeat()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 1001), _ => (char)random.Next(65536));
@@ -3719,6 +3747,7 @@ public class StringTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = nString.ToNString();
 		var b = new G.List<char>(nString);
 		for (var i = 0; i < 1000; i++)
@@ -3752,6 +3781,7 @@ public class StringTests
 	[TestMethod]
 	public void TestShuffle()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var toShuffle = new string(new byte[256].ToArray(x => (char)random.Next(65536)));
 		var a = new String(toShuffle);
 		var b = new String(a).Shuffle();
@@ -3855,6 +3885,7 @@ public class StringTests
 	[TestMethod]
 	public void TestSort()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var c = new string(new byte[256].ToArray(x => (char)random.Next(65536)));
 		var a = new String(c);
 		var b = new String(a).Sort(x => x);
@@ -3866,6 +3897,7 @@ public class StringTests
 	[TestMethod]
 	public void TestSplit()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
@@ -4008,11 +4040,16 @@ public class StringTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => BaseListTests<char, String>.TestToArray(() => (char)random.Next(33, 127));
+	public void TestToArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<char, String>.TestToArray(() => (char)random.Next(33, 127));
+	}
 
 	[TestMethod]
 	public void TestToLower()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(32, 127));
@@ -4027,6 +4064,7 @@ public class StringTests
 	[TestMethod]
 	public void TestToUpper()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(32, 127));
@@ -4041,6 +4079,7 @@ public class StringTests
 	[TestMethod]
 	public void TestTrim()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
@@ -4102,6 +4141,7 @@ public class StringTests
 	[TestMethod]
 	public void TestTrimEnd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
@@ -4163,6 +4203,7 @@ public class StringTests
 	[TestMethod]
 	public void TestTrimStart()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var chars = new byte[1000].ToArray(x => (char)random.Next(9, 39));
@@ -4222,7 +4263,11 @@ public class StringTests
 	}
 
 	[TestMethod]
-	public void TestTrimExcess() => BaseListTests<char, String>.TestTrimExcess(() => (char)random.Next(33, 127));
+	public void TestTrimExcess()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<char, String>.TestTrimExcess(() => (char)random.Next(33, 127));
+	}
 
 	[TestMethod]
 	public void TestTrueForAll()

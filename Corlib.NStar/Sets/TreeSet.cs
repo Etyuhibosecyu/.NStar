@@ -311,7 +311,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	internal override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;

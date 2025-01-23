@@ -8,6 +8,7 @@ public class FastDelHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
@@ -343,6 +344,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
 		ListHashSet<int> lhs = new(arr);
 		G.HashSet<int> gs = new(arr);
@@ -677,6 +679,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToHashSet();
 		var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 		var c = (string[])b.Clone();
@@ -1289,6 +1292,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToHashSet();
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1308,6 +1312,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new Chain(15, 10).ToHashSet();
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1396,6 +1401,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToHashSet();
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < 1000; i++)
@@ -1431,6 +1437,7 @@ public class ListHashSetTests
 	[TestMethod]
 	public void TestShuffle()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var toShuffle = new G.List<string>(new string[256].ToArray(x => new byte[random.Next(1, 17)].ToString(y => (char)random.Next(65536))));
 		var a = toShuffle.ToHashSet();
 		var b = a.Copy().Shuffle();
@@ -1632,10 +1639,18 @@ public class ListHashSetTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => BaseListTests<string, HashList<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestToArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<string, HashList<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+	}
 
 	[TestMethod]
-	public void TestTrimExcess() => BaseListTests<string, HashList<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+	public void TestTrimExcess()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<string, HashList<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+	}
 
 	[TestMethod]
 	public void TestTrueForAll()
@@ -1667,7 +1682,7 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
-		var random = new Random(Global.random.Next());
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
@@ -1796,6 +1811,7 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(65536, _ => random.Next(24576));
@@ -1809,7 +1825,7 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void CrashTest()
 	{
-		var random = new Random(Global.random.Next());
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
@@ -1870,6 +1886,7 @@ public class TreeHashSetTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));

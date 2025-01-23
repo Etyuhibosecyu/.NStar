@@ -153,7 +153,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		Changed();
 	}
 
-	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -558,7 +558,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		Array.Copy(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -944,43 +944,4 @@ public class List<T> : List<T, List<T>>
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 15 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14)) : throw new InvalidOperationException();
 
 	public static explicit operator (T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T)(List<T> x) => x._size == 16 ? (x.GetInternal(0), x.GetInternal(1), x.GetInternal(2), x.GetInternal(3), x.GetInternal(4), x.GetInternal(5), x.GetInternal(6), x.GetInternal(7), x.GetInternal(8), x.GetInternal(9), x.GetInternal(10), x.GetInternal(11), x.GetInternal(12), x.GetInternal(13), x.GetInternal(14), x.GetInternal(15)) : throw new InvalidOperationException();
-}
-
-/// <summary>
-/// Представляет строго типизированный список элементов, упорядоченных по индексу.
-/// В отличие от <see cref="List{T}"/> и стандартного <see cref="G.List{T}"/>, имеет индекс типа <see cref="MpzT"/>, а не
-/// <see langword="int"/>, что позволяет хранить больше элементов, чем <see cref="int.MaxValue"/>
-/// (теоретически - предел типа <see cref="MpzT"/> равен 2 ^ <see cref="int.MaxValue"/> - 1, практически же даже самый мощный
-/// суперкомпьютер имеет несравнимо меньшее количество памяти, но это уже проблемы этого суперкомпьютера, а не моей
-/// коллекции). Методы для поиска, сортировки и других манипуляций со списком находятся в разработке, на текущий момент
-/// поддерживаются только добавление в конец, установка элемента по индексу и частично удаление.
-/// </summary>
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public class BigList<T> : BigList<T, BigList<T>, List<T>>
-{
-	public BigList() : this(-1) { }
-
-	public BigList(int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(MpzT capacity, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(collection, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(MpzT capacity, IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, collection, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(values, subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(MpzT capacity, T[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(capacity, values.AsEnumerable(), subbranchesBitLength, leafSizeBitLength) { }
-
-	public BigList(MpzT capacity, ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, values, subbranchesBitLength, leafSizeBitLength) { }
-
-	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
-
-	private protected override Func<IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
-
-	private protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
-
-	private protected override Func<IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }

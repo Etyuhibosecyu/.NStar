@@ -65,6 +65,7 @@ public class AppendTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = list.ToList().Append("XXX").GetSlice(0..^1);
 		ProcessA(a);
 		a = new(RedStarLinq.ToArray(list.ToList().Append("XXX")), 0..^1);
@@ -73,7 +74,7 @@ public class AppendTests
 		ProcessA(a);
 		a = list.ToList().Append("XXX").GetRange(0..^1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
+		void ProcessA(Slice<string> a)
 		{
 			var b = RedStarLinq.FillArray(16, x => new string(RedStarLinq.FillArray(3, x => (char)random.Next(65536))));
 			var c = (string[])b.Clone();
@@ -422,7 +423,7 @@ public class AppendTests
 			Assert.AreEqual(0, b);
 			b = a.IndexOfAny(new List<string>("LLL", "NNN", "PPP"));
 			Assert.AreEqual(2, b);
-			b = a.IndexOfAny(new[] { "LLL", "NNN", "PPP" }, 4);
+			b = a.IndexOfAny(["LLL", "NNN", "PPP"], 4);
 			Assert.AreEqual(-1, b);
 			b = a.IndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(-1, b);
@@ -481,7 +482,7 @@ public class AppendTests
 			Assert.AreEqual(6, b);
 			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
 			Assert.AreEqual(2, b);
-			b = a.LastIndexOfAny(new[] { "LLL", "NNN", "EEE" }, 4);
+			b = a.LastIndexOfAny(["LLL", "NNN", "EEE"], 4);
 			Assert.AreEqual(-1, b);
 			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
 			Assert.AreEqual(-1, b);
@@ -762,6 +763,7 @@ public class AppendTests
 	[TestMethod]
 	public void TestToArray()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, capacity;
 		List<string> a;
 		G.List<string> b;

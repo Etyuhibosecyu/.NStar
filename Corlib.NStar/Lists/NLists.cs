@@ -194,7 +194,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	private protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
 
-	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		CopyMemory(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)

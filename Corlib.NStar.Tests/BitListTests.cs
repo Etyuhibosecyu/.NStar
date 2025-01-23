@@ -8,6 +8,7 @@ public class BitListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[40];
 		random.NextBytes(bytes);
 		var length = 10;
@@ -45,6 +46,9 @@ public class BitListTests
 	[TestMethod]
 	public void ConstructionTest()
 	{
+		var seed = Lock(lockObj, Global.random.Next);
+		var random = Lock(lockObj, () => new Random(seed));
+		var random2 = Lock(lockObj, () => new Random(seed));
 		var funcs = new[]
 		{
 			(Random random) => new BitList(), random => new(1600), random => new(1600, false),
@@ -95,8 +99,6 @@ public class BitListTests
 			random => new(new BitList(new BitArray(RedStarLinq.FillArray(random.Next(1600), _ => random.Next(2) == 1))))
 		};
 		var array = new BitList[3200];
-		var seed = Global.random.Next();
-		Random random = new(seed), random2 = new(seed);
 		for (var i = 0; i < array.Length; i++)
 		{
 			array[i] = funcs.Random(random)(random);
@@ -111,14 +113,14 @@ public class BitListTests
 			var length = array[i].Length;
 			for (var j = 0; j < 3200; j++)
 			{
-				array[i].Add(Global.random.Next(2) == 1);
+				array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 1));
 				Assert.IsTrue(array[i].Capacity >= array[i].Length);
 				Assert.AreEqual(array[i].Length, length + j + 1);
 			}
 		}
 		Thread.Sleep(50);
 		for (var i = 0; i < array.Length; i++)
-			array[i].Add(Global.random.Next(2) == 1);
+			array[i].Add(Lock(lockObj, () => Global.random.Next(2) == 1));
 	}
 
 	[TestMethod]
@@ -296,6 +298,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestCompare()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new BitList(E.Select(E.Range(0, random.Next(3, 3000)), _ => random.Next(2) == 1));
@@ -397,6 +400,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestCopyTo()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new BitList(bitList);
 		var b = RedStarLinq.FillArray(128, x => random.Next(2) == 1);
 		var c = (bool[])b.Clone();
@@ -860,6 +864,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestGetSmallRange()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		byte[] bytes;
 		BitList bitList;
 		G.List<bool> bitList2;
@@ -1003,6 +1008,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestLastIndexOf()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 100000; i++)
 		{
 			BitList a = new(RedStarLinq.NFill(3, _ => random.Next(10) switch
@@ -1370,6 +1376,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestRemoveAt()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new BitList(bitList);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1389,6 +1396,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestRemoveValue()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new Chain(15, 10).ToBitList();
@@ -1405,6 +1413,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestRepeat()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var arr = RedStarLinq.FillArray(random.Next(1, 101), _ => random.Next());
@@ -1483,6 +1492,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestSetAll()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var bytes = new byte[40];
 		BitList bitList;
 		G.List<bool> boolList;
@@ -1510,6 +1520,7 @@ public class BitListTests
 	[TestMethod]
 	public void TestSetOrAdd()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var a = new BitList(bitList);
 		var b = new G.List<bool>(bitList);
 		for (var i = 0; i < 1000; i++)
@@ -1755,10 +1766,18 @@ public class BitListTests
 	}
 
 	[TestMethod]
-	public void TestToArray() => BaseListTests<bool, BitList>.TestToArray(() => random.Next(2) == 1);
+	public void TestToArray()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<bool, BitList>.TestToArray(() => random.Next(2) == 1);
+	}
 
 	[TestMethod]
-	public void TestTrimExcess() => BaseListTests<bool, BitList>.TestTrimExcess(() => random.Next(2) == 1);
+	public void TestTrimExcess()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		BaseListTests<bool, BitList>.TestTrimExcess(() => random.Next(2) == 1);
+	}
 
 	[TestMethod]
 	public void TestTrueForAll()

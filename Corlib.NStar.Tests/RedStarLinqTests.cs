@@ -6,6 +6,7 @@ public class RedStarLinqTests
 {
 	public static void Test(Action<G.IEnumerable<string>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var list = RedStarLinq.FillArray(random.Next(101), _ => new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
@@ -30,6 +31,7 @@ public class RedStarLinqTests
 
 	public static void Test2(Action<G.IReadOnlyList<string>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var list = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
@@ -48,6 +50,7 @@ public class RedStarLinqTests
 
 	public static void TestN(Action<G.IEnumerable<(char, char, char)>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
@@ -73,6 +76,7 @@ public class RedStarLinqTests
 
 	public static void Test2N(Action<G.IReadOnlyList<(char, char, char)>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
@@ -92,6 +96,7 @@ public class RedStarLinqTests
 
 	public static void TestS(Action<G.IEnumerable<char>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var list = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
@@ -116,6 +121,7 @@ public class RedStarLinqTests
 
 	public static void Test2S(Action<G.IReadOnlyList<char>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var list = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
@@ -201,6 +207,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestAllUnique()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		Test(a =>
 		{
 			var b = a.AllUnique(x => x.Length);
@@ -222,7 +229,7 @@ public class RedStarLinqTests
 		ProcessA(["3", "4", "5", "6", "7"]);
 		ProcessA(["3", "3", "3", "3", "-42"]);
 		ProcessA(["3", "4", "5", "6", "4"]);
-		static void ProcessA(string[] array)
+		void ProcessA(string[] array)
 		{
 			G.IEnumerable<string> a = RedStarLinq.ToList(array);
 			Assert.AreEqual(a.AllUnique(), E.Count(E.Distinct(a)) == E.Count(a));
@@ -374,6 +381,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestCombine() => Test(a =>
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
 		ProcessB(a, b);
 		b = E.Skip(list2, 1).ToArray();
@@ -388,7 +396,7 @@ public class RedStarLinqTests
 		ProcessB(a, b);
 		b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
 		ProcessB(a, b);
-		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
+		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			var c = a.Combine(b, (x, y) => x + y);
 			var d = E.Zip(a, b, (x, y) => x + y);
@@ -496,6 +504,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestConcat() => Test(a =>
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		G.IEnumerable<string> b = E.Skip(list2, 1).ToList();
 		ProcessB(a, b);
 		b = E.Skip(list2, 1).ToArray();
@@ -510,7 +519,7 @@ public class RedStarLinqTests
 		ProcessB(a, b);
 		b = E.SkipWhile(E.Skip(list2, 1), _ => random.Next(10) != -1);
 		ProcessB(a, b);
-		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
+		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			var c = a.Concat(b);
 			var d = E.Concat(a, b);
@@ -678,6 +687,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestEquals()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			G.IEnumerable<string> a = new List<string>(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3")));
@@ -693,7 +703,7 @@ public class RedStarLinqTests
 			a = E.SkipWhile(E.ToArray(E.Select(E.Range(0, random.Next(2, 100)), _ => random.Next(1000).ToString("D3"))), _ => random.Next(10) != -1);
 			ProcessA(a);
 		}
-		static void ProcessA(G.IEnumerable<string> a)
+		void ProcessA(G.IEnumerable<string> a)
 		{
 			var b = a;
 			ProcessB(a, b);
@@ -726,7 +736,7 @@ public class RedStarLinqTests
 			b = E.TakeWhile(a, _ => random.Next(10) == -1);
 			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
 		}
-		static void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
+		void ProcessB(G.IEnumerable<string> a, G.IEnumerable<string> b)
 		{
 			G.IEnumerable<string> c = new List<string>(b);
 			Assert.AreEqual(RedStarLinq.Equals(a, c), E.SequenceEqual(a, c));
@@ -746,6 +756,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestFill()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var @char = (char)random.Next('A', 'Z' + 1);
@@ -820,6 +831,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestFrequencyTable()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -952,6 +964,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestGroup()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1081,6 +1094,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestGroupIndexes()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -1291,6 +1305,7 @@ public class RedStarLinqTests
 		ProcessA(a, list.Length - 5, list.Length);
 		a = E.ToArray(list).SetAll(defaultString, ^6..4);
 		ProcessA(a, list.Length - 6, 4);
+
 		static void ProcessA(string[] a, int start, int end)
 		{
 			var b = new G.List<string>(list);
@@ -1304,6 +1319,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestShuffle() => Test(a =>
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var b = a.Shuffle(x => x[1..], random);
 		var c = b.NSort();
 		var d = E.Order(E.Select(a, x => x[1..]));
@@ -1419,6 +1435,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestToArray()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
@@ -1434,7 +1451,7 @@ public class RedStarLinqTests
 			var original6 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => new BitList([random.Next(), random.Next()])));
 			ProcessA(original6, new BitList((int[])[1234567890, 1234567890]));
 		}
-		static void ProcessA<T>(ImmutableArray<T> original, T @default)
+		void ProcessA<T>(ImmutableArray<T> original, T @default)
 		{
 			G.IEnumerable<T> a = new List<T>(original);
 			ProcessA2(a);
@@ -1477,6 +1494,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestToList()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
@@ -1492,7 +1510,7 @@ public class RedStarLinqTests
 			var original6 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => new BitList([random.Next(), random.Next()])));
 			ProcessA(original6, new BitList((int[])[1234567890, 1234567890]));
 		}
-		static void ProcessA<T>(ImmutableArray<T> original, T @default)
+		void ProcessA<T>(ImmutableArray<T> original, T @default)
 		{
 			G.IEnumerable<T> a = new List<T>(original);
 			ProcessA2(a);
@@ -1535,6 +1553,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestToNList()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => random.Next()));
@@ -1544,7 +1563,7 @@ public class RedStarLinqTests
 			var original3 = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (random.Next(), random.Next())));
 			ProcessA(original3, (1234567890, 1234567890));
 		}
-		static void ProcessA<T>(ImmutableArray<T> original, T @default) where T : unmanaged
+		void ProcessA<T>(ImmutableArray<T> original, T @default) where T : unmanaged
 		{
 			G.IEnumerable<T> a = new List<T>(original);
 			ProcessA2(a);
@@ -1587,12 +1606,13 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestToNString()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = ImmutableArray.Create(RedStarLinq.FillArray(random.Next(17), _ => (char)random.Next(65536)));
 			ProcessA(original, (char)12345);
 		}
-		static void ProcessA(ImmutableArray<char> original, char @default)
+		void ProcessA(ImmutableArray<char> original, char @default)
 		{
 			G.IEnumerable<char> a = new String(original);
 			ProcessA2(a);
@@ -1637,12 +1657,14 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestPRemoveDoubles()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var original = ImmutableArray.Create(RedStarLinq.FillArray(1000, _ => random.Next(100)));
 			var original2 = ImmutableArray.Create(RedStarLinq.FillArray(1000, _ => (long)random.Next(100)));
 			ProcessA(original, original2, 1234567890);
 		}
+
 		static void ProcessA(ImmutableArray<int> original, ImmutableArray<long> original2, int @default)
 		{
 			G.IReadOnlyList<int> a = new List<int>(original);
@@ -1822,6 +1844,7 @@ public class RedStarLinqTests
 	[TestMethod]
 	public void TestPFill()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var @char = (char)random.Next('A', 'Z' + 1);
@@ -1852,6 +1875,7 @@ public class RedStarLinqTestsN
 {
 	public static void Test(Action<G.IEnumerable<(char, char, char)>> action)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(nList);
 		action(a);
 		a = RedStarLinq.ToArray(nList);
@@ -1871,6 +1895,7 @@ public class RedStarLinqTestsN
 	[TestMethod]
 	public void TestNFill()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var @char = (char)random.Next('A', 'Z' + 1);
@@ -1898,6 +1923,7 @@ public class RedStarLinqTestsN
 	[TestMethod]
 	public void TestNGroup()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		EComparer<int> comparer = new((x, y) => x / 3 == y / 3), comparer2 = new((x, y) => x / 3 == y / 3, x => 42), comparer3 = new((x, y) => x / 3 == y / 3, x => x / 4);
 		for (var i = 0; i < 1000; i++)
 		{
@@ -2027,6 +2053,7 @@ public class RedStarLinqTestsN
 	[TestMethod]
 	public void TestNPairs()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		G.IEnumerable<(char, char, char)> a = new List<(char, char, char)>(nList);
 		ProcessA(a);
 		a = RedStarLinq.ToArray(nList);
@@ -2041,7 +2068,7 @@ public class RedStarLinqTestsN
 		ProcessA(a);
 		a = E.SkipWhile(nList, _ => random.Next(10) != -1);
 		ProcessA(a);
-		static void ProcessA(G.IEnumerable<(char, char, char)> a)
+		void ProcessA(G.IEnumerable<(char, char, char)> a)
 		{
 			var c = a.NPairs((x, y) => x.Item1 * y.Item1 + x.Item2 * y.Item2 + x.Item3 * y.Item3);
 			var d = E.Zip(a, E.Skip(a, 1), (x, y) => x.Item1 * y.Item1 + x.Item2 * y.Item2 + x.Item3 * y.Item3);
@@ -2110,6 +2137,7 @@ public class RedStarLinqTestsN
 	[TestMethod]
 	public void TestPNFill()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var @char = (char)random.Next('A', 'Z' + 1);

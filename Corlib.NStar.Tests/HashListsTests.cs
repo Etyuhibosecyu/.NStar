@@ -7,6 +7,7 @@ public class FastDelHashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		FastDelHashList<int> fhs = [];
 		G.List<int> gs = [];
 		for (var i = 0; i < 100; i++)
@@ -44,6 +45,7 @@ public class HashListTests
 	[TestMethod]
 	public void ComplexTest()
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var arr = RedStarLinq.FillArray(100, _ => random.Next(16));
 		HashList<int> hl = new(arr);
 		G.List<int> gl = new(arr);

@@ -63,7 +63,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public override int Capacity
 	{
-		get => buckets.Length;
+		get => buckets?.Length ?? 0;
 		set
 		{
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
@@ -105,7 +105,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)

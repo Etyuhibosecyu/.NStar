@@ -118,6 +118,7 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 
 	public static void TestToArray(Func<T> randomizer)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, capacity;
 		G.List<T> b;
 		T[] array;
@@ -144,6 +145,7 @@ public record class BaseListTests<T, TCertain>(TCertain TestCollection, Immutabl
 
 	public static void TestTrimExcess(Func<T> randomizer)
 	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length, capacity;
 		G.List<T> b;
 		T elem;
@@ -239,19 +241,19 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		Assert.AreEqual(2, b);
 		b = TestCollection.IndexOf(new List<string>("PPP", "DDD", "NNN"));
 		Assert.AreEqual(-1, b);
-		b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 4);
+		b = TestCollection.IndexOf(["MMM", "EEE"], 4);
 		Assert.AreEqual(4, b);
-		b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 0, 4);
+		b = TestCollection.IndexOf(["MMM", "EEE"], 0, 4);
 		Assert.AreEqual(-1, b);
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1, 5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", 3, -5));
 		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.IndexOf("BBB", 1, 1000));
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.IndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.IndexOf(new[] { "MMM", "EEE" }, 1, 1000));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], 1, 1000));
 	}
 
 	public void TestLastIndexOf()
@@ -266,18 +268,18 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		Assert.AreEqual(2, b);
 		b = TestCollection.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
 		Assert.AreEqual(-1, b);
-		b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 3);
+		b = TestCollection.LastIndexOf(["MMM", "EEE"], 3);
 		Assert.AreEqual(-1, b);
-		b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 5, 4);
+		b = TestCollection.LastIndexOf(["MMM", "EEE"], 5, 4);
 		Assert.AreEqual(4, b);
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1, 5));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", 3, -5));
 		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.LastIndexOf("BBB", 1, 1000));
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.LastIndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.LastIndexOf(new[] { "MMM", "EEE" }, 1, 1000));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], 1, 1000));
 	}
 }

@@ -228,7 +228,20 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain Copy() => CollectionCreator(this);
 
-	internal abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
+	public virtual void CopyRangeTo(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(sourceIndex);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (sourceIndex + length > _size)
+			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
+		ArgumentNullException.ThrowIfNull(destination);
+		ArgumentOutOfRangeException.ThrowIfNegative(destinationIndex);
+		if (destinationIndex + length > destination.Length)
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевой коллекции.");
+		CopyToInternal(sourceIndex, destination, destinationIndex, length);
+	}
+
+	private protected abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
 
 	private protected virtual void EnsureCapacity(int min)
 	{
@@ -1045,7 +1058,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	internal override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)

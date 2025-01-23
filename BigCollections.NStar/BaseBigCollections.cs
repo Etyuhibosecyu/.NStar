@@ -1,5 +1,17 @@
-﻿
-namespace Corlib.NStar;
+﻿global using Corlib.NStar;
+global using ILGPU;
+global using ILGPU.Runtime;
+global using Mpir.NET;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+global using E = System.Linq.Enumerable;
+
+namespace BigCollections.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
@@ -28,9 +40,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
 
-	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
+	private protected abstract Func<G.IEnumerable<T>, TCertain> CollectionCreator { get; }
 
-	private protected abstract Func<IEnumerable<T>, TLow> CollectionLowCreator { get; }
+	private protected abstract Func<G.IEnumerable<T>, TLow> CollectionLowCreator { get; }
 
 	private protected virtual int DefaultCapacity => 32;
 
@@ -44,7 +56,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	void IBigCollection<T>.Add(T item) => Add(item);
 
-	public virtual TCertain AddRange(IEnumerable<T> collection)
+	public virtual TCertain AddRange(G.IEnumerable<T> collection)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is not TCertain bigList)
@@ -111,11 +123,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return false;
 	}
 
-	public virtual bool Contains(IEnumerable<T> collection) => Contains(collection, 0, Length);
+	public virtual bool Contains(G.IEnumerable<T> collection) => Contains(collection, 0, Length);
 
-	public virtual bool Contains(IEnumerable<T> collection, MpzT index) => Contains(collection, index, Length - index);
+	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index) => Contains(collection, index, Length - index);
 
-	public virtual bool Contains(IEnumerable<T> collection, MpzT index, MpzT length)
+	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -125,17 +137,17 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return ContainsInternal(collection, index, length);
 	}
 
-	public virtual bool Contains(TCertain list) => Contains((IEnumerable<T>)list, 0, Length);
+	public virtual bool Contains(TCertain list) => Contains((G.IEnumerable<T>)list, 0, Length);
 
-	public virtual bool Contains(TCertain list, MpzT index) => Contains((IEnumerable<T>)list, index, Length - index);
+	public virtual bool Contains(TCertain list, MpzT index) => Contains((G.IEnumerable<T>)list, index, Length - index);
 
-	public virtual bool Contains(TCertain list, MpzT index, MpzT length) => Contains((IEnumerable<T>)list, index, length);
+	public virtual bool Contains(TCertain list, MpzT index, MpzT length) => Contains((G.IEnumerable<T>)list, index, length);
 
-	public virtual bool ContainsAny(IEnumerable<T> collection) => ContainsAny(collection, 0, Length);
+	public virtual bool ContainsAny(G.IEnumerable<T> collection) => ContainsAny(collection, 0, Length);
 
-	public virtual bool ContainsAny(IEnumerable<T> collection, MpzT index) => ContainsAny(collection, index, Length - index);
+	public virtual bool ContainsAny(G.IEnumerable<T> collection, MpzT index) => ContainsAny(collection, index, Length - index);
 
-	public virtual bool ContainsAny(IEnumerable<T> collection, MpzT index, MpzT length)
+	public virtual bool ContainsAny(G.IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -156,19 +168,19 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return false;
 	}
 
-	public virtual bool ContainsAny(TCertain list) => ContainsAny((IEnumerable<T>)list, 0, Length);
+	public virtual bool ContainsAny(TCertain list) => ContainsAny((G.IEnumerable<T>)list, 0, Length);
 
-	public virtual bool ContainsAny(TCertain list, MpzT index) => ContainsAny((IEnumerable<T>)list, index, Length - index);
+	public virtual bool ContainsAny(TCertain list, MpzT index) => ContainsAny((G.IEnumerable<T>)list, index, Length - index);
 
 	public virtual bool ContainsAny(TCertain list, MpzT index, MpzT length) =>
-		ContainsAny((IEnumerable<T>)list, index, length);
+		ContainsAny((G.IEnumerable<T>)list, index, length);
 
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, Length);
+	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, Length);
 
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, MpzT index) =>
+	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection, MpzT index) =>
 		ContainsAnyExcluding(collection, index, Length - index);
 
-	public virtual bool ContainsAnyExcluding(IEnumerable<T> collection, MpzT index, MpzT length)
+	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
@@ -189,15 +201,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return false;
 	}
 
-	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((IEnumerable<T>)list, 0, Length);
+	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((G.IEnumerable<T>)list, 0, Length);
 
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index) =>
-		ContainsAnyExcluding((IEnumerable<T>)list, index, Length - index);
+		ContainsAnyExcluding((G.IEnumerable<T>)list, index, Length - index);
 
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) =>
-		ContainsAnyExcluding((IEnumerable<T>)list, index, length);
+		ContainsAnyExcluding((G.IEnumerable<T>)list, index, length);
 
-	private protected virtual bool ContainsInternal(IEnumerable<T> collection, MpzT index, MpzT length)
+	private protected virtual bool ContainsInternal(G.IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		try
 		{
@@ -318,20 +330,20 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		}
 	}
 
-	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
+	public virtual bool Equals(G.IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 
-	public virtual bool Equals(IEnumerable<T>? collection, MpzT index, bool toEnd = false) =>
+	public virtual bool Equals(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false) =>
 		EqualsInternal(collection, index, toEnd);
 
 	public override bool Equals(object? obj) => obj switch
 	{
 		null => false,
-		IEnumerable<T> enumerable => Equals(enumerable),
-		IEquatable<IEnumerable<T>> iqen => iqen.Equals(this),
+		G.IEnumerable<T> enumerable => Equals(enumerable),
+		IEquatable<G.IEnumerable<T>> iqen => iqen.Equals(this),
 		_ => false,
 	};
 
-	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, MpzT index, bool toEnd = false)
+	private protected virtual bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
@@ -353,7 +365,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return true;
 	}
 
-	private protected virtual bool EqualsToNonList(IEnumerable<T> collection, MpzT index, bool toEnd = false)
+	private protected virtual bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
 	{
 		if (collection.TryGetLengthEasily(out var length))
 		{
@@ -373,7 +385,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	public virtual Enumerator GetEnumerator() => new(this);
 
-	IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
+	G.IEnumerator<T> G.IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -505,7 +517,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return false;
 	}
 
-	public virtual TCertain Replace(IEnumerable<T> collection)
+	public virtual TCertain Replace(G.IEnumerable<T> collection)
 	{
 		if (collection is IBigCollection<T> col)
 		{
@@ -530,7 +542,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	private protected abstract void SetInternal(MpzT index, T value);
 
-	public virtual TCertain SetRange(MpzT index, IEnumerable<T> collection)
+	public virtual TCertain SetRange(MpzT index, G.IEnumerable<T> collection)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (index < 0 || index > Length)
@@ -585,7 +597,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 #endif
 
 	[Serializable]
-	public struct Enumerator : IEnumerator<T>, IEnumerator
+	public struct Enumerator : G.IEnumerator<T>, IEnumerator
 	{
 		private readonly BaseBigList<T, TCertain, TLow> list;
 		private MpzT index;
@@ -606,7 +618,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 				return MoveNextRare();
 			try
 			{
-				current = list.GetInternal(index);
+				current = list[index];
 				index++;
 				return true;
 			}
@@ -693,9 +705,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
+	public BigList(G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
 		: this(collection == null ? throw new ArgumentNullException(nameof(collection))
-			  : List<T>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : 0,
+			  : collection.TryGetLengthEasily(out var length) ? length : 0,
 			  leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromEnumerable(collection);
@@ -712,7 +724,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, IEnumerable<T> collection, int subbranchesBitLength = -1,
+	public BigList(MpzT capacity, G.IEnumerable<T> collection, int subbranchesBitLength = -1,
 		int leafSizeBitLength = -1) : this(capacity, leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromEnumerable(collection);
@@ -783,7 +795,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				if (high != null && highLength != null)
 					Compactify();
 				var first = this;
-				for (; first.high != null; first = first.high.GetInternal(0), first.parent?.high?.Dispose())
+				for (; first.high != null; first = first.high[0], first.parent?.high?.Dispose())
 				{
 					Debug.Assert(first.highLength != null);
 					first.high[1..].ForEach(x => x.Dispose());
@@ -818,7 +830,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				low = null;
 				Length = 0;
 				var first = this;
-				for (; first.high != null; first = first.high.GetInternal(0))
+				for (; first.high != null; first = first.high[0])
 					first.highLength = [preservedLow.Length];
 				ArgumentNullException.ThrowIfNull(first.low);
 				first.low.AddRange(preservedLow);
@@ -893,7 +905,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			var intIndex = highLength.IndexOfNotGreaterSum(Length, out var bitsIndex);
-			if (intIndex != 0 && high.GetInternal(intIndex - 1).Capacity != high.GetInternal(intIndex - 1).Length)
+			if (intIndex != 0 && high[intIndex - 1].Capacity != high[intIndex - 1].Length)
 				intIndex--;
 			if (high.Length == intIndex)
 			{
@@ -910,7 +922,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					goto start;
 				}
 			}
-			high.GetInternal(intIndex).Add(item);
+			high[intIndex].Add(item);
 			if (highLength.Length == intIndex)
 				highLength.Add(1);
 			else
@@ -968,17 +980,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var quotient2 = highLength.IndexOfNotGreaterSum(index + length - 1);
 			if (quotient == quotient2)
 			{
-				high.GetInternal(quotient).ClearInternal(remainder, length);
+				high[quotient].ClearInternal(remainder, length);
 				return;
 			}
-			var previousPart = highLength.GetInternal(quotient) - remainder;
-			high.GetInternal(quotient).ClearInternal(remainder, previousPart);
+			var previousPart = highLength[quotient] - remainder;
+			high[quotient].ClearInternal(remainder, previousPart);
 			for (var i = quotient + 1; i < quotient2; i++)
 			{
-				high.GetInternal(i).ClearInternal(0, highLength.GetInternal(i));
-				previousPart += highLength.GetInternal(i);
+				high[i].ClearInternal(0, highLength[i]);
+				previousPart += highLength[i];
 			}
-			high.GetInternal(quotient2).ClearInternal(0, length - previousPart);
+			high[quotient2].ClearInternal(0, length - previousPart);
 		}
 #if VERIFY
 		if (low != null)
@@ -998,19 +1010,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		Debug.Assert(high != null && highLength != null);
 		for (var i = 1; i < highLength.Length; i++)
 		{
-			if (highLength.GetInternal(i - 1) == fragment)
+			if (highLength[i - 1] == fragment)
 				continue;
-			var amount = fragment - highLength.GetInternal(i - 1);
-			var highElementI = high.GetInternal(i);
-			var highLengthElementI = highLength.GetInternal(i);
-			var highElementBeforeI = high.GetInternal(i - 1);
+			var amount = fragment - highLength[i - 1];
+			var highElementI = high[i];
+			var highLengthElementI = highLength[i];
+			var highElementBeforeI = high[i - 1];
 			if (highElementBeforeI.high != null && highElementBeforeI.highLength != null
 				&& highElementBeforeI.highLength.ValuesSum + highElementBeforeI.fragment - highElementBeforeI.highLength[^1]
 				!= highElementBeforeI.highLength.Length * highElementBeforeI.fragment)
 				highElementBeforeI.Compactify();
 			if (highLengthElementI > amount)
 			{
-				highElementI.CopyToInternal(0, highElementBeforeI, highLength.GetInternal(i - 1), amount);
+				highElementI.CopyToInternal(0, highElementBeforeI, highLength[i - 1], amount);
 				highElementI.RemoveInternal(0, amount);
 				highLength[i - 1] = fragment;
 				highLength[i] -= amount;
@@ -1018,12 +1030,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				highElementI.CopyToInternal(0, highElementBeforeI,
-					highLength.GetInternal(i - 1), highLengthElementI);
+					highLength[i - 1], highLengthElementI);
 				var temp = highElementI;
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				if (i != highLength.Length - 1)
 				{
-					high.CopyToInternal(i + 1, high, i, high.Length - i - offsetFromEnd - 1);
+					high.CopyRangeTo(i + 1, high, i, high.Length - i - offsetFromEnd - 1);
 					high[^(offsetFromEnd + 1)] = temp;
 				}
 				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
@@ -1099,7 +1111,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private void ConstructFromEnumerable(IEnumerable<T> collection)
+	private void ConstructFromEnumerable(G.IEnumerable<T> collection)
 	{
 		if (collection is G.IReadOnlyList<T> list)
 			ConstructFromList(list);
@@ -1258,7 +1270,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var fragment = this.fragment;
 		if (low != null && destination.low != null)
 		{
-			destination.low.SetRangeAndSizeInternal((int)destinationIndex, (int)length, low.GetRange((int)sourceIndex, (int)length));
+			if (destination.low.Length < destinationIndex + length)
+				destination.low.Resize((int)(destinationIndex + length));
+			destination.low.ReplaceRange((int)destinationIndex, (int)length, low.GetRange((int)sourceIndex, (int)length));
 			destination.Length = RedStarLinq.Max(destination.Length, destinationIndex + length);
 #if VERIFY
 			Verify();
@@ -1273,30 +1287,30 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var index = isReversed ? highLength.Length - 1 - quotient : quotient;
 			var index2 = isReversed ? highLength.Length - 1 - quotient2 : quotient2;
 			if (index == index2)
-				high.GetInternal(index).CopyToInternal(remainder, destination, destinationIndex, length);
+				high[index].CopyToInternal(remainder, destination, destinationIndex, length);
 			else if (sourceIndex >= destinationIndex)
 			{
 				var previousPart = (highLength.Length > index ? highLength[index] : 0) - remainder;
-				high.GetInternal(index).CopyToInternal(remainder, destination, destinationIndex, previousPart);
+				high[index].CopyToInternal(remainder, destination, destinationIndex, previousPart);
 				for (var i = index + (isReversed ? -1 : 1); isReversed ? i > index2 : i < index2; i += isReversed ? -1 : 1)
 				{
-					high.GetInternal(i).CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength[i] : 0);
+					high[i].CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength[i] : 0);
 					previousPart += highLength.Length > i ? highLength[i] : 0;
 				}
-				high.GetInternal(index2).CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart);
+				high[index2].CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart);
 			}
 			else
 			{
 				var previousPart = (highLength.Length > index ? highLength[index] : 0) - remainder;
 				for (var i = index + (isReversed ? -1 : 1); isReversed ? i > index2 : i < index2; i += isReversed ? -1 : 1)
 					previousPart += highLength[i];
-				high.GetInternal(index2).CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart);
+				high[index2].CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart);
 				for (var i = index2 - (isReversed ? -1 : 1); isReversed ? i < index : i > index; i -= isReversed ? -1 : 1)
 				{
 					previousPart -= highLength.Length > i ? highLength[i] : 0;
-					high.GetInternal(i).CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength[i] : 0);
+					high[i].CopyToInternal(0, destination, destinationIndex + previousPart, highLength.Length > i ? highLength[i] : 0);
 				}
-				high.GetInternal(index).CopyToInternal(remainder, destination, destinationIndex, previousPart);
+				high[index].CopyToInternal(remainder, destination, destinationIndex, previousPart);
 			}
 			destination.highLength?.SetOrAdd(index, destination.highLength.Length
 				> index ? destination.highLength[index] : destinationIndex + length);
@@ -1340,7 +1354,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (index == index2)
 			{
-				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, length);
+				CopyToInternal(sourceIndex, destination.high[index], remainder, length);
 				destination.highLength.SetOrAdd(index, RedStarLinq.Max(destination.highLength.Length
 					> index ? destination.highLength[index] : 0, remainder + length));
 			}
@@ -1348,16 +1362,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			{
 				var previousPart = RedStarLinq.Min((destination.highLength.Length > index
 					? destination.highLength[index] : fragment) - remainder, length);
-				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, previousPart);
+				CopyToInternal(sourceIndex, destination.high[index], remainder, previousPart);
 				destination.highLength.SetOrAdd(index, RedStarLinq.Max(destination.highLength.Length
 					> index ? destination.highLength[index] : 0, remainder + previousPart));
 				for (var i = index + 1; i < index2; i++)
 				{
-					CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(i), 0, destination.highLength.Length > i ? destination.highLength[i] : fragment);
+					CopyToInternal(sourceIndex + previousPart, destination.high[i], 0, destination.highLength.Length > i ? destination.highLength[i] : fragment);
 					destination.highLength.SetOrAdd(i, destination.highLength.Length > i ? destination.highLength[i] : fragment);
 					previousPart += destination.highLength.Length > i ? destination.highLength[i] : 0;
 				}
-				CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(index2), 0, length - previousPart);
+				CopyToInternal(sourceIndex + previousPart, destination.high[index2], 0, length - previousPart);
 				if (length != previousPart)
 					destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength[index2] : 0, length - previousPart));
 			}
@@ -1366,16 +1380,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				for (var i = destination.highLength.Length; i < index2; i++)
 					destination.highLength.Add(1);
 				var previousPart = RedStarLinq.Min(fragment - remainder, length) + (index2 - index - 1) * fragment;
-				CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(index2), 0, length - previousPart);
+				CopyToInternal(sourceIndex + previousPart, destination.high[index2], 0, length - previousPart);
 				if (length != previousPart)
 					destination.highLength.SetOrAdd(index2, RedStarLinq.Max(destination.highLength.Length > index2 ? destination.highLength[index2] : 0, length - previousPart));
 				for (var i = index2 - 1; i > index; i--)
 				{
 					previousPart -= fragment;
-					CopyToInternal(sourceIndex + previousPart, destination.high.GetInternal(i), 0, fragment);
+					CopyToInternal(sourceIndex + previousPart, destination.high[i], 0, fragment);
 					destination.highLength[i] = fragment;
 				}
-				CopyToInternal(sourceIndex, destination.high.GetInternal(index), remainder, previousPart);
+				CopyToInternal(sourceIndex, destination.high[index], remainder, previousPart);
 				destination.highLength[index] = RedStarLinq.Max(destination.highLength.Length > index ? destination.highLength[index] : 0, remainder + previousPart);
 			}
 #if VERIFY
@@ -1468,8 +1482,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				step = 0;
 				continue;
 			}
-			high.GetInternal(sourceCurrentIntIndex).CopyToInternal(sourceCurrentBitsIndex,
-				destination.high.GetInternal(destinationCurrentIntIndex), destinationCurrentBitsIndex, step);
+			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentBitsIndex,
+				destination.high[destinationCurrentIntIndex], destinationCurrentBitsIndex, step);
 			var sourceThresholdReached = (sourceCurrentBitsIndex += step) == highLength[sourceCurrentIntIndex];
 			var destinationThresholdReached = (destinationCurrentBitsIndex += step) == destinationMax;
 			leftLength -= step;
@@ -1516,8 +1530,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			var sourceThresholdReached = (sourceCurrentBitsIndex -= step) == 0;
 			var destinationThresholdReached = (destinationCurrentBitsIndex -= step) == 0;
-			high.GetInternal(sourceCurrentIntIndex).CopyToInternal(sourceCurrentBitsIndex,
-				destination.high.GetInternal(destinationCurrentIntIndex), destinationCurrentBitsIndex, step);
+			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentBitsIndex,
+				destination.high[destinationCurrentIntIndex], destinationCurrentBitsIndex, step);
 			leftLength -= step;
 			if (sourceThresholdReached)
 			{
@@ -1565,7 +1579,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			int index2 = (int)index, count2 = (int)length;
 			for (var i = 0; i < count2; i++)
-				list[listIndex + i] = low.GetInternal(index2 + i);
+				list[listIndex + i] = low[index2 + i];
 		}
 		else if (high != null && highLength != null)
 		{
@@ -1573,14 +1587,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var endIntIndex = highLength.IndexOfNotGreaterSum(index + length - 1, out var endBitsIndex);
 			if (endIntIndex == intIndex)
 			{
-				high.GetInternal(intIndex).CopyToInternal(bitsIndex, list, listIndex, length);
+				high[intIndex].CopyToInternal(bitsIndex, list, listIndex, length);
 				return;
 			}
-			high.GetInternal(intIndex).CopyToInternal(bitsIndex, list, listIndex, fragment - bitsIndex);
+			high[intIndex].CopyToInternal(bitsIndex, list, listIndex, fragment - bitsIndex);
 			var destIndex = listIndex + fragment - bitsIndex;
 			for (var i = intIndex + 1; i < endIntIndex; i++, destIndex += fragment)
-				high.GetInternal(i).CopyToInternal(0, list, destIndex, fragment);
-			high.GetInternal(endIntIndex).CopyToInternal(0, list, destIndex, endBitsIndex + 1);
+				high[i].CopyToInternal(0, list, destIndex, fragment);
+			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1610,7 +1624,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (low != null)
 			return low;
 		else if (high != null)
-			return high.GetInternal(0).GetFirstLists();
+			return high[0].GetFirstLists();
 		else
 			return new();
 	}
@@ -1618,11 +1632,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected override T GetInternal(MpzT index, bool invoke = true)
 	{
 		if (low != null)
-			return low.GetInternal((int)(isReversed ? Length - 1 - index : index));
+			return low[(int)(isReversed ? Length - 1 - index : index)];
 		else if (high != null && highLength != null)
 		{
 			var quotient = highLength.IndexOfNotGreaterSum(index, out var remainder);
-			return high.GetInternal(isReversed ? high.Length - 1 - quotient : quotient).GetInternal(remainder, invoke);
+			return high[isReversed ? high.Length - 1 - quotient : quotient].GetInternal(remainder, invoke);
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -1642,7 +1656,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var oldHighLength = highLength;
 			var oldLength = Length;
 			high = new(highCount) { CapacityCreator(0) };
-			var first = high.GetInternal(0);
+			var first = high[0];
 			first.fragment = fragment;
 			fragment = newFragment;
 			first.low = null;
@@ -1735,9 +1749,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var oldHighLength = highLength;
 			oldHigh[1..].ForEach(x => x.Dispose());
 			highLength.Dispose();
-			low = oldHigh.GetInternal(0).low;
-			high = oldHigh.GetInternal(0).high;
-			highLength = oldHigh.GetInternal(0).highLength;
+			low = oldHigh[0].low;
+			high = oldHigh[0].high;
+			highLength = oldHigh[0].highLength;
 			AddCapacity(oldHigh[0].Capacity - _capacity);
 			oldHigh.Dispose();
 			oldHighLength.Dispose();
@@ -1765,12 +1779,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		Debug.Assert(high != null && highLength != null);
 		var highCount = (int)GetArrayLength(value, fragment);
-		if (highCount == high.Length || high.GetInternal(highCount).Length != 0)
+		if (highCount == high.Length || high[highCount].Length != 0)
 			Compactify();
 		for (var i = high.Length - 1; i >= highCount; i--)
 		{
 			AddCapacity(-high[i].Capacity);
-			high.GetInternal(i).Dispose();
+			high[i].Dispose();
 		}
 		high.RemoveEnd(highCount);
 		var leftCapacity = value % fragment;
@@ -1812,11 +1826,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else if (high != null && highLength != null)
 		{
 			var quotient = highLength.IndexOfNotGreaterSum(index, out var remainder);
-			if (quotient != highLength.Length - 1 && highLength.GetInternal(quotient) == 1)
+			if (quotient != highLength.Length - 1 && highLength[quotient] == 1)
 			{
-				var temp = high.GetInternal(quotient);
+				var temp = high[quotient];
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
-				high.CopyToInternal(quotient + 1, high, quotient, high.Length - quotient - offsetFromEnd - 1);
+				high.CopyRangeTo(quotient + 1, high, quotient, high.Length - quotient - offsetFromEnd - 1);
 				high[^(offsetFromEnd + 1)] = temp;
 				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
 				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
@@ -1826,7 +1840,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				highLength.Decrease(quotient);
-				high.GetInternal(isReversed ? high.Length - 1 - quotient : quotient).RemoveAtInternal(remainder);
+				high[isReversed ? high.Length - 1 - quotient : quotient].RemoveAtInternal(remainder);
 			}
 		}
 		else
@@ -1857,8 +1871,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
 			for (var i = high.Length - 1; i > intIndex; i--)
-				high.GetInternal(i).Clear();
-			high.GetInternal(intIndex).RemoveEndInternal(bitsIndex);
+				high[i].Clear();
+			high[intIndex].RemoveEndInternal(bitsIndex);
 			if (bitsIndex == 0)
 				highLength.RemoveEnd(intIndex);
 			else
@@ -1902,32 +1916,32 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
 		if (intIndex == endIntIndex)
 		{
-			if (intIndex != highLength.Length - 1 && bitsIndex == 0 && endBitsIndex == highLength.GetInternal(intIndex) - 1)
+			if (intIndex != highLength.Length - 1 && bitsIndex == 0 && endBitsIndex == highLength[intIndex] - 1)
 			{
-				var temp = high.GetInternal(intIndex);
+				var temp = high[intIndex];
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
-				high.CopyToInternal(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
+				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
 				high[^(offsetFromEnd + 1)] = temp;
 				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
 				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 				if (offsetFromEnd != 0)
-					highLength[intIndex] = highLength.GetInternal(intIndex + 1);
+					highLength[intIndex] = highLength[intIndex + 1];
 				highLength.RemoveAt(intIndex + offsetFromEnd);
 			}
 			else
 			{
-				high.GetInternal(intIndex).RemoveInternal(bitsIndex, length);
+				high[intIndex].RemoveInternal(bitsIndex, length);
 				highLength[intIndex] -= length;
 			}
 		}
 		else
 		{
 			var startOffset = bitsIndex == 0 ? 0 : 1;
-			var endOffset = endBitsIndex + 1 == highLength.GetInternal(endIntIndex) ? 1 : 0;
+			var endOffset = endBitsIndex + 1 == highLength[endIntIndex] ? 1 : 0;
 			if (startOffset == 1)
 			{
-				high.GetInternal(intIndex).RemoveEndInternal(bitsIndex);
+				high[intIndex].RemoveEndInternal(bitsIndex);
 				highLength[intIndex] = bitsIndex;
 			}
 			var tempRange = high.GetRange(intIndex + startOffset, endIntIndex + endOffset - (intIndex + startOffset));
@@ -1935,8 +1949,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var copyLength = high.Length - (endIntIndex + endOffset) - tempOffset;
 			if (copyLength > 0)
 			{
-				high.CopyToInternal(endIntIndex + endOffset, high, intIndex + startOffset, copyLength);
-				tempRange.CopyToInternal(0, high, high.Length + intIndex + startOffset - (endIntIndex + endOffset) - tempOffset, tempRange.Length);
+				high.CopyRangeTo(endIntIndex + endOffset, high, intIndex + startOffset, copyLength);
+				tempRange.CopyRangeTo(0, high, high.Length + intIndex + startOffset - (endIntIndex + endOffset) - tempOffset, tempRange.Length);
 			}
 			if (tempRange.Length != 0)
 			{
@@ -1946,11 +1960,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			highLength.Remove((intIndex + startOffset)..(endIntIndex + endOffset));
 			for (var i = high.Length - tempRange.Length; i < high.Length; i++)
-				high.GetInternal(i).ClearInternal(false);
+				high[i].ClearInternal(false);
 			Length = highLength.ValuesSum;
 			if (endOffset == 0)
 			{
-				high.GetInternal(intIndex + startOffset).RemoveInternal(0, endBitsIndex + 1);
+				high[intIndex + startOffset].RemoveInternal(0, endBitsIndex + 1);
 				if (highLength.Length > intIndex + startOffset)
 					highLength[intIndex + startOffset] -= endBitsIndex + 1;
 			}
@@ -1971,11 +1985,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	private protected override void SetInternal(MpzT index, T value)
 	{
 		if (low != null)
-			low.SetInternal((int)(isReversed ? Length - 1 - index : index), value);
+			low[(int)(isReversed ? Length - 1 - index : index)] = value;
 		else if (high != null && highLength != null)
 		{
 			var quotient = highLength.IndexOfNotGreaterSum(index, out var remainder);
-			high.GetInternal(isReversed ? high.Length - 1 - quotient : quotient).SetInternal(remainder, value);
+			high[isReversed ? high.Length - 1 - quotient : quotient].SetInternal(remainder, value);
 		}
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
@@ -2029,7 +2043,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		for (var i = 0; i < item.high.Length; i++)
 		{
-			var x = item.high.GetInternal(i);
+			var x = item.high[i];
 			Verify(x);
 		}
 	}
