@@ -702,7 +702,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 			item = low[(int)index];
 		}
 		else if (high != null)
-			item = high[(int)(index / fragment)][index % fragment];
+			item = high[(int)(index / fragment)].GetInternal(index % fragment);
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		if (invoke)

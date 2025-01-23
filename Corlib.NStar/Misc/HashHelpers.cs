@@ -332,9 +332,9 @@ internal static class HashHelpers
 		var newSize = 2 * oldSize;
 		// Allow the hashtables to grow to maximum possible size (~2G elements) before encountering capacity overflow.
 		// Note that this check works even when _items.Length overflowed thanks to the (uint) cast
-		if ((uint)newSize > MaxPrimeArrayLength && MaxPrimeArrayLength > oldSize)
+		if (MaxPrimeArrayLength < (uint)newSize && MaxPrimeArrayLength > oldSize)
 		{
-			Debug.Assert(MaxPrimeArrayLength == GetPrime(MaxPrimeArrayLength), "Invalid MaxPrimeArrayLength");
+			Debug.Assert(GetPrime(MaxPrimeArrayLength) == MaxPrimeArrayLength, "Invalid MaxPrimeArrayLength");
 			return MaxPrimeArrayLength;
 		}
 		return GetPrime(newSize);

@@ -22,18 +22,210 @@ internal enum InsertionBehavior : byte
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
+public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
+{
+	[NonSerialized]
+	private protected object? _syncRoot;
+	public abstract TValue this[TKey key] { get; set; }
+
+	object? System.Collections.IDictionary.this[object key]
+	{
+		get
+		{
+			if (IsCompatibleKey(key))
+				return this[(TKey)key];
+			return null;
+		}
+		set
+		{
+			if (!IsCompatibleKey(key))
+				throw new ArgumentNullException(nameof(key));
+			try
+			{
+				var tempKey = (TKey)key;
+				try
+				{
+					this[tempKey] = (TValue?)value ?? throw new ArgumentNullException(nameof(value));
+				}
+				catch (InvalidCastException)
+				{
+					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
+				}
+			}
+			catch (InvalidCastException)
+			{
+				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
+			}
+		}
+	}
+
+	public abstract G.ICollection<TKey> Keys { get; }
+
+	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => Keys;
+
+	System.Collections.ICollection System.Collections.IDictionary.Keys => GetKeyListHelper();
+
+	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+
+	public abstract G.ICollection<TValue> Values { get; }
+
+	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => Values;
+
+	System.Collections.ICollection System.Collections.IDictionary.Values => GetValueListHelper();
+
+	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => Values;
+
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+
+	bool System.Collections.IDictionary.IsReadOnly => false;
+
+	bool System.Collections.IDictionary.IsFixedSize => false;
+
+	bool System.Collections.ICollection.IsSynchronized => false;
+
+	object System.Collections.ICollection.SyncRoot
+	{
+		get
+		{
+			if (_syncRoot == null)
+				Interlocked.CompareExchange(ref _syncRoot, new(), null);
+			return _syncRoot;
+		}
+	}
+
+	public abstract int Length { get; }
+
+	public abstract void Add(TKey key, TValue value);
+
+	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
+
+	void System.Collections.IDictionary.Add(object key, object? value)
+	{
+		ArgumentNullException.ThrowIfNull(key);
+		try
+		{
+			var tempKey = (TKey)key;
+			try
+			{
+				Add(tempKey, (TValue?)value ?? throw new ArgumentNullException(nameof(value)));
+			}
+			catch (InvalidCastException)
+			{
+				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
+			}
+		}
+		catch (InvalidCastException)
+		{
+			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
+		}
+	}
+
+	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+
+	public abstract void Clear();
+
+	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
+	{
+		if (TryGetValue(keyValuePair.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
+			return true;
+		return false;
+	}
+
+	bool System.Collections.IDictionary.Contains(object key)
+	{
+		if (IsCompatibleKey(key))
+			return ContainsKey((TKey)key);
+		return false;
+	}
+
+	public abstract bool ContainsKey(TKey key);
+
+	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyToHelper(array, arrayIndex);
+
+	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex) => CopyToHelper(array, arrayIndex);
+
+	private protected abstract void CopyToHelper(Array array, int arrayIndex);
+
+	private protected abstract void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex);
+
+	public abstract void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other);
+
+	public abstract void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other);
+
+	public abstract void ExceptWith(IEnumerable<TKey> other);
+
+	public abstract IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
+
+	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
+
+	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator() => GetEnumeratorHelper();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private protected abstract IDictionaryEnumerator GetEnumeratorHelper();
+
+	internal abstract System.Collections.ICollection GetKeyListHelper();
+
+	internal abstract System.Collections.ICollection GetValueListHelper();
+
+	public abstract void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other);
+
+	public abstract void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other);
+
+	public abstract void IntersectWith(IEnumerable<TKey> other);
+
+	private protected static bool IsCompatibleKey(object key)
+	{
+		ArgumentNullException.ThrowIfNull(key);
+		return key is TKey;
+	}
+
+	public abstract bool Remove(TKey key);
+
+	public abstract bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value);
+
+	void System.Collections.IDictionary.Remove(object key)
+	{
+		if (IsCompatibleKey(key))
+			Remove((TKey)key);
+	}
+
+	public abstract bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair);
+
+	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
+
+	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
+
+	public abstract void TrimExcess();
+
+	public virtual bool TryAdd(TKey key, TValue value)
+	{
+		if (!ContainsKey(key))
+		{
+			Add(key, value);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	public abstract bool TryGetValue(TKey key, out TValue value);
+
+	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
+
+	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
+}
+
+[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 // Оптимизированный словарь, который для маленького числа элементов использует поэлементное сравнение
 // и добавление в конец (импортируя этот функционал из SortedDictionary, чтобы не создавать
 // лишнее дублирование), а при увеличении числа элементов действует как классический словарь от Microsoft.
-public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull
+public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<TKey, TValue>> where TKey : notnull
 {
 	private protected SortedDictionary<TKey, TValue>? low;
 	private protected G.Dictionary<TKey, TValue>? high;
 	private protected bool isHigh;
 	private protected readonly IEqualityComparer<TKey> comparer;
-	[NonSerialized]
-	private protected object? _syncRoot;
-
 	private protected const int _hashThreshold = 64;
 
 	public Dictionary() : this(EqualityComparer<TKey>.Default) { }
@@ -108,7 +300,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 
 	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
-	public virtual TValue this[TKey key]
+	public override TValue this[TKey key]
 	{
 		get
 		{
@@ -136,40 +328,9 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	object? System.Collections.IDictionary.this[object key]
-	{
-		get
-		{
-			if (IsCompatibleKey(key))
-				return this[(TKey)key];
-			return null;
-		}
-		set
-		{
-			if (!IsCompatibleKey(key))
-				throw new ArgumentNullException(nameof(key));
-			try
-			{
-				var tempKey = (TKey)key;
-				try
-				{
-					this[tempKey] = (TValue?)value ?? throw new ArgumentNullException(nameof(value));
-				}
-				catch (InvalidCastException)
-				{
-					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
-				}
-			}
-			catch (InvalidCastException)
-			{
-				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
-			}
-		}
-	}
-
 	public virtual IEqualityComparer<TKey> Comparer => comparer;
 
-	public virtual int Length
+	public override int Length
 	{
 		get
 		{
@@ -182,7 +343,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	public virtual G.ICollection<TKey> Keys
+	public override G.ICollection<TKey> Keys
 	{
 		get
 		{
@@ -195,24 +356,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => Keys;
-
-	System.Collections.ICollection System.Collections.IDictionary.Keys
-	{
-		get
-		{
-			if (!isHigh && low != null)
-				return low.GetKeyListHelper();
-			else if (high != null)
-				return high.Keys;
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		}
-	}
-
-	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
-
-	public virtual G.ICollection<TValue> Values
+	public override G.ICollection<TValue> Values
 	{
 		get
 		{
@@ -225,42 +369,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => Values;
-
-	System.Collections.ICollection System.Collections.IDictionary.Values
-	{
-		get
-		{
-			if (!isHigh && low != null)
-				return low.GetValueListHelper();
-			else if (high != null)
-				return high.Values;
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-		}
-	}
-
-	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => Values;
-
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
-
-	bool System.Collections.IDictionary.IsReadOnly => false;
-
-	bool System.Collections.IDictionary.IsFixedSize => false;
-
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	object System.Collections.ICollection.SyncRoot
-	{
-		get
-		{
-			if (_syncRoot == null)
-				Interlocked.CompareExchange(ref _syncRoot, new(), null);
-			return _syncRoot;
-		}
-	}
-
-	public virtual void Add(TKey key, TValue value)
+	public override void Add(TKey key, TValue value)
 	{
 		if (!isHigh && low != null)
 			low.Add(key, value);
@@ -276,32 +385,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		}
 	}
 
-	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
-
-	void System.Collections.IDictionary.Add(object key, object? value)
-	{
-		ArgumentNullException.ThrowIfNull(key);
-		try
-		{
-			var tempKey = (TKey)key;
-			try
-			{
-				Add(tempKey, (TValue?)value ?? throw new ArgumentNullException(nameof(value)));
-			}
-			catch (InvalidCastException)
-			{
-				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
-			}
-		}
-		catch (InvalidCastException)
-		{
-			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
-		}
-	}
-
-	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
-
-	public virtual void Clear()
+	public override void Clear()
 	{
 		if (!isHigh && low != null)
 			low.Clear();
@@ -311,21 +395,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
-	{
-		if (TryGetValue(keyValuePair.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
-			return true;
-		return false;
-	}
-
-	bool System.Collections.IDictionary.Contains(object key)
-	{
-		if (IsCompatibleKey(key))
-			return ContainsKey((TKey)key);
-		return false;
-	}
-
-	public virtual bool ContainsKey(TKey key)
+	public override bool ContainsKey(TKey key)
 	{
 		if (!isHigh && low != null)
 			return low.ContainsKey(key);
@@ -335,17 +405,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-	{
-		if (!isHigh && low != null)
-			((G.ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
-		else if (high != null)
-			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
-	}
-
-	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
+	private protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
 			((ICollection)low).CopyTo(array, arrayIndex);
@@ -355,7 +415,17 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	private protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	{
+		if (!isHigh && low != null)
+			((G.ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
+		else if (high != null)
+			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public override void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
@@ -365,7 +435,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual void ExceptWith(IEnumerable<TKey> other)
+	public override void ExceptWith(IEnumerable<TKey> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
@@ -375,7 +445,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
@@ -385,7 +455,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+	public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
 		if (!isHigh && low != null)
 			return low.GetEnumerator();
@@ -395,21 +465,37 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
-
-	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator()
+	private protected override IDictionaryEnumerator GetEnumeratorHelper()
 	{
 		if (!isHigh && low != null)
-			return low.GetEnumerator();
+			return ((System.Collections.IDictionary)low).GetEnumerator();
 		else if (high != null)
 			return high.GetEnumerator();
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	internal override System.Collections.ICollection GetKeyListHelper()
+	{
+		if (!isHigh && low != null)
+			return low.GetKeyListHelper();
+		else if (high != null)
+			return high.Keys;
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
 
-	public virtual void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	internal override System.Collections.ICollection GetValueListHelper()
+	{
+		if (!isHigh && low != null)
+			return low.GetValueListHelper();
+		else if (high != null)
+			return high.Values;
+		else
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+	}
+
+	public override void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -424,7 +510,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual void IntersectWith(IEnumerable<TKey> other)
+	public override void IntersectWith(IEnumerable<TKey> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -439,7 +525,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -454,13 +540,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	private protected static bool IsCompatibleKey(object key)
-	{
-		ArgumentNullException.ThrowIfNull(key);
-		return key is TKey;
-	}
-
-	public virtual bool Remove(TKey key)
+	public override bool Remove(TKey key)
 	{
 		if (!isHigh && low != null)
 			return low.Remove(key);
@@ -470,7 +550,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
+	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
 		if (!isHigh && low != null)
 			return low.Remove(key, out value);
@@ -480,13 +560,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	void System.Collections.IDictionary.Remove(object key)
-	{
-		if (IsCompatibleKey(key))
-			Remove((TKey)key);
-	}
-
-	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
+	public override bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		if (!isHigh && low != null)
 			return low.RemoveValue(keyValuePair);
@@ -496,11 +570,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
-
-	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
-
-	public virtual void TrimExcess()
+	public override void TrimExcess()
 	{
 		if (!isHigh && low != null)
 			low.TrimExcess();
@@ -510,18 +580,7 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
 
-	public virtual bool TryAdd(TKey key, TValue value)
-	{
-		if (!ContainsKey(key))
-		{
-			Add(key, value);
-			return true;
-		}
-		else
-			return false;
-	}
-
-	public virtual bool TryGetValue(TKey key, out TValue value)
+	public override bool TryGetValue(TKey key, out TValue value)
 	{
 		if (!isHigh && low != null)
 			return low.TryGetValue(key, out value);
@@ -530,10 +589,6 @@ public class Dictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, 
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 	}
-
-	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
-
-	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
 }
 
 internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>

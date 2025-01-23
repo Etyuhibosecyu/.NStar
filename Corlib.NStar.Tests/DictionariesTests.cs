@@ -1,27 +1,24 @@
 ﻿
 namespace Corlib.NStar.Tests;
 
-[TestClass]
-public class DictionaryTests
+public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : notnull where TValue : IEquatable<TValue> where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {
-	[TestMethod]
-	public void ComplexTest()
+	public static void ComplexTest(Func<(TCertain, (TKey, TValue)[])> create, Func<TKey> newKeyFunc, Func<TValue> newValueFunc, Func<(TKey, TValue)> newKeyAndValueFunc)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
-		var arr = RedStarLinq.FillArray(random.Next(1, 100), _ => (random.Next(100), random.Next(1, 100)));
-		Dictionary<int, int> dic = new(arr);
+		var (dic, arr) = create();
 		var dic2 = E.ToDictionary(arr.RemoveDoubles(x => x.Item1), x => x.Item1, x => x.Item2);
 		var bytes = new byte[100];
-		var collectionActions = new[] { ((int, int)[] arr) =>
+		var collectionActions = new[] { ((TKey, TValue)[] arr) =>
 		{
 			dic.ExceptWith(arr);
 			foreach (var x in arr)
-				if (dic2.TryGetValue(x.Item1, out var x2) && x.Item2 == x2)
+				if (dic2.TryGetValue(x.Item1, out var x2) && x.Item2.Equals(x2))
 					dic2.Remove(x.Item1);
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, arr =>
 		{
 			dic.IntersectWith(arr);
@@ -29,60 +26,71 @@ public class DictionaryTests
 				if (Array.IndexOf(arr, (x.Key, x.Value)) < 0)
 					dic2.Remove(x.Key);
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}/*, arr =>
 		{
 			dic.SymmetricExceptWith(arr);
 			dic2.SymmetricExceptWith(arr.ToArray(x => x.Item1));
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}*/, arr =>
 		{
 			dic.UnionWith(arr);
 			foreach (var x in arr)
 				dic2[x.Item1] = x.Item2;
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		} };
 		var actions = new[] { () =>
 		{
-			var n = random.Next(100);
-			var n2 = random.Next(100);
+			var (n, n2) = newKeyAndValueFunc();
 			if (dic.TryAdd(n, n2))
 				dic2.Add(n, n2);
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
 			if (dic.Length == 0) return;
-			var n = random.Next(100);
-			var n2 = random.Next(100);
+			var (n, n2) = newKeyAndValueFunc();
 			dic[n] = n2;
 			dic2[n] = n2;
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
 			if (dic.Length == 0) return;
-			var n = random.Next(100);
+			var (n, _) = newKeyAndValueFunc();
 			var b = dic.TryGetValue(n, out var value);
 			if (!b) return;
 			dic.Remove(n);
 			dic2.Remove(n);
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
-			var arr = RedStarLinq.FillArray(25, _ => (CreateVar(random.Next(16), out var key), dic.TryGetValue(key, out var value) ? value : random.Next(1, 16)));
+			var arr = RedStarLinq.FillArray(25, _ => (CreateVar(newKeyFunc(), out var key), dic.TryGetValue(key, out var value) ? value : newValueFunc()));
 			collectionActions.Random(random)(arr);
 			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
+			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
 		if (counter++ < 1000)
 			goto l1;
 	}
+}
+
+[TestClass]
+public class DictionaryTests
+{
+	[TestMethod]
+	public void ComplexTest() => BaseDictionaryTests<int, int, Dictionary<int, int>>.ComplexTest(() =>
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var arr = RedStarLinq.FillArray(random.Next(1, 100), _ => (random.Next(100), random.Next(1, 100)));
+		Dictionary<int, int> dic = new(arr);
+		return (dic, arr);
+	}, () => random.Next(16), () => random.Next(1, 16), () => (random.Next(100), random.Next(100)));
 }
 
 [TestClass]
@@ -188,82 +196,11 @@ public class MirrorTests
 public class SortedDictionaryTests
 {
 	[TestMethod]
-	public void ComplexTest()
+	public void ComplexTest() => BaseDictionaryTests<int, int, SortedDictionary<int, int>>.ComplexTest(() =>
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var counter = 0;
-	l1:
 		var arr = RedStarLinq.FillArray(random.Next(1, 100), _ => (random.Next(100), random.Next(1, 100)));
 		SortedDictionary<int, int> dic = new(arr);
-		var dic2 = E.ToDictionary(arr.RemoveDoubles(x => x.Item1), x => x.Item1, x => x.Item2);
-		var bytes = new byte[100];
-		var collectionActions = new[] { ((int, int)[] arr) =>
-		{
-			dic.ExceptWith(arr);
-			foreach (var x in arr)
-				if (dic2.TryGetValue(x.Item1, out var x2) && x.Item2 == x2)
-					dic2.Remove(x.Item1);
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}, arr =>
-		{
-			dic.IntersectWith(arr);
-			foreach (var x in dic2)
-				if (Array.IndexOf(arr, (x.Key, x.Value)) < 0)
-					dic2.Remove(x.Key);
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}/*, arr =>
-		{
-			dic.SymmetricExceptWith(arr);
-			dic2.SymmetricExceptWith(arr.ToArray(x => x.Item1));
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}*/, arr =>
-		{
-			dic.UnionWith(arr);
-			foreach (var x in arr)
-				dic2[x.Item1] = x.Item2;
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		} };
-		var actions = new[] { () =>
-		{
-			var n = random.Next(100);
-			var n2 = random.Next(100);
-			if (dic.TryAdd(n, n2))
-				dic2.Add(n, n2);
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}, () =>
-		{
-			if (dic.Length == 0) return;
-			var n = random.Next(100);
-			var n2 = random.Next(100);
-			dic[n] = n2;
-			dic2[n] = n2;
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}, () =>
-		{
-			if (dic.Length == 0) return;
-			var n = random.Next(100);
-			var b = dic.TryGetValue(n, out var value);
-			if (!b) return;
-			dic.Remove(n);
-			dic2.Remove(n);
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		}, () =>
-		{
-			var arr = RedStarLinq.FillArray(25, _ => (CreateVar(random.Next(16), out var key), dic.TryGetValue(key, out var value) ? value : random.Next(1, 16)));
-			collectionActions.Random(random)(arr);
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value == value));
-		} };
-		for (var i = 0; i < 1000; i++)
-			actions.Random(random)();
-		if (counter++ < 1000)
-			goto l1;
-	}
+		return (dic, arr);
+	}, () => random.Next(16), () => random.Next(1, 16), () => (random.Next(100), random.Next(100)));
 }

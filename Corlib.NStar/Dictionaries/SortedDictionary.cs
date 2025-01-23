@@ -1,4 +1,5 @@
-﻿
+﻿using System.Diagnostics.CodeAnalysis;
+
 namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -13,15 +14,13 @@ namespace Corlib.NStar;
 /// другой коллекцией, которая применяется существенно чаще, чем данная, поэтому приоритет в очереди
 /// за более простым названием отдается ей. Если кто знает лучшее название для этой коллекции - пишите.
 /// </summary>
-public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue>
+public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, SortedDictionary<TKey, TValue>> where TKey : notnull
 {
 	private protected readonly List<TKey> keys;
 	private protected readonly List<TValue> values;
 	private protected readonly IComparer<TKey> comparer;
 	private protected KeyList? keyList;
 	private protected ValueList? valueList;
-	[NonSerialized]
-	private protected object? _syncRoot;
 
 	private protected const int _defaultCapacity = 32;
 	private protected const int _sortingThreshold = 65;
@@ -97,7 +96,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 
 	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, int> compareFunction) : this(collection, new Comparer<TKey>(compareFunction)) { }
 
-	public virtual TValue this[TKey key]
+	public override TValue this[TKey key]
 	{
 		get
 		{
@@ -120,82 +119,17 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	object? System.Collections.IDictionary.this[object key]
-	{
-		get
-		{
-			if (IsCompatibleKey(key))
-			{
-				var i = IndexOfKey((TKey)key);
-				if (i >= 0)
-					return values.GetInternal(i);
-			}
-			return null;
-		}
-		set
-		{
-			if (!IsCompatibleKey(key))
-				throw new ArgumentNullException(nameof(key));
-			try
-			{
-				var tempKey = (TKey)key;
-				try
-				{
-					this[tempKey] = (TValue?)value ?? throw new ArgumentNullException(nameof(value));
-				}
-				catch (InvalidCastException)
-				{
-					throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
-				}
-			}
-			catch (InvalidCastException)
-			{
-				throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
-			}
-		}
-	}
-
 	public virtual int Capacity { get => keys.Capacity; set => values.Capacity = keys.Capacity = value; }
 
 	public virtual IComparer<TKey> Comparer => comparer;
 
-	public virtual int Length => keys.Length;
+	public override int Length => keys.Length;
 
-	public virtual IList<TKey> Keys => GetKeyListHelper();
+	public override IList<TKey> Keys => (IList<TKey>)GetKeyListHelper();
 
-	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => GetKeyListHelper();
+	public override IList<TValue> Values => (IList<TValue>)GetValueListHelper();
 
-	System.Collections.ICollection System.Collections.IDictionary.Keys => GetKeyListHelper();
-
-	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => GetKeyListHelper();
-
-	public virtual IList<TValue> Values => GetValueListHelper();
-
-	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => GetValueListHelper();
-
-	System.Collections.ICollection System.Collections.IDictionary.Values => GetValueListHelper();
-
-	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => GetValueListHelper();
-
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
-
-	bool System.Collections.IDictionary.IsReadOnly => false;
-
-	bool System.Collections.IDictionary.IsFixedSize => false;
-
-	bool System.Collections.ICollection.IsSynchronized => false;
-
-	object System.Collections.ICollection.SyncRoot
-	{
-		get
-		{
-			if (_syncRoot == null)
-				Interlocked.CompareExchange(ref _syncRoot, new(), null);
-			return _syncRoot;
-		}
-	}
-
-	public virtual void Add(TKey key, TValue value)
+	public override void Add(TKey key, TValue value)
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
@@ -205,71 +139,17 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		Insert(~i, key, value);
 	}
 
-	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
-
-	void System.Collections.IDictionary.Add(object key, object? value)
-	{
-		ArgumentNullException.ThrowIfNull(key);
-		try
-		{
-			var tempKey = (TKey)key;
-			try
-			{
-				Add(tempKey, (TValue?)value ?? throw new ArgumentNullException(nameof(value)));
-			}
-			catch (InvalidCastException)
-			{
-				throw new ArgumentException("Ошибка, такое значение не подходит для этой коллекции.", nameof(value));
-			}
-		}
-		catch (InvalidCastException)
-		{
-			throw new ArgumentException("Ошибка, такой ключ не подходит для этой коллекции.", nameof(key));
-		}
-	}
-
-	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
-
-	public virtual void Clear()
+	public override void Clear()
 	{
 		keys.Clear();
 		values.Clear();
 	}
 
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
-	{
-		var index = IndexOfKey(keyValuePair.Key);
-		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), keyValuePair.Value))
-			return true;
-		return false;
-	}
-
-	bool System.Collections.IDictionary.Contains(object key)
-	{
-		if (IsCompatibleKey(key))
-			return ContainsKey((TKey)key);
-		return false;
-	}
-
-	public virtual bool ContainsKey(TKey key) => IndexOfKey(key) >= 0;
+	public override bool ContainsKey(TKey key) => IndexOfKey(key) >= 0;
 
 	public virtual bool ContainsValue(TValue value) => IndexOfValue(value) >= 0;
 
-	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
-	{
-		ArgumentNullException.ThrowIfNull(array);
-		if (arrayIndex < 0 || arrayIndex > array.Length)
-			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-		if (array.Length - arrayIndex < Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
-		for (var i = 0; i < Length; i++)
-		{
-			KeyValuePair<TKey, TValue> entry = new(keys.GetInternal(i), values.GetInternal(i));
-			array[arrayIndex + i] = entry;
-		}
-	}
-
-	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex)
+	private protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
@@ -299,21 +179,35 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 	}
 
-	public virtual void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	private protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	{
+		ArgumentNullException.ThrowIfNull(array);
+		if (arrayIndex < 0 || arrayIndex > array.Length)
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		if (array.Length - arrayIndex < Length)
+			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
+		for (var i = 0; i < Length; i++)
+		{
+			KeyValuePair<TKey, TValue> entry = new(keys.GetInternal(i), values.GetInternal(i));
+			array[arrayIndex + i] = entry;
+		}
+	}
+
+	public override void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
 	{
 		var indexes = other.Convert(IndexOf).ToHashSet();
 		keys.FilterInPlace((x, index) => !indexes.Contains(index));
 		values.FilterInPlace((x, index) => !indexes.Contains(index));
 	}
 
-	public virtual void ExceptWith(IEnumerable<TKey> other)
+	public override void ExceptWith(IEnumerable<TKey> other)
 	{
 		var indexes = other.Convert(IndexOfKey).ToHashSet();
 		keys.FilterInPlace((x, index) => !indexes.Contains(index));
 		values.FilterInPlace((x, index) => !indexes.Contains(index));
 	}
 
-	public virtual void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		var indexes = other.Convert(IndexOf).ToHashSet();
 		keys.FilterInPlace((x, index) => !indexes.Contains(index));
@@ -327,13 +221,9 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return values.GetInternal(index);
 	}
 
-	public virtual Enumerator GetEnumerator() => new(this, Enumerator.KeyValuePair);
+	public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => new Enumerator(this, Enumerator.KeyValuePair);
 
-	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
-
-	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	private protected override IDictionaryEnumerator GetEnumeratorHelper() => new Enumerator(this, Enumerator.KeyValuePair);
 
 	public virtual TKey GetKey(int index)
 	{
@@ -341,13 +231,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return keys.GetInternal(index);
 	}
 
-	internal KeyList GetKeyListHelper()
+	internal override System.Collections.ICollection GetKeyListHelper()
 	{
 		keyList ??= new(this);
 		return keyList;
 	}
 
-	internal ValueList GetValueListHelper()
+	internal override System.Collections.ICollection GetValueListHelper()
 	{
 		valueList ??= new(this);
 		return valueList;
@@ -383,34 +273,28 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 			keys.Sort(values, comparer);
 	}
 
-	public virtual void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	public override void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
 	{
 		var indexes = other.Convert(IndexOf).ToHashSet();
 		keys.FilterInPlace((x, index) => indexes.Contains(index));
 		values.FilterInPlace((x, index) => indexes.Contains(index));
 	}
 
-	public virtual void IntersectWith(IEnumerable<TKey> other)
+	public override void IntersectWith(IEnumerable<TKey> other)
 	{
 		var indexes = other.Convert(IndexOfKey).ToHashSet();
 		keys.FilterInPlace((x, index) => indexes.Contains(index));
 		values.FilterInPlace((x, index) => indexes.Contains(index));
 	}
 
-	public virtual void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		var indexes = other.Convert(IndexOf).ToHashSet();
 		keys.FilterInPlace((x, index) => indexes.Contains(index));
 		values.FilterInPlace((x, index) => indexes.Contains(index));
 	}
 
-	private protected static bool IsCompatibleKey(object key)
-	{
-		ArgumentNullException.ThrowIfNull(key);
-		return key is TKey;
-	}
-
-	public virtual bool Remove(TKey key)
+	public override bool Remove(TKey key)
 	{
 		var i = IndexOfKey(key);
 		if (i >= 0)
@@ -418,10 +302,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return i >= 0;
 	}
 
-	void System.Collections.IDictionary.Remove(object key)
+	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
 	{
-		if (IsCompatibleKey(key))
-			Remove((TKey)key);
+		var index = IndexOfKey(key);
+		value = values[index];
+		if (index >= 0)
+			RemoveAt(index);
+		return index >= 0;
 	}
 
 	public virtual void RemoveAt(int index)
@@ -430,7 +317,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values.RemoveAt(index);
 	}
 
-	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
+	public override bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		var index = IndexOfKey(keyValuePair.Key);
 		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), keyValuePair.Value))
@@ -440,10 +327,6 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		}
 		return false;
 	}
-
-	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
-
-	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
 	public virtual int Search(TKey key)
 	{
@@ -463,13 +346,13 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		values[index] = value;
 	}
 
-	public virtual void TrimExcess()
+	public override void TrimExcess()
 	{
 		keys.TrimExcess();
 		values.TrimExcess();
 	}
 
-	public virtual bool TryAdd(TKey key, TValue value)
+	public override bool TryAdd(TKey key, TValue value)
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
@@ -480,9 +363,7 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		return true;
 	}
 
-	public virtual bool TryAdd((TKey Key, TValue Value) item) => TryAdd(item.Key, item.Value);
-
-	public virtual bool TryGetValue(TKey key, out TValue value)
+	public override bool TryGetValue(TKey key, out TValue value)
 	{
 		var i = IndexOfKey(key);
 		if (i >= 0)
@@ -493,10 +374,6 @@ public class SortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IDictio
 		value = default!;
 		return false;
 	}
-
-	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
-
-	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
 
 	[Serializable()]
 	public struct Enumerator : IEnumerator<KeyValuePair<TKey, TValue>>, IDictionaryEnumerator

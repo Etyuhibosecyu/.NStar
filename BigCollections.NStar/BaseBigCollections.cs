@@ -225,7 +225,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		MpzT j = 0;
 		for (MpzT i = 0; i - j <= length - list.Length; i++)
 		{
-			if (this[index + i]?.Equals(list[j]) ?? list[j] == null)
+			if (GetInternal(index + i)?.Equals(list[j]) ?? list[j] == null)
 			{
 				j++;
 				if (j >= list.Length)
@@ -618,7 +618,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 				return MoveNextRare();
 			try
 			{
-				current = list[index];
+				current = list.GetInternal(index);
 				index++;
 				return true;
 			}
@@ -1272,7 +1272,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			if (destination.low.Length < destinationIndex + length)
 				destination.low.Resize((int)(destinationIndex + length));
-			destination.low.ReplaceRange((int)destinationIndex, (int)length, low.GetRange((int)sourceIndex, (int)length));
+			low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
 			destination.Length = RedStarLinq.Max(destination.Length, destinationIndex + length);
 #if VERIFY
 			Verify();
