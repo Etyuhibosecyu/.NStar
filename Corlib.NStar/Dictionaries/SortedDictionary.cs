@@ -257,8 +257,6 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	{
 		if (key == null)
 			throw new ArgumentNullException(nameof(key));
-		if (keys.Length <= _sortingThreshold)
-			return keys.FindIndex(x => comparer.Compare(x, key) == 0);
 		var ret = Search(key);
 		return ret >= 0 ? ret : -1;
 	}
@@ -332,7 +330,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	{
 		if (keys.Length <= _sortingThreshold)
 		{
-			var index = keys.IndexOf(key);
+			var index = keys.FindIndex(x => comparer.Compare(x, key) == 0);
 			return index >= 0 ? index : ~keys.Length;
 		}
 		else

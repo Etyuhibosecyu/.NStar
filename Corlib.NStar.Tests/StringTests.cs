@@ -10,19 +10,37 @@ public class StringTests
 	public void ConstructionTest()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		var array = new NList<int>[1000];
+		var array = new String[1000];
 		for (var i = 0; i < array.Length; i++)
 		{
-			array[i] = new[] { () => new NList<int>(), () => new(500), () => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(RedStarLinq.FillArray(random.Next(500), _ => random.Next()).AsSpan()), () => new((G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(RedStarLinq.Fill(random.Next(500), _ => random.Next())), () => new(RedStarLinq.NFill(random.Next(500), _ => random.Next())), () => new(E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next()), x => x)), () => new(E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next()), _ => random.Next(10) == -1)), () => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.FillArray(random.Next(500), _ => random.Next()).AsSpan()), () => new(500, (G.IEnumerable<int>)RedStarLinq.FillArray(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.Fill(random.Next(500), _ => random.Next())), () => new(500, RedStarLinq.NFill(random.Next(500), _ => random.Next())), () => new(500, E.Select(RedStarLinq.Fill(random.Next(500), _ => random.Next()), x => x)), () => new(500, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => random.Next()), _ => random.Next(10) == -1)) }.Random(random)();
+			array[i] = new[]
+			{
+				() => new String(), () => new(500),
+				() => new(RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000)).AsSpan()),
+				() => new((G.IEnumerable<char>)RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(RedStarLinq.NFill(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(E.Select(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), x => x)),
+				() => new(E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), _ => random.Next(10) == -1)),
+				() => new('c', 500),
+				() => new(500, RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(500, RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000)).AsSpan()),
+				() => new(500, (G.IEnumerable<char>)RedStarLinq.FillArray(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(500, RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(500, RedStarLinq.NFill(random.Next(500), _ => (char)random.Next(1, 1000))),
+				() => new(500, E.Select(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), x => x)),
+				() => new(500, E.SkipWhile(RedStarLinq.Fill(random.Next(500), _ => (char)random.Next(1, 1000)), _ => random.Next(10) == -1))
+			}.Random(random)();
 			for (var j = 0; j < 1000; j++)
 			{
-				array[i].Add(random.Next());
+				array[i].Add((char)random.Next(1, 1000));
 				Assert.IsTrue(array[i].Capacity >= array[i].Length);
 			}
 		}
 		Thread.Sleep(50);
 		for (var i = 0; i < array.Length; i++)
-			array[i].Add(random.Next());
+			array[i].Add((char)random.Next(1, 1000));
 	}
 
 	[TestMethod]
@@ -41,96 +59,86 @@ public class StringTests
 	[TestMethod]
 	public void TestAddRange()
 	{
-		var a = nString.ToNString().AddRange(defaultNSCollection);
-		var b = new string(E.ToArray(nString));
-		b += defaultNSCollection;
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(RedStarLinq.ToNString(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += defaultNSCollection;
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(RedStarLinq.ToArray(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += defaultNSCollection;
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(E.ToList(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += defaultNSCollection;
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(defaultNSCollection.Prepend('X'));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.Prepend('X'));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(nSEnumerable);
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(nSEnumerable);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(nSEnumerable2);
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(nSEnumerable2);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().AddRange(defaultNSCollection.AsSpan(2, 3));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.Skip(2).Take(3));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(defaultNSCollection);
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(RedStarLinq.ToNString(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(RedStarLinq.ToArray(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(E.ToList(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(defaultNSCollection.Prepend('X'));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.Prepend('X'));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(nSEnumerable);
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(nSEnumerable);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(nSEnumerable2);
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(nSEnumerable2);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).AddRange(defaultNSCollection.AsSpan(2, 3));
-		b = new string(E.ToArray(nString));
-		b += RedStarLinq.ToString(defaultNSCollection.Skip(2).Take(3));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		String a;
+		for (var i = 0; i < 10000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			a = array.ToNString();
+			var b = E.ToList(array);
+			var @case = random.Next(50);
+			switch (@case)
+			{
+				case 0:
+				a.AddRange(a);
+				b.AddRange(array);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 1:
+				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
+				a.AddRange(a.GetRange(index2, length));
+				b.AddRange(array.Skip(index2).Take(length));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 2:
+				var array2 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+				a.AddRange(array2);
+				b.AddRange(array2);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 3:
+				var array3 = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+				a.AddRange(array3);
+				b.AddRange(array3);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 4:
+				var array4 = new Chain(random.Next(1001)).ToNString(_ => (char)random.Next('A', 'Z' + 1));
+				a.AddRange(array4);
+				b.AddRange(array4);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 5:
+				var array5 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).ToList().Insert(0, 'X').GetSlice(1);
+				a.AddRange(array5);
+				b.AddRange(array5);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 6:
+				var array6 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).Prepend('X');
+				a.AddRange(array6);
+				b.AddRange(array6);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 7:
+				var seed = random.Next();
+				Random random2 = new(seed), random3 = new(seed);
+				var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X');
+				a.AddRange(array7);
+				b.AddRange(E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 8:
+				seed = random.Next();
+				random2 = new(seed);
+				random3 = new(seed);
+				var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0');
+				a.AddRange(array8);
+				b.AddRange(E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0'));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+			}
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().AddRange((G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -294,118 +302,14 @@ public class StringTests
 		for (var i = 0; i < 1000; i++)
 		{
 			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
-			G.IEnumerable<char> b = new String(a);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.Append(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.Skip(a, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.Prepend(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.SkipLast(b, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.Append(E.SkipLast(b, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new String(E.Prepend(E.Skip(a, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = CreateVar(new String(), out _)!;
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(a);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.Append(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.Skip(a, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.Prepend(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.SkipLast(b, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.Append(E.SkipLast(b, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new List<char>(E.Prepend(E.Skip(a, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = CreateVar(new List<char>(), out _)!;
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(a);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.Append(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.Skip(a, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.Prepend(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.SkipLast(b, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.Append(E.SkipLast(b, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.ToArray(E.Prepend(E.Skip(a, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = CreateVar(Array.Empty<char>(), out _)!;
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(a);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.Append(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.Skip(a, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.Prepend(a, Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.SkipLast(b, 1));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.Append(E.SkipLast(b, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new G.List<char>(E.Prepend(E.Skip(a, 1), Next()));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = CreateVar(new G.List<char>(), out _)!;
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(a));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.Append(a, Next())));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.Skip(a, 1)));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.Prepend(a, Next())));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.SkipLast(b, 1)));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.Append(E.SkipLast(b, 1), Next())));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = new string(E.ToArray(E.Prepend(E.Skip(a, 1), Next())));
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = CreateVar("", out _)!;
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(a, x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Append(a, Next()), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Skip(a, 1), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Prepend(a, Next()), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.SkipLast(b, 1), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Append(E.SkipLast(b, 1), Next()), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Prepend(E.Skip(a, 1), Next()), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.Select(E.Take(a, 0), x => x);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(a, _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.Append(a, Next()), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.Skip(a, 1), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.Prepend(a, Next()), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.SkipLast(a, 1), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.Append(E.SkipLast(a, 1), Next()), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.SkipWhile(E.Prepend(E.Skip(a, 1), Next()), _ => random.Next(10) != -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
-			b = E.TakeWhile(a, _ => random.Next(10) == -1);
-			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
+			ProcessA(a, a);
+			ProcessA(a, E.Append(a, Next()));
+			ProcessA(a, E.Skip(a, 1));
+			ProcessA(a, E.Prepend(a, Next()));
+			ProcessA(a, E.SkipLast(a, 1));
+			ProcessA(a, E.Append(E.SkipLast(a, 1), Next()));
+			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
+			ProcessA(a, []);
 		}
 		for (var i = 0; i < 1000; i++)
 		{
@@ -502,6 +406,23 @@ public class StringTests
 			}
 		}
 		char Next() => (char)random.Next(1000);
+		void ProcessA(String a, G.IEnumerable<char> enumerable)
+		{
+			G.IEnumerable<char> b = new String(enumerable);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = new List<char>(enumerable);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = E.ToArray(enumerable);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = new G.List<char>(enumerable);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = new string(E.ToArray(enumerable));
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = E.Select(enumerable, x => x);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+			b = E.SkipWhile(enumerable, _ => random.Next(10) != -1);
+			Assert.AreEqual(-string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))), a.CompareTo(b));
+		}
 		static void FullCompare(String a, String b)
 		{
 			Assert.AreEqual(a.CompareTo(b), -string.Compare(new string(E.ToArray(b)), new string(E.ToArray(a))));
@@ -543,16 +464,69 @@ public class StringTests
 	[TestMethod]
 	public void TestContains()
 	{
-		var a = nString.ToNString();
-		var b = a.Contains('M');
-		Assert.IsTrue(b);
-		b = a.Contains('B', 2);
-		Assert.IsFalse(b);
-		b = a.Contains(new String('P', 'D', 'M'));
-		Assert.IsTrue(b);
-		b = a.Contains(new String('P', 'D', 'N'));
-		Assert.IsFalse(b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.Contains((G.IEnumerable<char>)null!));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
+			ProcessA(a, a);
+			ProcessA(a, E.Append(a, Next()));
+			ProcessA(a, E.Skip(a, 1));
+			ProcessA(a, E.Prepend(a, Next()));
+			ProcessA(a, E.SkipLast(a, 1));
+			ProcessA(a, E.Append(E.SkipLast(a, 1), Next()));
+			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
+			ProcessA(a, []);
+		}
+		char Next() => (char)random.Next(1000);
+		void ProcessA(String a, G.IEnumerable<char> enumerable)
+		{
+			G.IEnumerable<char> b = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = new List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = E.ToArray(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = new G.List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = new string(E.ToArray(enumerable));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = E.Select(enumerable, x => x);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			b = E.SkipWhile(enumerable, _ => random.Next(10) != -1);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(new string(E.ToArray(b)), StringComparison.Ordinal), a.Contains(b));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(b)), a.Contains(E.FirstOrDefault(b)));
+			var c = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.InvariantCulture), a.Contains(E.FirstOrDefault(c), false));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase), a.Contains(E.FirstOrDefault(c), true));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.CurrentCulture), a.Contains(E.FirstOrDefault(c), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase), a.Contains(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.InvariantCulture), a.Contains(E.FirstOrDefault(c), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase), a.Contains(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.Ordinal), a.Contains(E.FirstOrDefault(c), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase), a.Contains(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCulture), a.Contains(c.AsSpan(), false));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.Contains(c.AsSpan(), true));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.CurrentCulture), a.Contains(c.AsSpan(), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.Contains(c.AsSpan(), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCulture), a.Contains(c.AsSpan(), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.Contains(c.AsSpan(), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.Ordinal), a.Contains(c.AsSpan(), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.OrdinalIgnoreCase), a.Contains(c.AsSpan(), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCulture), a.Contains(c, false));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.Contains(c, true));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.CurrentCulture), a.Contains(c, StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.Contains(c, StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCulture), a.Contains(c, StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.Contains(c, StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.Ordinal), a.Contains(c, StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).Contains(c.ToString(), StringComparison.OrdinalIgnoreCase), a.Contains(c, StringComparison.OrdinalIgnoreCase));
+		}
 	}
 
 	[TestMethod]
@@ -642,15 +616,69 @@ public class StringTests
 	[TestMethod]
 	public void TestEndsWith()
 	{
-		var a = nString.ToNString();
-		var b = a.EndsWith('D');
-		Assert.IsTrue(b);
-		b = a.EndsWith(new String('M', 'E', 'D'));
-		Assert.IsTrue(b);
-		b = a.EndsWith(new String('P', 'E', 'D'));
-		Assert.IsFalse(b);
-		b = a.EndsWith(new String('M', 'E', 'N'));
-		Assert.IsFalse(b);
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
+			ProcessA(a, a);
+			ProcessA(a, E.Append(a, Next()));
+			ProcessA(a, E.Skip(a, 1));
+			ProcessA(a, E.Prepend(a, Next()));
+			ProcessA(a, E.SkipLast(a, 1));
+			ProcessA(a, E.Append(E.SkipLast(a, 1), Next()));
+			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
+			ProcessA(a, []);
+		}
+		char Next() => (char)random.Next(1000);
+		void ProcessA(String a, G.IEnumerable<char> enumerable)
+		{
+			G.IEnumerable<char> b = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = new List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = E.ToArray(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = new G.List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = new string(E.ToArray(enumerable));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = E.Select(enumerable, x => x);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			b = E.SkipWhile(enumerable, _ => random.Next(10) != -1);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.EndsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(E.FirstOrDefault(b)), a.EndsWith(E.FirstOrDefault(b)));
+			var c = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCulture), a.EndsWith(E.FirstOrDefault(c), false));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(E.FirstOrDefault(c), true));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.CurrentCulture), a.EndsWith(E.FirstOrDefault(c), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.CurrentCultureIgnoreCase), a.EndsWith(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCulture), a.EndsWith(E.FirstOrDefault(c), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.Ordinal), a.EndsWith(E.FirstOrDefault(c), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(new string([E.FirstOrDefault(c)]), StringComparison.OrdinalIgnoreCase), a.EndsWith(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCulture), a.EndsWith(c.AsSpan(), false));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(c.AsSpan(), true));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.CurrentCulture), a.EndsWith(c.AsSpan(), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.EndsWith(c.AsSpan(), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCulture), a.EndsWith(c.AsSpan(), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(c.AsSpan(), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.Ordinal), a.EndsWith(c.AsSpan(), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.OrdinalIgnoreCase), a.EndsWith(c.AsSpan(), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCulture), a.EndsWith(c, false));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(c, true));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.CurrentCulture), a.EndsWith(c, StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.EndsWith(c, StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCulture), a.EndsWith(c, StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.EndsWith(c, StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.Ordinal), a.EndsWith(c, StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).EndsWith(c.ToString(), StringComparison.OrdinalIgnoreCase), a.EndsWith(c, StringComparison.OrdinalIgnoreCase));
+		}
 	}
 
 	[TestMethod]
@@ -986,7 +1014,7 @@ public class StringTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter([]);
-		c = "";
+		c = new(E.ToArray(nString));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new('D', 'M'));
@@ -1026,7 +1054,7 @@ public class StringTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore([]);
-		c = new(E.ToArray(nString));
+		c = "";
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new('D', 'M'));
@@ -1106,22 +1134,69 @@ public class StringTests
 	[TestMethod]
 	public void TestIndexOf()
 	{
-		var a = nString.ToNString();
-		var b = a.IndexOf('M');
-		Assert.AreEqual(0, b);
-		b = a.IndexOf('B', 2);
-		Assert.AreEqual(-1, b);
-		b = a.IndexOf('B', 1, 2);
-		Assert.AreEqual(1, b);
-		b = a.IndexOf(new String('P', 'D', 'M'));
-		Assert.AreEqual(2, b);
-		b = a.IndexOf(new String('P', 'D', 'N'));
-		Assert.AreEqual(-1, b);
-		b = a.IndexOf("ME", 4);
-		Assert.AreEqual(4, b);
-		b = a.IndexOf("ME", 0, 4);
-		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.IndexOf((G.IEnumerable<char>)null!));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
+			ProcessA(a, a);
+			ProcessA(a, E.Append(a, Next()));
+			ProcessA(a, E.Skip(a, 1));
+			ProcessA(a, E.Prepend(a, Next()));
+			ProcessA(a, E.SkipLast(a, 1));
+			ProcessA(a, E.Append(E.SkipLast(a, 1), Next()));
+			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
+			ProcessA(a, []);
+		}
+		char Next() => (char)random.Next(1000);
+		void ProcessA(String a, G.IEnumerable<char> enumerable)
+		{
+			G.IEnumerable<char> b = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = new List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = E.ToArray(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = new G.List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = new string(E.ToArray(enumerable));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = E.Select(enumerable, x => x);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			b = E.SkipWhile(enumerable, _ => random.Next(10) != -1);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(new string(E.ToArray(b)), StringComparison.Ordinal), a.IndexOf(b));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(b)), a.IndexOf(E.FirstOrDefault(b)));
+			var c = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCulture), a.IndexOf(E.FirstOrDefault(c), false));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(E.FirstOrDefault(c), true));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.CurrentCulture), a.IndexOf(E.FirstOrDefault(c), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase), a.IndexOf(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCulture), a.IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.Ordinal), a.IndexOf(E.FirstOrDefault(c), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase), a.IndexOf(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCulture), a.IndexOf(c.AsSpan(), false));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(c.AsSpan(), true));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.CurrentCulture), a.IndexOf(c.AsSpan(), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.IndexOf(c.AsSpan(), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCulture), a.IndexOf(c.AsSpan(), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(c.AsSpan(), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.Ordinal), a.IndexOf(c.AsSpan(), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.OrdinalIgnoreCase), a.IndexOf(c.AsSpan(), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCulture), a.IndexOf(c, false));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(c, true));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.CurrentCulture), a.IndexOf(c, StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.IndexOf(c, StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCulture), a.IndexOf(c, StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.IndexOf(c, StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.Ordinal), a.IndexOf(c, StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).IndexOf(c.ToString(), StringComparison.OrdinalIgnoreCase), a.IndexOf(c, StringComparison.OrdinalIgnoreCase));
+		}
 	}
 
 	[TestMethod]
@@ -1155,119 +1230,89 @@ public class StringTests
 	[TestMethod]
 	public void TestInsert()
 	{
-		var a = nString.ToNString().Insert(3, defaultNChar);
-		var b = new string(E.ToArray(nString));
-		b = b.Insert(3, "" + defaultNChar);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(nString.Length, defaultNChar);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(nString.Length, "" + defaultNChar);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, defaultNSCollection);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, RedStarLinq.ToNString(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, RedStarLinq.ToArray(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, E.ToList(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1)));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, defaultNSCollection.Prepend('X'));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection.Prepend('X')));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, nSEnumerable);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(nSEnumerable));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(4, nSEnumerable2);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(nSEnumerable2));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = nString.ToNString().Insert(2, defaultNSCollection.AsSpan(2, 3));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(2, RedStarLinq.ToString(defaultNSCollection.Skip(2).Take(3)));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(3, "" + defaultNChar);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(3, "" + defaultNChar);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(nString.Length, "" + defaultNChar);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(nString.Length, "" + defaultNChar);
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, defaultNSCollection);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, RedStarLinq.ToNString(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, RedStarLinq.ToArray(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, E.ToList(defaultNSCollection));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection.ToNString().Copy().Insert(0, 'X').GetSlice(1)));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, defaultNSCollection.Prepend('X'));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(defaultNSCollection.Prepend('X')));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, nSEnumerable);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(nSEnumerable));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(4, nSEnumerable2);
-		b = new string(E.ToArray(nString));
-		b = b.Insert(4, RedStarLinq.ToString(nSEnumerable2));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new String(10, nString).Insert(2, defaultNSCollection.AsSpan(2, 3));
-		b = new string(E.ToArray(nString));
-		b = b.Insert(2, RedStarLinq.ToString(defaultNSCollection.Skip(2).Take(3)));
-		Assert.IsTrue(a.Equals(b));
-		Assert.IsTrue(E.SequenceEqual(b, a));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nString.ToNString().Insert(1000, defaultNChar));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nString.ToNString().Insert(-1, defaultNSCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => nString.ToNString().Insert(5, (G.IEnumerable<char>)null!));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		String a;
+		for (var i = 0; i < 10000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			a = array.ToNString();
+			var b = E.ToList(array);
+			var @case = random.Next(50);
+			var index = random.Next(a.Length);
+			switch (@case)
+			{
+				case 0:
+				a.Insert(index, a);
+				b.InsertRange(index, array);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 1:
+				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
+				a.Insert(index, a.GetRange(index2, length));
+				b.InsertRange(index, array.Skip(index2).Take(length));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 2:
+				var array2 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+				a.Insert(index, array2);
+				b.InsertRange(index, array2);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 3:
+				var array3 = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+				a.Insert(index, array3);
+				b.InsertRange(index, array3);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 4:
+				var array4 = new Chain(random.Next(1001)).ToNString(_ => (char)random.Next('A', 'Z' + 1));
+				a.Insert(index, array4);
+				b.InsertRange(index, array4);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 5:
+				var array5 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).ToList().Insert(0, 'X').GetSlice(1);
+				a.Insert(index, array5);
+				b.InsertRange(index, array5);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 6:
+				var array6 = RedStarLinq.Fill(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1)).Prepend('X');
+				a.Insert(index, array6);
+				b.InsertRange(index, array6);
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 7:
+				var seed = random.Next();
+				Random random2 = new(seed), random3 = new(seed);
+				var array7 = E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X');
+				a.Insert(index, array7);
+				b.InsertRange(index, E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+				case 8:
+				seed = random.Next();
+				random2 = new(seed);
+				random3 = new(seed);
+				var array8 = E.SkipWhile(E.Select(E.Range(0, random2.Next(1001)), _ => (char)random2.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0');
+				a.Insert(index, array8);
+				b.InsertRange(index, E.SkipWhile(E.Select(E.Range(0, random3.Next(1001)), _ => (char)random3.Next('A', 'Z' + 1)).Prepend('X'), x => x == '0'));
+				Assert.IsTrue(a.Equals(b));
+				Assert.IsTrue(E.SequenceEqual(b, a));
+				break;
+			}
+		}
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = nString.ToNString().Insert(1000, 'X'));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => nList.ToNList().Insert(-1, defaultNCollection));
+		Assert.ThrowsException<ArgumentNullException>(() => nList.ToNList().Insert(5, (G.IEnumerable<(char, char, char)>)null!));
 	}
 
 	[TestMethod]
@@ -1289,7 +1334,7 @@ public class StringTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = String.Join(' ', Array.Empty<String>());
-		b = string.Join(' ', []);
+		b = string.Join(' ', Array.Empty<string>());
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = String.Join(' ', Array.Empty<string>());
@@ -1310,7 +1355,7 @@ public class StringTests
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = String.Join(", ", Array.Empty<String>());
-		b = string.Join(", ", []);
+		b = string.Join(", ", Array.Empty<string>());
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		a = String.Join(", ", Array.Empty<string>());
@@ -2012,14 +2057,69 @@ public class StringTests
 	[TestMethod]
 	public void TestStartsWith()
 	{
-		var a = nString.ToNString();
-		var b = a.StartsWith('M');
-		Assert.IsTrue(b);
-		b = a.StartsWith(new String('M', 'B', 'P'));
-		Assert.IsTrue(b);
-		b = a.StartsWith(new String('M', 'B', 'X'));
-		Assert.IsFalse(b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<char>)null!));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new String(E.Select(E.Range(0, random.Next(2, 100)), _ => Next()));
+			ProcessA(a, a);
+			ProcessA(a, E.Append(a, Next()));
+			ProcessA(a, E.Skip(a, 1));
+			ProcessA(a, E.Prepend(a, Next()));
+			ProcessA(a, E.SkipLast(a, 1));
+			ProcessA(a, E.Append(E.SkipLast(a, 1), Next()));
+			ProcessA(a, E.Prepend(E.Skip(a, 1), Next()));
+			ProcessA(a, []);
+		}
+		char Next() => (char)random.Next(1000);
+		void ProcessA(String a, G.IEnumerable<char> enumerable)
+		{
+			G.IEnumerable<char> b = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = new List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = E.ToArray(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = new G.List<char>(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = new string(E.ToArray(enumerable));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = E.Select(enumerable, x => x);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			b = E.SkipWhile(enumerable, _ => random.Next(10) != -1);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string(E.ToArray(b)), StringComparison.Ordinal), a.StartsWith(b));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(E.FirstOrDefault(b)), a.StartsWith(E.FirstOrDefault(b)));
+			var c = new String(enumerable);
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCulture), a.StartsWith(E.FirstOrDefault(c), false));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(E.FirstOrDefault(c), true));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.CurrentCulture), a.StartsWith(E.FirstOrDefault(c), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.CurrentCultureIgnoreCase), a.StartsWith(E.FirstOrDefault(c), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCulture), a.StartsWith(E.FirstOrDefault(c), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(E.FirstOrDefault(c), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.Ordinal), a.StartsWith(E.FirstOrDefault(c), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(new string([E.FirstOrDefault(c)]), StringComparison.OrdinalIgnoreCase), a.StartsWith(E.FirstOrDefault(c), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCulture), a.StartsWith(c.AsSpan(), false));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(c.AsSpan(), true));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.CurrentCulture), a.StartsWith(c.AsSpan(), StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.StartsWith(c.AsSpan(), StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCulture), a.StartsWith(c.AsSpan(), StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(c.AsSpan(), StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.Ordinal), a.StartsWith(c.AsSpan(), StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.OrdinalIgnoreCase), a.StartsWith(c.AsSpan(), StringComparison.OrdinalIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCulture), a.StartsWith(c, false));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(c, true));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.CurrentCulture), a.StartsWith(c, StringComparison.CurrentCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.CurrentCultureIgnoreCase), a.StartsWith(c, StringComparison.CurrentCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCulture), a.StartsWith(c, StringComparison.InvariantCulture));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.InvariantCultureIgnoreCase), a.StartsWith(c, StringComparison.InvariantCultureIgnoreCase));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.Ordinal), a.StartsWith(c, StringComparison.Ordinal));
+			Assert.AreEqual(new string(E.ToArray(a)).StartsWith(c.ToString(), StringComparison.OrdinalIgnoreCase), a.StartsWith(c, StringComparison.OrdinalIgnoreCase));
+		}
 	}
 
 	[TestMethod]

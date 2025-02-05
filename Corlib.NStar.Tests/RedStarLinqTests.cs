@@ -9,22 +9,22 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var list = RedStarLinq.FillArray(random.Next(101), _ => new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
-			G.IEnumerable<string> a = RedStarLinq.ToList(list);
+			var array = RedStarLinq.FillArray(random.Next(101), _ => new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
+			G.IEnumerable<string> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(list);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(list);
+			a = E.ToList(array);
 			action(a);
-			a = list.ToList().Insert(0, "XXX").GetSlice(1);
+			a = array.ToList().Insert(0, "XXX").GetSlice(1);
 			action(a);
-			a = list.Prepend("XXX");
+			a = array.Prepend("XXX");
 			action(a);
 			a = enumerable;
 			action(a);
 			a = enumerable2;
 			action(a);
-			a = E.SkipWhile(list, _ => random.Next(10) != -1);
+			a = E.SkipWhile(array, _ => random.Next(10) != -1);
 			action(a);
 		}
 	}
@@ -34,16 +34,16 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var list = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
-			G.IReadOnlyList<string> a = RedStarLinq.ToList(list);
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			G.IReadOnlyList<string> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(list);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(list);
+			a = E.ToList(array);
 			action(a);
-			a = list.ToList().Insert(0, "XXX").GetSlice(1);
+			a = array.ToList().Insert(0, "XXX").GetSlice(1);
 			action(a);
-			a = list.Prepend("XXX");
+			a = array.Prepend("XXX");
 			action(a);
 		}
 	}
@@ -54,22 +54,22 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
-			var list = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
-			G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(nList);
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			G.IEnumerable<(char, char, char)> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(nList);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(nList);
+			a = E.ToList(array);
 			action(a);
-			a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+			a = array.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
 			action(a);
-			a = nList.Prepend(('X', 'X', 'X'));
+			a = array.Prepend(('X', 'X', 'X'));
 			action(a);
 			a = nEnumerable;
 			action(a);
 			a = nEnumerable2;
 			action(a);
-			a = E.SkipWhile(nList, _ => random.Next(10) != -1);
+			a = E.SkipWhile(array, _ => random.Next(10) != -1);
 			action(a);
 		}
 	}
@@ -80,16 +80,16 @@ public class RedStarLinqTests
 		for (var i = 0; i < 1000; i++)
 		{
 			char @char;
-			var list = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
-			G.IReadOnlyList<(char, char, char)> a = RedStarLinq.ToList(nList);
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (@char = (char)random.Next('A', 'Z' + 1), @char, @char));
+			G.IReadOnlyList<(char, char, char)> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(nList);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(nList);
+			a = E.ToList(array);
 			action(a);
-			a = nList.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
+			a = array.ToList().Insert(0, ('X', 'X', 'X')).GetSlice(1);
 			action(a);
-			a = nList.Prepend(('X', 'X', 'X'));
+			a = array.Prepend(('X', 'X', 'X'));
 			action(a);
 		}
 	}
@@ -99,22 +99,22 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var list = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
-			G.IEnumerable<char> a = RedStarLinq.ToList(nString);
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			G.IEnumerable<char> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(nString);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(nString);
+			a = E.ToList(array);
 			action(a);
-			a = nString.ToList().Insert(0, 'X').GetSlice(1);
+			a = array.ToList().Insert(0, 'X').GetSlice(1);
 			action(a);
-			a = nString.Prepend('X');
+			a = array.Prepend('X');
 			action(a);
 			a = nSEnumerable;
 			action(a);
 			a = nSEnumerable2;
 			action(a);
-			a = E.SkipWhile(nString, _ => random.Next(10) != -1);
+			a = E.SkipWhile(array, _ => random.Next(10) != -1);
 			action(a);
 		}
 	}
@@ -124,16 +124,16 @@ public class RedStarLinqTests
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
-			var list = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
-			G.IReadOnlyList<char> a = RedStarLinq.ToList(nString);
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => (char)random.Next('A', 'Z' + 1));
+			G.IReadOnlyList<char> a = RedStarLinq.ToList(array);
 			action(a);
-			a = RedStarLinq.ToArray(nString);
+			a = RedStarLinq.ToArray(array);
 			action(a);
-			a = E.ToList(nString);
+			a = E.ToList(array);
 			action(a);
-			a = nString.ToList().Insert(0, 'X').GetSlice(1);
+			a = array.ToList().Insert(0, 'X').GetSlice(1);
 			action(a);
-			a = nString.Prepend('X');
+			a = array.Prepend('X');
 			action(a);
 		}
 	}

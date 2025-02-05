@@ -16,7 +16,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	public override int Capacity
 	{
-		get => buckets.Length;
+		get => buckets?.Length ?? 0;
 		set
 		{
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
@@ -222,7 +222,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		var newBuckets = new int[newSize];
 		var newEntries = new Entry[newSize];
-		Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
+		if (entries != null)
+			Array.Copy(entries, 0, newEntries, 0, Min(entries.Length, newSize));
 		if (forceNewHashCodes)
 			for (var i = 0; i < _size; i++)
 			{
@@ -439,12 +440,6 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 
 	public ListHashSet(IEnumerable<T> collection) : base(collection) { }
 
-	public ListHashSet(params T[] array) : base(array) { }
-
-	public ListHashSet(ReadOnlySpan<T> span) : base(span) { }
-
-	public ListHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
-
 	public ListHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
 	public ListHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
@@ -454,6 +449,12 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 	public ListHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	public ListHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
+
+	public ListHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
+
+	public ListHashSet(params T[] array) : base(array) { }
+
+	public ListHashSet(ReadOnlySpan<T> span) : base(span) { }
 
 	private protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
 
@@ -786,13 +787,9 @@ public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 
 	public TreeHashSet(IEnumerable<T> collection) : base(collection) { }
 
-	public TreeHashSet(params T[] array) : base(array) { }
-
-	public TreeHashSet(ReadOnlySpan<T> span) : base(span) { }
+	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
 	public TreeHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
-
-	public TreeHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(collection, comparer) { }
 
 	public TreeHashSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
@@ -801,6 +798,10 @@ public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 	public TreeHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	public TreeHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : base(capacity, collection, comparer) { }
+
+	public TreeHashSet(params T[] array) : base(array) { }
+
+	public TreeHashSet(ReadOnlySpan<T> span) : base(span) { }
 
 	private protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
 

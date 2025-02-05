@@ -59,7 +59,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain Add(T item)
 	{
-		if (_size == Capacity) EnsureCapacity(_size + 1);
+		if (_size == Capacity)
+			EnsureCapacity(_size + 1);
 		SetInternal(_size++, item);
 		return (TCertain)this;
 	}
@@ -81,6 +82,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 
 	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
+
+	public virtual TCertain AddRange(List<T> list) => Insert(_size, (IEnumerable<T>)list);
 
 	public virtual TCertain AddSeries(Func<int, T> function, int length)
 	{
@@ -247,8 +250,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if (Capacity < min)
 		{
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
 			if (newCapacity < min)
 				newCapacity = min;
 			Capacity = newCapacity;
@@ -428,7 +432,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (_size == Capacity) EnsureCapacity(_size + 1);
+		if (_size == Capacity)
+			EnsureCapacity(_size + 1);
 		var this2 = (TCertain)this;
 		if (index < _size)
 			CopyToInternal(index, this2, index + 1, _size - index);
@@ -458,6 +463,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentNullException.ThrowIfNull(collection);
 		return InsertInternal(index, collection);
 	}
+
+	public virtual TCertain Insert(int index, List<T> list) => Insert(index, (IEnumerable<T>)list);
 
 	private protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{

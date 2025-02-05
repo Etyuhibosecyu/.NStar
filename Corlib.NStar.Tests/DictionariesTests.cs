@@ -1,22 +1,24 @@
 ﻿
+using System.Diagnostics;
+
 namespace Corlib.NStar.Tests;
 
 public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : notnull where TValue : IEquatable<TValue> where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {
-	public static void ComplexTest(Func<(TCertain, (TKey, TValue)[])> create, Func<TKey> newKeyFunc, Func<TValue> newValueFunc, Func<(TKey, TValue)> newKeyAndValueFunc)
+	public static void ComplexTest(Func<(TCertain, (TKey Key, TValue Value)[])> create, Func<TKey> newKeyFunc, Func<TValue> newValueFunc, Func<(TKey Key, TValue Value)> newKeyAndValueFunc)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		var counter = 0;
 	l1:
 		var (dic, arr) = create();
-		var dic2 = E.ToDictionary(arr.RemoveDoubles(x => x.Item1), x => x.Item1, x => x.Item2);
+		var dic2 = E.ToDictionary(arr.RemoveDoubles(x => x.Key), x => x.Key, x => x.Value);
 		var bytes = new byte[100];
-		var collectionActions = new[] { ((TKey, TValue)[] arr) =>
+		var collectionActions = new[] { ((TKey Key, TValue Value)[] arr) =>
 		{
 			dic.ExceptWith(arr);
 			foreach (var x in arr)
-				if (dic2.TryGetValue(x.Item1, out var x2) && x.Item2.Equals(x2))
-					dic2.Remove(x.Item1);
+				if (dic2.TryGetValue(x.Key, out var x2) && x.Value.Equals(x2))
+					dic2.Remove(x.Key);
 			Assert.AreEqual(dic.Length, dic2.Count);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, arr =>
@@ -27,17 +29,21 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 					dic2.Remove(x.Key);
 			Assert.AreEqual(dic.Length, dic2.Count);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
-		}/*, arr =>
-		{
-			dic.SymmetricExceptWith(arr);
-			dic2.SymmetricExceptWith(arr.ToArray(x => x.Item1));
-			Assert.AreEqual(dic.Length, dic2.Count);
-			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
-		}*/, arr =>
+		//}, arr =>
+		//{
+		//	dic.SymmetricExceptWith(arr);
+		//	foreach (var x in E.DistinctBy(arr, x => x.Key))
+		//	{
+		//		var result = dic2.ContainsKey(x.Key) ? dic2.Remove(x.Key) : dic2.TryAdd(x.Key, x.Value);
+		//		Assert.IsTrue(result);
+		//	}
+		//	Assert.AreEqual(dic.Length, dic2.Count);
+		//	Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
+		}, arr =>
 		{
 			dic.UnionWith(arr);
 			foreach (var x in arr)
-				dic2[x.Item1] = x.Item2;
+				dic2[x.Key] = x.Value;
 			Assert.AreEqual(dic.Length, dic2.Count);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		} };

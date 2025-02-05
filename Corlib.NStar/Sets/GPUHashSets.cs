@@ -427,13 +427,13 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 				TryAdd(item);
 	}
 
-	public GPUHashSet(params T[] array) : this((IEnumerable<T>)array) { }
-
 	public GPUHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public GPUHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
-
 	public GPUHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+
+	public GPUHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+
+	public GPUHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
 	private protected override Func<int, GPUHashSet<T>> CapacityCreator => x => new(x);
 

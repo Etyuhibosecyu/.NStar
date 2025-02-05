@@ -273,7 +273,7 @@ public class AppendTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfter(new());
-			c = [];
+			c = new(list);
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetAfter(new List<string>("DDD", "MMM"));
@@ -333,7 +333,7 @@ public class AppendTests
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetBefore(new());
-			c = new(list);
+			c = [];
 			Assert.IsTrue(b.Equals(c));
 			Assert.IsTrue(E.SequenceEqual(c, b));
 			b = a.GetBefore(new List<string>("DDD", "MMM"));

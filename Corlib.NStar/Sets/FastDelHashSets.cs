@@ -385,14 +385,6 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 
 	public FastDelHashSet(IEnumerable<T> set) : base(set) { }
 
-	public FastDelHashSet(params T[] array) : base(array) { }
-
-	public FastDelHashSet(ReadOnlySpan<T> span) : base(span) { }
-
-	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
-
-	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
-
 	public FastDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set) { }
 
 	public FastDelHashSet(int capacity, params T[] array) : base(capacity, array) { }
@@ -400,6 +392,14 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
 	public FastDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer) { }
+
+	public FastDelHashSet(params T[] array) : base(array) { }
+
+	public FastDelHashSet(ReadOnlySpan<T> span) : base(span) { }
+
+	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
+
+	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
 	private protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
@@ -416,8 +416,6 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	public ParallelHashSet(int capacity) : base(capacity) { }
 
 	public ParallelHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
-
-	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
 	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
 
@@ -443,13 +441,15 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				TryAdd(item);
 	}
 
-	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
 	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
 
-	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
-
 	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+
+	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+
+	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true, bool suppressException = false]
 	{

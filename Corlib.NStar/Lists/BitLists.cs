@@ -61,8 +61,6 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	public BitList(ReadOnlySpan<uint> values)
 	{
-		if (values == null)
-			throw new ArgumentNullException(nameof(values));
 		// this value is chosen to prevent overflow when computing m_length
 		if (values.Length > int.MaxValue / BitsPerInt)
 			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
@@ -279,13 +277,9 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 	}
 
-	private protected override Func<int, BitList> CapacityCreator => CapacityCreatorStatic;
+	private protected override Func<int, BitList> CapacityCreator => x => new(x);
 
-	private protected static Func<int, BitList> CapacityCreatorStatic => x => new(x);
-
-	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => CollectionCreatorStatic;
-
-	private protected static Func<IEnumerable<bool>, BitList> CollectionCreatorStatic => x => new(x);
+	private protected override Func<IEnumerable<bool>, BitList> CollectionCreator => x => new(x);
 
 	private protected override int DefaultCapacity => 256;
 

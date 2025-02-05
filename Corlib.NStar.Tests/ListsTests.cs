@@ -676,7 +676,7 @@ public class ListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter([]);
-		c = [];
+		c = new(list);
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new("DDD", "MMM"));
@@ -716,7 +716,7 @@ public class ListTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore([]);
-		c = new(list);
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new("DDD", "MMM"));
@@ -938,7 +938,7 @@ public class ListTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => a = list.ToList().Insert(1000, defaultString));
 		Assert.ThrowsException<ArgumentOutOfRangeException>(() => list.ToList().Insert(-1, defaultCollection));
-		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().Insert(1, null));
+		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().Insert(5, (List<string>)null!));
 		Assert.ThrowsException<ArgumentNullException>(() => list.ToList().Insert(5, (G.IEnumerable<string>)null!));
 	}
 

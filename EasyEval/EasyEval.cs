@@ -7,31 +7,39 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Loader;
+using System.Text;
 using G = System.Collections.Generic;
+using String = Corlib.NStar.String;
 
 namespace EasyEvalLib;
 
 public static class EasyEval
 {
-	public static void CompileAndExecute(string sourceCode, G.IEnumerable<string> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
+	public static void CompileAndExecute(String sourceCode, G.IEnumerable<String> extraAssemblies, string[] args, TextWriter? errors = null) => Execute(Compile(sourceCode, extraAssemblies, errors), args);
 
-	public static Assembly? CompileAndGetAssembly(string sourceCode, G.IEnumerable<string> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
+	public static Assembly? CompileAndGetAssembly(String sourceCode, G.IEnumerable<String> extraAssemblies, TextWriter? errors = null) => GetAssembly(Compile(sourceCode, extraAssemblies, errors));
 
-	public static dynamic? Eval(string sourceCode, G.IEnumerable<string>? extraAssemblies = null, G.IEnumerable<string>? extraNamespaces = null, params dynamic?[] args)
+	public static dynamic? Eval(String sourceCode, G.IEnumerable<String>? extraAssemblies = null, G.IEnumerable<String>? extraUsings = null, params dynamic?[] args)
 	{
-		var assembly = CompileAndGetAssembly(@"using System;
-using System.Collections.Generic;
+		var sb = new StringBuilder();
+		var errors = new StringWriter(sb);
+		var assembly = CompileAndGetAssembly(((String)@"using Corlib.NStar;
+using Mpir.NET;
+using System;
 using System.Dynamic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-" + string.Join(Environment.NewLine, extraNamespaces?.Convert(x => "using " + x + ";") ?? []) + @"
+using G = System.Collections.Generic;
+using static Corlib.NStar.Extents;
+using static System.Math;
+using String = Corlib.NStar.String;
+").AddRange(String.Join(Environment.NewLine, extraUsings?.ToArray(x => ((String)"using ").AddRange(x).Add(';')) ?? [])).AddRange(@"
 namespace MyProject;
 public static class Program
 {
 public static dynamic? F(params dynamic?[] args)
 {
-" + sourceCode + @"
+").AddRange(sourceCode).AddRange(@"
 return null;
 }
 
@@ -39,11 +47,13 @@ public static void Main()
 {
 }
 }
-", new ListHashSet<string>("System.Linq.Expressions", "Microsoft.CSharp", "netstandard", "System.Runtime").UnionWith(extraAssemblies ?? []));
+"), new ListHashSet<String>().UnionWith(extraAssemblies ?? []), errors);
+		if (sb.ToString() != "Compilation done without any error.")
+			throw new EvaluationFailedException();
 		return assembly?.GetType("MyProject.Program")?.GetMethod("F")?.Invoke(null, [args]) ?? null;
 	}
 
-	public static byte[]? Compile(string sourceCode, G.IEnumerable<string> extraAssemblies, TextWriter? errors = null)
+	public static byte[]? Compile(String sourceCode, G.IEnumerable<String> extraAssemblies, TextWriter? errors = null)
 	{
 		using var peStream = new MemoryStream();
 		var result = GenerateCode(sourceCode, extraAssemblies).Emit(peStream);
@@ -62,12 +72,13 @@ public static void Main()
 		return peStream.ToArray();
 	}
 
-	private static CSharpCompilation GenerateCode(string sourceCode, G.IEnumerable<string> extraAssemblies)
+	private static CSharpCompilation GenerateCode(String sourceCode, G.IEnumerable<String> extraAssemblies)
 	{
-		var codeString = SourceText.From(sourceCode);
+		var codeString = SourceText.From(sourceCode.ToString());
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new ListHashSet<string>("System.Private.CoreLib", "mscorlib", "System", "System.Core").UnionWith(extraAssemblies).Convert(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "")).Location));
+		var references = new ListHashSet<String>("Corlib.NStar", "Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "System", "System.Console", "System.Core", "System.Linq.Expressions", "System.Private.CoreLib", "System.Runtime")
+			.UnionWith(extraAssemblies).ToList(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "").ToString()).Location));
 		return CSharpCompilation.Create("MyProject.dll",
 			[parsedSyntaxTree],
 			references: references,
@@ -103,6 +114,12 @@ public static void Main()
 		var assemblyLoadContext = new SimpleUnloadableAssemblyLoadContext();
 		return assemblyLoadContext.LoadFromStream(asm);
 	}
+}
+
+public class EvaluationFailedException(string? message, Exception? innerException) : Exception(message, innerException)
+{
+	public EvaluationFailedException() : this("Unable to evaluate this expression due to compile errors.") { }
+	public EvaluationFailedException(string? message) : this(message, null) { }
 }
 
 internal class SimpleUnloadableAssemblyLoadContext : AssemblyLoadContext

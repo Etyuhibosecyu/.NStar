@@ -935,7 +935,7 @@ public class ListHashSetTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter([]);
-		c = [];
+		c = new(E.Distinct(list));
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetAfter(new("DDD", "EEE"));
@@ -955,7 +955,7 @@ public class ListHashSetTests
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore([]);
-		c = new(E.Distinct(list));
+		c = [];
 		Assert.IsTrue(b.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		b = a.GetBefore(new("DDD", "EEE"));

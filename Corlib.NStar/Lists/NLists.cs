@@ -8,6 +8,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 {
 	private protected T* _items;
 	private protected int _capacity;
+	private protected bool _isRange;
 
 	private protected static readonly T* _emptyArray = null;
 
@@ -100,8 +101,6 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public NList(ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_capacity = _size = span.Length;
 		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
 		fixed (T* ptr = span)
@@ -110,8 +109,6 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public NList(int capacity, ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_capacity = Max(capacity, _size = span.Length);
 		_items = (T*)Marshal.AllocHGlobal(sizeof(T) * _capacity);
 		fixed (T* ptr = span)
@@ -140,17 +137,23 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, _size);
 			if (value == _capacity)
 				return;
+			if (_isRange)
+				throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
+					+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
+					+ " в методе GetRange() установите параметр alwaysCopy в true.");
 			if (value > 0)
 			{
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * value);
 				if (_size > 0)
 					CopyMemory(_items, newItems, _size);
-				Marshal.FreeHGlobal((nint)_items);
+				if (_capacity != 0)
+					Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
 			}
 			else
 			{
-				Marshal.FreeHGlobal((nint)_items);
+				if (_capacity != 0)
+					Marshal.FreeHGlobal((nint)_items);
 				_items = _emptyArray;
 			}
 			_capacity = value;
@@ -210,6 +213,10 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public override void Dispose()
 	{
+		if (_isRange)
+			throw new InvalidOperationException("Уничтожение нативного списка, являющегося диапазоном другого списка,"
+				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем уничтожить его,"
+				+ " в методе GetRange() установите параметр alwaysCopy в true.");
 		if (_capacity != 0)
 			Marshal.FreeHGlobal((nint)_items);
 		_capacity = 0;
@@ -220,7 +227,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentNullException.ThrowIfNull(collection);
+		if (collection == null)
+			return false;
 		if (collection is not G.IList<T>)
 			return base.EqualsInternal(collection, index, toEnd);
 		if (collection is TCertain nList)
@@ -279,6 +287,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			list._capacity = length;
 			list._items = _items + index;
 			list._size = length;
+			list._isRange = true;
 			return list;
 		}
 		else
@@ -301,14 +310,19 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public override TCertain Insert(int index, T item)
 	{
+		if (_isRange)
+			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
+				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
+				+ " в методе GetRange() установите параметр alwaysCopy в true.");
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
 		var this2 = (TCertain)this;
 		if (_size == Capacity)
 		{
 			var min = _size + 1;
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
 			if (newCapacity < min)
 				newCapacity = min;
 			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
@@ -337,6 +351,10 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
+		if (_isRange)
+			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
+				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
+				+ " в методе GetRange() установите параметр alwaysCopy в true.");
 		var length = span.Length;
 		var this2 = (TCertain)this;
 		if (length == 0)
@@ -344,8 +362,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-			if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
 			if (newCapacity < min)
 				newCapacity = min;
 			var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
@@ -372,6 +391,10 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
+		if (_isRange)
+			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
+				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
+				+ " в методе GetRange() установите параметр alwaysCopy в true.");
 		var this2 = (TCertain)this;
 		if (collection is TCertain list)
 		{
@@ -381,8 +404,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
@@ -392,8 +416,8 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 					CopyMemory(_items, index, newItems, index + length, _size - index);
 				if (this == list)
 				{
-					CopyMemory(_items, 0, newItems, index, index);
-					CopyMemory(_items, index + length, newItems, index * 2, _size - index);
+					CopyMemory(newItems, 0, newItems, index, index);
+					CopyMemory(newItems, index + length, newItems, index * 2, _size - index);
 				}
 				else
 					CopyMemory(list._items, 0, newItems, index, length);
@@ -425,8 +449,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
@@ -439,6 +464,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 				if (_capacity != 0)
 					Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
+				_capacity = newCapacity;
 			}
 			else
 			{
@@ -458,8 +484,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = (T*)Marshal.AllocHGlobal(sizeof(T) * newCapacity);
@@ -472,6 +499,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 				if (_capacity != 0)
 					Marshal.FreeHGlobal((nint)_items);
 				_items = newItems;
+				_capacity = newCapacity;
 			}
 			else
 			{
@@ -583,35 +611,35 @@ public unsafe class NList<T> : NList<T, NList<T>> where T : unmanaged
 
 	public static implicit operator NList<T>(T x) => new(x);
 
-	public static explicit operator NList<T>((T, T) x) => [x.Item1, x.Item2];
+	public static implicit operator NList<T>((T, T) x) => [x.Item1, x.Item2];
 
-	public static explicit operator NList<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
+	public static implicit operator NList<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
 
-	public static explicit operator NList<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
+	public static implicit operator NList<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
 
-	public static explicit operator NList<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
+	public static implicit operator NList<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
+	public static implicit operator NList<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static explicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
+	public static implicit operator NList<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
 	public static explicit operator (T, T)(NList<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
 
@@ -661,22 +689,9 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public String() : base() { }
 
-	public String(int capacity) : base(capacity) { }
-
 	public String(IEnumerable<char> collection) : base(collection) { }
 
-	public String(string s) : base([.. s]) { }
-
-	public String(params char[] array) : base(array) { }
-
-	public String(ReadOnlySpan<char> span) : base(span) { }
-
-	public String(int length, char c) : base(length)
-	{
-		for (var i = 0; i < length; i++)
-			SetInternal(i, c);
-		_size = length;
-	}
+	public String(int capacity) : base(capacity) { }
 
 	public String(int capacity, IEnumerable<char> collection) : base(capacity, collection) { }
 
@@ -686,9 +701,24 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public String(int capacity, ReadOnlySpan<char> span) : base(capacity, span) { }
 
+	public String(string s) : base([.. s]) { }
+
+	public String(params char[] array) : base(array) { }
+
+	public String(ReadOnlySpan<char> span) : base(span) { }
+
+	public String(char c, int length) : base(length)
+	{
+		for (var i = 0; i < length; i++)
+			SetInternal(i, c);
+		_size = length;
+	}
+
 	private protected override Func<int, String> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
+
+	public virtual String AddRange(string s) => Insert(_size, s);
 
 	[Obsolete(CompareTrivialMessage, true)]
 	public static int Compare(String? strA, String? strB) =>
@@ -808,13 +838,149 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	private protected virtual int CompareToNotNull([NotNull] string other) => DefaultCompareInfo.Compare(AsSpan(), other);
 
+	public virtual bool Contains(char value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool Contains(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains([value], comparisonType);
+
+	public virtual bool Contains(ReadOnlySpan<char> value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool Contains(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains(value, comparisonType);
+
+	public virtual bool Contains(String value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool Contains(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).Contains(value.AsSpan(), comparisonType);
+
+	public virtual bool EndsWith(char value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool EndsWith(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith([value], comparisonType);
+
+	public virtual bool EndsWith(ReadOnlySpan<char> value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool EndsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value, comparisonType);
+
+	public virtual bool EndsWith(String value, bool ignoreCase) => EndsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool EndsWith(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).EndsWith(value.AsSpan(), comparisonType);
+
 	public override bool Equals(object? obj) => base.Equals(obj);
 
 	public override int GetHashCode() => base.GetHashCode();
 
+	public virtual int IndexOf(char value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual int IndexOf(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf([value], comparisonType);
+
+	public virtual int IndexOf(ReadOnlySpan<char> value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual int IndexOf(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value, comparisonType);
+
+	public virtual int IndexOf(String value, bool ignoreCase) => IndexOf(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual int IndexOf(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).IndexOf(value.AsSpan(), comparisonType);
+
+	public virtual String Insert(int index, string s)
+	{
+		if (_isRange)
+			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
+				+ " запрещено. Если вы хотите создать список из диапазона другого списка, а затем изменять его,"
+				+ " в методе GetRange() установите параметр alwaysCopy в true.");
+		var length = s.Length;
+		if (length == 0)
+			return this;
+		if (Capacity < _size + length)
+		{
+			var min = _size + length;
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
+			if ((uint)newCapacity > int.MaxValue)
+				newCapacity = int.MaxValue;
+			if (newCapacity < min)
+				newCapacity = min;
+			var newItems = (char*)Marshal.AllocHGlobal(sizeof(char) * newCapacity);
+			if (index > 0)
+				CopyMemory(_items, 0, newItems, 0, index);
+			if (index < _size)
+				CopyMemory(_items, index, newItems, index + length, _size - index);
+			fixed (char* ptr = s)
+				CopyMemory(ptr, 0, newItems, index, length);
+			if (_capacity != 0)
+				Marshal.FreeHGlobal((nint)_items);
+			_items = newItems;
+			_capacity = newCapacity;
+		}
+		else
+		{
+			if (index < _size)
+				CopyMemory(_items, index, _items, index + length, _size - index);
+			fixed (char* ptr = s)
+				CopyMemory(ptr, 0, _items, index, length);
+		}
+		_size += length;
+		return this;
+	}
+
+	public static String Join(char separator, IEnumerable<string> collection)
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		var en = collection.GetEnumerator();
+		if (!en.MoveNext())
+			return [];
+		var result = en.Current.ToNString();
+		while (en.MoveNext())
+		{
+			result.Add(separator);
+			result.AddRange(en.Current);
+		}
+		return result;
+	}
+
+	public static String Join(String separator, IEnumerable<string> collection)
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		var en = collection.GetEnumerator();
+		if (!en.MoveNext())
+			return [];
+		var result = en.Current.ToNString();
+		while (en.MoveNext())
+		{
+			result.AddRange(separator);
+			result.AddRange(en.Current);
+		}
+		return result;
+	}
+
+	public static String Join(char separator, IEnumerable<String> collection)
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		var en = collection.GetEnumerator();
+		if (!en.MoveNext())
+			return [];
+		var result = en.Current.Copy();
+		while (en.MoveNext())
+		{
+			result.Add(separator);
+			result.AddRange(en.Current);
+		}
+		return result;
+	}
+
+	public static String Join(String separator, IEnumerable<String> collection)
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		var en = collection.GetEnumerator();
+		if (!en.MoveNext())
+			return [];
+		var result = en.Current.Copy();
+		while (en.MoveNext())
+		{
+			result.AddRange(separator);
+			result.AddRange(en.Current);
+		}
+		return result;
+	}
+
 	public static String Join(char separator, params string[] array)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Length == 0)
 			return [];
 		else if (array.Length == 1)
@@ -830,7 +996,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public static String Join(String separator, params string[] array)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Length == 0)
 			return [];
 		else if (array.Length == 1)
@@ -846,7 +1012,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public static String Join(char separator, params String[] array)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Length == 0)
 			return [];
 		else if (array.Length == 1)
@@ -862,7 +1028,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public static String Join(String separator, params String[] array)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(array));
+		ArgumentNullException.ThrowIfNull(array);
 		if (array.Length == 0)
 			return [];
 		else if (array.Length == 1)
@@ -935,6 +1101,18 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		return result;
 	}
 
+	public virtual bool StartsWith(char value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool StartsWith(char value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith([value], comparisonType);
+
+	public virtual bool StartsWith(ReadOnlySpan<char> value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool StartsWith(ReadOnlySpan<char> value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value, comparisonType);
+
+	public virtual bool StartsWith(String value, bool ignoreCase) => StartsWith(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
+
+	public virtual bool StartsWith(String value, StringComparison comparisonType) => ((ReadOnlySpan<char>)AsSpan()).StartsWith(value.AsSpan(), comparisonType);
+
 	public virtual String ToLower()
 	{
 		for (var i = 0; i < _size; i++)
@@ -985,7 +1163,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String TrimEnd(IEnumerable<char> chars)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(chars));
+		ArgumentNullException.ThrowIfNull(chars);
 		if (chars is not ISet<char> set)
 			set = chars.ToHashSet();
 		for (var i = _size - 1; i >= 0; i--)
@@ -1026,7 +1204,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String TrimStart(IEnumerable<char> chars)
 	{
-		ArgumentNullException.ThrowIfNull(nameof(chars));
+		ArgumentNullException.ThrowIfNull(chars);
 		if (chars is not ISet<char> set)
 			set = chars.ToHashSet();
 		for (var i = 0; i < _size; i++)
@@ -1041,15 +1219,23 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public virtual String TrimStart(params char[] chars) => TrimStart((IEnumerable<char>)chars);
 
-	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y == null;
+	public static bool operator ==(String? x, String? y) => x?.Equals(y) ?? y is null;
+
+	public static bool operator ==(String? x, string? y) => x is null && y is null || x is not null && y is not null && x.Equals((String)y);
+
+	public static bool operator ==(string? x, String? y) => x is null && y is null || x is not null && y is not null && ((String)x).Equals(y);
 
 	public static bool operator !=(String? x, String? y) => !(x == y);
 
-	public static implicit operator String(char x) => new(x);
+	public static bool operator !=(String? x, string? y) => !(x == y);
 
-	public static implicit operator String(char[] x) => new(x);
+	public static bool operator !=(string? x, String? y) => !(x == y);
 
-	public static implicit operator String(string x) => new((ReadOnlySpan<char>)x);
+	public static implicit operator String(char x) => new(32, x);
+
+	public static implicit operator String(char[]? x) => x == null ? [] : new(32, x);
+
+	public static implicit operator String(string? x) => x == null ? [] : new(32, (ReadOnlySpan<char>)x);
 
 	public static explicit operator String((char, char) x) => [x.Item1, x.Item2];
 

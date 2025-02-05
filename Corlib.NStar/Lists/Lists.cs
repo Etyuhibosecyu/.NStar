@@ -80,8 +80,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public Buffer(ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_size = span.Length;
 		_items = span.ToArray();
 		_start = 0;
@@ -89,8 +87,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public Buffer(int capacity, ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_size = Min(capacity, span.Length);
 		_items = new T[capacity];
 		span.Slice(Max(0, span.Length - _size), _size).CopyTo(_items);
@@ -323,13 +319,13 @@ public class Buffer<T> : Buffer<T, Buffer<T>>
 
 	public Buffer(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public Buffer(params T[] array) : base(array) { }
-
 	public Buffer(int capacity, params T[] array) : base(capacity, array) { }
 
-	public Buffer(ReadOnlySpan<T> span) : base(span) { }
-
 	public Buffer(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
+
+	public Buffer(params T[] array) : base(array) { }
+
+	public Buffer(ReadOnlySpan<T> span) : base(span) { }
 
 	private protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
 
@@ -483,16 +479,12 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public List(ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_size = span.Length;
 		_items = span.ToArray();
 	}
 
 	public List(int capacity, ReadOnlySpan<T> span)
 	{
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		_size = span.Length;
 		if (span.Length > capacity)
 			_items = span.ToArray();
@@ -594,7 +586,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (_size == Capacity)
 		{
 			var min = _size + 1;
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
 			if ((uint)newCapacity > int.MaxValue)
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
@@ -624,15 +616,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		if (span == null)
-			throw new ArgumentNullException(nameof(span));
 		var length = span.Length;
 		if (length == 0)
 			return (TCertain)this;
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
-			var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
+			var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
 			if ((uint)newCapacity > int.MaxValue)
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
@@ -666,8 +656,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = new T[newCapacity];
@@ -701,8 +692,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = new T[newCapacity];
@@ -730,8 +722,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Capacity == 0 ? DefaultCapacity : Capacity * 2;
-				if ((uint)newCapacity > int.MaxValue) newCapacity = int.MaxValue;
+				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				if ((uint)newCapacity > int.MaxValue)
+					newCapacity = int.MaxValue;
 				if (newCapacity < min)
 					newCapacity = min;
 				var newItems = new T[newCapacity];
@@ -869,13 +862,13 @@ public class List<T> : List<T, List<T>>
 
 	public List(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
 
-	public List(params T[] array) : base(array) { }
-
 	public List(int capacity, params T[] array) : base(capacity, array) { }
 
-	public List(ReadOnlySpan<T> span) : base(span) { }
-
 	public List(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
+
+	public List(params T[] array) : base(array) { }
+
+	public List(ReadOnlySpan<T> span) : base(span) { }
 
 	private protected override Func<int, List<T>> CapacityCreator => x => new(x);
 
@@ -885,35 +878,35 @@ public class List<T> : List<T, List<T>>
 
 	public static implicit operator List<T>(T[] x) => new(x);
 
-	public static explicit operator List<T>((T, T) x) => [x.Item1, x.Item2];
+	public static implicit operator List<T>((T, T) x) => [x.Item1, x.Item2];
 
-	public static explicit operator List<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
+	public static implicit operator List<T>((T, T, T) x) => [x.Item1, x.Item2, x.Item3];
 
-	public static explicit operator List<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
+	public static implicit operator List<T>((T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4];
 
-	public static explicit operator List<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
+	public static implicit operator List<T>((T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5];
 
-	public static explicit operator List<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
+	public static implicit operator List<T>((T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
+	public static implicit operator List<T>((T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15];
 
-	public static explicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
+	public static implicit operator List<T>((T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T) x) => [x.Item1, x.Item2, x.Item3, x.Item4, x.Item5, x.Item6, x.Item7, x.Item8, x.Item9, x.Item10, x.Item11, x.Item12, x.Item13, x.Item14, x.Item15, x.Item16];
 
 	public static explicit operator (T, T)(List<T> x) => x._size == 2 ? (x.GetInternal(0), x.GetInternal(1)) : throw new InvalidOperationException();
 

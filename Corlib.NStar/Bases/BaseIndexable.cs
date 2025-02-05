@@ -48,8 +48,10 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index + length > _size)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
-		if (length == 0 || !collection.Any())
+		if (length == 0)
 			return false;
+		if (!collection.Any())
+			return true;
 		if (collection is not G.IList<T> list)
 			list = collection.ToList();
 		return ContainsInternal(list, index, length);
@@ -407,11 +409,17 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		if (index + length > _size)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
 		ArgumentNullException.ThrowIfNull(collection);
-		if (_size == 0 || length == 0 || !collection.Any())
+		if (!collection.Any())
+		{
+			collectionLength = 0;
+			return 0;
+		}
+		if (_size == 0 || length == 0)
 		{
 			collectionLength = 0;
 			return -1;
 		}
+
 		if (collection is not G.ICollection<T> c)
 			c = collection.ToList();
 		collectionLength = c.Count;
@@ -591,7 +599,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool StartsWith(T? item) => _size > 0 && (GetInternal(0)?.Equals(item) ?? item == null);
 
-	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0);
+	public virtual bool StartsWith(IEnumerable<T> collection) => EqualsInternal(collection, 0, false);
 
 	public virtual Slice<T> Take(int length) => GetSlice(0, Clamp(length, 0, _size));
 

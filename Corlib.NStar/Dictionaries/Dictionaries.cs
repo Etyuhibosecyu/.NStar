@@ -99,6 +99,8 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
+	public virtual void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
 		ArgumentNullException.ThrowIfNull(key);
@@ -124,12 +126,14 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract void Clear();
 
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.Contains(KeyValuePair<TKey, TValue> keyValuePair)
+	public virtual bool Contains((TKey Key, TValue Value) item)
 	{
-		if (TryGetValue(keyValuePair.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, keyValuePair.Value))
+		if (TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value))
 			return true;
 		return false;
 	}
+
+	public virtual bool Contains(KeyValuePair<TKey, TValue> keyValuePair) => Contains((keyValuePair.Key, keyValuePair.Value));
 
 	bool System.Collections.IDictionary.Contains(object key)
 	{
@@ -196,6 +200,60 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
+	public virtual TCertain SymmetricExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		ArgumentNullException.ThrowIfNull(other);
+		var this2 = (TCertain)this;
+		if (Length == 0)
+		{
+			UnionWith(other);
+			return this2;
+		}
+		if (other == this)
+		{
+			Clear();
+			return this2;
+		}
+		return SymmetricExceptInternal(other);
+	}
+
+	public virtual TCertain SymmetricExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		ArgumentNullException.ThrowIfNull(other);
+		var this2 = (TCertain)this;
+		if (Length == 0)
+		{
+			UnionWith(other);
+			return this2;
+		}
+		if (other == this)
+		{
+			Clear();
+			return this2;
+		}
+		return SymmetricExceptInternal(other);
+	}
+
+	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
+		{
+			var result = ContainsKey(item.Key) ? Remove(item.Key) : TryAdd(item);
+			Debug.Assert(result);
+		}
+		return (TCertain)this;
+	}
+
+	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
+		{
+			var result = ContainsKey(item.Key) ? Remove(item.Key) : TryAdd(item);
+			Debug.Assert(result);
+		}
+		return (TCertain)this;
+	}
+
 	public abstract void TrimExcess();
 
 	public virtual bool TryAdd(TKey key, TValue value)
@@ -208,6 +266,10 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		else
 			return false;
 	}
+
+	public virtual bool TryAdd((TKey Key, TValue Value) item) => TryAdd(item.Key, item.Value);
+
+	public virtual bool TryAdd(KeyValuePair<TKey, TValue> item) => TryAdd(item.Key, item.Value);
 
 	public abstract bool TryGetValue(TKey key, out TValue value);
 
