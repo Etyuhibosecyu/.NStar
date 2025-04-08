@@ -172,47 +172,153 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 {
 	public void TestContains()
 	{
-		var b = TestCollection.Contains("MMM");
-		Assert.IsTrue(b);
-		b = TestCollection.Contains("BBB", 2);
-		Assert.IsFalse(b);
-		b = TestCollection.Contains(new List<string>("PPP", "DDD", "MMM"));
-		Assert.IsTrue(b);
-		b = TestCollection.Contains(new List<string>("PPP", "DDD", "NNN"));
-		Assert.IsFalse(b);
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length, startIndex;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.Contains(elem), a.Contains(elem));
+			startIndex = random.Next(length);
+			Assert.AreEqual(b.GetRange(startIndex, length - startIndex).Contains(elem), a.Contains(elem, startIndex));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(E.Contains(E.Zip(b, E.Skip(b, 1)), (elem, elem2)), a.Contains([elem, elem2]));
+		}
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Contains((G.IEnumerable<string>)null!));
+	}
+
+	public void TestContainsAny()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length, startIndex;
+		G.List<string> b;
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.Contains(elem) || b.Contains(elem2), a.ContainsAny([elem, elem2]));
+			startIndex = random.Next(length);
+			Assert.AreEqual(b.GetRange(startIndex, length - startIndex).Contains(elem)
+				|| b.GetRange(startIndex, length - startIndex).Contains(elem2), a.ContainsAny([elem, elem2], startIndex));
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.Contains(elem) || b.Contains(elem2) || b.Contains(elem3), a.ContainsAny([elem, elem2, elem3]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.ContainsAny((G.IEnumerable<string>)null!));
+	}
+
+	public void TestContainsAnyExcluding()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length, startIndex;
+		G.List<string> b;
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(E.Except(b, [elem, elem2]).Any(), a.ContainsAnyExcluding([elem, elem2]));
+			startIndex = random.Next(length);
+			Assert.AreEqual(E.Except(E.Skip(b, startIndex), [elem, elem2]).Any(), a.ContainsAnyExcluding([elem, elem2], startIndex));
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(E.Except(b, [elem, elem2, elem3]).Any(), a.ContainsAnyExcluding([elem, elem2, elem3]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.ContainsAnyExcluding((G.IEnumerable<string>)null!));
 	}
 
 	public void TestEndsWith()
 	{
-		var b = TestCollection.EndsWith("DDD");
-		Assert.IsTrue(b);
-		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "DDD"));
-		Assert.IsTrue(b);
-		b = TestCollection.EndsWith(new List<string>("PPP", "EEE", "DDD"));
-		Assert.IsFalse(b);
-		b = TestCollection.EndsWith(new List<string>("MMM", "EEE", "NNN"));
-		Assert.IsFalse(b);
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.Count != 0 && b[^1] == elem, a.EndsWith(elem));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.Count >= 2 && E.Last(E.Zip(b, E.Skip(b, 1))) == (elem, elem2), a.EndsWith([elem, elem2]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.EndsWith((G.IEnumerable<string>)null!));
 	}
 
 	public void TestEquals()
 	{
-		var b = TestCollection.Contains("MMM");
-		Assert.IsTrue(b);
-		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2);
-		Assert.IsTrue(b);
-		b = TestCollection.Equals(new List<string>("PPP", "DDD", "NNN"), 2);
-		Assert.IsFalse(b);
-		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 3);
-		Assert.IsFalse(b);
-		b = TestCollection.Equals(new List<string>("PPP", "DDD", "MMM"), 2, true);
-		Assert.IsFalse(b);
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. a];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.Append(b, random.Next(1000).ToString("D3"))];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.Skip(b, 1)];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.Prepend(b, random.Next(1000).ToString("D3"))];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.SkipLast(b, 1)];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.Append(E.SkipLast(b, 1), random.Next(1000).ToString("D3"))];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+			b = [.. E.Prepend(E.Skip(b, 1), random.Next(1000).ToString("D3"))];
+			Assert.AreEqual(RedStarLinq.Equals(a, b), a.Equals(b));
+#pragma warning disable IDE0028 // Упростите инициализацию коллекции
+			b = new G.List<string>();
+			Assert.AreEqual(RedStarLinq.Equals(a, b), E.SequenceEqual(a, b));
+#pragma warning restore IDE0028 // Упростите инициализацию коллекции
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!));
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 3));
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!, 3));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => TestCollection.Equals(null!, -1));
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals((G.IEnumerable<string>)null!, 1000));
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!, 1000));
 	}
 
 	public void TestFindAll()
 	{
 		var b = TestCollection.FindAll(x => x.Length != 3);
-		var c = new G.List<string>(list);
+		var c = new G.List<string>(OriginalCollection);
 		c.InsertRange(3, ["$", "###"]);
 		var d = c.FindAll(x => x.Length != 3);
 		Assert.IsTrue(TestCollection.Equals(c));
@@ -220,7 +326,7 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
 		b = TestCollection.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(list);
+		c = new G.List<string>(OriginalCollection);
 		c.InsertRange(3, ["$", "###"]);
 		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
 		Assert.IsTrue(TestCollection.Equals(c));
@@ -231,55 +337,176 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 
 	public void TestIndexOf()
 	{
-		var b = TestCollection.IndexOf("MMM");
-		Assert.AreEqual(0, b);
-		b = TestCollection.IndexOf("BBB", 2);
-		Assert.AreEqual(-1, b);
-		b = TestCollection.IndexOf("BBB", 1, 2);
-		Assert.AreEqual(1, b);
-		b = TestCollection.IndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(2, b);
-		b = TestCollection.IndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(-1, b);
-		b = TestCollection.IndexOf(["MMM", "EEE"], 4);
-		Assert.AreEqual(4, b);
-		b = TestCollection.IndexOf(["MMM", "EEE"], 0, 4);
-		Assert.AreEqual(-1, b);
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf("BBB", 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.IndexOf("BBB", 1, 1000));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int index, length, startIndex;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.IndexOf(elem), a.IndexOf(elem));
+			startIndex = random.Next(length);
+			index = b.GetRange(startIndex, length - startIndex).IndexOf(elem);
+			if (index >= 0)
+				index += startIndex;
+			Assert.AreEqual(index, a.IndexOf(elem, startIndex));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).IndexOf((elem, elem2)), a.IndexOf([elem, elem2]));
+		}
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf("BBB", 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.IndexOf("BBB", 1, 1000));
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.IndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.IndexOf(["MMM", "EEE"], 1, 1000));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.IndexOf(["MMM", "EEE"], 1, 1000));
+	}
+
+	public void TestIndexOfAny()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int index, index2, length, startIndex;
+		G.List<string> b;
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			index = b.IndexOf(elem);
+			index2 = b.IndexOf(elem2);
+			if (index2 >= 0 && index2 < index || index == -1)
+				index = index2;
+			Assert.AreEqual(index, a.IndexOfAny([elem, elem2]));
+			startIndex = random.Next(length);
+			index = b.IndexOf(elem, startIndex);
+			index2 = b.IndexOf(elem2, startIndex);
+			if (index2 >= 0 && index2 < index || index == -1)
+				index = index2;
+			Assert.AreEqual(index, a.IndexOfAny([elem, elem2], startIndex));
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			index = b.IndexOf(elem);
+			index2 = b.IndexOf(elem2);
+			if (index2 >= 0 && index2 < index || index == -1)
+				index = index2;
+			index2 = b.IndexOf(elem3);
+			if (index2 >= 0 && index2 < index || index == -1)
+				index = index2;
+			Assert.AreEqual(index, a.IndexOfAny([elem, elem2, elem3]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.IndexOfAny((G.IEnumerable<string>)null!));
 	}
 
 	public void TestLastIndexOf()
 	{
-		var b = TestCollection.LastIndexOf("MMM");
-		Assert.AreEqual(4, b);
-		b = TestCollection.LastIndexOf("BBB", 2);
-		Assert.AreEqual(1, b);
-		b = TestCollection.LastIndexOf("BBB", 3, 2);
-		Assert.AreEqual(-1, b);
-		b = TestCollection.LastIndexOf(new List<string>("PPP", "DDD", "MMM"));
-		Assert.AreEqual(2, b);
-		b = TestCollection.LastIndexOf(new List<string>("PPP", "DDD", "NNN"));
-		Assert.AreEqual(-1, b);
-		b = TestCollection.LastIndexOf(["MMM", "EEE"], 3);
-		Assert.AreEqual(-1, b);
-		b = TestCollection.LastIndexOf(["MMM", "EEE"], 5, 4);
-		Assert.AreEqual(4, b);
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf("BBB", 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.LastIndexOf("BBB", 1, 1000));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int index, length, startIndex;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.LastIndexOf(elem), a.LastIndexOf(elem));
+			startIndex = length == 0 ? -1 : random.Next(length);
+			index = b.GetRange(0, startIndex + 1).LastIndexOf(elem);
+			Assert.AreEqual(index, a.LastIndexOf(elem, startIndex));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(E.ToList(E.Zip(b, E.Skip(b, 1))).LastIndexOf((elem, elem2)), a.LastIndexOf([elem, elem2]));
+		}
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf("BBB", 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.LastIndexOf("BBB", 1, 1000));
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.LastIndexOf((G.IEnumerable<string>)null!));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], -1));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], -1, 5));
-		Assert.ThrowsException<ArgumentOutOfRangeException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], 3, -5));
-		Assert.ThrowsException<ArgumentException>(() => b = TestCollection.LastIndexOf(["MMM", "EEE"], 1, 1000));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], -1, 5));
+		Assert.ThrowsException<ArgumentOutOfRangeException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 3, -5));
+		Assert.ThrowsException<ArgumentException>(() => index = TestCollection.LastIndexOf(["MMM", "EEE"], 1, 1000));
+	}
+
+	public void TestLastIndexOfAny()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int index, index2, length, startIndex;
+		G.List<string> b;
+		string elem, elem2, elem3;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			index = b.LastIndexOf(elem);
+			index2 = b.LastIndexOf(elem2);
+			if (index2 > index)
+				index = index2;
+			Assert.AreEqual(index, a.LastIndexOfAny([elem, elem2]));
+			startIndex = length == 0 ? -1 : random.Next(length);
+			index = b.LastIndexOf(elem, startIndex);
+			index2 = b.LastIndexOf(elem2, startIndex);
+			if (index2 > index)
+				index = index2;
+			Assert.AreEqual(index, a.LastIndexOfAny([elem, elem2], startIndex));
+			elem3 = new((char)random.Next('A', 'Z' + 1), 3);
+			index = b.LastIndexOf(elem);
+			index2 = b.LastIndexOf(elem2);
+			if (index2 > index)
+				index = index2;
+			index2 = b.LastIndexOf(elem3);
+			if (index2 > index)
+				index = index2;
+			Assert.AreEqual(index, a.LastIndexOfAny([elem, elem2, elem3]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.LastIndexOfAny((G.IEnumerable<string>)null!));
+	}
+
+	public void TestStartsWith()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.Count != 0 && b[0] == elem, a.StartsWith(elem));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.Count >= 2 && E.First(E.Zip(b, E.Skip(b, 1))) == (elem, elem2), a.StartsWith([elem, elem2]));
+		}
+		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.StartsWith((G.IEnumerable<string>)null!));
 	}
 }

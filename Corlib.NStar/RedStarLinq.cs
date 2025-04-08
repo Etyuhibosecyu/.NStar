@@ -42085,68 +42085,54 @@ public partial class List<T, TCertain>
 		}
 	}
 
-	internal static List<T> ReverseEnumerable(IEnumerable<T> source)
+	private class ReverseList : BaseIndexable<T, ReverseList>
 	{
-		if (source is List<T> list)
+		private readonly G.IReadOnlyList<T> source;
+
+		public ReverseList() => source = [];
+
+		public ReverseList(G.IReadOnlyList<T> source)
 		{
-			var length = list._size;
-			List<T> result = new(length);
+			ArgumentNullException.ThrowIfNull(source);
+			this.source = source;
+			_size = source.Count;
+		}
+
+		public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
+
+		private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+		{
 			for (var i = 0; i < length; i++)
-			{
-				var item = list._items[i];
-				result._items[^(i + 1)] = item;
-			}
-			result._size = length;
-			return result;
+				array[arrayIndex++] = GetInternal(index++);
 		}
-		else if (source is T[] array)
+
+		public override void Dispose() => GC.SuppressFinalize(this);
+
+		internal override T GetInternal(int index, bool invoke = true) => source[_size - 1 - index];
+
+		private protected override ReverseList GetRangeInternal(int index, int length) => new(source.GetROLSlice(_size - index - length, length));
+
+		private protected override Slice<T> GetSliceInternal(int index, int length) => new(this, index, length);
+
+		private protected override int IndexOfInternal(T item, int index, int length)
 		{
-			List<T> result = new(array.Length);
-			for (var i = 0; i < array.Length; i++)
-			{
-				var item = array[i];
-				result._items[^(i + 1)] = item;
-			}
-			result._size = array.Length;
-			return result;
+			for (var i = index; i < index + length; i++)
+				if (source[_size - 1 - index]?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
-		else if (source is G.IList<T> list2)
+
+		private protected override int LastIndexOfInternal(T item, int index, int length)
 		{
-			var length = list2.Count;
-			List<T> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list2[i];
-				result._items[^(i + 1)] = item;
-			}
-			result._size = length;
-			return result;
-		}
-		else if (source is G.IReadOnlyList<T> list3)
-		{
-			var length = list3.Count;
-			List<T> result = new(length);
-			for (var i = 0; i < length; i++)
-			{
-				var item = list3[i];
-				result._items[^(i + 1)] = item;
-			}
-			result._size = length;
-			return result;
-		}
-		else
-		{
-			List<T> result = new(TryGetLengthEasilyEnumerable(source, out var length) ? length : 0);
-			var i = 0;
-			foreach (var item in source)
-			{
-				result._items[^(i + 1)] = item;
-				i++;
-			}
-			result._size = i;
-			return result;
+			var endIndex = index - length + 1;
+			for (var i = index; i >= endIndex; i++)
+				if (source[_size - 1 - index]?.Equals(item) ?? item == null)
+					return i;
+			return -1;
 		}
 	}
+
+	internal static Slice<T> ReverseEnumerable(G.IReadOnlyList<T> source) => new ReverseList(source).GetSlice();
 
 	internal static G.IList<T> SetAllEnumerable(G.IList<T> source, T value)
 	{
@@ -76443,7 +76429,8 @@ public static class RedStarLinq
 	public static NList<int> RepresentIntoNumbers<T>(this IEnumerable<T> source, IEqualityComparer<T> comparer) where T : notnull => List<T>.RepresentIntoNumbersEnumerable(source, comparer);
 	public static NList<int> RepresentIntoNumbers<T>(this IEnumerable<T> source, Func<T, T, bool> equalFunction) where T : notnull => List<T>.RepresentIntoNumbersEnumerable(source, equalFunction);
 	public static NList<int> RepresentIntoNumbers<T>(this IEnumerable<T> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => List<T>.RepresentIntoNumbersEnumerable(source, equalFunction, hashCodeFunction);
-	public static List<T> Reverse<T>(this IEnumerable<T> source) => List<T>.ReverseEnumerable(source);
+	public static Slice<T> Reverse<T>(this G.IReadOnlyList<T> source) => List<T>.ReverseEnumerable(source);
+	public static IEnumerable<T> Reverse<T>(this IEnumerable<T> source) => Enumerable.Reverse(source);
 	public static G.IList<T> SetAll<T>(this G.IList<T> source, T value) => List<T>.SetAllEnumerable(source, value);
 	public static G.IList<T> SetAll<T>(this G.IList<T> source, T value, Index index) => List<T>.SetAllEnumerable(source, value, index);
 	public static G.IList<T> SetAll<T>(this G.IList<T> source, T value, int index) => List<T>.SetAllEnumerable(source, value, index);
@@ -78640,7 +78627,7 @@ public static class RedStarLinq
 	public static NList<int> RepresentIntoNumbers<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
 	public static List<T> Reverse<T>(this ReadOnlySpan<T> source) => List<T>.ReverseEnumerable(source);
 	public static List<T> Reverse<T>(this Span<T> source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source);
-	public static List<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((G.IList<T>)source);
+	public static List<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source.AsSpan());
 	public static Span<T> SetAll<T>(Span<T> source, T value) => List<T>.SetAllEnumerable(source, value);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);

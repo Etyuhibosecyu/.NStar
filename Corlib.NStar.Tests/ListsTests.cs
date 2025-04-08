@@ -1849,13 +1849,7 @@ public class ListTests
 	public void TestStartsWith()
 	{
 		var a = list.ToList();
-		var b = a.StartsWith("MMM");
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
-		Assert.IsTrue(b);
-		b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-		Assert.IsFalse(b);
-		Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
+		new BaseStringIndexableTests<List<string>>(a, list, defaultString, defaultCollection).TestStartsWith();
 	}
 
 	[TestMethod]

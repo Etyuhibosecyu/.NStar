@@ -377,11 +377,21 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void RemoveInternal(MpzT index, MpzT length) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+	private protected override void RemoveInternal(MpzT index, MpzT length) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	private protected override void RemoveEndInternal(MpzT index) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+	private protected override void RemoveEndInternal(MpzT index) =>
+		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
+
+	public override TCertain Reverse() =>
+		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
+
+	public override TCertain Reverse(MpzT index, MpzT length) =>
+		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
+		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
 	private protected override void SetInternal(MpzT index, T value) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."

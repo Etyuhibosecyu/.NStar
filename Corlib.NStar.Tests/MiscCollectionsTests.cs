@@ -130,7 +130,6 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-
 		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestEndsWith();
 	}
 
@@ -642,16 +641,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-		void ProcessA(Slice<string> a)
-		{
-			var b = a.StartsWith("MMM");
-			Assert.IsTrue(b);
-			b = a.StartsWith(new List<string>("MMM", "BBB", "PPP"));
-			Assert.IsTrue(b);
-			b = a.StartsWith(new List<string>("MMM", "BBB", "XXX"));
-			Assert.IsFalse(b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.StartsWith((G.IEnumerable<string>)null!));
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestStartsWith();
 	}
 
 	[TestMethod]

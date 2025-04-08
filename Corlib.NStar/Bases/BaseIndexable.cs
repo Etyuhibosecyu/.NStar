@@ -185,7 +185,11 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual bool EndsWith(T? item) => _size > 0 && (GetInternal(_size - 1)?.Equals(item) ?? item == null);
 
-	public virtual bool EndsWith(IEnumerable<T> collection) => _size >= CreateVar(collection.Length(), out var length) && EqualsInternal(collection, _size - length);
+	public virtual bool EndsWith(IEnumerable<T> collection)
+	{
+		ArgumentNullException.ThrowIfNull(collection);
+		return _size >= CreateVar(collection.Length(), out var length) && EqualsInternal(collection, _size - length);
+	}
 
 	public virtual bool Equals(IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
 

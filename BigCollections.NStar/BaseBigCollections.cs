@@ -540,6 +540,10 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		return (TCertain)this;
 	}
 
+	public abstract TCertain Reverse();
+
+	public abstract TCertain Reverse(MpzT index, MpzT length);
+
 	private protected abstract void SetInternal(MpzT index, T value);
 
 	public virtual TCertain SetRange(MpzT index, G.IEnumerable<T> collection)
@@ -778,6 +782,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		get => _capacity;
 		set
 		{
+			if (isReversed)
+				throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+					+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 			var this2 = (TCertain)this;
 			ArgumentOutOfRangeException.ThrowIfLessThan(value, Length);
 			if (value == _capacity)
@@ -896,6 +903,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 	start:
 		if (low != null)
 		{
@@ -972,6 +982,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected override void ClearInternal(MpzT index, MpzT length)
 	{
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 		if (low != null)
 			low.Clear((int)index, (int)length);
 		else if (high != null && highLength != null)
@@ -1111,7 +1124,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private void ConstructFromEnumerable(G.IEnumerable<T> collection)
+	private protected virtual void ConstructFromEnumerable(G.IEnumerable<T> collection)
 	{
 		if (collection is G.IReadOnlyList<T> list)
 			ConstructFromList(list);
@@ -1270,9 +1283,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var fragment = this.fragment;
 		if (low != null && destination.low != null)
 		{
+			if (destination.isReversed)
+				throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+					+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 			if (destination.low.Length < destinationIndex + length)
 				destination.low.Resize((int)(destinationIndex + length));
-			low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
+			if (!isReversed)
+				low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
+			else
+				CollectionLowCreator(low.Skip((int)sourceIndex).Take((int)length).Reverse())
+					.CopyRangeTo(0, destination.low, (int)destinationIndex, (int)length);
 			destination.Length = RedStarLinq.Max(destination.Length, destinationIndex + length);
 #if VERIFY
 			Verify();
@@ -1619,14 +1639,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		GC.SuppressFinalize(this);
 	}
 
-	private protected virtual TLow GetFirstLists()
+	public virtual TCertain FixUpReversing()
 	{
-		if (low != null)
-			return low;
-		else if (high != null)
-			return high[0].GetFirstLists();
-		else
-			return new();
+		if (isReversed)
+		{
+			isReversed = false;
+			Reverse(0, Length);
+		}
+		return (TCertain)this;
 	}
 
 	private protected override T GetInternal(MpzT index, bool invoke = true)
@@ -1818,6 +1838,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected override void RemoveAtInternal(MpzT index)
 	{
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 		if (low != null)
 		{
 			low.RemoveAt((int)index);
@@ -1860,6 +1883,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected override void RemoveEndInternal(MpzT index)
 	{
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 		if (index == Length)
 			return;
 		if (low != null)
@@ -1898,6 +1924,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 
 	private protected override void RemoveInternal(MpzT index, MpzT length)
 	{
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 		var this2 = (TCertain)this;
 		if (length == 0)
 			return;
@@ -1982,8 +2011,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
+	public override TCertain Reverse()
+	{
+		isReversed = !isReversed;
+		return (TCertain)this;
+	}
+
+	public override TCertain Reverse(MpzT index, MpzT length) => throw new NotImplementedException();
+
 	private protected override void SetInternal(MpzT index, T value)
 	{
+		if (isReversed)
+			throw new NotSupportedException("Чтобы изменить перевернутый список, сначала почините переворот ("
+				+ nameof(FixUpReversing) + "()) либо переверните обратно!");
 		if (low != null)
 			low[(int)(isReversed ? Length - 1 - index : index)] = value;
 		else if (high != null && highLength != null)
