@@ -241,10 +241,10 @@ public class BitListTests
 	[TestMethod]
 	public void TestBreakFilter()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.BreakFilter(x => x ^ bitList[25], out var c);
 		var d = new G.List<bool>(bitList);
-		d.InsertRange(3, [false, true]);
+		d.InsertRange(3, shortBitList);
 		var e = E.Where(d, x => x ^ bitList[25]);
 		var f = E.Where(d, x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(d));
@@ -267,17 +267,17 @@ public class BitListTests
 	[TestMethod]
 	public void TestBreakFilterInPlace()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.BreakFilterInPlace(x => x ^ bitList[25], out var c);
 		var d = new G.List<bool>(bitList);
-		d.InsertRange(3, [false, true]);
+		d.InsertRange(3, shortBitList);
 		var e = E.ToList(E.Where(d, x => !x ^ bitList[25]));
 		d = E.ToList(E.Where(d, x => x ^ bitList[25]));
 		BaseListTests<bool, BitList>.BreakFilterInPlaceAsserts(a, b, c, d, e);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.BreakFilterInPlace((x, index) => index >= 11, out c);
 		d = new G.List<bool>(bitList);
-		d.InsertRange(3, [false, true]);
+		d.InsertRange(3, shortBitList);
 		e = E.ToList(E.Where(d, (x, index) => index < 11));
 		d = E.ToList(E.Where(d, (x, index) => index >= 11));
 		BaseListTests<bool, BitList>.BreakFilterInPlaceAsserts(a, b, c, d, e);
@@ -494,10 +494,10 @@ public class BitListTests
 	[TestMethod]
 	public void TestFilter()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.Filter(x => x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = E.Where(c, x => x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -514,10 +514,10 @@ public class BitListTests
 	[TestMethod]
 	public void TestFilterInPlace()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.FilterInPlace(x => x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		c = E.ToList(E.Where(c, x => x ^ bitList[25]));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -525,10 +525,10 @@ public class BitListTests
 		Assert.IsTrue(E.SequenceEqual(c, b));
 		Assert.IsTrue(a.Equals(b));
 		Assert.IsTrue(E.SequenceEqual(b, a));
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.FilterInPlace((x, index) => index >= 11);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		c = E.ToList(E.Where(c, (x, index) => index >= 11));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -541,18 +541,18 @@ public class BitListTests
 	[TestMethod]
 	public void TestFind()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.Find(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.Find(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.Find(x => x ^ x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.Find(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -562,19 +562,19 @@ public class BitListTests
 	[TestMethod]
 	public void TestFindAll()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.FindAll(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.FindAll(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.FindAll(x => !x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.FindAll(x => !x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -585,18 +585,18 @@ public class BitListTests
 	[TestMethod]
 	public void TestFindIndex()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.FindIndex(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.FindIndex(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.FindIndex(x => x ^ x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.FindIndex(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -606,18 +606,18 @@ public class BitListTests
 	[TestMethod]
 	public void TestFindLast()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.FindLast(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.FindLast(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.FindLast(x => x ^ x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.FindLast(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -627,18 +627,18 @@ public class BitListTests
 	[TestMethod]
 	public void TestFindLastIndex()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.FindLastIndex(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.FindLastIndex(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.FindLastIndex(x => x ^ x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.FindLastIndex(x => x ^ x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -1355,18 +1355,18 @@ public class BitListTests
 	[TestMethod]
 	public void TestRemoveAll()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.RemoveAll(x => !x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.RemoveAll(x => !x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.AreEqual(d, b);
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.RemoveAll(x => x);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = c.RemoveAll(x => x);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -1643,19 +1643,19 @@ public class BitListTests
 	[TestMethod]
 	public void TestSkipWhile()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.SkipWhile(x => x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = E.ToList(E.SkipWhile(c, x => x ^ bitList[25]));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.SkipWhile((x, index) => !x || index < 1);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = E.ToList(E.SkipWhile(E.Skip(c, 1), (x, index) => !x || index < 1));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -1745,19 +1745,19 @@ public class BitListTests
 	[TestMethod]
 	public void TestTakeWhile()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.TakeWhile(x => x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = E.ToList(E.TakeWhile(c, x => x ^ bitList[25]));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
 		Assert.IsTrue(b.Equals(d));
 		Assert.IsTrue(E.SequenceEqual(d, b));
-		a = new BitList(bitList).Insert(3, [false, true]);
+		a = new BitList(bitList).Insert(3, shortBitList);
 		b = a.TakeWhile((x, index) => index < 10);
 		c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		d = E.ToList(E.TakeWhile(E.Take(c, 10), (x, index) => index < 10));
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));
@@ -1782,10 +1782,10 @@ public class BitListTests
 	[TestMethod]
 	public void TestTrueForAll()
 	{
-		var a = new BitList(bitList).Insert(3, [false, true]);
+		var a = new BitList(bitList).Insert(3, shortBitList);
 		var b = a.TrueForAll(x => x ^ bitList[25]);
 		var c = new G.List<bool>(bitList);
-		c.InsertRange(3, [false, true]);
+		c.InsertRange(3, shortBitList);
 		var d = c.TrueForAll(x => x ^ bitList[25]);
 		Assert.IsTrue(a.Equals(c));
 		Assert.IsTrue(E.SequenceEqual(c, a));

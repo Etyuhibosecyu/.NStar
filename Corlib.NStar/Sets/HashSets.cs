@@ -161,6 +161,25 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return this2;
 	}
 
+	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	{
+		var this2 = (TCertain)this;
+		var set = SpanCreator(span).ExceptWith(this);
+		if (set is FastDelHashSet<T> fhs)
+			fhs.FixUpFakeIndexes();
+		else if (set is ParallelHashSet<T> phs)
+			phs.FixUpFakeIndexes();
+		var length = set.Length;
+		if (length > 0)
+		{
+			EnsureCapacity(_size + length);
+			if (index < _size)
+				CopyToInternal(index, this2, index + length, _size - index);
+			set.CopyToInternal(0, this2, index, length);
+		}
+		return this2;
+	}
+
 	private protected virtual void RemoveAtCommon(int index, ref Entry t)
 	{
 		uint collisionCount = 0;
@@ -459,6 +478,8 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 	private protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, ListHashSet<T>> SpanCreator => x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -806,4 +827,6 @@ public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 	private protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, TreeHashSet<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, TreeHashSet<T>> SpanCreator => x => new(x);
 }

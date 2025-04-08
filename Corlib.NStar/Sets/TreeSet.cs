@@ -80,6 +80,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	private protected override Func<IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
 
+	private protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator => x => new(x);
+
 	public override IComparer<T> Comparer { get; }
 
 	public override int Length
@@ -784,9 +786,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 		// another for sorted sets with the same comparer
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
-		{
 			return Length < asSorted.Length && IsSubsetOfSortedSetWithSameComparer(asSorted);
-		}
 		// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).
 		var result = CheckUniqueAndUnfoundElements(other, false);
 		return result.UniqueCount == Length && result.UnfoundCount > 0;
@@ -825,9 +825,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		if (Length == 0)
 			return true;
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
-		{
 			return Length <= asSorted.Length && IsSubsetOfSortedSetWithSameComparer(asSorted);
-		}
 		else
 		{
 			// Worst case: I mark every element in my set and see if I've counted all of them. O(M log N).

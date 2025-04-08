@@ -457,6 +457,13 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return (TCertain)this;
 	}
 
+	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	{
+		for (var i = 0; i < span.Length; i++)
+			Insert(index++, span[i]);
+		return (TCertain)this;
+	}
+
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
 	// need to split again in the next node.
@@ -1008,7 +1015,7 @@ public class SumList : BaseSumList<int, SumList>
 			}
 			return;
 		}
-		var elements = collection is int[] array ? array : collection.ToArray();
+		var elements = collection is int[] array ? array : [.. collection];
 		var length = elements.Length;
 		if (length > 0)
 		{
@@ -1024,6 +1031,8 @@ public class SumList : BaseSumList<int, SumList>
 	private protected override Func<int, SumList> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<int>, SumList> SpanCreator => x => new(x);
 
 	public virtual long ValuesSum => (root as Node)?.ValuesSum ?? 0;
 
@@ -1735,6 +1744,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 	private protected override Func<int, BigSumList> CapacityCreator => x => [];
 
 	private protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<MpzT>, BigSumList> SpanCreator => x => new(x);
 
 	public override int Length
 	{

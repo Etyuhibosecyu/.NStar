@@ -14,7 +14,7 @@
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|Corlib.NStar'">
+	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
 		<DefineConstants>VERIFY</DefineConstants>
 	</PropertyGroup>
 	

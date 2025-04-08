@@ -263,6 +263,28 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
+	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var length = span.Length;
+		var this2 = (TCertain)this;
+		if (length == 0)
+			return this2;
+		var toSkip = Max(0, length + _size - Capacity - index);
+		var index2 = _size + length - toSkip >= Capacity + index ? 0 : index;
+		if (index2 > 0 && index2 < _size)
+			CopyToInternal(index2, this2, index2 + length - toSkip, _size - index2);
+		if (index2 == 0)
+			_start = (_start + Max(_size, Capacity - length + toSkip)) % Capacity;
+		for (var i = 0; i < length - toSkip; i++)
+			SetInternal(index2 + i, span[toSkip + i]);
+		if (index2 != 0)
+			_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
+		_size = Min(_size + length - toSkip, Capacity);
+		return this2;
+	}
+
 	private protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		var endIndex = index - length + 1;
@@ -330,6 +352,8 @@ public class Buffer<T> : Buffer<T, Buffer<T>>
 	private protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, Buffer<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, Buffer<T>> SpanCreator => x => new(x);
 
 	public static implicit operator Buffer<T>(T x) => new(x);
 
@@ -516,8 +540,6 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		}
 	}
 
-	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
-
 	public override Span<T> AsSpan(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -612,7 +634,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
+	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -790,7 +812,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : new(collection);
+	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : [.. collection];
 
 	private protected override TCertain ReverseInternal(int index, int length)
 	{
@@ -873,6 +895,8 @@ public class List<T> : List<T, List<T>>
 	private protected override Func<int, List<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, List<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator => x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
 

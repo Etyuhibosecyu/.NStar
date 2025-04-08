@@ -161,8 +161,6 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		}
 	}
 
-	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
-
 	public override Span<T> AsSpan(int index, int length)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -349,7 +347,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return this2;
 	}
 
-	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
+	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if (_isRange)
 			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
@@ -525,7 +523,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return -1;
 	}
 
-	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : new(collection);
+	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : [.. collection];
 
 	private protected override TCertain ReverseInternal(int index, int length)
 	{
@@ -608,6 +606,8 @@ public unsafe class NList<T> : NList<T, NList<T>> where T : unmanaged
 	private protected override Func<int, NList<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, NList<T>> SpanCreator => x => new(x);
 
 	public static implicit operator NList<T>(T x) => new(x);
 
@@ -718,6 +718,8 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
 
+	private protected override Func<ReadOnlySpan<char>, String> SpanCreator => x => new(x);
+
 	public virtual String AddRange(string s) => Insert(_size, s);
 
 	[Obsolete(CompareTrivialMessage, true)]
@@ -792,7 +794,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		IComparable<String> icns => -icns.CompareTo(this),
 		IComparable<char[]> icarr => -icarr.CompareTo(ToArray()),
 		IComparable<string> ics => -ics.CompareTo(ToString()),
-		_ => CompareToNotNull(other.ToArray()),
+		_ => CompareToNotNull([.. other]),
 	};
 
 	public virtual int CompareTo(ReadOnlySpan<char> other) => DefaultCompareInfo.Compare(AsSpan(), other);
@@ -1054,13 +1056,20 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 
 	public override String PadRightInPlace(int length) => PadRightInPlace(length, ' ');
 
+	public virtual String Replace(string s) => Replace(s.AsSpan());
+
 	// TODO: этот метод разбиения игнорирует флаг TrimEntries в опциях. Правильное поведение этого флага в разработке.
 	public virtual List<String> Split(char separator, StringSplitOptions options = StringSplitOptions.None)
 	{
 		if (_size == 0)
 			return [];
 		else if (_size == 1)
-			return GetInternal(0) == separator ? ["", ""] : [GetInternal(0)];
+		{
+			if (GetInternal(0) == separator)
+				return options.HasFlag(StringSplitOptions.RemoveEmptyEntries) ? [] : [[], []];
+			else
+				return [GetInternal(0)];
+		}
 		var prevPos = 0;
 		List<String> result = [];
 		for (var i = 0; i < _size; i++)

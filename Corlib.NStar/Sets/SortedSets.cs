@@ -192,6 +192,8 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 	private protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator => x => new(x);
 }
 
 internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);

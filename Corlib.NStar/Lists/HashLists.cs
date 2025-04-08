@@ -805,6 +805,8 @@ public class FastDelHashList<T> : FastDelHashList<T, FastDelHashList<T>>
 	private protected override Func<int, FastDelHashList<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, FastDelHashList<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, FastDelHashList<T>> SpanCreator => x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -956,4 +958,6 @@ public class HashList<T> : HashList<T, HashList<T>>
 	private protected override Func<int, HashList<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, HashList<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, HashList<T>> SpanCreator => x => new(x);
 }

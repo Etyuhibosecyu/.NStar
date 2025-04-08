@@ -145,13 +145,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		var z = new MpzT();
 		if (y >= 0)
-		{
 			Mpir.MpzAddUi(z, x, (uint)y);
-		}
 		else
-		{
 			Mpir.MpzSubUi(z, x, (uint)-y);
-		}
 
 		return z;
 	}
@@ -160,13 +156,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		var z = new MpzT();
 		if (x >= 0)
-		{
 			Mpir.MpzAddUi(z, y, (uint)x);
-		}
 		else
-		{
 			Mpir.MpzSubUi(z, y, (uint)-x);
-		}
 
 		return z;
 	}
@@ -213,13 +205,9 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		var z = new MpzT();
 		if (y >= 0)
-		{
 			Mpir.MpzSubUi(z, x, (uint)y);
-		}
 		else
-		{
 			Mpir.MpzAddUi(z, x, (uint)-y);
-		}
 
 		return z;
 	}
@@ -699,9 +687,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 			return res;
 		}
 		else
-		{
 			return z;
-		}
 	}
 
 	public readonly MpzT DivideExactly(uint x)
@@ -755,9 +741,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		var z = new MpzT();
 		if (exponent >= 0)
-		{
 			Mpir.MpzPowmUi(z, this, exponent, mod);
-		}
 		else
 		{
 			MpzT bigExponent = exponent;
@@ -1148,9 +1132,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 				return res;
 			}
 			else
-			{
 				return z;
-			}
 		}
 	}
 
@@ -1400,9 +1382,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(mod);
 		if (x >= 0)
-		{
 			return Mpir.MpzCongruentUiP(this, (uint)x, (uint)mod) != 0;
-		}
 		else
 		{
 			var xAsUint = (uint)(x % mod + mod);
@@ -1824,57 +1804,31 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 			return this;
 		IConvertible value = this;
 		if (targetType == typeof(sbyte))
-		{
 			return value.ToSByte(provider);
-		}
 		else if (targetType == typeof(byte))
-		{
 			return value.ToByte(provider);
-		}
 		else if (targetType == typeof(short))
-		{
 			return value.ToInt16(provider);
-		}
 		else if (targetType == typeof(ushort))
-		{
 			return value.ToUInt16(provider);
-		}
 		else if (targetType == typeof(int))
-		{
 			return value.ToInt32(provider);
-		}
 		else if (targetType == typeof(uint))
-		{
 			return value.ToUInt32(provider);
-		}
 		else if (targetType == typeof(long))
-		{
 			return value.ToInt64(provider);
-		}
 		else if (targetType == typeof(ulong))
-		{
 			return value.ToUInt64(provider);
-		}
 		else if (targetType == typeof(float))
-		{
 			return value.ToSingle(provider);
-		}
 		else if (targetType == typeof(double))
-		{
 			return value.ToDouble(provider);
-		}
 		else if (targetType == typeof(decimal))
-		{
 			return value.ToDecimal(provider);
-		}
 		else if (targetType == typeof(string))
-		{
 			return value.ToString(provider);
-		}
 		else if (targetType == typeof(object))
-		{
 			return value;
-		}
 		throw new InvalidCastException();
 	}
 

@@ -404,6 +404,8 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 	private protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator => x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -464,6 +466,8 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	private protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
 
 	private protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
+
+	private protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator => x => new(x);
 
 	private protected override void ClearInternal()
 	{
@@ -555,6 +559,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	}
 
 	public override ParallelHashSet<T> Insert(int index, IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
+
+	public override ParallelHashSet<T> Insert(int index, ReadOnlySpan<T> span)
+	{
+		lock(lockObj)
+			base.Insert(index, span);
+		return this;
+	}
 
 	private protected override ParallelHashSet<T> Insert(T? item, out int index, int hashCode)
 	{

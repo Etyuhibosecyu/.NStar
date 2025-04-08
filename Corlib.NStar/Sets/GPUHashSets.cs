@@ -439,6 +439,8 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 
 	private protected override Func<IEnumerable<T>, GPUHashSet<T>> CollectionCreator => x => new(x);
 
+	private protected override Func<ReadOnlySpan<T>, GPUHashSet<T>> SpanCreator => x => new(x);
+
 	private protected override void ClearInternal(int index, int length)
 	{
 		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));

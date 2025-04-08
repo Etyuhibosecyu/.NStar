@@ -4,9 +4,11 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(SolutionName)'=='Debug|.NStar'">
+		<DefineConstants>VERIFY</DefineConstants>
+	</PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
     <ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
   </ItemGroup>
-
 </Project>

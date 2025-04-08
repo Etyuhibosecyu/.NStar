@@ -77,8 +77,10 @@ public static void Main()
 		var codeString = SourceText.From(sourceCode.ToString());
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new ListHashSet<String>("Corlib.NStar", "Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "System", "System.Console", "System.Core", "System.Linq.Expressions", "System.Private.CoreLib", "System.Runtime")
-			.UnionWith(extraAssemblies).ToList(x => MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", "").ToString()).Location));
+		var references = new ListHashSet<String>("Corlib.NStar", "Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard",
+			"System", "System.Console", "System.Core", "System.Linq.Expressions", "System.Private.CoreLib", "System.Runtime")
+			.UnionWith(extraAssemblies).ToList(x =>
+			MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", []).ToString()).Location));
 		return CSharpCompilation.Create("MyProject.dll",
 			[parsedSyntaxTree],
 			references: references,
@@ -90,9 +92,7 @@ public static void Main()
 	public static void Execute(byte[]? compiledAssembly, string[] args)
 	{
 		if (compiledAssembly == null)
-		{
 			return;
-		}
 		LoadAndExecute(compiledAssembly, args);
 	}
 
@@ -107,9 +107,7 @@ public static void Main()
 	public static Assembly? GetAssembly(byte[]? compiledAssembly)
 	{
 		if (compiledAssembly == null)
-		{
 			return null;
-		}
 		using var asm = new MemoryStream(compiledAssembly);
 		var assemblyLoadContext = new SimpleUnloadableAssemblyLoadContext();
 		return assemblyLoadContext.LoadFromStream(asm);

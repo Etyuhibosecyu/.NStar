@@ -42,9 +42,30 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		CopyMemory(ptr, _items, uints);
 	}
 
+	public BitList(int[] values) : this(values.AsSpan()) { }
+
+	public BitList(int length, params int[] values) : this(length, values.AsSpan()) { }
+
 	public BitList(uint[] values) : this(values.AsSpan()) { }
 
-	public BitList(int length, params uint[] values)
+	public BitList(int length, params uint[] values) : this(length, values.AsSpan()) { }
+
+	public BitList(bool[] values) : this(values.AsSpan()) { }
+
+	public BitList(int length, params bool[] values) : this(length, values.AsSpan()) { }
+
+	public BitList(ReadOnlySpan<int> values)
+	{
+		// this value is chosen to prevent overflow when computing m_length
+		if (values.Length > int.MaxValue / BitsPerInt)
+			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = values.Length));
+		_size = values.Length * BitsPerInt;
+		fixed (int* ptr = values)
+			CopyMemory((uint*)ptr, _items, values.Length);
+	}
+
+	public BitList(int length, ReadOnlySpan<int> values)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		var uints = Max(GetArrayLength(length, BitsPerInt), values.Length);
@@ -55,8 +76,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		if (uints > values.Length)
 			FillMemory(_items + values.Length, uints - values.Length, 0);
 		_size = length;
-		fixed (uint* ptr = values)
-			CopyMemory(ptr, _items, values.Length);
+		fixed (int* ptr = values)
+			CopyMemory((uint*)ptr, _items, values.Length);
 	}
 
 	public BitList(ReadOnlySpan<uint> values)
@@ -66,8 +87,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			throw new ArgumentException("Длина коллекции превышает диапазон допустимых значений.", nameof(values));
 		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = values.Length));
 		_size = values.Length * BitsPerInt;
-		fixed (uint* values2 = values)
-			CopyMemory(values2, _items, values.Length);
+		fixed (uint* ptr = values)
+			CopyMemory(ptr, _items, values.Length);
 	}
 
 	public BitList(int length, ReadOnlySpan<uint> values)
@@ -83,6 +104,43 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		_size = length;
 		fixed (uint* ptr = values)
 			CopyMemory(ptr, _items, values.Length);
+	}
+
+	public BitList(ReadOnlySpan<bool> values)
+	{
+		_size = values.Length;
+		var uints = GetArrayLength(_size, BitsPerInt);
+		// this value is chosen to prevent overflow when computing m_length
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		FillMemory(_items, uints, 0);
+		var (quotient, remainder) = DivRem(_size, BitsPerInt);
+		var index = 0;
+		for (var i = 0; i < quotient; i++)
+			for (var j = 0; j < BitsPerInt; j++)
+				if (values[index++])
+					_items[i] |= 1u << j;
+		for (var i = 0; i < remainder; i++)
+			if (values[index++])
+				_items[quotient] |= 1u << i;
+	}
+
+	public BitList(int length, ReadOnlySpan<bool> values)
+	{
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		_size = Max(length, values.Length);
+		var uints = GetArrayLength(_size, BitsPerInt);
+		// this value is chosen to prevent overflow when computing m_length
+		_items = (uint*)Marshal.AllocHGlobal(sizeof(uint) * (_capacity = uints));
+		FillMemory(_items, uints, 0);
+		var (quotient, remainder) = DivRem(values.Length, BitsPerInt);
+		var index = 0;
+		for (var i = 0; i < quotient; i++)
+			for (var j = 0; j < BitsPerInt; j++)
+				if (values[index++])
+					_items[i] |= 1u << j;
+		for (var i = 0; i < remainder; i++)
+			if (values[index++])
+				_items[quotient] |= 1u << i;
 	}
 
 	public BitList(BitArray bitArray)
@@ -283,6 +341,8 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 
 	private protected override int DefaultCapacity => 256;
 
+	private protected override Func<ReadOnlySpan<bool>, BitList> SpanCreator => x => new(x);
+
 	public virtual BitList AddRange(BitArray bitArray) => Insert(_size, bitArray);
 
 	public virtual BitList AddRange(IEnumerable<byte> bytes) => Insert(_size, bytes);
@@ -290,6 +350,10 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	public virtual BitList AddRange(IEnumerable<int> ints) => Insert(_size, ints);
 
 	public virtual BitList AddRange(IEnumerable<uint> uints) => Insert(_size, uints);
+
+	public virtual BitList AddRange(ReadOnlySpan<int> ints) => Insert(_size, ints);
+
+	public virtual BitList AddRange(ReadOnlySpan<uint> uints) => Insert(_size, uints);
 
 	public virtual BitList And(BitList value)
 	{
@@ -775,6 +839,36 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 		else
 			return Insert(index, new BitList(uints));
+	}
+
+	public virtual BitList Insert(int index, ReadOnlySpan<int> ints)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var length = ints.Length * BitsPerInt;
+		if (length == 0)
+			return this;
+		EnsureCapacity(_size + length);
+		CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+		fixed (int* intPtr = ints)
+			CopyBits((uint*)intPtr, ints.Length, 0, _items, _capacity, index, length);
+		_size += length;
+		return this;
+	}
+
+	public virtual BitList Insert(int index, ReadOnlySpan<uint> uints)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		var length = uints.Length * BitsPerInt;
+		if (length == 0)
+			return this;
+		EnsureCapacity(_size + length);
+		CopyBits(_items, _capacity, index, _items, _capacity, index + length, _size - index);
+		fixed (uint* uintPtr = uints)
+			CopyBits(uintPtr, uints.Length, 0, _items, _capacity, index, length);
+		_size += length;
+		return this;
 	}
 
 	private protected override int LastIndexOfInternal(bool item, int index, int length)

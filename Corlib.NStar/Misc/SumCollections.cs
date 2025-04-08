@@ -110,6 +110,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
+	private protected override Func<ReadOnlySpan<(T Key, int Value)>, SumSet<T>> SpanCreator => x => new(x);
+
 	public virtual long ValuesSum => root?.ValuesSum ?? 0;
 
 	public virtual SumSet<T> Add(T key, int value) => Add((key, value));
@@ -1421,7 +1423,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	private protected virtual bool TryToUniqueArray(IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
 	{
-		elements = collection is (T Key, int Value)[] array ? array : collection.ToArray();
+		elements = collection is (T Key, int Value)[] array ? array : [.. collection];
 		length = elements.Length;
 		if (length > 0)
 		{

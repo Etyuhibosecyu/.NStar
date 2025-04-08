@@ -907,7 +907,7 @@ public class NListTests
 				break;
 				case 1:
 				int length = random.Next(a.Length + 1), index2 = random.Next(a.Length - length + 1);
-				a.Insert(index, a.GetRange(index2, length));
+				a.Insert(index, a.GetRange(index2, length, true));
 				b.InsertRange(index, array.Skip(index2).Take(length));
 				Assert.IsTrue(a.Equals(b));
 				Assert.IsTrue(E.SequenceEqual(b, a));

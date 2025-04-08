@@ -2354,7 +2354,7 @@ public partial class List<T, TCertain>
 	internal static List<T> ConcatEnumerable(IEnumerable<T> source, params IEnumerable<T>[] collections)
 	{
 		ArgumentNullException.ThrowIfNull(collections);
-		List<T> result = new(source);
+		List<T> result = [.. source];
 		for (var i = 0; i < collections.Length; i++)
 			result.AddRange(collections[i]);
 		return result;
@@ -10788,7 +10788,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
@@ -10883,7 +10883,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
@@ -10978,7 +10978,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
@@ -11073,7 +11073,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
@@ -11168,7 +11168,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
@@ -11263,7 +11263,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
@@ -11358,7 +11358,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
@@ -11453,7 +11453,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
@@ -11548,7 +11548,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
@@ -11643,7 +11643,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
@@ -11738,7 +11738,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMaxIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
@@ -11833,7 +11833,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMaxIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMaxIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
@@ -11868,7 +11868,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
@@ -11903,7 +11903,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
@@ -11938,7 +11938,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
@@ -11973,7 +11973,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
@@ -12012,7 +12012,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
@@ -12051,7 +12051,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
@@ -12090,7 +12090,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
@@ -12129,7 +12129,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
@@ -12168,7 +12168,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
@@ -12207,7 +12207,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
@@ -12246,7 +12246,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x) => function(x) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMeanIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
@@ -12285,7 +12285,7 @@ public partial class List<T, TCertain>
 			return value == value2 ? FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value2) : default;
 		}
 		else
-			return FindLastMeanIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMeanIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
@@ -12320,7 +12320,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
@@ -12355,7 +12355,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
@@ -12390,7 +12390,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
@@ -12425,7 +12425,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
@@ -12460,7 +12460,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
@@ -12495,7 +12495,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
@@ -12530,7 +12530,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
@@ -12565,7 +12565,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
@@ -12600,7 +12600,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
@@ -12635,7 +12635,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
@@ -12670,7 +12670,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x) => function(x) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMedianIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
@@ -12705,7 +12705,7 @@ public partial class List<T, TCertain>
 			return FindLastIndexEnumerable(list3, (x, index) => function(x, index) == value);
 		}
 		else
-			return FindLastMedianIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMedianIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, decimal> function, out decimal indicator)
@@ -12800,7 +12800,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, decimal> function, out decimal indicator)
@@ -12895,7 +12895,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, double> function, out double indicator)
@@ -12990,7 +12990,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, double> function, out double indicator)
@@ -13085,7 +13085,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int> function, out int indicator)
@@ -13180,7 +13180,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, int> function, out int indicator)
@@ -13275,7 +13275,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, uint> function, out uint indicator)
@@ -13370,7 +13370,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, uint> function, out uint indicator)
@@ -13465,7 +13465,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, long> function, out long indicator)
@@ -13560,7 +13560,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, long> function, out long indicator)
@@ -13655,7 +13655,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, MpzT> function, out MpzT indicator)
@@ -13750,7 +13750,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static int FindLastMinIndexEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function, out MpzT indicator)
@@ -13845,7 +13845,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return FindLastMinIndexEnumerable(new List<T>(source), function, out indicator);
+			return FindLastMinIndexEnumerable([.. source], function, out indicator);
 	}
 
 	internal static T? FindMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
@@ -30497,7 +30497,7 @@ public partial class List<T, TCertain>
 			return -1;
 		}
 		else
-			return LastIndexOfEnumerable(new List<T>(source), target, comparer);
+			return LastIndexOfEnumerable([.. source], target, comparer);
 	}
 
 	internal static int LastIndexOfEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction)
@@ -30547,7 +30547,7 @@ public partial class List<T, TCertain>
 			return -1;
 		}
 		else
-			return LastIndexOfEnumerable(new List<T>(source), target, equalFunction);
+			return LastIndexOfEnumerable([.. source], target, equalFunction);
 	}
 
 	internal static int LastIndexOfEnumerable(IEnumerable<T> source, T target, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
@@ -30597,7 +30597,7 @@ public partial class List<T, TCertain>
 			return -1;
 		}
 		else
-			return LastIndexOfEnumerable(new List<T>(source), target, equalFunction, hashCodeFunction);
+			return LastIndexOfEnumerable([.. source], target, equalFunction, hashCodeFunction);
 	}
 
 	internal static int LastIndexOfMaxEnumerable(IEnumerable<T> source, Func<T, decimal> function)
@@ -36373,7 +36373,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static decimal MedianEnumerable(IEnumerable<T> source, Func<T, int, decimal> function)
@@ -36400,7 +36400,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, double> function)
@@ -36427,7 +36427,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static double MedianEnumerable(IEnumerable<T> source, Func<T, int, double> function)
@@ -36454,7 +36454,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int> function)
@@ -36481,7 +36481,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static int MedianEnumerable(IEnumerable<T> source, Func<T, int, int> function)
@@ -36508,7 +36508,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, uint> function)
@@ -36535,7 +36535,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static uint MedianEnumerable(IEnumerable<T> source, Func<T, int, uint> function)
@@ -36562,7 +36562,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, long> function)
@@ -36589,7 +36589,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static long MedianEnumerable(IEnumerable<T> source, Func<T, int, long> function)
@@ -36616,7 +36616,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, MpzT> function)
@@ -36643,7 +36643,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static MpzT MedianEnumerable(IEnumerable<T> source, Func<T, int, MpzT> function)
@@ -36670,7 +36670,7 @@ public partial class List<T, TCertain>
 			return list3.Count == 0 ? 0 : ToListEnumerable(list3, function).Sort()._items[(list3.Count - 1) / 2];
 		}
 		else
-			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? 0 : col.Sort()._items[(col.Length - 1) / 2];
+			return CreateVar(ToListEnumerable(source, function), out var col).Any() ? col.Sort()._items[(col.Length - 1) / 2] : 0;
 	}
 
 	internal static decimal MedianEnumerable(IEnumerable<decimal> source)
@@ -36771,7 +36771,7 @@ public partial class List<T, TCertain>
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
 			return length == 0 ? default : ToListEnumerable(source, function).Sort()._items[(length - 1) / 2];
 		else
-			return MedianEnumerable(new List<T>(source), function);
+			return MedianEnumerable([.. source], function);
 	}
 
 	internal static TResult? MedianEnumerable<TResult>(IEnumerable<T> source, Func<T, int, TResult> function)
@@ -36800,7 +36800,7 @@ public partial class List<T, TCertain>
 		else if (TryGetLengthEasilyEnumerable(source, out var length))
 			return length == 0 ? default : ToListEnumerable(source, function).Sort()._items[(length - 1) / 2];
 		else
-			return MedianEnumerable(new List<T>(source), function);
+			return MedianEnumerable([.. source], function);
 	}
 
 	internal static T? MedianEnumerable(IEnumerable<T> source)
@@ -44661,7 +44661,7 @@ public partial class List<T, TCertain>
 			return result;
 		}
 		else
-			return new List<T>(source).ToArray();
+			return [.. source];
 	}
 
 	internal static List<TResult> ToListEnumerable<TResult>(IEnumerable<T> source, Func<T, TResult> function)
@@ -76553,7 +76553,7 @@ public static class RedStarLinq
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, IEqualityComparer<T> comparer, bool unordered = false) where T : notnull => new(source, comparer, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, bool unordered = false) where T : notnull => new(source, equalFunction, unordered);
 	public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction, bool unordered = false) where T : notnull => new(source, equalFunction, hashCodeFunction, unordered);
-	public static ListHashSet<T> ToHashSet<T>(this IEnumerable<T> source) => new(source);
+	public static ListHashSet<T> ToHashSet<T>(this IEnumerable<T> source) => [.. source];
 	public static List<TResult> ToList<T, TResult>(this IEnumerable<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable(source, function);
 	public static List<TResult> ToList<T, TResult>(this IEnumerable<T> source, Func<T, int, TResult> function) => List<T>.ToListEnumerable(source, function);
 	public static List<T> ToList<T>(this IEnumerable<T> source) => List<T>.ReturnOrConstruct(source);
@@ -76563,7 +76563,7 @@ public static class RedStarLinq
 	public static String ToNString<T>(this IEnumerable<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable(source, function);
 	public static String ToNString<T>(this IEnumerable<T> source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable(source, function);
 	public static String ToNString(this IEnumerable<char> source) => new(source);
-	public static ParallelHashSet<T> ToParallelHashSet<T>(this IEnumerable<T> source) => new(source);
+	public static ParallelHashSet<T> ToParallelHashSet<T>(this IEnumerable<T> source) => [.. source];
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString<T>(this IEnumerable<T> source, Func<T, int, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString(this IEnumerable<char> source) => new(List<char>.ToArrayEnumerable(source));
@@ -78709,21 +78709,21 @@ public static class RedStarLinq
 	public static TResult[] ToArray<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.ToArrayEnumerable(source, function);
 	public static TResult[] ToArray<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function);
 	public static TResult[] ToArray<T, TResult>(this Span<T> source, Func<T, int, TResult> function) => List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function);
-	public static BitList ToBitList(this ReadOnlySpan<bool> source) => new(source.ToArray());
+	public static BitList ToBitList(this ReadOnlySpan<bool> source) => [.. source.ToArray()];
 	public static BitList ToBitList(this ReadOnlySpan<byte> source) => new(source.ToArray());
 	public static BitList ToBitList(this ReadOnlySpan<int> source) => new(source.ToArray());
 	public static BitList ToBitList(this ReadOnlySpan<uint> source) => new(source);
-	public static BitList ToBitList(this Span<bool> source) => new(source.ToArray());
+	public static BitList ToBitList(this Span<bool> source) => [.. source.ToArray()];
 	public static BitList ToBitList(this Span<byte> source) => new(source.ToArray());
 	public static BitList ToBitList(this Span<int> source) => new(source.ToArray());
 	public static BitList ToBitList(this Span<uint> source) => new(source);
-	public static BitList ToBitList(this bool[] source) => new(source);
+	public static BitList ToBitList(this bool[] source) => [.. source];
 	public static BitList ToBitList(this byte[] source) => new(source);
 	public static BitList ToBitList(this int[] source) => new(source);
 	public static BitList ToBitList(this uint[] source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this ReadOnlySpan<T> source) => new(source);
 	public static ListHashSet<T> ToHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static ListHashSet<T> ToHashSet<T>(this T[] source) => new((G.IList<T>)source);
+	public static ListHashSet<T> ToHashSet<T>(this T[] source) => [.. (G.IList<T>)source];
 	public static List<TResult> ToList<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable(source, function);
 	public static List<TResult> ToList<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) => List<T>.ToListEnumerable(source, function);
 	public static List<TResult> ToList<T, TResult>(this Span<T> source, Func<T, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source, function);
@@ -78732,7 +78732,7 @@ public static class RedStarLinq
 	public static List<TResult> ToList<T, TResult>(this T[] source, Func<T, int, TResult> function) => List<T>.ToListEnumerable((ReadOnlySpan<T>)source.AsSpan(), function);
 	public static List<T> ToList<T>(this ReadOnlySpan<T> source) => new(source);
 	public static List<T> ToList<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static List<T> ToList<T>(this T[] source) => new((G.IList<T>)source);
+	public static List<T> ToList<T>(this T[] source) => [.. (G.IList<T>)source];
 	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
 	public static NList<TResult> ToNList<T, TResult>(this ReadOnlySpan<T> source, Func<T, int, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable(source, function);
 	public static NList<TResult> ToNList<T, TResult>(this Span<T> source, Func<T, TResult> function) where TResult : unmanaged => NList<bool>.ToNListEnumerable((ReadOnlySpan<T>)source, function);
@@ -78743,7 +78743,7 @@ public static class RedStarLinq
 	public static NList<TResult> ToNList<T, TResult>(this NList<T> source, Func<T, int, TResult> function) where T : unmanaged where TResult : unmanaged => NList<T>.ToNListEnumerable(source, function);
 	public static NList<T> ToNList<T>(this ReadOnlySpan<T> source) where T : unmanaged => new(source);
 	public static NList<T> ToNList<T>(this Span<T> source) where T : unmanaged => new((ReadOnlySpan<T>)source);
-	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => new((G.IList<T>)source);
+	public static NList<T> ToNList<T>(this T[] source) where T : unmanaged => [.. (G.IList<T>)source];
 	public static String ToNString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable(source, function);
 	public static String ToNString<T>(this ReadOnlySpan<T> source, Func<T, int, char> function) => NList<bool>.ToNStringEnumerable(source, function);
 	public static String ToNString<T>(this Span<T> source, Func<T, char> function) => NList<bool>.ToNStringEnumerable((ReadOnlySpan<T>)source, function);
@@ -78757,7 +78757,7 @@ public static class RedStarLinq
 	public static String ToNString(this char[] source) => new((G.IList<char>)source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this ReadOnlySpan<T> source) => new(source);
 	public static ParallelHashSet<T> ToParallelHashSet<T>(this Span<T> source) => new((ReadOnlySpan<T>)source);
-	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => new((G.IList<T>)source);
+	public static ParallelHashSet<T> ToParallelHashSet<T>(this T[] source) => [.. (G.IList<T>)source];
 	public static string ToString<T>(this ReadOnlySpan<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable(source, function));
 	public static string ToString<T>(this Span<T> source, Func<T, char> function) => new(List<T>.ToArrayEnumerable((ReadOnlySpan<T>)source, function));
 	public static string ToString<T>(this T[] source, Func<T, char> function) => new(List<T>.ToArrayEnumerable((G.IList<T>)source, function));

@@ -31,7 +31,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 6), _ => newValueFunc());
@@ -39,7 +39,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			gl.AddRange(toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 			//var n = random.Next(sl.Length);
 			//toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
 			//sl.Insert(n, toInsert);
@@ -56,7 +56,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			gl.RemoveRange(start, length);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			var length = (int)bl.Length;
@@ -69,7 +69,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 				bl.TrimExcess();
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 		} };
 		var actions = new[] { () =>
 		{
@@ -87,7 +87,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			//}
 			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			if (bl.Length == 0) return;
@@ -96,7 +96,7 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			gl.RemoveAt(index);
 			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl );
+			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			collectionActions.Random(random)();

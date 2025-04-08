@@ -51,6 +51,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	bool System.Collections.ICollection.IsSynchronized => false;
 
+	private protected abstract Func<ReadOnlySpan<T>, TCertain> SpanCreator { get; }
+
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
 	public delegate void ListChangedHandler(TCertain newList);
@@ -82,6 +84,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 
 	public virtual TCertain AddRange(IEnumerable<T> collection) => Insert(_size, collection);
+
+	public virtual TCertain AddRange(ReadOnlySpan<T> span) => Insert(_size, span);
+
+	public virtual TCertain AddRange(T[] array) => AddRange(array.AsSpan());
 
 	public virtual TCertain AddRange(List<T> list) => Insert(_size, (IEnumerable<T>)list);
 
@@ -464,6 +470,15 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return InsertInternal(index, collection);
 	}
 
+	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
+	{
+		if ((uint)index > (uint)_size)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		return InsertInternal(index, span);
+	}
+
+	public virtual TCertain Insert(int index, T[] array) => Insert(index, array.AsSpan());
+
 	public virtual TCertain Insert(int index, List<T> list) => Insert(index, (IEnumerable<T>)list);
 
 	private protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
@@ -484,6 +499,21 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			}
 			else
 				list.CopyToInternal(0, this2, index, length);
+		}
+		return this2;
+	}
+
+	private protected virtual TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	{
+		var this2 = (TCertain)this;
+		var length = span.Length;
+		if (length > 0)
+		{
+			EnsureCapacity(_size + length);
+			if (index < _size)
+				CopyToInternal(index, this2, index + length, _size - index);
+			for (var i = 0; i < length; i++)
+				SetInternal(index + i, span[i]);
 		}
 		return this2;
 	}
@@ -712,6 +742,14 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		Clear();
 		return AddRange(collection);
 	}
+
+	public virtual TCertain Replace(ReadOnlySpan<T> span)
+	{
+		Clear();
+		return AddRange(span);
+	}
+
+	public virtual TCertain Replace(T[] array) => Replace(array.AsSpan());
 
 	public virtual TCertain Replace(T oldItem, T newItem)
 	{
