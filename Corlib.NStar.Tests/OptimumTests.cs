@@ -5,6 +5,8 @@ namespace Corlib.NStar.Tests;
 [TestClass]
 public class OptimumTests
 {
+	private static readonly BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
+
 	static void OptimumTest(int iterations, Action<G.IEnumerable<MpzT>, ImmutableArray<BigInteger>> MainAction)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
@@ -68,7 +70,6 @@ public class OptimumTests
 		var d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index));
 		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexesOfMax(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
 		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
@@ -139,7 +140,6 @@ public class OptimumTests
 		var d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
 		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexesOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
 		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index));
@@ -210,7 +210,6 @@ public class OptimumTests
 		var d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index));
 		Assert.IsTrue(RedStarLinq.Equals(c, d));
 		Assert.IsTrue(E.SequenceEqual(d, c));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexesOfMin(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
 		d = E.ToArray(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index));
@@ -280,7 +279,6 @@ public class OptimumTests
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Max);
 		var d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexOfMax(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
 		d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
@@ -338,7 +336,6 @@ public class OptimumTests
 		var optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (x, y) => x + y) / list3.Length;
 		var d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
 		d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
@@ -396,7 +393,6 @@ public class OptimumTests
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Min);
 		var d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.IndexOfMin(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
 		d = E.FirstOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
@@ -454,7 +450,6 @@ public class OptimumTests
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Max);
 		var d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.LastIndexOfMax(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
 		d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
@@ -512,7 +507,6 @@ public class OptimumTests
 		var optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (x, y) => x + y) / list3.Length;
 		var d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.LastIndexOfMean(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum2 = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (x, y) => x + y) / list3.Length;
 		d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => Abs((double)x.elem - optimum2) <= Max((double)x.elem, optimum2) / (1L << 32)), x => x.index), -1);
@@ -570,7 +564,6 @@ public class OptimumTests
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Min);
 		var d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem, index)), x => x.elem == optimum), x => x.index), -1);
 		Assert.AreEqual(d, c);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		c = a.LastIndexOfMin(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
 		d = E.LastOrDefault(E.Select(E.Where(E.Select(list3, (elem, index) => (elem: BigInteger.ModPow(elem, power, mod), index)), x => x.elem == optimum), x => x.index), -1);
@@ -627,7 +620,6 @@ public class OptimumTests
 		var mpzT = a.Max();
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Max);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		mpzT = a.Max(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Max);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));
@@ -678,7 +670,6 @@ public class OptimumTests
 		var @double = a.Mean();
 		var doubleOptimum = list3.Length == 0 ? 0 : (double)E.Aggregate(list3, (BigInteger)0, (x, y) => x + y) / list3.Length;
 		Assert.AreEqual(doubleOptimum, @double);
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		@double = a.Mean(x => x.PowerMod(new MpzT(power), new(mod)));
 		doubleOptimum = list3.Length == 0 ? 0 : (double)E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), (BigInteger)0, (x, y) => x + y) / list3.Length;
 		Assert.AreEqual(doubleOptimum, @double);
@@ -723,7 +714,6 @@ public class OptimumTests
 		var mpzT = a.Median();
 		var optimum = list3.Length == 0 ? 0 : E.Order(list3).Wrap(x => E.Any(x) ? E.ElementAt(x, (E.Count(x) - 1) / 2) : 0);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		mpzT = a.Median(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Order(E.Select(list3, x => BigInteger.ModPow(x, power, mod))).Wrap(x => E.Any(x) ? E.ElementAt(x, (E.Count(x) - 1) / 2) : 0);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));
@@ -774,7 +764,6 @@ public class OptimumTests
 		var mpzT = a.Min();
 		var optimum = list3.Length == 0 ? 0 : E.Aggregate(list3, BigInteger.Min);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));
-		BigInteger power = new([175, 16, 6]), mod = new([134, 116, 171, 29, 108, 91, 58, 139, 101, 78, 109, 137, 45, 245, 203, 228, 21, 249, 235, 144, 21]);
 		mpzT = a.Min(x => x.PowerMod(new MpzT(power), new(mod)));
 		optimum = list3.Length == 0 ? 0 : E.Aggregate(E.Select(list3, x => BigInteger.ModPow(x, power, mod)), BigInteger.Min);
 		Assert.IsTrue(optimum == new BigInteger([.. mpzT.ToByteArray(-1), 0]));

@@ -211,6 +211,34 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		}
 	}
 
+	public virtual bool TryDequeue(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Dequeue();
+			return true;
+		}
+	}
+
+	public virtual bool TryPeek(out T value)
+	{
+		if (_size == 0)
+		{
+			value = default!;
+			return false;
+		}
+		else
+		{
+			value = Peek();
+			return true;
+		}
+	}
+
 	[Serializable]
 	public struct Enumerator : G.IEnumerator<T>
 	{
@@ -278,7 +306,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 [Obsolete("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа. Теперь он удален окончательно."
 		+ " Большие списки делают все то же самое и многое другое, и они уже работают.", true)]
-public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow> where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
+public abstract class BigArray<T, TCertain, TLow> where TCertain : BigArray<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
 	private protected TLow? low;
 	private protected TCertain[]? high;
@@ -306,7 +334,7 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 
 	private protected virtual MpzT ArraySize { get; init; } = 0;
 
-	public override MpzT Capacity { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
+	public virtual MpzT Capacity { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
 	private protected virtual int LeafSizeBitLength { get; init; } = 16;
 
@@ -320,33 +348,33 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	public override MpzT Length {
+	public virtual MpzT Length {
 		get =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");		private protected set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
 			+ " Если оно нужно вам, используйте один из видов списков или множеств, а не массивов.");
 	}
 
-	public override TCertain Add(T item) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
+	public virtual TCertain Add(T item) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	public override TCertain AddRange(G.IEnumerable<T> collection) =>
+	public virtual TCertain AddRange(G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	private protected override void ClearInternal(bool verify = true) =>
+	private protected virtual void ClearInternal(bool verify = true) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void ClearInternal(MpzT index, MpzT length) =>
+	private protected virtual void ClearInternal(MpzT index, MpzT length) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	public override bool Contains(T item, MpzT index, MpzT length) =>
+	public virtual bool Contains(T item, MpzT index, MpzT length) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length) =>
+	private protected virtual void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
@@ -354,55 +382,47 @@ public abstract class BigArray<T, TCertain, TLow> : BaseBigList<T, TCertain, TLo
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length) =>
+	private protected virtual void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length) =>
+	private protected virtual void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	public override void Dispose()
+	public virtual void Dispose()
 	{
 		GC.SuppressFinalize(this);
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 	}
 
-	private protected override T GetInternal(MpzT index, bool invoke = true) =>
+	private protected virtual T GetInternal(MpzT index, bool invoke = true) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false) =>
+	private protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void RemoveInternal(MpzT index, MpzT length) =>
+	private protected virtual void RemoveInternal(MpzT index, MpzT length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	private protected override void RemoveEndInternal(MpzT index) =>
+	private protected virtual void RemoveEndInternal(MpzT index) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
 
-	public override TCertain Reverse() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public override TCertain Reverse(MpzT index, MpzT length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected override void SetInternal(MpzT index, T value) =>
+	private protected virtual void SetInternal(MpzT index, T value) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 #if VERIFY
 
-	private protected override void Verify() =>
+	private protected virtual void Verify() =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override void VerifySingle() => Debug.Assert(Length == (low?.Length ?? high?.Sum(x => x.Length)
+	private protected virtual void VerifySingle() => Debug.Assert(Length == (low?.Length ?? high?.Sum(x => x.Length)
 		?? throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")));
 #endif
 }
@@ -431,19 +451,19 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 
 	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	private protected override Func<MpzT, BigArray<T>> CapacityCreator =>
+	private protected virtual Func<MpzT, BigArray<T>> CapacityCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<int, List<T>> CapacityLowCreator =>
+	private protected virtual Func<int, List<T>> CapacityLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator =>
+	private protected virtual Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
+	private protected virtual Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");}
 
@@ -498,19 +518,19 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<MpzT, BigBitArray> CapacityCreator =>
+	private protected virtual Func<MpzT, BigBitArray> CapacityCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<int, BitList> CapacityLowCreator =>
+	private protected virtual Func<int, BitList> CapacityLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator =>
+	private protected virtual Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator =>
+	private protected virtual Func<G.IEnumerable<bool>, BitList> CollectionLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 

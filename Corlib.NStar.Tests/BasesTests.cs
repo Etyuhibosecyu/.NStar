@@ -276,14 +276,12 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		int length;
 		G.List<string> b;
-		string elem, elem2;
 		for (var i = 0; i < 1000; i++)
 		{
 			length = random.Next(51);
 			var array = new string[length];
 			for (var j = 0; j < length; j++)
 				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
-			elem = new((char)random.Next('A', 'Z' + 1), 3);
 			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
 			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
 			b = [.. a];

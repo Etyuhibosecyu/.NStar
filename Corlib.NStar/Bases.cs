@@ -247,6 +247,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(destinationIndex);
 		if (destinationIndex + length > destination.Length)
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевой коллекции.");
+		if (this == destination && sourceIndex == destinationIndex)
+			return;
 		CopyToInternal(sourceIndex, destination, destinationIndex, length);
 	}
 
@@ -434,6 +436,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return -1;
 	}
 
+	public virtual TCertain Insert(Index index, T item) => Insert(index.GetOffset(_size), item);
+
 	public virtual TCertain Insert(int index, T item)
 	{
 		if ((uint)index > (uint)_size)
@@ -443,6 +447,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		var this2 = (TCertain)this;
 		if (index < _size)
 			CopyToInternal(index, this2, index + 1, _size - index);
+		else
+			_size++;
 		SetInternal(index, item);
 		return this2;
 	}
@@ -462,6 +468,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		}
 	}
 
+	public virtual TCertain Insert(Index index, IEnumerable<T> collection) => Insert(index.GetOffset(_size), collection);
+
 	public virtual TCertain Insert(int index, IEnumerable<T> collection)
 	{
 		if ((uint)index > (uint)_size)
@@ -470,6 +478,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return InsertInternal(index, collection);
 	}
 
+	public virtual TCertain Insert(Index index, ReadOnlySpan<T> span) => Insert(index.GetOffset(_size), span);
+
 	public virtual TCertain Insert(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
@@ -477,7 +487,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return InsertInternal(index, span);
 	}
 
+	public virtual TCertain Insert(Index index, T[] array) => Insert(index.GetOffset(_size), array.AsSpan());
+
 	public virtual TCertain Insert(int index, T[] array) => Insert(index, array.AsSpan());
+
+	public virtual TCertain Insert(Index index, List<T> list) => Insert(index.GetOffset(_size), (IEnumerable<T>)list);
 
 	public virtual TCertain Insert(int index, List<T> list) => Insert(index, (IEnumerable<T>)list);
 

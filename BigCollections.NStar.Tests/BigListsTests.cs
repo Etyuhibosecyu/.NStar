@@ -34,18 +34,12 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(multiplier * 6), _ => newValueFunc());
-			var bl2 = bl.AddRange(toInsert);
-			gl.AddRange(toInsert);
+			var n = random.Next((int)bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
+			bl.Insert(n, toInsert);
+			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
-			Assert.AreEqual(bl2, bl);
-			//var n = random.Next(sl.Length);
-			//toInsert = RedStarLinq.FillArray(random.Next(6), _ => newValueFunc());
-			//sl.Insert(n, toInsert);
-			//gl.InsertRange(n, toInsert);
-			//Assert.IsTrue(sl.Equals(gl));
-			//Assert.IsTrue(E.SequenceEqual(gl, sl));
 		}, () =>
 		{
 			var length = Min(random.Next(multiplier * 9), (int)bl.Length);
@@ -70,21 +64,26 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 			Assert.AreEqual(bl2, bl);
+		}, () =>
+		{
+			//var bl2 = bl.Reverse();
+			//gl.Reverse();
 		} };
 		var actions = new[] { () =>
 		{
+			var index = random.Next((int)bl.Length + 1);
 			var n = newValueFunc();
-			//if (random.Next(2) == 0)
-			//{
-				var bl2 = bl.Add(n);
+			TCertain bl2;
+			if (random.Next(2) == 0)
+			{
+				bl2 = bl.Add(n);
 				gl.Add(n);
-			//}
-			//else
-			//{
-			//	var index = random.Next((int)sl.Length + 1);
-			//	sl.Insert(index, n);
-			//	gl.Insert(index, n);
-			//}
+			}
+			else
+			{
+				bl2 = bl.Insert(index, n);
+				gl.Insert(index, n);
+			}
 			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 			Assert.AreEqual(bl2, bl);

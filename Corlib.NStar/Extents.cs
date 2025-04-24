@@ -486,6 +486,8 @@ public static unsafe partial class Extents
 
 	public static MpzT GetArrayLength(MpzT n, MpzT div) => n > 0 ? ((n - 1) / div + 1) : 0;
 
+	public static MpzT GetOffset(this Index index, MpzT length) => index.IsFromEnd ? length - index.Value : index.Value;
+
 	public static void Lock(object lockObj, Action function)
 	{
 		lock (lockObj)
