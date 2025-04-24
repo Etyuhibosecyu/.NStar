@@ -526,6 +526,8 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 			EnsureCapacity(_size + length);
 			if (index < _size)
 				CopyToInternal(index, this2, index + length, _size - index);
+			else
+				_size += span.Length;
 			for (var i = 0; i < length; i++)
 				SetInternal(index + i, span[i]);
 		}

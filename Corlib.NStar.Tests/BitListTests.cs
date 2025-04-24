@@ -29,7 +29,7 @@ public class BitListTests
 		{
 			bitList = new(bytes);
 			bitList2 = new(bitList);
-			bitList.SetRange(destinationIndex, bitList.GetRange(sourceIndex, length));
+			bitList.CopyRangeTo(sourceIndex, bitList, destinationIndex, length);
 			Assert.IsTrue(bitList[..destinationIndex].Equals(bitList2[..destinationIndex]));
 			Assert.IsTrue(E.SequenceEqual(bitList[..destinationIndex], E.Take(bitList2, destinationIndex)));
 			Assert.IsTrue(bitList[destinationIndex..(destinationIndex + length)].Equals(bitList2[sourceIndex..(sourceIndex + length)]));
@@ -41,6 +41,162 @@ public class BitListTests
 			Assert.IsTrue(bitList[(destinationIndex + length)..].Equals(bitList2[(destinationIndex + length)..]));
 			Assert.IsTrue(E.SequenceEqual(bitList[(destinationIndex + length)..], E.Skip(bitList2, destinationIndex + length)));
 		}
+	}
+
+	[TestMethod]
+	public void ComplexTest2()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var toInsert = Array.Empty<bool>();
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.FillArray(129, _ => random.Next(2) == 1);
+		BitList bl = new(arr);
+		G.List<bool> gl = new(arr);
+		var addRangeActions = new[] { () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.AddRange(toInsert);
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.AddRange(toInsert.AsSpan());
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.AddRange(toInsert.ToList());
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.AddRange(E.Select(toInsert, x => x));
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.AddRange(E.SkipWhile(toInsert, _ => random.Next(10) == -1));
+			gl.AddRange(toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.Insert(n, toInsert);
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.Insert(n, toInsert.AsSpan());
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.Insert(n, toInsert.ToList());
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.Insert(n, E.Select(toInsert, x => x));
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
+			bl.Insert(n, E.SkipWhile(toInsert, _ => random.Next(10) == -1));
+			gl.InsertRange(n, toInsert);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		} };
+		var actions = new[] { () =>
+		{
+			var n = random.Next(2) == 1;
+			bl.Add(n);
+			gl.Add(n);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(bl.Length);
+			var n2 = random.Next(2) == 1;
+			bl.Insert(n, n2);
+			gl.Insert(n, n2);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			if (bl.Length == 0) return;
+			var n = random.Next(bl.Length);
+			bl.RemoveAt(n);
+			gl.RemoveAt(n);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			if (bl.Length == 0) return;
+			var n = random.Next(2) == 1;
+			bl.RemoveValue(n);
+			gl.Remove(n);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			addRangeActions.Random(random)();
+			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var length = Min(random.Next(65), bl.Length);
+			if (bl.Length < length)
+				return;
+			var start = random.Next(bl.Length - length + 1);
+			bl.Remove(start, length);
+			gl.RemoveRange(start, length);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			if (bl.Length == 0)
+				return;
+			var n = random.Next(bl.Length);
+			var n2 = random.Next(2) == 1;
+			if (bl[n] == n2)
+				return;
+			bl[n] = n2;
+			gl[n] = n2;
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			if (bl.Length == 0) return;
+			var n = random.Next(bl.Length);
+			Assert.AreEqual(bl[bl.IndexOf(bl[n])], bl[n]);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
 	}
 
 	[TestMethod]
