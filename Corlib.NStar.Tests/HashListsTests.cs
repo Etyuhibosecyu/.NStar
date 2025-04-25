@@ -77,12 +77,12 @@ public class HashListTests
 		{
 			if (hl.Length == 0)
 				return;
-			var n = random.Next(hl.Length);
-			var n2 = random.Next(16);
-			if (hl[n] == n2)
+			var index = random.Next(hl.Length);
+			var n = random.Next(16);
+			if (hl[index] == n)
 				return;
-			hl[n] = n2;
-			gl[n] = n2;
+			hl[index] = n;
+			gl[index] = n;
 			Assert.IsTrue(hl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, hl));
 		}, () =>

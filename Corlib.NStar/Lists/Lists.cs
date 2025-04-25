@@ -432,7 +432,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	public List(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
-		_items = capacity == 0 ? _emptyArray : (new T[capacity]);
+		_items = capacity == 0 ? _emptyArray : GC.AllocateUninitializedArray<T>(capacity);
 	}
 
 	public List(IEnumerable<T> collection)
@@ -453,7 +453,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		else
 		{
 			_size = 0;
-			_items = collection.TryGetLengthEasily(out var length) ? new T[length] : _emptyArray;
+			_items = collection.TryGetLengthEasily(out var length) ? GC.AllocateUninitializedArray<T>(length) : _emptyArray;
 			using var en = collection.GetEnumerator();
 			while (en.MoveNext())
 				Add(en.Current);
@@ -469,7 +469,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (length == 0)
 				return;
 			if (length > capacity)
-				_items = new T[length];
+				_items = GC.AllocateUninitializedArray<T>(length);
 			c.CopyTo(_items, 0);
 			_size = length;
 		}
@@ -496,7 +496,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			_items = [.. array];
 		else
 		{
-			_items = new T[capacity];
+			_items = GC.AllocateUninitializedArray<T>(capacity);
 			Array.Copy(array, _items, array.Length);
 		}
 	}
@@ -514,7 +514,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			_items = span.ToArray();
 		else
 		{
-			_items = new T[capacity];
+			_items = GC.AllocateUninitializedArray<T>(capacity);
 			span.CopyTo(_items);
 		}
 	}

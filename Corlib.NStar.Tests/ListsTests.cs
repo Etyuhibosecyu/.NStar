@@ -85,10 +85,10 @@ public class BufferTests
 		{
 			if (buf.Length == 0)
 				return;
-			var n = random.Next(buf.Length);
-			var n2 = random.Next(16);
-			buf[n] = n2;
-			gl[n] = n2;
+			var index = random.Next(buf.Length);
+			var n = random.Next(16);
+			buf[index] = n;
+			gl[index] = n;
 			Assert.IsTrue(buf.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, buf));
 		}, () =>
@@ -1692,13 +1692,13 @@ public class ListTests
 		var b = new G.List<string>(list);
 		for (var i = 0; i < 1000; i++)
 		{
-			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n2 = random.Next(1000).ToString("D3");
-			a.SetOrAdd(n, n2);
-			if (n < b.Count)
-				b[n] = n2;
+			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			var n = random.Next(1000).ToString("D3");
+			a.SetOrAdd(index, n);
+			if (index < b.Count)
+				b[index] = n;
 			else
-				b.Add(n2);
+				b.Add(n);
 		}
 	}
 

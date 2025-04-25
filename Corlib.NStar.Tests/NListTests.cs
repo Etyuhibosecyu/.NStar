@@ -1497,14 +1497,14 @@ public class NListTests
 		var b = new G.List<(char, char, char)>(nList);
 		for (var i = 0; i < 1000; i++)
 		{
-			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n2 = random.Next(1000).ToString("D3");
-			var n3 = (n2[0], n2[1], n2[2]);
-			a.SetOrAdd(n, n3);
-			if (n < b.Count)
-				b[n] = n3;
+			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			var nString = random.Next(1000).ToString("D3");
+			var n = (nString[0], nString[1], nString[2]);
+			a.SetOrAdd(index, n);
+			if (index < b.Count)
+				b[index] = n;
 			else
-				b.Add(n3);
+				b.Add(n);
 		}
 	}
 

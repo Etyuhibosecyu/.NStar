@@ -49,17 +49,17 @@ public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : not
 		} };
 		var actions = new[] { () =>
 		{
-			var (n, n2) = newKeyAndValueFunc();
-			if (dic.TryAdd(n, n2))
-				dic2.Add(n, n2);
+			var (index, n) = newKeyAndValueFunc();
+			if (dic.TryAdd(index, n))
+				dic2.Add(index, n);
 			Assert.AreEqual(dic.Length, dic2.Count);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
 		{
 			if (dic.Length == 0) return;
-			var (n, n2) = newKeyAndValueFunc();
-			dic[n] = n2;
-			dic2[n] = n2;
+			var (index, n) = newKeyAndValueFunc();
+			dic[index] = n;
+			dic2[index] = n;
 			Assert.AreEqual(dic.Length, dic2.Count);
 			Assert.IsTrue(dic.All(x => dic2.TryGetValue(x.Key, out var value) && x.Value.Equals(value)));
 		}, () =>
@@ -115,16 +115,16 @@ public class MirrorTests
 		var bytes = new byte[16];
 		var actions = new[] { () =>
 		{
+			var index = random.Next(16);
 			var n = random.Next(16);
-			var n2 = random.Next(16);
-			if (mir.TryAdd(n, n2))
+			if (mir.TryAdd(index, n))
 			{
-				if (mir.TryGetValue(n, out var value))
+				if (mir.TryGetValue(index, out var value))
 					dic2.Remove(value);
-				if (mir.TryGetKey(n2, out var key))
+				if (mir.TryGetKey(n, out var key))
 					dic.Remove(key);
-				dic.Add(n, n2);
-				dic2.Add(n2, n);
+				dic.Add(index, n);
+				dic2.Add(n, index);
 			}
 			Assert.AreEqual(mir.Length, dic.Count);
 			Assert.AreEqual(mir.Length, dic2.Count);
@@ -133,26 +133,26 @@ public class MirrorTests
 		}, () =>
 		{
 			if (mir.Length == 0) return;
+			var index = random.Next(16);
 			var n = random.Next(16);
-			var n2 = random.Next(16);
-			if (dic2.TryGetValue(n2, out var key))
+			if (dic2.TryGetValue(n, out var key))
 				dic.Remove(key);
-			if (dic.TryGetValue(n, out var value))
+			if (dic.TryGetValue(index, out var value))
 			{
-				dic2.Remove(n2);
+				dic2.Remove(n);
 				dic2.Remove(value);
 			}
 			if (random.Next(2) == 0)
 			{
-				mir.SetValue(n, n2);
-				dic[n] = n2;
-				dic2[n2] = n;
+				mir.SetValue(index, n);
+				dic[index] = n;
+				dic2[n] = index;
 			}
 			else
 			{
-				mir.SetKey(n2, n);
-				dic[n] = n2;
-				dic2[n2] = n;
+				mir.SetKey(n, index);
+				dic[index] = n;
+				dic2[n] = index;
 			}
 			Assert.AreEqual(mir.Length, dic.Count);
 			Assert.AreEqual(mir.Length, dic2.Count);

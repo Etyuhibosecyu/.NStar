@@ -78627,7 +78627,7 @@ public static class RedStarLinq
 	public static NList<int> RepresentIntoNumbers<T>(this T[] source, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction) where T : notnull => NList<bool>.RepresentIntoNumbersEnumerable((ReadOnlySpan<T>)source.AsSpan(), equalFunction, hashCodeFunction);
 	public static List<T> Reverse<T>(this ReadOnlySpan<T> source) => List<T>.ReverseEnumerable(source);
 	public static List<T> Reverse<T>(this Span<T> source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source);
-	public static List<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((ReadOnlySpan<T>)source.AsSpan());
+	public static Slice<T> Reverse<T>(this T[] source) => List<T>.ReverseEnumerable((G.IReadOnlyList<T>)source);
 	public static Span<T> SetAll<T>(Span<T> source, T value) => List<T>.SetAllEnumerable(source, value);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);
 	public static bool StartsWith<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, bool> function) => List<T>.StartsWithEnumerable(source, source2, function);

@@ -1869,13 +1869,15 @@ public class StringTests
 		var b = new G.List<char>(nString);
 		for (var i = 0; i < 1000; i++)
 		{
-			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n2 = (char)random.Next(1000);
-			a.SetOrAdd(n, n2);
-			if (n < b.Count)
-				b[n] = n2;
+			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			var n = (char)random.Next(1000);
+			a.SetOrAdd(index, n);
+			if (index < b.Count)
+				b[index] = n;
 			else
-				b.Add(n2);
+				b.Add(n);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 	}
 

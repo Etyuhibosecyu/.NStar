@@ -108,15 +108,15 @@ public class FastDelHashSetTests
 		}, () =>
 		{
 			if (fhs.Length == 0) return;
-			int n;
+			int index;
 			do
-				n = random.Next(fhs.Size);
-			while (!fhs.IsValidIndex(n));
-			var n2 = random.Next(16);
-			gs.Remove(fhs[n, suppressException: true]);
-			fhs.RemoveValue(n2);
-			fhs[n, suppressException: true] = n2;
-			gs.Add(n2);
+				index = random.Next(fhs.Size);
+			while (!fhs.IsValidIndex(index));
+			var n = random.Next(16);
+			gs.Remove(fhs[index, suppressException: true]);
+			fhs.RemoveValue(n);
+			fhs[index, suppressException: true] = n;
+			gs.Add(n);
 			Assert.IsTrue(fhs.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(fhs));
 		}, () =>
@@ -241,15 +241,15 @@ public class FastDelHashSetTests
 //		}, () =>
 //		{
 //			if (gpuhs.Length == 0) return;
-//			int n;
+//			int index;
 //			do
-//				n = random.Next(gpuhs.Size);
-//			while (!gpuhs.IsValidIndex(n));
-//			var n2 = random.Next(16);
-//			gs.Remove(gpuhs[n]);
-//			gpuhs.RemoveValue(n2);
-//			gpuhs[n] = n2;
-//			gs.Add(n2);
+//				index = random.Next(gpuhs.Size);
+//			while (!gpuhs.IsValidIndex(index));
+//			var n = random.Next(16);
+//			gs.Remove(gpuhs[index]);
+//			gpuhs.RemoveValue(n);
+//			gpuhs[index] = n;
+//			gs.Add(n);
 //			Assert.IsTrue(gpuhs.SetEquals(gs));
 //			Assert.IsTrue(gs.SetEquals(gpuhs));
 //		}, () =>
@@ -407,16 +407,16 @@ public class ListHashSetTests
 		{
 			if (lhs.Length == 0)
 				return;
-			var n = random.Next(lhs.Length);
-			var n2 = random.Next(16);
-			if (lhs[n] == n2)
+			var index = random.Next(lhs.Length);
+			var n = random.Next(16);
+			if (lhs[index] == n)
 				return;
-			gs.Remove(lhs[n]);
-			if (lhs.TryGetIndexOf(n2, out var index) && index < n)
-				n--;
-			lhs.RemoveValue(n2);
-			lhs[n] = n2;
-			gs.Add(n2);
+			gs.Remove(lhs[index]);
+			if (lhs.TryGetIndexOf(n, out var index2) && index2 < index)
+				index--;
+			lhs.RemoveValue(n);
+			lhs[index] = n;
+			gs.Add(n);
 			Assert.IsTrue(lhs.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(lhs));
 		}, () =>
@@ -575,39 +575,53 @@ public class ListHashSetTests
 		Assert.IsTrue(E.SequenceEqual(b, a));
 	}
 
-	//[TestMethod]
-	//public void TestCompare()
-	//{
-	//	for (var i = 0; i < 1000; i++)
-	//	{
-	//		var a = new ListHashSet<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
-	//		var b = new ListHashSet<string>(a);
-	//		var n = random.Next(0, a.Length);
-	//		do
-	//			b[n] = random.Next(1000).ToString("D3");
-	//		while (b[n] == a[n]);
-	//		Assert.IsTrue(a.Compare(b) == n);
-	//		a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
-	//		b = new(a);
-	//		n = random.Next(2, a.Length);
-	//		do
-	//			b[n] = random.Next(1000).ToString("D3");
-	//		while (b[n] == a[n]);
-	//		Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
-	//		a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
-	//		b = new(a);
-	//		var length = a.Length;
-	//		n = random.Next(2, a.Length);
-	//		do
-	//			b[n] = random.Next(1000).ToString("D3");
-	//		while (b[n] == a[n]);
-	//		int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
-	//		a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
-	//		b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
-	//		Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
-	//		Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
-	//	}
-	//}
+	[TestMethod]
+	public void TestCompare()
+	{
+		for (var i = 0; i < 1000; i++)
+		{
+			var a = new ListHashSet<string>(E.Select(E.Range(0, random.Next(3, 100)), _ => random.Next(1000).ToString("D3")));
+			var b = new ListHashSet<string>(a);
+			var n = random.Next(0, a.Length);
+			do
+			{
+				var item = random.Next(1000).ToString("D3");
+				if (!b.Contains(item))
+					b[n] = item;
+			}
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b) == n);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+			b = new(a);
+			n = random.Next(2, a.Length);
+			do
+			{
+				var item = random.Next(1000).ToString("D3");
+				if (!b.Contains(item))
+					b[n] = item;
+			}
+			while (b[n] == a[n]);
+			Assert.IsTrue(a.Compare(b, n - 1) == n - 1);
+			a = new(E.Select(E.Range(0, random.Next(5, 100)), _ => random.Next(1000).ToString("D3")));
+			b = new(a);
+			var length = a.Length;
+			n = random.Next(2, a.Length);
+			do
+			{
+				var item = random.Next(1000).ToString("D3");
+				if (!b.Contains(item))
+					b[n] = item;
+			}
+			while (b[n] == a[n]);
+			int index = random.Next(2, 50), otherIndex = random.Next(2, 50);
+			a.Insert(0, E.Select(E.Range(0, index), _ => random.Next(1000).ToString("D3")));
+			index = a.Length - b.Length;
+			b.Insert(0, E.Select(E.Range(0, otherIndex), _ => random.Next(1000).ToString("D3")));
+			otherIndex = b.Length - a.Length + index;
+			Assert.IsTrue(a.Compare(index, b, otherIndex) == n);
+			Assert.IsTrue(a.Compare(index, b, otherIndex, length) == n);
+		}
+	}
 
 	[TestMethod]
 	public void TestConcat()
@@ -1406,13 +1420,19 @@ public class ListHashSetTests
 		var b = new G.List<string>(E.Distinct(list));
 		for (var i = 0; i < 1000; i++)
 		{
-			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n2 = random.Next(1000).ToString("D3");
-			a.SetOrAdd(n, n2);
-			if (n < b.Count)
-				b[n] = n2;
+			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			string n;
+			do
+			{
+				n = random.Next(1000).ToString("D3");
+			} while (a.Contains(n));
+			a.SetOrAdd(index, n);
+			if (index < b.Count)
+				b[index] = n;
 			else
-				b.Add(n2);
+				b.Add(n);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 	}
 
@@ -1782,15 +1802,15 @@ public class ParallelHashSetTests
 		}, () =>
 		{
 			if (phs.Length == 0) return;
-			int n;
+			int index;
 			do
-				n = random.Next(phs.Size);
-			while (!phs.IsValidIndex(n));
-			var n2 = random.Next(16);
-			gs.Remove(phs[n, suppressException: true]);
-			phs.RemoveValue(n2);
-			phs[n, suppressException: true] = n2;
-			gs.Add(n2);
+				index = random.Next(phs.Size);
+			while (!phs.IsValidIndex(index));
+			var n = random.Next(16);
+			gs.Remove(phs[index, suppressException: true]);
+			phs.RemoveValue(n);
+			phs[index, suppressException: true] = n;
+			gs.Add(n);
 			Assert.IsTrue(phs.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(phs));
 		}, () =>
@@ -1951,16 +1971,16 @@ public class TreeHashSetTests
 		{
 			if (ths.Length == 0)
 				return;
-			var n = random.Next(ths.Length);
-			var n2 = random.Next(16);
-			if (ths[n] == n2)
+			var index = random.Next(ths.Length);
+			var n = random.Next(16);
+			if (ths[index] == n)
 				return;
-			gs.Remove(ths[n]);
-			if (ths.TryGetIndexOf(n2, out var index) && index < n)
-				n--;
-			ths.RemoveValue(n2);
-			ths[n] = n2;
-			gs.Add(n2);
+			gs.Remove(ths[index]);
+			if (ths.TryGetIndexOf(n, out var index2) && index2 < index)
+				index--;
+			ths.RemoveValue(n);
+			ths[index] = n;
+			gs.Add(n);
 			Assert.IsTrue(ths.SetEquals(gs));
 			Assert.IsTrue(gs.SetEquals(ths));
 		}, () =>

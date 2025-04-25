@@ -114,6 +114,20 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		freeList = 0;
 	}
 
+	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	{
+		if (this != destination || sourceIndex >= destinationIndex)
+			for (var i = 0; i < length; i++)
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
+		else
+		{
+			for (var i = length - destinationIndex + sourceIndex; i < length; i++)
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
+			for (var i = length - 1; i >= 0; i--)
+				CopyOne(sourceIndex + i, destination, destinationIndex + i);
+		}
+	}
+
 	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
 	public override void Dispose()

@@ -138,10 +138,10 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			var n = random.Next(bl.Length);
-			var n2 = random.Next(2) == 1;
-			bl.Insert(n, n2);
-			gl.Insert(n, n2);
+			var index = random.Next(bl.Length);
+			var n = random.Next(2) == 1;
+			bl.Insert(index, n);
+			gl.Insert(index, n);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
@@ -179,12 +179,12 @@ public class BitListTests
 		{
 			if (bl.Length == 0)
 				return;
-			var n = random.Next(bl.Length);
-			var n2 = random.Next(2) == 1;
-			if (bl[n] == n2)
+			var index = random.Next(bl.Length);
+			var n = random.Next(2) == 1;
+			if (bl[index] == n)
 				return;
-			bl[n] = n2;
-			gl[n] = n2;
+			bl[index] = n;
+			gl[index] = n;
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
@@ -1681,13 +1681,15 @@ public class BitListTests
 		var b = new G.List<bool>(bitList);
 		for (var i = 0; i < 1000; i++)
 		{
-			var n = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
-			var n2 = random.Next(2) == 1;
-			a.SetOrAdd(n, n2);
-			if (n < b.Count)
-				b[n] = n2;
+			var index = (int)Floor(Cbrt(random.NextDouble()) * (a.Length + 1));
+			var n = random.Next(2) == 1;
+			a.SetOrAdd(index, n);
+			if (index < b.Count)
+				b[index] = n;
 			else
-				b.Add(n2);
+				b.Add(n);
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
 		}
 	}
 

@@ -52,12 +52,11 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			for (var i = 0; i < length; i++)
 				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 		else
-		{
-			for (var i = length - destinationIndex + sourceIndex; i < length; i++)
-				CopyOne(sourceIndex + i, destination, destinationIndex + i);
 			for (var i = length - 1; i >= 0; i--)
-				CopyOne(sourceIndex + i, destination, destinationIndex + i);
-		}
+				destination.SetInternal(destinationIndex + i, GetInternal(sourceIndex + i));
+		if (destination._size < destinationIndex + length)
+			destination._size = destinationIndex + length;
+		destination.Changed();
 	}
 
 	private protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
