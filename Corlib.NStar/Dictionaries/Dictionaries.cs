@@ -657,6 +657,8 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 {
 	private protected readonly List<TKey> keys;
 	private protected readonly List<TValue> values;
+	[NonSerialized]
+	private protected object _syncRoot = new();
 
 	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
 
@@ -679,6 +681,10 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	G.ICollection<TValue> G.IDictionary<TKey, TValue>.Values => throw new NotSupportedException();
 
 	public virtual bool IsReadOnly => false;
+
+	public bool IsSynchronized => false;
+
+	public object SyncRoot => _syncRoot;
 
 	public virtual void Add(TKey key, TValue value)
 	{
@@ -704,6 +710,8 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	}
 
 	public virtual bool ContainsKey(TKey key) => keys.Contains(key);
+
+	public void CopyTo(Array array, int index) => throw new NotSupportedException();
 
 	public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
 

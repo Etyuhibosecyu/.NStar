@@ -302,9 +302,8 @@ public interface ICollection : System.Collections.ICollection
 	int System.Collections.ICollection.Count => Length;
 }
 
-public interface ICollection<T> : G.ICollection<T>
+public interface ICollection<T> : G.ICollection<T>, ICollection
 {
-	int Length { get; }
 	int G.ICollection<T>.Count => Length;
 	bool G.ICollection<T>.Remove(T item) => RemoveValue(item);
 	bool RemoveValue(T item);

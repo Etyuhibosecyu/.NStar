@@ -490,7 +490,7 @@ public class BitListTests
 	public void TestConcat()
 	{
 		var a = new BitList(bitList);
-		var b = a.Concat(new(defaultBitCollection));
+		var b = a.Concat(defaultBitCollection);
 		var c = E.Concat(new G.List<bool>(bitList), defaultBitCollection);
 		Assert.IsTrue(a.Equals(bitList));
 		Assert.IsTrue(E.SequenceEqual(bitList, a));

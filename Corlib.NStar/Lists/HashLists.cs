@@ -262,7 +262,7 @@ public abstract class BaseHashList<T, TCertain> : BaseList<T, TCertain> where TC
 		{
 			EnsureCapacity(_size + length);
 			if (index < entries.Length - length)
-				CopyToInternal(index, this2, index + length, entries.Length - index - length);
+				CopyToInternal(index, this2, index + length, entries.Length - length - index);
 			list.CopyToInternal(0, this2, index, length);
 		}
 		return this2;

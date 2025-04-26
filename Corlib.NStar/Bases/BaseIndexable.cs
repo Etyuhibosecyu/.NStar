@@ -52,8 +52,13 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return false;
 		if (!collection.Any())
 			return true;
-		if (collection is not G.IList<T> list)
-			list = collection.ToList();
+		if (collection is not G.IReadOnlyList<T> list)
+		{
+			if (collection is G.IList<T> list2)
+				list = list2.GetSlice();
+			else
+				list = RedStarLinq.ToList(collection);
+		}
 		return ContainsInternal(list, index, length);
 	}
 
@@ -120,7 +125,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return false;
 	}
 
-	private protected virtual bool ContainsInternal(G.IList<T> list, int index, int length)
+	private protected virtual bool ContainsInternal(G.IReadOnlyList<T> list, int index, int length)
 	{
 		var j = 0;
 		for (var i = 0; i - j <= length - list.Count; i++)
@@ -425,7 +430,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		}
 
 		if (collection is not G.ICollection<T> c)
-			c = collection.ToList();
+			c = RedStarLinq.ToList(collection);
 		collectionLength = c.Count;
 		for (var i = index; i <= index + length - collectionLength; i++)
 			if (EqualsInternal(collection, i))
@@ -506,7 +511,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return -1;
 		}
 		if (collection is not G.ICollection<T> c)
-			c = collection.ToList();
+			c = RedStarLinq.ToList(collection);
 		collectionLength = c.Count;
 		var startIndex = index + 1 - length;
 		for (var i = length - collectionLength; i >= 0; i--)

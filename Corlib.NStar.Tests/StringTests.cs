@@ -453,7 +453,7 @@ public class StringTests
 	public void TestConcat()
 	{
 		var a = nString.ToNString();
-		var b = a.Concat(new(defaultNSCollection));
+		var b = a.Concat(defaultNSCollection);
 		var c = E.Concat(new string(E.ToArray(nString)), defaultNSCollection);
 		Assert.IsTrue(a.Equals(nString));
 		Assert.IsTrue(E.SequenceEqual(nString, a));

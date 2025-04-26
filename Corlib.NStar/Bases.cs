@@ -225,7 +225,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual object Clone() => Copy();
 
-	public virtual TCertain Concat(TCertain collection) => CollectionCreator(this).AddRange(collection);
+	public virtual TCertain Concat(IEnumerable<T> collection) => CollectionCreator(this).AddRange(collection);
 
 	bool System.Collections.IList.Contains(object? item)
 	{

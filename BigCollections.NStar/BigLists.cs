@@ -56,17 +56,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		Length = length;
 		AddCapacity(Length - _capacity);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= Subbranches);
-			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -81,17 +72,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromBitList(bitList);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= Subbranches);
-			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -126,17 +108,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(values, n % BytesPerInt * BitsPerByte);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= Subbranches);
-			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -169,17 +142,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 				Add(en.Current);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= Subbranches);
-			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -199,17 +163,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			ConstructFromUIntList(list);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			Debug.Assert(high.All(x => x.parent == this));
-			Debug.Assert(high.Capacity <= Subbranches);
-			Debug.Assert(high.Length < 2 || high[..^1].All(x => x.Capacity == fragment));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -232,14 +187,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -251,14 +200,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -274,14 +217,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		using BigList<uint> list = new(values);
 		ConstructFromUIntList(list);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}

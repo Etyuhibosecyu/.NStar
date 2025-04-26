@@ -12,6 +12,8 @@ public class RedStarLinqTests
 			var array = RedStarLinq.FillArray(random.Next(101), _ => new string((char)random.Next('A', 'Z' + 1), random.Next(1, 6)));
 			G.IEnumerable<string> a = RedStarLinq.ToList(array);
 			action(a);
+			a = RedStarLinq.ToHashSet(array);
+			action(a);
 			a = RedStarLinq.ToArray(array);
 			action(a);
 			a = E.ToList(array);
@@ -29,13 +31,32 @@ public class RedStarLinqTests
 		}
 	}
 
-	public static void Test2(Action<G.IReadOnlyList<string>> action)
+	public static void TestList(Action<G.IList<string>> action)
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		for (var i = 0; i < 1000; i++)
+		{
+			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
+			G.IList<string> a = RedStarLinq.ToList(array);
+			action(a);
+			a = RedStarLinq.ToHashSet(array);
+			action(a);
+			a = RedStarLinq.ToArray(array);
+			action(a);
+			a = E.ToList(array);
+			action(a);
+		}
+	}
+
+	public static void TestROL(Action<G.IReadOnlyList<string>> action)
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
 		for (var i = 0; i < 1000; i++)
 		{
 			var array = RedStarLinq.FillArray(random.Next(1001), _ => new string((char)random.Next('A', 'Z' + 1), 3));
 			G.IReadOnlyList<string> a = RedStarLinq.ToList(array);
+			action(a);
+			a = RedStarLinq.ToHashSet(array);
 			action(a);
 			a = RedStarLinq.ToArray(array);
 			action(a);
@@ -447,7 +468,7 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
-	public void TestCombine2() => Test2(a =>
+	public void TestCombine2() => TestROL(a =>
 	{
 		G.IReadOnlyList<string> b = E.Skip(list2, 1).ToList();
 		ProcessB(a, b);
@@ -619,7 +640,7 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
-	public void TestConvert2() => Test2(a =>
+	public void TestConvert2() => TestROL(a =>
 	{
 		var c = a.Convert(x => x[1..]);
 		var d = E.Select(a, x => x[1..]);
@@ -664,7 +685,7 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
-	public void TestCountOrLength2() => Test2(a =>
+	public void TestCountOrLength2() => TestROL(a =>
 	{
 		var c = a.Count("MMM");
 		var d = E.Count(a, x => x == "MMM");
@@ -960,6 +981,60 @@ public class RedStarLinqTests
 			Assert.IsTrue(E.All(E.Zip(d, c, (x, y) => E.Count(x) == y.Count), x => x));
 		}
 	}
+
+	[TestMethod]
+	public void TestGetSlice() => TestList(a =>
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var length = random.Next(a.Count);
+		var index = random.Next(a.Count - length + 1);
+		var b = a.GetSlice();
+		var c = E.AsEnumerable(E.ToList(a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(index);
+		c = E.Skip(a, index);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(^index);
+		c = E.TakeLast(a, index);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(index, length);
+		c = E.Take(E.Skip(a, index), length);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetSlice(index..(index + length));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+	});
+
+	[TestMethod]
+	public void TestGetROLSlice() => TestROL(a =>
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var length = random.Next(a.Count);
+		var index = random.Next(a.Count - length + 1);
+		var b = a.GetROLSlice();
+		var c = E.AsEnumerable(E.ToList(a));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetROLSlice(index);
+		c = E.Skip(a, index);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetROLSlice(^index);
+		c = E.TakeLast(a, index);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetROLSlice(index, length);
+		c = E.Take(E.Skip(a, index), length);
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+		b = a.GetROLSlice(index..(index + length));
+		Assert.IsTrue(b.Equals(c));
+		Assert.IsTrue(E.SequenceEqual(c, b));
+	});
 
 	[TestMethod]
 	public void TestGroup()
@@ -1259,7 +1334,7 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
-	public void TestPairs2() => Test2(a =>
+	public void TestPairs2() => TestROL(a =>
 	{
 		var c = a.Pairs((x, y) => x + y);
 		var d = E.Zip(a, E.Skip(a, 1), (x, y) => x + y);
@@ -1479,7 +1554,7 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
-	public void TestToArray2() => Test2(a =>
+	public void TestToArray2() => TestROL(a =>
 	{
 		var c = a.ToArray(x => x[1..]);
 		var d = E.ToArray(E.Select(a, x => x[1..]));
@@ -1538,7 +1613,7 @@ public class RedStarLinqTests
 	}
 
 	[TestMethod]
-	public void TestToList2() => Test2(a =>
+	public void TestToList2() => TestROL(a =>
 	{
 		var c = a.ToList(x => x[1..]);
 		var d = E.ToList(E.Select(a, x => x[1..]));

@@ -85,10 +85,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	public virtual bool Contains(T item, MpzT index, MpzT length)
 	{
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > Length)
 			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
+#if !VERIFY
 		try
 		{
 			throw new SlowOperationException();
@@ -96,10 +97,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		catch
 		{
 		}
-		for (MpzT i = new(index); i < index + length; i++)
-			if (GetInternal(i)?.Equals(item) ?? item == null)
-				return true;
-		return false;
+#endif
+		return IndexOfInternal(item, index, length, false) >= 0;
 	}
 
 	public virtual bool Contains(G.IEnumerable<T> collection) => Contains(collection, 0, Length);
@@ -413,10 +412,11 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	public virtual MpzT IndexOf(T item, MpzT index, MpzT length)
 	{
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
-		if (length < 0 || index > Length - length)
-			throw new ArgumentOutOfRangeException(nameof(length));
-#if !DEBUG
+		ArgumentOutOfRangeException.ThrowIfNegative(index);
+		ArgumentOutOfRangeException.ThrowIfNegative(length);
+		if (index + length > Length)
+			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
+#if !VERIFY
 		try
 		{
 			throw new SlowOperationException();
@@ -425,9 +425,22 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 		{
 		}
 #endif
-		for (MpzT i = new(index); i < index + length; i++)
-			if (GetInternal(i)?.Equals(item) ?? false)
-				return i;
+		return IndexOfInternal(item, index, length, false);
+	}
+
+	private protected virtual MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
+	{
+		if (fromEnd)
+		{
+			var endIndex = index - length + 1;
+			for (MpzT i = new(index); i >= endIndex; i--)
+				if (GetInternal(i)?.Equals(item) ?? false)
+					return i;
+		}
+		else
+			for (MpzT i = new(index); i < index + length; i++)
+				if (GetInternal(i)?.Equals(item) ?? false)
+					return i;
 		return -1;
 	}
 
@@ -469,6 +482,32 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 	private protected abstract void InsertInternal(MpzT index, T item);
 
 	private protected abstract void InsertInternal(MpzT index, TCertain bigList);
+
+	public virtual MpzT LastIndexOf(T item) => LastIndexOf(item, Length - 1, Length);
+
+	public virtual MpzT LastIndexOf(T item, MpzT index) => LastIndexOf(item, index, index + 1);
+
+	public virtual MpzT LastIndexOf(T item, MpzT index, MpzT length)
+	{
+		if (Length != 0 && index < 0)
+			throw new ArgumentOutOfRangeException(nameof(index));
+		if (Length != 0 && length < 0)
+			throw new ArgumentOutOfRangeException(nameof(length));
+		if (Length == 0)
+			return -1;
+		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length);
+		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, index + 1);
+#if !VERIFY
+		try
+		{
+			throw new SlowOperationException();
+		}
+		catch
+		{
+		}
+#endif
+		return IndexOfInternal(item, index - length + 1, length, true);
+	}
 
 	[Obsolete("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо использовать Remove()"
 		+ " с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().", true)]
@@ -523,7 +562,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable 
 
 	public virtual bool RemoveValue(T item)
 	{
-		var index = IndexOf(item);
+		var index = IndexOfInternal(item, 0, Length, false);
 		if (index >= 0)
 		{
 			RemoveAtInternal(index);
@@ -715,14 +754,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		ConstructFromCapacity(capacity);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -734,14 +767,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -751,14 +778,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromEnumerable(collection);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -767,14 +788,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -783,14 +798,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -882,14 +891,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			AddCapacity(value - _capacity);
 #if VERIFY
-			if (low != null)
-				Debug.Assert(Length == low.Length);
-			else if (high != null && highLength != null)
-			{
+			if (high != null && highLength != null)
 				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			}
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 			Verify();
 #endif
 		}
@@ -963,14 +966,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 		return this2;
@@ -1030,14 +1027,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].ClearInternal(0, length - previousPart);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1084,14 +1075,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1136,14 +1121,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Length = 0;
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1210,14 +1189,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		AddCapacity(Length - _capacity);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1260,14 +1233,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1863,14 +1830,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			highLength = [Length];
 		} while (fragment < targetFragment);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -1905,16 +1866,111 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		high[^1].parent = this2;
 		AddCapacity(leftCapacity);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
+	}
+
+	private protected override MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
+	{
+		if (length == 0)
+			return -1;
+		if (low != null)
+		{
+			Debug.Assert(index < int.MaxValue - 1);
+			Func<T, int, int, int> func = bReversed ^ fromEnd ? low.LastIndexOf : low.IndexOf;
+			if (fromEnd)
+			{
+				index += length - 1;
+			}
+			if (bReversed)
+			{
+				var foundIndex = func(item, (int)(Length - 1 - index), (int)length);
+				return foundIndex >= 0 ? Length - 1 - foundIndex : foundIndex;
+			}
+			else
+				return func(item, (int)index, (int)length);
+		}
+		else if (high == null || highLength == null)
+			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+		var endIndex = index + length - 1;
+		var bReversedOld = bReversed;
+		if (bReversedOld)
+		{
+			Reverse();
+			(index, endIndex) = (Length - 1 - endIndex, Length - 1 - index);
+			fromEnd = !fromEnd;
+		}
+		try
+		{
+			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			while (endBitsIndex >= fragment)
+			{
+				endIntIndex++;
+				endBitsIndex -= fragment;
+			}
+			if (intIndex != 0 && intIndex == highLength.Length && bitsIndex == 0 && highLength[intIndex - 1] != fragment)
+			{
+				intIndex--;
+				bitsIndex = highLength[^1];
+			}
+			MpzT foundIndex;
+			if (intIndex == endIntIndex)
+			{
+				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, length, fromEnd);
+				if (foundIndex >= 0)
+				{
+					foundIndex += index - bitsIndex;
+					return bReversedOld ? Length - 1 - foundIndex : foundIndex;
+				}
+				return foundIndex;
+			}
+			MpzT offset;
+			if (fromEnd)
+			{
+				offset = endIndex - endBitsIndex;
+				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endBitsIndex + 1, true);
+				if (foundIndex >= 0)
+					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
+				offset -= high[endIntIndex - 1].Length;
+			}
+			else
+			{
+				offset = index - bitsIndex;
+				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, high[intIndex].Length - bitsIndex, false);
+				if (foundIndex >= 0)
+					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
+				offset += high[intIndex].Length;
+			}
+			for (var i = fromEnd ? endIntIndex - 1 : intIndex + 1;
+				fromEnd ? i > intIndex : i < endIntIndex; i += fromEnd ? -1 : 1)
+			{
+				foundIndex = high[i].IndexOfInternal(item, 0, high[i].Length, fromEnd);
+				if (foundIndex >= 0)
+					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
+				offset += fromEnd ? -high[i - 1].Length : high[i].Length;
+			}
+			if (fromEnd)
+			{
+				foundIndex = high[intIndex].IndexOfInternal(item, bitsIndex, high[intIndex].Length - bitsIndex, true);
+				if (foundIndex >= 0)
+					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
+			}
+			else
+			{
+				foundIndex = high[endIntIndex].IndexOfInternal(item, 0, endBitsIndex + 1, false);
+				if (foundIndex >= 0)
+					return bReversedOld ? Length - 1 - offset - foundIndex : offset + foundIndex;
+			}
+			return -1;
+		}
+		finally
+		{
+			if (bReversedOld)
+				Reverse();
+		}
 	}
 
 	private protected override void InsertInternal(MpzT index, T item)
@@ -1929,14 +1985,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			low.Insert((int)(bReversed ? Length - index : index), item);
 			Length += 1;
 #if VERIFY
-			if (low != null)
-				Debug.Assert(Length == low.Length);
-			else if (high != null && highLength != null)
-			{
-				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			}
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 			Verify();
 #endif
 			return;
@@ -2014,14 +2062,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (bReversedOld)
 			Reverse();
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2039,14 +2081,6 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			low.Insert((int)(bReversed ? Length - index : index), bigList.Wrap(x => bReversed ? x.Reverse<T>() : x));
 			Length += length;
 #if VERIFY
-			if (low != null)
-				Debug.Assert(Length == low.Length);
-			else if (high != null && highLength != null)
-			{
-				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-			}
-			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 			Verify();
 #endif
 			return;
@@ -2118,14 +2152,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			(index, endIndex) = (Length + length - 1 - endIndex, Length + length - 1 - index);
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2157,14 +2185,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high.ForEach(x => x.parent = this2);
 		} while (fragment > newFragment);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2188,14 +2210,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Compactify();
 		high[^1].Capacity = leftCapacity == 0 ? fragment : leftCapacity;
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2240,14 +2256,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2283,14 +2293,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2371,14 +2375,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2405,7 +2403,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		if (low != null)
 		{
-			low.Reverse(bReversed ? (int)(Length - index - length) : (int)index, (int)length);
+			low.Reverse((int)(bReversed ? Length - length - index : index), (int)length);
 #if VERIFY
 			Verify();
 #endif
@@ -2473,14 +2471,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2500,14 +2492,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		else
 			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 	}
@@ -2526,14 +2512,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return Add(value);
 		SetInternal(index, value);
 #if VERIFY
-		if (low != null)
-			Debug.Assert(Length == low.Length);
-		else if (high != null && highLength != null)
-		{
+		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		}
-		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
 		Verify();
 #endif
 		return (TCertain)this;
