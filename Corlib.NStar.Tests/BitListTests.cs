@@ -53,7 +53,7 @@ public class BitListTests
 		var arr = RedStarLinq.FillArray(129, _ => random.Next(2) == 1);
 		BitList bl = new(arr);
 		G.List<bool> gl = new(arr);
-		var addRangeActions = new[] { () =>
+		var secondaryActions = new[] { () =>
 		{
 			toInsert = RedStarLinq.FillArray(random.Next(41), _ => random.Next(2) == 1);
 			bl.AddRange(toInsert);
@@ -128,6 +128,41 @@ public class BitListTests
 			gl.InsertRange(n, toInsert);
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var length = Min(random.Next(65), bl.Length);
+			if (bl.Length < length)
+				return;
+			var start = random.Next(bl.Length - length + 1);
+			bl.Clear(start, length);
+			gl.SetAll(default!, start, length);
+			Assert.IsTrue(bl.Equals(gl));
+			Assert.IsTrue(E.SequenceEqual(gl, bl));
+		}, () =>
+		{
+			var n = random.Next(2) == 1;
+			Assert.AreEqual(gl.Contains(n), bl.Contains(n));
+			Assert.AreEqual(gl.IndexOf(n), bl.IndexOf(n));
+			Assert.AreEqual(gl.LastIndexOf(n), bl.LastIndexOf(n));
+		}, () =>
+		{
+			if (bl.Length == 0)
+				return;
+			var index = random.Next(bl.Length);
+			var n = random.Next(2) == 1;
+			Assert.AreEqual(gl.IndexOf(n, index) >= 0, bl.Contains(n, index));
+			Assert.AreEqual(gl.IndexOf(n, index), bl.IndexOf(n, index));
+			Assert.AreEqual(gl.LastIndexOf(n, index), bl.LastIndexOf(n, index));
+		}, () =>
+		{
+			var n = random.Next(2) == 1;
+			var length = Min(random.Next(65), bl.Length);
+			if (length == 0)
+				return;
+			var start = random.Next(bl.Length - length + 1);
+			Assert.AreEqual(gl.IndexOf(n, start, length) >= 0, bl.Contains(n, start, length));
+			Assert.AreEqual(gl.IndexOf(n, start, length), bl.IndexOf(n, start, length));
+			Assert.AreEqual(gl.LastIndexOf(n, gl.Count - 1 - start, length), bl.LastIndexOf(n, bl.Length - 1 - start, length));
 		} };
 		var actions = new[] { () =>
 		{
@@ -162,7 +197,7 @@ public class BitListTests
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
 		{
-			addRangeActions.Random(random)();
+			secondaryActions.Random(random)();
 			Assert.IsTrue(RedStarLinq.Equals(bl, gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 		}, () =>
@@ -195,7 +230,7 @@ public class BitListTests
 		} };
 		for (var i = 0; i < 1000; i++)
 			actions.Random(random)();
-		if (counter++ < 1000)
+		if (counter++ < 10000)
 			goto l1;
 	}
 

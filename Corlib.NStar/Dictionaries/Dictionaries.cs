@@ -371,7 +371,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high[key];
 			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		set
 		{
@@ -380,7 +381,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				high[key] = value;
 			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (!isHigh && low != null && Length >= _hashThreshold)
 			{
 				high = new(low, comparer);
@@ -401,7 +403,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Count;
 			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
 
@@ -414,7 +417,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Keys;
 			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
 
@@ -427,7 +431,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Values;
 			else
-				throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
 
@@ -438,7 +443,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Add(key, value);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (!isHigh && low != null && Length >= _hashThreshold)
 		{
 			high = new(low, comparer);
@@ -454,7 +460,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Clear();
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override bool ContainsKey(TKey key)
@@ -464,7 +471,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.ContainsKey(key);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected override void CopyToHelper(Array array, int arrayIndex)
@@ -474,7 +482,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			((ICollection)high).CopyTo(array, arrayIndex);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
@@ -484,7 +493,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
@@ -494,7 +504,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			other.ForEach(x => RemoveValue(x));
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void ExceptWith(IEnumerable<TKey> other)
@@ -504,7 +515,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			other.ForEach(x => Remove(x));
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
@@ -514,7 +526,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			other.ForEach(x => RemoveValue(x));
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
@@ -524,7 +537,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected override IDictionaryEnumerator GetEnumeratorHelper()
@@ -534,7 +548,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	internal override System.Collections.ICollection GetKeyListHelper()
@@ -544,7 +559,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Keys;
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	internal override System.Collections.ICollection GetValueListHelper()
@@ -554,7 +570,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Values;
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
@@ -569,7 +586,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void IntersectWith(IEnumerable<TKey> other)
@@ -584,7 +602,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
@@ -599,7 +618,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override bool Remove(TKey key)
@@ -609,7 +629,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override bool Remove(TKey key, [MaybeNullWhen(false)] out TValue value)
@@ -619,7 +640,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key, out value);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
@@ -629,7 +651,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return ((G.ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override void TrimExcess()
@@ -639,7 +662,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.TrimExcess();
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public override bool TryGetValue(TKey key, out TValue value)
@@ -649,7 +673,8 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.TryGetValue(key, out value!);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 }
 

@@ -87,7 +87,7 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 	/// Export to the value to a byte array.
 	/// Endianess is specified by order, which is 1 for big endian or -1 
 	/// for little endian.
-	public readonly byte[] ToByteArray(int order) => Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
+	public readonly byte[] ToByteArray(int order) => val == 0 ? [] : Mpir.MpirMpzExport(order, sizeof(byte), 0, 0u, this);
 	#endregion
 
 	// Almost everything below is copied from Emil Stefanov's BigInt 

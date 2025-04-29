@@ -139,7 +139,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 			return removed;
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public virtual T Peek()
@@ -151,7 +152,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return high.Peek().Peek();
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected Queue<T> PeekQueue()
@@ -186,7 +188,8 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return E.ElementAt(high, (int)(i / fragment)).GetElement(i % fragment);
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public virtual T[] ToArray()

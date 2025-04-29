@@ -269,7 +269,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.And(y))];
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
 
@@ -463,7 +464,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			return result;
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public virtual BigBitList Not()
@@ -473,7 +475,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.Not());
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
 
@@ -487,7 +490,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Or(y))];
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
 
@@ -498,7 +502,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.SetAll(value));
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public virtual BigList<uint> ToUIntBigList()
@@ -508,7 +513,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	public virtual BigBitList Xor(BigBitList value)
@@ -521,7 +527,8 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Xor(y))];
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
 }

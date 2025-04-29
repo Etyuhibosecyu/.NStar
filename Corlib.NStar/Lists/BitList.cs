@@ -718,7 +718,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			return -1;
 		}
 		var invRemainder = BitsPerInt - startRemainder;
-		var mask = (1 << invRemainder) - 1;
+		var mask = invRemainder == BitsPerInt ? 0xffffffff : (1u << invRemainder) - 1;
 		var first = _items[startIndex] >> startRemainder;
 		if (first != (item ? 0 : mask))
 			for (var i = 0; i < invRemainder; i++)
@@ -874,30 +874,31 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 	private protected override int LastIndexOfInternal(bool item, int index, int length)
 	{
 		var fillValue = item ? 0 : unchecked((int)0xffffffff);
-		(var startIndex, var startRemainder) = DivRem(index + 1 - length, BitsPerInt);
-		(var endIndex, var endRemainder) = DivRem(index + 1, BitsPerInt);
-		if (startIndex == endIndex)
+		var endIndex = index + 1 - length;
+		(var intIndex, var bitsIndex) = DivRem(endIndex, BitsPerInt);
+		(var endIntIndex, var endBitsIndex) = DivRem(index + 1, BitsPerInt);
+		if (intIndex == endIntIndex)
 		{
-			for (var i = endRemainder - 1; i >= startRemainder; i--)
-				if ((_items[startIndex] & (1 << i)) == 0 ^ item)
-					return startIndex * BitsPerInt + i;
+			for (var i = endBitsIndex - 1; i >= bitsIndex; i--)
+				if ((_items[intIndex] & (1 << i)) == 0 ^ item)
+					return intIndex * BitsPerInt + i;
 			return -1;
 		}
-		if (endRemainder != 0)
-			for (var i = endRemainder - 1; i >= 0; i--)
-				if ((_items[endIndex] & (1 << i)) == 0 ^ item)
-					return endIndex * BitsPerInt + i;
-		for (var i = endIndex - 1; i >= startIndex + 1; i--)
+		if (endBitsIndex != 0)
+			for (var i = endBitsIndex - 1; i >= 0; i--)
+				if ((_items[endIntIndex] & (1 << i)) == 0 ^ item)
+					return endIntIndex * BitsPerInt + i;
+		for (var i = endIntIndex - 1; i >= intIndex + 1; i--)
 			if (_items[i] != fillValue)
 				if (LastIndexOfMainCycle(item, i, out var result))
 					return result;
-		var invRemainder = BitsPerInt - startRemainder;
+		var invRemainder = BitsPerInt - bitsIndex;
 		var mask = invRemainder == BitsPerInt ? 0xffffffff : (1u << invRemainder) - 1;
-		var first = _items[startIndex] >> startRemainder;
+		var first = _items[intIndex] >> bitsIndex;
 		if (first != (item ? 0 : mask))
 			for (var i = invRemainder - 1; i >= 0; i--)
 				if ((first & (1 << i)) == 0 ^ item)
-					return i;
+					return endIndex + i;
 		return -1;
 	}
 

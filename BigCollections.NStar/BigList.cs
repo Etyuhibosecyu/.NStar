@@ -14,709 +14,6 @@ global using E = System.Linq.Enumerable;
 namespace BigCollections.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, IDisposable where TCertain : BaseBigList<T, TCertain, TLow>, new() where TLow : G.IList<T>, new()
-{
-	public virtual T this[MpzT index]
-	{
-		get
-		{
-			if (index >= Length)
-				throw new IndexOutOfRangeException();
-			return GetInternal(index);
-		}
-		set
-		{
-			if (index >= Length)
-				throw new IndexOutOfRangeException();
-			SetInternal(index, value);
-		}
-	}
-
-	public abstract MpzT Capacity { get; set; }
-
-	public virtual MpzT Length { get; private protected set; }
-
-	private protected abstract Func<MpzT, TCertain> CapacityCreator { get; }
-
-	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
-
-	private protected abstract Func<G.IEnumerable<T>, TCertain> CollectionCreator { get; }
-
-	private protected abstract Func<G.IEnumerable<T>, TLow> CollectionLowCreator { get; }
-
-	private protected virtual int DefaultCapacity => 32;
-
-	bool IBigCollection<T>.IsReadOnly => false;
-
-	public delegate void ListChangedHandler(TCertain newList);
-
-	public event ListChangedHandler? ListChanged;
-
-	public abstract TCertain Add(T item);
-
-	void IBigCollection<T>.Add(T item) => Add(item);
-
-	public virtual TCertain AddRange(G.IEnumerable<T> collection) => Insert(Length, collection);
-
-	private protected void Changed() => ListChanged?.Invoke((TCertain)this);
-
-	public virtual void Clear()
-	{
-		if (Length > 0)
-			ClearInternal();
-	}
-
-	public virtual void Clear(MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Очищаемый диапазон выходит за текущий размер коллекции.");
-		ClearInternal(index, length);
-	}
-
-	private protected abstract void ClearInternal(bool verify = true);
-
-	private protected abstract void ClearInternal(MpzT index, MpzT length);
-
-	public virtual bool Contains(T item) => Contains(item, 0, Length);
-
-	public virtual bool Contains(T item, MpzT index) => Contains(item, index, Length - index);
-
-	public virtual bool Contains(T item, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-#if !VERIFY
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-#endif
-		return IndexOfInternal(item, index, length, false) >= 0;
-	}
-
-	public virtual bool Contains(G.IEnumerable<T> collection) => Contains(collection, 0, Length);
-
-	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index) => Contains(collection, index, Length - index);
-
-	public virtual bool Contains(G.IEnumerable<T> collection, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-		ArgumentNullException.ThrowIfNull(collection);
-		return ContainsInternal(collection, index, length);
-	}
-
-	public virtual bool Contains(TCertain list) => Contains((G.IEnumerable<T>)list, 0, Length);
-
-	public virtual bool Contains(TCertain list, MpzT index) => Contains((G.IEnumerable<T>)list, index, Length - index);
-
-	public virtual bool Contains(TCertain list, MpzT index, MpzT length) => Contains((G.IEnumerable<T>)list, index, length);
-
-	public virtual bool ContainsAny(G.IEnumerable<T> collection) => ContainsAny(collection, 0, Length);
-
-	public virtual bool ContainsAny(G.IEnumerable<T> collection, MpzT index) => ContainsAny(collection, index, Length - index);
-
-	public virtual bool ContainsAny(G.IEnumerable<T> collection, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-		ArgumentNullException.ThrowIfNull(collection);
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-		var hs = collection.ToHashSet();
-		for (MpzT i = new(index); i < index + length; i++)
-			if (hs.Contains(GetInternal(i)))
-				return true;
-		return false;
-	}
-
-	public virtual bool ContainsAny(TCertain list) => ContainsAny((G.IEnumerable<T>)list, 0, Length);
-
-	public virtual bool ContainsAny(TCertain list, MpzT index) => ContainsAny((G.IEnumerable<T>)list, index, Length - index);
-
-	public virtual bool ContainsAny(TCertain list, MpzT index, MpzT length) =>
-		ContainsAny((G.IEnumerable<T>)list, index, length);
-
-	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection) => ContainsAnyExcluding(collection, 0, Length);
-
-	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection, MpzT index) =>
-		ContainsAnyExcluding(collection, index, Length - index);
-
-	public virtual bool ContainsAnyExcluding(G.IEnumerable<T> collection, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-		ArgumentNullException.ThrowIfNull(collection);
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-		var hs = collection.ToHashSet();
-		for (MpzT i = new(index); i < index + length; i++)
-			if (!hs.Contains(GetInternal(i)))
-				return true;
-		return false;
-	}
-
-	public virtual bool ContainsAnyExcluding(TCertain list) => ContainsAnyExcluding((G.IEnumerable<T>)list, 0, Length);
-
-	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index) =>
-		ContainsAnyExcluding((G.IEnumerable<T>)list, index, Length - index);
-
-	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) =>
-		ContainsAnyExcluding((G.IEnumerable<T>)list, index, length);
-
-	private protected virtual bool ContainsInternal(G.IEnumerable<T> collection, MpzT index, MpzT length)
-	{
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-		if (length == 0 || !collection.Any())
-			return false;
-		if (collection is not IBigList<T> list)
-			list = CollectionCreator(collection);
-		MpzT j = 0;
-		for (MpzT i = 0; i - j <= length - list.Length; i++)
-		{
-			if (GetInternal(index + i)?.Equals(list[j]) ?? list[j] == null)
-			{
-				j++;
-				if (j >= list.Length)
-					return true;
-			}
-			else if (j != 0)
-			{
-				i -= j;
-				j = 0;
-			}
-		}
-		return false;
-	}
-
-	public virtual TCertain Copy() => CollectionCreator(this);
-
-	private protected abstract void CopyToInternal(MpzT sourceIndex, TCertain destination,
-		MpzT destinationIndex, MpzT length, bool ignoreReversed = false);
-
-	public virtual void CopyTo(Array array, int arrayIndex)
-	{
-		ArgumentNullException.ThrowIfNull(array);
-		if (array.Rank != 1)
-			throw new RankException();
-		try
-		{
-			CopyToInternal(array, arrayIndex);
-		}
-		catch (ArrayTypeMismatchException)
-		{
-			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
-		}
-	}
-
-	public virtual void CopyTo(IBigList<T> list) => CopyTo(list, 0);
-
-	public virtual void CopyTo(IBigList<T> list, MpzT listIndex) => CopyTo(0, list, listIndex, Length);
-
-	public virtual void CopyTo(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
-		if (listIndex + length > list.Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевой коллекции.");
-		CopyToInternal(index, list, listIndex, length);
-	}
-
-	public virtual void CopyTo(MpzT index, TCertain list, MpzT listIndex, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
-		if (listIndex + length > list.Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевой коллекции.");
-		CopyToInternal(index, list, listIndex, length);
-	}
-
-	public virtual void CopyTo(MpzT index, T[] array, int arrayIndex, int length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Копируемая последовательность выходит за текущий размер коллекции.");
-		if (arrayIndex + length > array.Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
-		CopyToInternal(index, array, arrayIndex, length);
-	}
-
-	public virtual void CopyTo(T[] array) => CopyTo(array, 0);
-
-	public virtual void CopyTo(T[] array, int arrayIndex)
-	{
-		if (Length > int.MaxValue)
-			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
-		CopyTo(0, array, arrayIndex, (int)Length);
-	}
-
-	private protected virtual void CopyToInternal(Array array, int arrayIndex)
-	{
-		if (array is not T[] array2)
-			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
-		CopyToInternal(0, array2, arrayIndex, (int)Length);
-	}
-
-	private protected abstract void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length);
-
-	private protected abstract void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length);
-
-	public abstract void Dispose();
-
-	private protected virtual void EnsureCapacity(MpzT min)
-	{
-		if (Capacity < min)
-		{
-			var newCapacity = Length == 0 ? DefaultCapacity : Length * 2;
-			if (newCapacity < min)
-				newCapacity = min;
-			Capacity = newCapacity;
-		}
-	}
-
-	public virtual bool Equals(G.IEnumerable<T>? collection) => EqualsInternal(collection, 0, true);
-
-	public virtual bool Equals(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false) =>
-		EqualsInternal(collection, index, toEnd);
-
-	public override bool Equals(object? obj) => obj switch
-	{
-		null => false,
-		G.IEnumerable<T> enumerable => Equals(enumerable),
-		IEquatable<G.IEnumerable<T>> iqen => iqen.Equals(this),
-		_ => false,
-	};
-
-	private protected virtual bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentNullException.ThrowIfNull(collection);
-		if (collection is G.IList<T> list && list is not (FastDelHashSet<T> or ParallelHashSet<T>))
-			return EqualsToList(list, index, toEnd);
-		else
-			return EqualsToNonList(collection, index, toEnd);
-	}
-
-	private protected virtual bool EqualsToList(G.IList<T> list, MpzT index, bool toEnd = false)
-	{
-		if (index > Length - list.Count)
-			return false;
-		if (toEnd && index < Length - list.Count)
-			return false;
-		for (var i = 0; i < list.Count; i++, index++)
-			if (!(GetInternal(index)?.Equals(list[i]) ?? list[i] == null))
-				return false;
-		return true;
-	}
-
-	private protected virtual bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
-	{
-		if (collection.TryGetLengthEasily(out var length))
-		{
-			if (index > Length - length)
-				return false;
-			if (toEnd && index < Length - length)
-				return false;
-		}
-		foreach (var item in collection)
-		{
-			if (index >= Length || !(GetInternal(index)?.Equals(item) ?? item == null))
-				return false;
-			index++;
-		}
-		return !toEnd || index == Length;
-	}
-
-	public virtual Enumerator GetEnumerator() => new(this);
-
-	G.IEnumerator<T> G.IEnumerable<T>.GetEnumerator() => GetEnumerator();
-
-	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-	public override int GetHashCode()
-	{
-		var hash = 486187739;
-		foreach (var item in this)
-			hash = (hash * 16777619) ^ (item?.GetHashCode() ?? 0);
-		return hash;
-	}
-
-	private protected abstract T GetInternal(MpzT index, bool invoke = true);
-
-	private protected virtual MpzT GetProperCapacity(MpzT min) => min;
-
-	public virtual TCertain GetRange(MpzT index, bool alwaysCopy = false) => GetRange(index, Length - index, alwaysCopy);
-
-	public virtual TCertain GetRange(MpzT index, MpzT length, bool alwaysCopy = false)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Получаемый диапазон выходит за текущий размер коллекции.");
-		return GetRangeInternal(index, length, alwaysCopy);
-	}
-
-	private protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false)
-	{
-		if (length == 0)
-			return CapacityCreator(0);
-		else if (!alwaysCopy && index == 0 && length == Length && this is TCertain thisList)
-			return thisList;
-		var list = CapacityCreator(length);
-		CopyToInternal(index, list, 0, length);
-		list.Length = length;
-#if VERIFY
-		Verify();
-		list.Verify();
-#endif
-		return list;
-	}
-
-	public virtual MpzT IndexOf(T item) => IndexOf(item, 0, Length);
-
-	public virtual MpzT IndexOf(T item, MpzT index) => IndexOf(item, index, Length - index);
-
-	public virtual MpzT IndexOf(T item, MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Проверяемый диапазон выходит за текущий размер коллекции.");
-#if !VERIFY
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-#endif
-		return IndexOfInternal(item, index, length, false);
-	}
-
-	private protected virtual MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
-	{
-		if (fromEnd)
-		{
-			var endIndex = index - length + 1;
-			for (MpzT i = new(index); i >= endIndex; i--)
-				if (GetInternal(i)?.Equals(item) ?? false)
-					return i;
-		}
-		else
-			for (MpzT i = new(index); i < index + length; i++)
-				if (GetInternal(i)?.Equals(item) ?? false)
-					return i;
-		return -1;
-	}
-
-	public virtual TCertain Insert(Index index, T item) => Insert(index.GetOffset(Length), item);
-
-	public virtual TCertain Insert(int index, T item) => Insert((MpzT)index, item);
-
-	public virtual TCertain Insert(MpzT index, T item)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
-		InsertInternal(index, item);
-		return (TCertain)this;
-	}
-
-	void IBigList<T>.Insert(MpzT index, T item) => Insert(index, item);
-
-	public virtual TCertain Insert(Index index, G.IEnumerable<T> collection) => Insert(index.GetOffset(Length), collection);
-
-	public virtual TCertain Insert(int index, G.IEnumerable<T> collection) => Insert((MpzT)index, collection);
-
-	public virtual TCertain Insert(MpzT index, G.IEnumerable<T> collection)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, Length);
-		if (collection is not TCertain bigList)
-			bigList = CollectionCreator(collection);
-#if VERIFY
-		MpzT oldLength = new(Length);
-#endif
-		InsertInternal(index, bigList);
-#if VERIFY
-		Debug.Assert(Length == oldLength + bigList.Length);
-		Verify();
-#endif
-		return (TCertain)this;
-	}
-
-	private protected abstract void InsertInternal(MpzT index, T item);
-
-	private protected abstract void InsertInternal(MpzT index, TCertain bigList);
-
-	public virtual MpzT LastIndexOf(T item) => LastIndexOf(item, Length - 1, Length);
-
-	public virtual MpzT LastIndexOf(T item, MpzT index) => LastIndexOf(item, index, index + 1);
-
-	public virtual MpzT LastIndexOf(T item, MpzT index, MpzT length)
-	{
-		if (Length != 0 && index < 0)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (Length != 0 && length < 0)
-			throw new ArgumentOutOfRangeException(nameof(length));
-		if (Length == 0)
-			return -1;
-		ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Length);
-		ArgumentOutOfRangeException.ThrowIfGreaterThan(length, index + 1);
-#if !VERIFY
-		try
-		{
-			throw new SlowOperationException();
-		}
-		catch
-		{
-		}
-#endif
-		return IndexOfInternal(item, index - length + 1, length, true);
-	}
-
-	[Obsolete("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо использовать Remove()"
-		+ " с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().", true)]
-	public virtual TCertain Remove(MpzT index) =>
-		throw new NotSupportedException("Этот метод был удален как имеющий неоднозначное название. Взамен необходимо"
-			+ " использовать Remove() с указанием диапазона, RemoveAt(), RemoveEnd() или RemoveValue().");
-
-	public virtual TCertain Remove(MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
-		RemoveInternal(index, length);
-		return (TCertain)this;
-	}
-
-	private protected abstract void RemoveInternal(MpzT index, MpzT length);
-
-	public virtual TCertain RemoveAt(MpzT index)
-	{
-		if ((uint)index >= (uint)Length)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		RemoveAtInternal(index);
-		return (TCertain)this;
-	}
-
-	void IBigList<T>.RemoveAt(MpzT index) => RemoveAt(index);
-
-	private protected virtual void RemoveAtInternal(MpzT index)
-	{
-		var this2 = (TCertain)this;
-		Length -= 1;
-		if (index < Length)
-			CopyToInternal(index + 1, this2, index, Length - index);
-		SetInternal(Length, default!);
-#if VERIFY
-		Verify();
-#endif
-	}
-
-	public virtual TCertain RemoveEnd(MpzT index)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		if (index > Length)
-			throw new ArgumentException("Удаляемый диапазон выходит за текущий размер коллекции.");
-		RemoveEndInternal(index);
-		return (TCertain)this;
-	}
-
-	private protected abstract void RemoveEndInternal(MpzT index);
-
-	public virtual bool RemoveValue(T item)
-	{
-		var index = IndexOfInternal(item, 0, Length, false);
-		if (index >= 0)
-		{
-			RemoveAtInternal(index);
-			return true;
-		}
-#if VERIFY
-		Verify();
-#endif
-		return false;
-	}
-
-	public virtual TCertain Replace(G.IEnumerable<T> collection)
-	{
-		if (collection is IBigCollection<T> col)
-		{
-			col.CopyTo(this, 0);
-			Length = col.Length;
-		}
-		else
-		{
-			MpzT i = 0;
-			foreach (var item in collection)
-			{
-				SetInternal(i, item);
-				i++;
-			}
-			Length = i;
-		}
-#if VERIFY
-		Verify();
-#endif
-		return (TCertain)this;
-	}
-
-	public abstract TCertain Reverse();
-
-	public abstract TCertain Reverse(MpzT index, MpzT length);
-
-	private protected abstract void SetInternal(MpzT index, T value);
-
-	public virtual TCertain SetRange(MpzT index, G.IEnumerable<T> collection)
-	{
-		ArgumentNullException.ThrowIfNull(collection);
-		if (index < 0 || index > Length)
-			throw new ArgumentOutOfRangeException(nameof(index));
-		if (collection is not TCertain bigList)
-			bigList = CollectionCreator(collection);
-		if (index + bigList.Length > Length)
-			throw new ArgumentException("Устанавливаемая последовательность выходит за текущий размер коллекции.");
-		return SetRangeInternal(index, bigList);
-	}
-
-	private protected virtual TCertain SetRangeInternal(MpzT index, TCertain bigList)
-	{
-		var length = bigList.Length;
-		if (length == 0)
-			return (TCertain)this;
-		EnsureCapacity(index + length);
-		var this2 = (TCertain)this;
-		if (length > 0)
-			bigList.CopyToInternal(0, this2, index, length);
-#if VERIFY
-		Verify();
-#endif
-		return this2;
-	}
-
-	public virtual T[] ToArray()
-	{
-		if (Length > int.MaxValue)
-			throw new InvalidOperationException("Слишком большой список для преобразования в массив!");
-		var length = (int)Length;
-		var array = GC.AllocateUninitializedArray<T>(length);
-		CopyToInternal(0, array, 0, length);
-		return array;
-	}
-
-	public virtual TCertain TrimExcess()
-	{
-		var threshold = Capacity * 9 / 10;
-		if (Length < threshold)
-			Capacity = Length;
-#if VERIFY
-		Verify();
-#endif
-		return (TCertain)this;
-	}
-#if VERIFY
-
-	private protected abstract void Verify();
-
-	private protected abstract void VerifySingle();
-#endif
-
-	[Serializable]
-	public struct Enumerator : G.IEnumerator<T>, IEnumerator
-	{
-		private readonly BaseBigList<T, TCertain, TLow> list;
-		private MpzT index;
-		private T current;
-
-		internal Enumerator(BaseBigList<T, TCertain, TLow> list)
-		{
-			this.list = list;
-			index = 0;
-			current = default!;
-		}
-
-		public readonly void Dispose() => GC.SuppressFinalize(this);
-
-		public bool MoveNext()
-		{
-			if (index >= list.Length)
-				return MoveNextRare();
-			try
-			{
-				current = list.GetInternal(index);
-				index++;
-				return true;
-			}
-			catch
-			{
-			}
-			return MoveNextRare();
-		}
-
-		private bool MoveNextRare()
-		{
-			index = list.Length + 1;
-			current = default!;
-			return false;
-		}
-
-		public readonly T Current => current;
-
-		readonly object IEnumerator.Current
-		{
-			get
-			{
-				if (index == 0 || index == list.Length + 1)
-					throw new InvalidOperationException();
-				return Current!;
-			}
-		}
-
-		void IEnumerator.Reset()
-		{
-			index = 0;
-			current = default!;
-		}
-	}
-}
-
-[ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow>
 	where TCertain : BigList<T, TCertain, TLow>, new() where TLow : BaseList<T, TLow>, new()
 {
@@ -831,7 +128,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				for (; first.high != null; first = first.high[0], first.parent?.high?.Dispose())
 				{
 					Debug.Assert(first.highLength != null);
-					first.high[1..].ForEach(x => x.Dispose());
+					first.high.Skip(1).ForEach(x => x.Dispose());
 					first.highLength.Dispose();
 				}
 				Debug.Assert(first.low != null);
@@ -964,7 +261,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				highLength[intIndex]++;
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
@@ -1272,8 +570,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		var fragment = this.fragment;
 		if (low != null && destination.low != null)
 		{
-			var bReversedOld = bReversed && !ignoreReversed;
-			var destinationReversedOld = destination.bReversed && !ignoreReversed;
+			var bReversedOld = bReversed && !ignoreReversed; // Сохраняем значения переменных, потому что после первого
+			var destinationReversedOld = destination.bReversed && !ignoreReversed; // реверса они изменяются
 			if (bReversedOld)
 			{
 				Reverse();
@@ -1304,7 +602,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else if (destination.low != null && high != null && highLength != null)
 		{
-			MpzT destinationIndexOld = new(destinationIndex);
+			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем значение как изменяющееся после реверса
 			var endIndex = sourceIndex + length - 1;
 			if (bReversed && !ignoreReversed)
 				(sourceIndex, endIndex) = (Length - 1 - endIndex, Length - 1 - sourceIndex);
@@ -1312,11 +610,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destinationIndex = destination.Length - length - destinationIndex;
 			var intIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var bitsIndex);
 			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			// Диапазон дописывается после конца списка
 			if (intIndex != 0 && intIndex == highLength.Length && bitsIndex == 0 && highLength[^1] != fragment)
 			{
 				intIndex--;
 				bitsIndex = highLength[^1];
 			}
+			// Диапазон частично расположен за концом списка
 			if (endIntIndex != 0 && endIntIndex == highLength.Length)
 			{
 				if (endBitsIndex >= fragment - highLength[^1])
@@ -1327,10 +627,12 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					endBitsIndex += highLength[^1];
 				}
 			}
+			// Весь диапазон помещается в одну ветку
 			if (intIndex == endIntIndex)
 				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex, length, true);
 			else if (IsReversed != destination.IsReversed)
 			{
+				// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 				var previousPart = endBitsIndex + 1;
 				high[endIntIndex].CopyToInternal(0, destination, destinationIndex, previousPart, true);
 				for (var i = endIntIndex - 1; i > intIndex; i--)
@@ -1343,6 +645,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (sourceIndex >= destinationIndex || this != destination)
 			{
+				// Диапазон копируется слева направо
 				var previousPart = (intIndex < highLength.Length - 1 ? highLength[intIndex] : fragment) - bitsIndex;
 				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex, previousPart, true);
 				for (var i = intIndex + 1; i < endIntIndex; i++)
@@ -1355,6 +658,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else
 			{
+				// Диапазон копируется справа налево
 				var previousPart = (endIntIndex < highLength.Length - 1 ? highLength[intIndex] : fragment) - bitsIndex;
 				for (var i = intIndex + 1; i < endIntIndex; i++)
 					previousPart += highLength[i];
@@ -1380,7 +684,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		{
 			fragment = destination.fragment;
 		destinationFragmentBigger:
-			MpzT destinationIndexOld = new(destinationIndex);
+			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем значение как изменяющееся после реверса
 			var endIndex = destinationIndex + length - 1;
 			if (bReversed && !ignoreReversed)
 				sourceIndex = Length - length - sourceIndex;
@@ -1397,11 +701,13 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var intIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var bitsIndex);
 			var endIntIndex = destination.highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
 			MpzT index2Old = new(endIntIndex);
+			// Диапазон дописывается после конца списка
 			if (intIndex != 0 && intIndex == destination.highLength.Length && bitsIndex == 0 && destination.highLength[^1] != fragment)
 			{
 				intIndex--;
 				bitsIndex = destination.highLength[^1];
 			}
+			// Диапазон частично расположен за концом списка
 			if (endIntIndex != 0 && endIntIndex == destination.highLength.Length)
 			{
 				if (endBitsIndex >= fragment - destination.highLength[^1])
@@ -1425,6 +731,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				destination.Compactify();
 				goto destinationFragmentBigger;
 			}
+			// Весь диапазон помещается в одну ветку
 			if (intIndex == endIntIndex)
 			{
 				CopyToInternal(sourceIndex, destination.high[intIndex], bitsIndex, length, true);
@@ -1433,6 +740,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (IsReversed != destination.IsReversed)
 			{
+				// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 				var previousPart = RedStarLinq.Min((intIndex < destination.highLength.Length - 1
 					? destination.highLength[intIndex] : fragment) - bitsIndex, length);
 				CopyToInternal(sourceIndex + length - previousPart, destination.high[intIndex], bitsIndex, previousPart, true);
@@ -1451,6 +759,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else if (sourceIndex >= destinationIndex || this != destination)
 			{
+				// Диапазон копируется слева направо
 				var previousPart = RedStarLinq.Min((intIndex < destination.highLength.Length - 1
 					? destination.highLength[intIndex] : fragment) - bitsIndex, length);
 				CopyToInternal(sourceIndex, destination.high[intIndex], bitsIndex, previousPart, true);
@@ -1469,6 +778,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			else
 			{
+				// Диапазон копируется справа налево
 				for (var i = destination.highLength.Length; i < endIntIndex; i++)
 					destination.highLength.Add(1);
 				var previousPart = RedStarLinq.Min(fragment - bitsIndex, length) + (endIntIndex - intIndex - 1) * fragment;
@@ -1496,7 +806,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		if (!(high != null && highLength != null && destination.high != null && destination.highLength != null))
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (destinationIndex > destination.Length)
 			throw new ArgumentOutOfRangeException(nameof(destinationIndex),
 				"Индекс не может быть больше длины содержимого цели.");
@@ -1520,6 +831,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			sourceEndBitsIndex -= this.fragment;
 		}
 		var destinationEndIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndBitsIndex);  // Индекс инта последнего бита.
+		// Сохраняем значение как изменяющееся после реверса
 		MpzT destinationEndIntIndexOld = new(destination.highLength.Length);
 		if (destination.highLength.Length != 0 && destinationEndIntIndex == destination.highLength.Length)
 			destinationEndBitsIndex -= fragment - destination.highLength[^1];
@@ -1528,6 +840,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			destinationEndIntIndex++;
 			destinationEndBitsIndex -= fragment;
 		}
+		// Диапазон дописывается после конца списка
 		if (destinationIntIndex != 0 && destinationIntIndex == destination.highLength.Length && destinationBitsIndex == 0 && destination.highLength[destinationIntIndex - 1] != fragment)
 		{
 			destinationIntIndex--;
@@ -1538,6 +851,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			destinationEndIntIndex--;
 			destinationEndBitsIndex += fragment;
 		}
+		// Если список после серии удалений стал слишком "рыхлым", уплотняем
 		if (destinationEndIntIndex >= destination.high.Length || destinationEndBitsIndex < 0
 			|| destination.highLength.Length != 0 && destination.highLength.ValuesSum + fragment - destination.highLength[^1]
 			+ (destination.high.Length - destination.highLength.Length - 1) * fragment
@@ -1567,6 +881,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 	l1:
+		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
 		var sourceCurrentBitsIndex = sourceEndBitsIndex + 1;
 		var destinationCurrentBitsIndex = destinationBitsIndex;
 		var sourceCurrentIntIndex = sourceEndIntIndex;
@@ -1613,6 +928,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 		return;
 	l2:
+		// Диапазон копируется слева направо
 		sourceCurrentBitsIndex = sourceBitsIndex;
 		destinationCurrentBitsIndex = destinationBitsIndex;
 		sourceCurrentIntIndex = sourceIntIndex;
@@ -1659,6 +975,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 		return;
 	l3:
+		// Диапазон копируется справа налево
 		sourceCurrentBitsIndex = sourceEndBitsIndex + 1;
 		destinationCurrentBitsIndex = destinationEndBitsIndex + 1;
 		sourceCurrentIntIndex = sourceEndIntIndex;
@@ -1682,6 +999,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			var sourceThresholdReached = (sourceCurrentBitsIndex -= step) == 0;
 			var destinationThresholdReached = (destinationCurrentBitsIndex -= step) == 0;
+			// Если вставляемый блок вне допустимого для ветки диапазона, расширяем ветку
 			if (destinationCurrentBitsIndex > destination.high[destinationCurrentIntIndex].Length)
 				CopyToInternal(sourceEndIndex + 1 + destination.high[destinationCurrentIntIndex].Length
 					- destinationCurrentBitsIndex, destination.high[destinationCurrentIntIndex],
@@ -1755,7 +1073,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
@@ -1787,7 +1106,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return high[intIndex].GetInternal(bitsIndex, invoke);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
 	private protected virtual void IncreaseCapacityExponential(MpzT value, MpzT targetFragment)
@@ -1877,23 +1197,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		if (length == 0)
 			return -1;
 		if (low != null)
-		{
-			Debug.Assert(index < int.MaxValue - 1);
-			Func<T, int, int, int> func = bReversed ^ fromEnd ? low.LastIndexOf : low.IndexOf;
-			if (fromEnd)
-			{
-				index += length - 1;
-			}
-			if (bReversed)
-			{
-				var foundIndex = func(item, (int)(Length - 1 - index), (int)length);
-				return foundIndex >= 0 ? Length - 1 - foundIndex : foundIndex;
-			}
-			else
-				return func(item, (int)index, (int)length);
-		}
+			return IndexOfTrivial(item, index, length, fromEnd);
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
 		if (bReversedOld)
@@ -1973,6 +1280,24 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
+	private protected virtual MpzT IndexOfTrivial(T item, MpzT index, MpzT length, bool fromEnd)
+	{
+		Debug.Assert(low != null);
+		Debug.Assert(index < int.MaxValue - 1);
+		Func<T, int, int, int> func = bReversed ^ fromEnd ? low.LastIndexOf : low.IndexOf;
+		if (fromEnd)
+		{
+			index += length - 1;
+		}
+		if (bReversed)
+		{
+			var foundIndex = func(item, (int)(Length - 1 - index), (int)length);
+			return foundIndex >= 0 ? Length - 1 - foundIndex : foundIndex;
+		}
+		else
+			return func(item, (int)index, (int)length);
+	}
+
 	private protected override void InsertInternal(MpzT index, T item)
 	{
 		var this2 = (TCertain)this;
@@ -1990,7 +1315,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		if (high == null || highLength == null)
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (bReversed)
 		{
 			Reverse();
@@ -2086,7 +1412,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
 		if (bReversedOld)
@@ -2169,7 +1496,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			fragment >>= SubbranchesBitLength;
 			var oldHigh = high;
 			var oldHighLength = highLength;
-			oldHigh[1..].ForEach(x => x.Dispose());
+			oldHigh.Skip(1).ForEach(x => x.Dispose());
 			highLength.Dispose();
 			low = oldHigh[0].low;
 			high = oldHigh[0].high;
@@ -2202,6 +1529,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			AddCapacity(-high[i].Capacity);
 			high[i].Dispose();
 		}
+		high.Skip(highCount).ForEach(x => x?.Dispose());
 		high.RemoveEnd(highCount);
 		var leftCapacity = value % fragment;
 		if (leftCapacity == 0)
@@ -2254,7 +1582,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
@@ -2291,7 +1620,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
@@ -2313,7 +1643,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		if (bReversed)
 			(index, endIndex) = (Length - 1 - endIndex, Length - 1 - index);
@@ -2381,23 +1712,19 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
+	/// <summary>
+	/// Этот метод выполняется моментально, всего лишь меняя состояние внутреннего флага "список перевернут"
+	/// на противоположное. После этого функции Add(), RemoveEnd() и CopyTo() радикально меняют
+	/// свое поведение, многие другие меняют слегка.
+	/// </summary>
+	/// <returns>Ссылка на себя.</returns>
 	public override TCertain Reverse()
 	{
 		bReversed = !bReversed;
 		return (TCertain)this;
 	}
 
-	public override TCertain Reverse(MpzT index, MpzT length)
-	{
-		ArgumentOutOfRangeException.ThrowIfNegative(index);
-		ArgumentOutOfRangeException.ThrowIfNegative(length);
-		if (index + length > Length)
-			throw new ArgumentException("Переворачиваемый диапазон выходит за текущий размер коллекции.");
-		ReverseInternal(index, length);
-		return (TCertain)this;
-	}
-
-	private protected virtual void ReverseInternal(MpzT index, MpzT length)
+	private protected override void ReverseInternal(MpzT index, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -2490,7 +1817,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[intIndex].SetInternal(bitsIndex, value);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
 			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
@@ -2550,7 +1878,8 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
 		}
 		else
-			throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.");
+			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 #endif
 }
