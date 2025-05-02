@@ -1,6 +1,18 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿global using Corlib.NStar;
+global using Mpir.NET;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+global using E = System.Linq.Enumerable;
+global using String = Corlib.NStar.String;
+using System.Threading;
+using System.Diagnostics.CodeAnalysis;
 
-namespace Corlib.NStar;
+namespace Dictionaries.NStar;
 
 /// <summary>
 /// Used internally to control behavior of insertion into a <see cref="Dictionary{TKey, TValue}"/> or <see cref="HashSet{T}"/>.
@@ -22,7 +34,7 @@ internal enum InsertionBehavior : byte
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
-public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
+public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey, TValue>, Corlib.NStar.IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {
 	[NonSerialized]
 	private protected object? _syncRoot;
@@ -65,7 +77,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	System.Collections.ICollection System.Collections.IDictionary.Keys => GetKeyListHelper();
 
-	IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+	G.IEnumerable<TKey> G.IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
 
 	public abstract G.ICollection<TValue> Values { get; }
 
@@ -73,9 +85,9 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	System.Collections.ICollection System.Collections.IDictionary.Values => GetValueListHelper();
 
-	IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => Values;
+	G.IEnumerable<TValue> G.IReadOnlyDictionary<TKey, TValue>.Values => Values;
 
-	bool G.ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => false;
+	bool G.ICollection<G.KeyValuePair<TKey, TValue>>.IsReadOnly => false;
 
 	bool System.Collections.IDictionary.IsReadOnly => false;
 
@@ -99,7 +111,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual void Add((TKey Key, TValue Value) item) => Add(item.Key, item.Value);
 
-	public virtual void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+	public virtual void Add(G.KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
 	void System.Collections.IDictionary.Add(object key, object? value)
 	{
@@ -122,18 +134,18 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		}
 	}
 
-	void G.ICollection<KeyValuePair<TKey, TValue>>.Add(KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.Add(G.KeyValuePair<TKey, TValue> keyValuePair) => Add(keyValuePair.Key, keyValuePair.Value);
 
 	public abstract void Clear();
 
 	public virtual bool Contains((TKey Key, TValue Value) item)
 	{
-		if (TryGetValue(item.Key, out var value) && EqualityComparer<TValue>.Default.Equals(value, item.Value))
+		if (TryGetValue(item.Key, out var value) && G.EqualityComparer<TValue>.Default.Equals(value, item.Value))
 			return true;
 		return false;
 	}
 
-	public virtual bool Contains(KeyValuePair<TKey, TValue> keyValuePair) => Contains((keyValuePair.Key, keyValuePair.Value));
+	public virtual bool Contains(G.KeyValuePair<TKey, TValue> keyValuePair) => Contains((keyValuePair.Key, keyValuePair.Value));
 
 	bool System.Collections.IDictionary.Contains(object key)
 	{
@@ -144,23 +156,23 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract bool ContainsKey(TKey key);
 
-	void G.ICollection<KeyValuePair<TKey, TValue>>.CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyToHelper(array, arrayIndex);
+	void G.ICollection<G.KeyValuePair<TKey, TValue>>.CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) => CopyToHelper(array, arrayIndex);
 
 	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex) => CopyToHelper(array, arrayIndex);
 
 	protected abstract void CopyToHelper(Array array, int arrayIndex);
 
-	protected abstract void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex);
+	protected abstract void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex);
 
-	public abstract void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other);
+	public abstract void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other);
 
-	public abstract void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other);
+	public abstract void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other);
 
-	public abstract void ExceptWith(IEnumerable<TKey> other);
+	public abstract void ExceptWith(G.IEnumerable<TKey> other);
 
-	public abstract IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator();
+	public abstract G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator();
 
-	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
+	G.IEnumerator<G.KeyValuePair<TKey, TValue>> G.IEnumerable<G.KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
 	IDictionaryEnumerator System.Collections.IDictionary.GetEnumerator() => GetEnumeratorHelper();
 
@@ -172,11 +184,11 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	internal abstract System.Collections.ICollection GetValueListHelper();
 
-	public abstract void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other);
+	public abstract void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other);
 
-	public abstract void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other);
+	public abstract void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other);
 
-	public abstract void IntersectWith(IEnumerable<TKey> other);
+	public abstract void IntersectWith(G.IEnumerable<TKey> other);
 
 	private protected static bool IsCompatibleKey(object key)
 	{
@@ -194,13 +206,13 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 			Remove((TKey)key);
 	}
 
-	public abstract bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair);
+	public abstract bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair);
 
 	public virtual bool RemoveValue(TKey key, TValue value) => RemoveValue((key, value));
 
-	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new KeyValuePair<TKey, TValue>(item.Key, item.Value));
+	public virtual bool RemoveValue((TKey Key, TValue Value) item) => RemoveValue(new G.KeyValuePair<TKey, TValue>(item.Key, item.Value));
 
-	public virtual TCertain SymmetricExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public virtual TCertain SymmetricExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		var this2 = (TCertain)this;
@@ -217,7 +229,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return SymmetricExceptInternal(other);
 	}
 
-	public virtual TCertain SymmetricExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	public virtual TCertain SymmetricExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		var this2 = (TCertain)this;
@@ -234,9 +246,9 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return SymmetricExceptInternal(other);
 	}
 
-	protected virtual TCertain SymmetricExceptInternal(IEnumerable<(TKey Key, TValue Value)> other)
+	protected virtual TCertain SymmetricExceptInternal(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
-		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
+		foreach (var item in other is G.IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
 		{
 			var result = ContainsKey(item.Key) ? Remove(item.Key) : TryAdd(item);
 			Debug.Assert(result);
@@ -244,9 +256,9 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return (TCertain)this;
 	}
 
-	protected virtual TCertain SymmetricExceptInternal(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	protected virtual TCertain SymmetricExceptInternal(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
-		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
+		foreach (var item in other is G.IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
 		{
 			var result = ContainsKey(item.Key) ? Remove(item.Key) : TryAdd(item);
 			Debug.Assert(result);
@@ -269,17 +281,17 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public virtual bool TryAdd((TKey Key, TValue Value) item) => TryAdd(item.Key, item.Value);
 
-	public virtual bool TryAdd(KeyValuePair<TKey, TValue> item) => TryAdd(item.Key, item.Value);
+	public virtual bool TryAdd(G.KeyValuePair<TKey, TValue> item) => TryAdd(item.Key, item.Value);
 
 	public abstract bool TryGetValue(TKey key, out TValue value);
 
-	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	public virtual void UnionWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
 		foreach (var x in other)
 			this[x.Key] = x.Value;
 	}
 
-	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public virtual void UnionWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		foreach (var x in other)
 			this[x.Key] = x.Value;
@@ -295,22 +307,22 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	private protected SortedDictionary<TKey, TValue>? low;
 	private protected G.Dictionary<TKey, TValue>? high;
 	private protected bool isHigh;
-	private protected readonly IEqualityComparer<TKey> comparer;
+	private protected readonly G.IEqualityComparer<TKey> comparer;
 	private protected const int _hashThreshold = 64;
 
-	public Dictionary() : this(EqualityComparer<TKey>.Default) { }
+	public Dictionary() : this(G.EqualityComparer<TKey>.Default) { }
 
-	public Dictionary(int capacity) : this(capacity, (IEqualityComparer<TKey>?)null) { }
+	public Dictionary(int capacity) : this(capacity, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(IEqualityComparer<TKey>? comparer) : this(0, comparer) { }
+	public Dictionary(G.IEqualityComparer<TKey>? comparer) : this(0, comparer) { }
 
 	public Dictionary(Func<TKey, TKey, bool> equalFunction) : this(new EComparer<TKey>(equalFunction)) { }
 
 	public Dictionary(Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(int capacity, IEqualityComparer<TKey>? comparer)
+	public Dictionary(int capacity, G.IEqualityComparer<TKey>? comparer)
 	{
-		comparer ??= EqualityComparer<TKey>.Default;
+		comparer ??= G.EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity <= _hashThreshold)
@@ -326,11 +338,11 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public Dictionary(int capacity, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(capacity, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(G.IDictionary<TKey, TValue> dictionary) : this(dictionary, (IEqualityComparer<TKey>?)null) { }
+	public Dictionary(G.IDictionary<TKey, TValue> dictionary) : this(dictionary, (G.IEqualityComparer<TKey>?)null) { }
 
-	public Dictionary(G.IDictionary<TKey, TValue> dictionary, IEqualityComparer<TKey>? comparer)
+	public Dictionary(G.IDictionary<TKey, TValue> dictionary, G.IEqualityComparer<TKey>? comparer)
 	{
-		comparer ??= EqualityComparer<TKey>.Default;
+		comparer ??= G.EqualityComparer<TKey>.Default;
 		this.comparer = comparer;
 		ArgumentNullException.ThrowIfNull(dictionary);
 		if (dictionary.Count < _hashThreshold)
@@ -346,29 +358,29 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 
 	public Dictionary(G.IDictionary<TKey, TValue> dictionary, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction) : this(dictionary, new EComparer<TKey>(equalFunction, hashCodeFunction)) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) : this(keyCollection, valueCollection, (IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, bool unordered = false) : this(keyCollection, valueCollection, (G.IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(keyCollection, valueCollection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(keyCollection, valueCollection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) : this(collection, (IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) : this(collection, (G.IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) : this(collection, (IEqualityComparer<TKey>?)null, unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, bool unordered = false) : this(collection, (G.IEqualityComparer<TKey>?)null, unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, G.IEqualityComparer<TKey>? comparer, bool unordered = false) : this(new UnsortedDictionary<TKey, TValue>(collection, unordered), comparer) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction), unordered) { }
 
-	public Dictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
+	public Dictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, Func<TKey, TKey, bool> equalFunction, Func<TKey, int> hashCodeFunction, bool unordered = false) : this(collection, new EComparer<TKey>(equalFunction, hashCodeFunction), unordered) { }
 
 	public override TValue this[TKey key]
 	{
@@ -400,7 +412,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		}
 	}
 
-	public virtual IEqualityComparer<TKey> Comparer => comparer;
+	public virtual G.IEqualityComparer<TKey> Comparer => comparer;
 
 	public override int Length
 	{
@@ -486,68 +498,62 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 	protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
-			((ICollection)low).CopyTo(array, arrayIndex);
+			((Corlib.NStar.ICollection)low).CopyTo(array, arrayIndex);
 		else if (high != null)
-			((ICollection)high).CopyTo(array, arrayIndex);
+			((Corlib.NStar.ICollection)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	protected override void CopyToHelper(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
-			((G.ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
+			((G.ICollection<G.KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
 		else if (high != null)
-			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
+			((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void ExceptWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	public override void ExceptWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-		{
 			foreach (var x in other)
 				RemoveValue(x);
-		}
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void ExceptWith(IEnumerable<TKey> other)
+	public override void ExceptWith(G.IEnumerable<TKey> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-		{
 			foreach (var x in other)
 				Remove(x);
-		}
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void ExceptWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-		{
 			foreach (var x in other)
 				RemoveValue(x);
-		}
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
+	public override G.IEnumerator<G.KeyValuePair<TKey, TValue>> GetEnumerator()
 	{
 		if (!isHigh && low != null)
 			return low.GetEnumerator();
@@ -591,7 +597,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void IntersectWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	public override void IntersectWith(G.IEnumerable<G.KeyValuePair<TKey, TValue>> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -607,7 +613,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void IntersectWith(IEnumerable<TKey> other)
+	public override void IntersectWith(G.IEnumerable<TKey> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -623,7 +629,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override void IntersectWith(IEnumerable<(TKey Key, TValue Value)> other)
+	public override void IntersectWith(G.IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		if (!isHigh && low != null)
 			low.IntersectWith(other);
@@ -661,12 +667,12 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public override bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
+	public override bool RemoveValue(G.KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		if (!isHigh && low != null)
 			return low.RemoveValue(keyValuePair);
 		else if (high != null)
-			return ((G.ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
+			return ((G.ICollection<G.KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
 			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
@@ -694,9 +700,11 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	public static implicit operator G.Dictionary<TKey, TValue>(Dictionary<TKey, TValue> x)
+	public static implicit operator G.Dictionary<TKey, TValue>?(Dictionary<TKey, TValue>? x)
 	{
-		if (!x.isHigh && x.low != null)
+		if (x == null)
+			return null;
+		else if (!x.isHigh && x.low != null)
 			return new(x.low);
 		else if (x.high != null)
 			return x.high;
@@ -713,27 +721,21 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
-	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false)
-	{
-		if (unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList)
-			(keys, values) = keyList.Zip(valueList).DistinctBy(x => x.First).Break();
-		else
-			(keys, values) = keyCollection.Zip(valueCollection).DistinctBy(x => x.First).Break();
-	}
+	public UnsortedDictionary(G.IEnumerable<TKey> keyCollection, G.IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = E.DistinctBy(E.Zip(keyCollection, valueCollection), x => x.First).Break();
 
-	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<(TKey Key, TValue Value)> list ? list.DistinctBy(x => x.Key) : collection.DistinctBy(x => x.Key)).Break();
+	public UnsortedDictionary(G.IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = E.DistinctBy(collection, x => x.Key).Break();
 
-	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<KeyValuePair<TKey, TValue>> list ? list.DistinctBy(x => x.Key) : collection.DistinctBy(x => x.Key)).Break(x => x.Key, x => x.Value);
+	public UnsortedDictionary(G.IEnumerable<G.KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = E.DistinctBy(collection, x => x.Key).Break(x => x.Key, x => x.Value);
 
 	public virtual TValue this[TKey key] => throw new NotSupportedException();
 
 	TValue G.IDictionary<TKey, TValue>.this[TKey key] { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
 
-	public virtual IEnumerable<TKey> Keys => throw new NotSupportedException();
+	public virtual G.IEnumerable<TKey> Keys => throw new NotSupportedException();
 
 	public virtual int Length => keys.Length;
 
-	public virtual IEnumerable<TValue> Values => throw new NotSupportedException();
+	public virtual G.IEnumerable<TValue> Values => throw new NotSupportedException();
 
 	G.ICollection<TKey> G.IDictionary<TKey, TValue>.Keys => throw new NotSupportedException();
 
@@ -754,7 +756,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		}
 	}
 
-	public virtual void Add(KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
+	public virtual void Add(G.KeyValuePair<TKey, TValue> item) => Add(item.Key, item.Value);
 
 	public virtual void Clear()
 	{
@@ -762,21 +764,21 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		values.Clear();
 	}
 
-	public virtual bool Contains(KeyValuePair<TKey, TValue> item)
+	public virtual bool Contains(G.KeyValuePair<TKey, TValue> item)
 	{
 		var index = IndexOfKey(item.Key);
-		return index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], item.Value);
+		return index >= 0 && G.EqualityComparer<TValue>.Default.Equals(values[index], item.Value);
 	}
 
 	public virtual bool ContainsKey(TKey key) => keys.Contains(key);
 
 	public void CopyTo(Array array, int index) => throw new NotSupportedException();
 
-	public virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
+	public virtual void CopyTo(G.KeyValuePair<TKey, TValue>[] array, int arrayIndex) => throw new NotSupportedException();
 
 	public virtual Enumerator GetEnumerator() => new(this);
 
-	IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
+	G.IEnumerator<G.KeyValuePair<TKey, TValue>> G.IEnumerable<G.KeyValuePair<TKey, TValue>>.GetEnumerator() => GetEnumerator();
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
@@ -784,7 +786,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 
 	public virtual bool Remove(TKey key) => throw new NotSupportedException();
 
-	public virtual bool RemoveValue(KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
+	public virtual bool RemoveValue(G.KeyValuePair<TKey, TValue> item) => throw new NotSupportedException();
 
 	public virtual bool TryGetValue(TKey key, out TValue value)
 	{
@@ -801,12 +803,12 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		}
 	}
 
-	public struct Enumerator(UnsortedDictionary<TKey, TValue> dictionary) : IEnumerator<KeyValuePair<TKey, TValue>>
+	public struct Enumerator(UnsortedDictionary<TKey, TValue> dictionary) : G.IEnumerator<G.KeyValuePair<TKey, TValue>>
 	{
 		private readonly UnsortedDictionary<TKey, TValue> _dict = dictionary;
 		private int index = 0;
 
-		public KeyValuePair<TKey, TValue> Current { get; private set; } = default!;
+		public G.KeyValuePair<TKey, TValue> Current { get; private set; } = default!;
 
 		readonly object IEnumerator.Current => Current;
 

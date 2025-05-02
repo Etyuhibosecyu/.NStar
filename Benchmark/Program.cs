@@ -13,6 +13,7 @@ global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;
 global using static System.Math;
 using System.Diagnostics;
+using Dictionaries.NStar;
 
 // See https://aka.ms/new-console-template for more information
 Random random = new(1234567890);
