@@ -115,7 +115,7 @@ public class Queue<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, ICl
 		_size = 0;
 	}
 
-	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : List<T>.TryGetLengthEasilyEnumerable(col, out var length) ? length : 32)
+	public Queue(IEnumerable<T> col) : this((col == null) ? throw new ArgumentNullException(nameof(col)) : col.TryGetLengthEasily(out var length) ? length : 32)
 	{
 		using var en = col.GetEnumerator();
 		while (en.MoveNext())
@@ -482,7 +482,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		return ((IEnumerable<T>?)_base ?? _base2 ?? throw new InvalidOperationException()).AsSpan(_start + index, length);
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		if (_base is BaseIndexable<T> collection)
 			collection.CopyTo(_start + index, array, arrayIndex, length);
@@ -494,13 +494,13 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 
 	public override void Dispose() => GC.SuppressFinalize(this);
 
-	internal override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection.GetInternal(_start + index) : _base != null ? _base[_start + index] : _base2 != null ? _base2[_start + index] : throw new InvalidOperationException();
+	protected override T GetInternal(int index, bool invoke = true) => _base is BaseIndexable<T> collection ? collection[_start + index] : _base != null ? _base[_start + index] : _base2 != null ? _base2[_start + index] : throw new InvalidOperationException();
 
-	private protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
+	protected override Slice<T> GetRangeInternal(int index, int length) => GetSliceInternal(index, length);
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new(_base, _base2, _start + index, length);
+	protected override Slice<T> GetSliceInternal(int index, int length) => new(_base, _base2, _start + index, length);
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		if (_base is BaseIndexable<T> collection)
 			return CreateVar(collection.IndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;
@@ -515,7 +515,7 @@ public class Slice<T> : BaseIndexable<T, Slice<T>>
 		}
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int length)
+	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		if (_base is BaseIndexable<T> collection)
 			return CreateVar(collection.LastIndexOf(item, _start + index, length), out var foundIndex) >= 0 ? foundIndex - _start : foundIndex;

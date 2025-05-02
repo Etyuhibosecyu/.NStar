@@ -53,8 +53,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			var index = 1;
 			for (var i = 1; i < length; i++)
 			{
-				if (comparer.Compare(elements.GetInternal(i), elements.GetInternal(i - 1)) != 0)
-					elements[index++] = elements.GetInternal(i);
+				if (comparer.Compare(elements[i], elements[i - 1]) != 0)
+					elements[index++] = elements[i];
 			}
 			length = index;
 			root = ConstructRootFromSortedArray(elements, 0, length - 1, null);
@@ -76,11 +76,11 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private protected override Func<int, TreeSet<T>> CapacityCreator => x => [];
+	protected override Func<int, TreeSet<T>> CapacityCreator => x => [];
 
-	private protected override Func<IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator => x => new(x);
 
 	public override IComparer<T> Comparer { get; }
 
@@ -313,7 +313,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TreeSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -336,7 +336,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			destination.TryAdd(en.Current);
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -564,7 +564,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public override IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var current = root;
 		while (current != null)
@@ -1049,7 +1049,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		var actuallyRemoved = 0;
 		for (var i = matches.Length - 1; i >= 0; i--)
 		{
-			if (RemoveValue(matches.GetInternal(i)))
+			if (RemoveValue(matches[i]))
 				actuallyRemoved++;
 		}
 		return actuallyRemoved;

@@ -1,6 +1,8 @@
 ﻿global using Corlib.NStar;
 global using ILGPU;
 global using ILGPU.Runtime;
+global using LINQ.NStar;
+global using MathLib.NStar;
 global using Mpir.NET;
 global using System;
 global using System.Collections;
@@ -91,7 +93,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(RedStarLinq.Max(capacity, collection.Length), leafSizeBitLength, subbranchesBitLength)
+	public BigList(MpzT capacity, ReadOnlySpan<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : this(RedStarLinqMath.Max(capacity, collection.Length), leafSizeBitLength, subbranchesBitLength)
 	{
 		ConstructFromList(collection.ToArray());
 #if VERIFY
@@ -114,17 +116,26 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				value = parent.fragment;
 			if (value == 0)
 			{
-				low = new();
+				if (low != null)
+					low.Capacity = 0;
+				else
+				{
+					low = new();
+					high?.ForEach(x => x?.Dispose());
+					high?.Dispose();
+					highLength?.Dispose();
+				}
 				high = null;
 				highLength = null;
 			}
-			else if (value <= LeafSize)
+			else if (value <= LeafSize) // Список сокращается до одного листа
 			{
 				if (high != null && highLength != null)
 					ReduceCapacityExponential(LeafSize);
-				if (high != null && highLength != null)
+				if (high != null && highLength != null) // В этом случае в списке очень много пустоты
 					Compactify();
 				var first = this;
+				// Ищем первый лист и разрушаем "лишние" ветки
 				for (; first.high != null; first = first.high[0], first.parent?.high?.Dispose())
 				{
 					Debug.Assert(first.highLength != null);
@@ -133,57 +144,72 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				}
 				Debug.Assert(first.low != null);
 				low = first.low;
+				// Емкость листа должна быть типа int
 				var value2 = (int)value;
 				low.Capacity = value2;
 				high = null;
 				highLength = null;
 			}
-			else if (low != null)
+			else if (low != null) // Список расширяется с одного листа до многих
 			{
+				// Разберем эту строку по частям:
+				// (value - 1).BitLength - какого порядка (по основанию 2) новая длина.
+				// value.BitLength не подходит, потому что если новая емкость - степень двух,
+				// это выражение вернет на один бо́льшую степень двух (например, 17 для 65536).
+				// Минус LeafSizeBitLength - сколько порядков занимают именно ветки, а не элементы внутри листа.
+				// GetArrayLength на SubbranchesBitLength - глубина дерева (количество уровней от корня до листьев).
+				// Минус 1 - глубина каждой подветки корня.
+				// Остальная часть выражения - вычисляет количество элементов в каждой подветке корня.
 				fragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
 					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				while (fragment << SubbranchesBitLength < value)
 					fragment <<= SubbranchesBitLength;
+				// Количество подветок корня
 				var highCount = (int)GetArrayLength(value, fragment);
 				high = new(highCount);
+				// Создаем подветки
 				for (MpzT i = 0; i < value / fragment; i++)
 				{
 					high.Add(CapacityCreator(fragment));
 					high[^1].parent = this2;
 				}
+				// Если нужно, создаем последнюю неполную подветку
 				if (value % fragment != 0)
 				{
 					high.Add(CapacityCreator(value % fragment));
 					high[^1].parent = this2;
 				}
-				var preservedLow = low;
+				using var preservedLow = low;
 				low = null;
 				Length = 0;
 				var first = this;
+				// Устанавливаем highLength на всех уровнях
 				for (; first.high != null; first = first.high[0])
 					first.highLength = [preservedLow.Length];
 				ArgumentNullException.ThrowIfNull(first.low);
+				// Вставляем первый лист
 				first.low.AddRange(preservedLow);
 				if (preservedLow.Length != 0)
 					first.Length = preservedLow.Length;
 			}
-			else if (high != null && highLength != null)
+			else if (high != null && highLength != null) // Как старая, так и новая емкость определяет много листьев
 			{
+				// См. подробный разбор аналогичной строки в предыдущем разделе
 				var newFragment = (MpzT)1 << (GetArrayLength((value - 1).BitLength - LeafSizeBitLength,
 					SubbranchesBitLength) - 1) * SubbranchesBitLength + LeafSizeBitLength;
 				while (newFragment << SubbranchesBitLength < value)
 					newFragment <<= SubbranchesBitLength;
-				if (newFragment > fragment)
+				if (newFragment > fragment) // Новое дерево существенно больше старого (до уровня разной глубины)
 					IncreaseCapacityExponential(value, newFragment);
-				else if (newFragment < fragment)
+				else if (newFragment < fragment) // Старое дерево существенно больше
 				{
 					ReduceCapacityExponential(newFragment);
 					AddCapacity((fragment << SubbranchesBitLength) - _capacity);
 					ReduceCapacityLinear(value);
 				}
-				else if (value > _capacity)
+				else if (value > _capacity) // Новое дерево на несколько веток больше старого
 					IncreaseCapacityLinear(value);
-				else
+				else // Старое дерево на несколько веток больше
 					ReduceCapacityLinear(value);
 			}
 			AddCapacity(value - _capacity);
@@ -195,15 +221,15 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected virtual bool IsReversed => bReversed ^ (parent?.IsReversed ?? false);
+	protected virtual bool IsReversed => bReversed ^ (parent?.IsReversed ?? false);
 
-	private protected virtual int LeafSizeBitLength { get; init; } = 16;
+	protected virtual int LeafSizeBitLength { get; init; } = 16;
 
-	private protected virtual int LeafSize => 1 << LeafSizeBitLength;
+	protected virtual int LeafSize => 1 << LeafSizeBitLength;
 
-	private protected virtual int SubbranchesBitLength { get; init; } = 16;
+	protected virtual int SubbranchesBitLength { get; init; } = 16;
 
-	private protected virtual int Subbranches => 1 << SubbranchesBitLength;
+	protected virtual int Subbranches => 1 << SubbranchesBitLength;
 
 	public override MpzT Length
 	{
@@ -216,7 +242,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected virtual TCertain Root => parent == null ? (TCertain)this : parent.Root;
+	protected virtual TCertain Root => parent == null ? (TCertain)this : parent.Root;
 
 	public override TCertain Add(T item)
 	{
@@ -261,7 +287,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				highLength[intIndex]++;
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
@@ -271,7 +297,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		return this2;
 	}
 
-	private protected virtual void AddCapacity(MpzT increment)
+	protected virtual void AddCapacity(MpzT increment)
 	{
 		if (increment == 0)
 			return;
@@ -279,7 +305,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			list._capacity += increment;
 	}
 
-	private protected override void ClearInternal(bool verify = true)
+	protected override void ClearInternal(bool verify = true)
 	{
 		if (low != null)
 		{
@@ -297,7 +323,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected override void ClearInternal(MpzT index, MpzT length)
+	protected override void ClearInternal(MpzT index, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -331,7 +357,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void Compactify()
+	protected virtual void Compactify()
 	{
 		Debug.Assert(high != null && highLength != null);
 		for (var i = 1; i < highLength.Length; i++)
@@ -364,7 +390,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 					high.CopyRangeTo(i + 1, high, i, high.Length - i - offsetFromEnd - 1);
 					high[^(offsetFromEnd + 1)] = temp;
 				}
-				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				temp.RemoveEndInternal(RedStarLinqMath.Min(high[^1].Length, temp.Length));
 				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 				highLength[i - 1] += highLengthElementI;
@@ -379,7 +405,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void ConstructFromCapacity(MpzT capacity)
+	protected virtual void ConstructFromCapacity(MpzT capacity)
 	{
 		if (_capacity >= capacity)
 			return;
@@ -425,7 +451,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void ConstructFromEnumerable(G.IEnumerable<T> collection)
+	protected virtual void ConstructFromEnumerable(G.IEnumerable<T> collection)
 	{
 		if (collection is G.IReadOnlyList<T> list)
 			ConstructFromList(list);
@@ -451,7 +477,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected virtual void ConstructFromList(G.IReadOnlyList<T> list)
+	protected virtual void ConstructFromList(G.IReadOnlyList<T> list)
 	{
 		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
 		{
@@ -493,7 +519,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void ConstructFromListFromScratch(G.IReadOnlyList<T> list)
+	protected virtual void ConstructFromListFromScratch(G.IReadOnlyList<T> list)
 	{
 		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
 		if (list.Count <= LeafSize && high == null && highLength == null && fragment == 1)
@@ -559,15 +585,16 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed = false)
+	protected override void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed = false)
 	{
 		CheckParams(sourceIndex, destination, destinationIndex, length);
 #if VERIFY
 		MpzT oldLength = new(destination.Length);
 #endif
-		if (length == 0) // Если длина копируемой последовательность ноль, то ничего делать не надо.
+		if (length == 0)
 			return;
 		var fragment = this.fragment;
+		// Тривиальный случай - оба списка являются листьями дерева
 		if (low != null && destination.low != null)
 		{
 			var bReversedOld = bReversed && !ignoreReversed; // Сохраняем значения переменных, потому что после первого
@@ -577,19 +604,31 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				Reverse();
 				sourceIndex = Length - length - sourceIndex;
 			}
+			// Если копируемый диапазон не помещается в целевой список, расширяем его
+			if (destination.low.Length < destinationIndex + length)
+				if (destinationReversedOld)
+				{
+					// Если список был перевернут, расширяем слева
+					using var toInsert = RedStarLinq.EmptyList<T>((int)(destinationIndex + length - destination.Length));
+					destination.low.Insert(0, toInsert);
+				}
+				else // Иначе справа
+					destination.low.Resize((int)(destinationIndex + length));
+			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем также и целевой индекс
 			if (destinationReversedOld)
 			{
 				destination.Reverse();
 				destinationIndex = destination.Length - length - destinationIndex;
 			}
-			if (destination.low.Length < destinationIndex + length)
-				destination.low.Resize((int)(destinationIndex + length));
-			if (IsReversed == destination.IsReversed == bReversedOld == destinationReversedOld)
+			// Если оба списка направлены одинаково, копируем напрямую
+			if (IsReversed == destination.IsReversed ^ bReversedOld ^ destinationReversedOld)
 				low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
-			else
+			else // Иначе используем срезы для предотвращения лишних проходов
 				CollectionLowCreator(low.Skip((int)sourceIndex).Take((int)length).Reverse())
 					.CopyRangeTo(0, destination.low, (int)destinationIndex, (int)length);
-			destination.Length = RedStarLinq.Max(destination.Length, destinationIndex + length);
+			// Если список был расширен, фиксируем это
+			destination.Length = RedStarLinqMath.Max(destination.Length, destinationIndexOld + length);
+			// И, наконец, возвращаем направление следования списков к тому, что было до этого вызова
 			if (bReversedOld)
 				Reverse();
 			if (destinationReversedOld)
@@ -600,55 +639,57 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 			return;
 		}
+		// Только целевой список является листом дерева
 		else if (destination.low != null && high != null && highLength != null)
 		{
 			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем значение как изменяющееся после реверса
 			var endIndex = sourceIndex + length - 1;
+			// Если один или оба списка перевернуты, корректируем индексы
 			if (bReversed && !ignoreReversed)
 				(sourceIndex, endIndex) = (Length - 1 - endIndex, Length - 1 - sourceIndex);
 			if (destination.bReversed && !ignoreReversed)
 				destinationIndex = destination.Length - length - destinationIndex;
-			var intIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var bitsIndex);
-			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			var startIntIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var startRestIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
 			// Диапазон дописывается после конца списка
-			if (intIndex != 0 && intIndex == highLength.Length && bitsIndex == 0 && highLength[^1] != fragment)
+			if (startIntIndex != 0 && startIntIndex == highLength.Length && startRestIndex == 0 && highLength[^1] != fragment)
 			{
-				intIndex--;
-				bitsIndex = highLength[^1];
+				startIntIndex--;
+				startRestIndex = highLength[^1];
 			}
 			// Диапазон частично расположен за концом списка
 			if (endIntIndex != 0 && endIntIndex == highLength.Length)
 			{
-				if (endBitsIndex >= fragment - highLength[^1])
-					endBitsIndex -= fragment - highLength[^1];
+				if (endRestIndex >= fragment - highLength[^1])
+					endRestIndex -= fragment - highLength[^1];
 				else
 				{
 					endIntIndex--;
-					endBitsIndex += highLength[^1];
+					endRestIndex += highLength[^1];
 				}
 			}
 			// Весь диапазон помещается в одну ветку
-			if (intIndex == endIntIndex)
-				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex, length, true);
+			if (startIntIndex == endIntIndex)
+				high[startIntIndex].CopyToInternal(startRestIndex, destination, destinationIndex, length, true);
 			else if (IsReversed != destination.IsReversed)
 			{
 				// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
-				var previousPart = endBitsIndex + 1;
+				var previousPart = endRestIndex + 1;
 				high[endIntIndex].CopyToInternal(0, destination, destinationIndex, previousPart, true);
-				for (var i = endIntIndex - 1; i > intIndex; i--)
+				for (var i = endIntIndex - 1; i > startIntIndex; i--)
 				{
 					var branchLength = i < highLength.Length - 1 ? highLength[i] : fragment;
 					high[i].CopyToInternal(0, destination, destinationIndex + previousPart, branchLength, true);
 					previousPart += branchLength;
 				}
-				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex + previousPart, length - previousPart, true);
+				high[startIntIndex].CopyToInternal(startRestIndex, destination, destinationIndex + previousPart, length - previousPart, true);
 			}
 			else if (sourceIndex >= destinationIndex || this != destination)
 			{
 				// Диапазон копируется слева направо
-				var previousPart = (intIndex < highLength.Length - 1 ? highLength[intIndex] : fragment) - bitsIndex;
-				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex, previousPart, true);
-				for (var i = intIndex + 1; i < endIntIndex; i++)
+				var previousPart = (startIntIndex < highLength.Length - 1 ? highLength[startIntIndex] : fragment) - startRestIndex;
+				high[startIntIndex].CopyToInternal(startRestIndex, destination, destinationIndex, previousPart, true);
+				for (var i = startIntIndex + 1; i < endIntIndex; i++)
 				{
 					var branchLength = i < highLength.Length - 1 ? highLength[i] : fragment;
 					high[i].CopyToInternal(0, destination, destinationIndex + previousPart, branchLength, true);
@@ -659,38 +700,41 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			else
 			{
 				// Диапазон копируется справа налево
-				var previousPart = (endIntIndex < highLength.Length - 1 ? highLength[intIndex] : fragment) - bitsIndex;
-				for (var i = intIndex + 1; i < endIntIndex; i++)
+				var previousPart = (endIntIndex < highLength.Length - 1 ? highLength[startIntIndex] : fragment) - startRestIndex;
+				for (var i = startIntIndex + 1; i < endIntIndex; i++)
 					previousPart += highLength[i];
 				high[endIntIndex].CopyToInternal(0, destination, destinationIndex + previousPart, length - previousPart, true);
-				for (var i = endIntIndex - 1; i > intIndex; i--)
+				for (var i = endIntIndex - 1; i > startIntIndex; i--)
 				{
 					var branchLength = i < highLength.Length - 1 ? highLength[i] : fragment;
 					previousPart -= branchLength;
 					high[i].CopyToInternal(0, destination, destinationIndex + previousPart, branchLength, true);
 				}
-				high[intIndex].CopyToInternal(bitsIndex, destination, destinationIndex, previousPart, true);
+				high[startIntIndex].CopyToInternal(startRestIndex, destination, destinationIndex, previousPart, true);
 			}
-			destination.highLength?.SetOrAdd(intIndex, destination.highLength.Length
-				> intIndex ? destination.highLength[intIndex] : destinationIndex + length);
+			destination.highLength?.SetOrAdd(startIntIndex, destination.highLength.Length
+				> startIntIndex ? destination.highLength[startIntIndex] : destinationIndex + length);
 #if VERIFY
-			Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndexOld + length));
+			Debug.Assert(destination.Length == RedStarLinqMath.Max(oldLength, destinationIndexOld + length));
 			Verify();
 			destination.Verify();
 #endif
 			return;
 		}
+		// Исходный список является более мелкой веткой (возможно, даже листом)
 		else if ((low != null || destination.fragment > fragment) && destination.high != null && destination.highLength != null)
 		{
 			fragment = destination.fragment;
 		destinationFragmentBigger:
 			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем значение как изменяющееся после реверса
 			var endIndex = destinationIndex + length - 1;
+			// Если один или оба списка перевернуты, корректируем индексы
 			if (bReversed && !ignoreReversed)
 				sourceIndex = Length - length - sourceIndex;
+			// Если целевой список перевернут и в нем не хватает места, расширяем
 			if (destination.bReversed && !ignoreReversed && destinationIndex + length > destination.Length)
 			{
-				var dummy = CapacityCreator(RedStarLinq.Max(destinationIndex + length - (destination.Length << 1), 0));
+				var dummy = CapacityCreator(RedStarLinqMath.Max(destinationIndex + length - (destination.Length << 1), 0));
 				dummy.Length = dummy.Capacity;
 				destination.InsertInternal(0, dummy);
 				destination.CopyToInternal(0, destination, destinationIndex + length - destination.Length, destination.Length, true);
@@ -698,30 +742,30 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			if (destination.bReversed && !ignoreReversed)
 				(destinationIndex, endIndex) = (destination.Length - 1 - endIndex,
 					destination.Length - 1 - destinationIndex);
-			var intIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var bitsIndex);
-			var endIntIndex = destination.highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			var startIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var startRestIndex);
+			var endIntIndex = destination.highLength.IndexOfNotGreaterSum(endIndex, out var endRestIndex);
 			MpzT index2Old = new(endIntIndex);
 			// Диапазон дописывается после конца списка
-			if (intIndex != 0 && intIndex == destination.highLength.Length && bitsIndex == 0 && destination.highLength[^1] != fragment)
+			if (startIntIndex != 0 && startIntIndex == destination.highLength.Length && startRestIndex == 0 && destination.highLength[^1] != fragment)
 			{
-				intIndex--;
-				bitsIndex = destination.highLength[^1];
+				startIntIndex--;
+				startRestIndex = destination.highLength[^1];
 			}
 			// Диапазон частично расположен за концом списка
 			if (endIntIndex != 0 && endIntIndex == destination.highLength.Length)
 			{
-				if (endBitsIndex >= fragment - destination.highLength[^1])
-					endBitsIndex -= fragment - destination.highLength[^1];
+				if (endRestIndex >= fragment - destination.highLength[^1])
+					endRestIndex -= fragment - destination.highLength[^1];
 				else
 				{
 					endIntIndex--;
-					endBitsIndex += destination.highLength[^1];
+					endRestIndex += destination.highLength[^1];
 				}
 			}
-			while (endBitsIndex >= fragment)
+			while (endRestIndex >= fragment)
 			{
 				endIntIndex++;
-				endBitsIndex -= fragment;
+				endRestIndex -= fragment;
 			}
 			if (endIntIndex >= destination.high.Length || destination.highLength.Length != 0
 				&& destination.highLength.ValuesSum + fragment - destination.highLength[^1]
@@ -732,21 +776,21 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				goto destinationFragmentBigger;
 			}
 			// Весь диапазон помещается в одну ветку
-			if (intIndex == endIntIndex)
+			if (startIntIndex == endIntIndex)
 			{
-				CopyToInternal(sourceIndex, destination.high[intIndex], bitsIndex, length, true);
-				destination.highLength.SetOrAdd(intIndex, RedStarLinq.Max(destination.highLength.Length
-					> intIndex ? destination.highLength[intIndex] : 0, bitsIndex + length));
+				CopyToInternal(sourceIndex, destination.high[startIntIndex], startRestIndex, length, true);
+				destination.highLength.SetOrAdd(startIntIndex, RedStarLinqMath.Max(destination.highLength.Length
+					> startIntIndex ? destination.highLength[startIntIndex] : 0, startRestIndex + length));
 			}
 			else if (IsReversed != destination.IsReversed)
 			{
 				// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
-				var previousPart = RedStarLinq.Min((intIndex < destination.highLength.Length - 1
-					? destination.highLength[intIndex] : fragment) - bitsIndex, length);
-				CopyToInternal(sourceIndex + length - previousPart, destination.high[intIndex], bitsIndex, previousPart, true);
-				destination.highLength.SetOrAdd(intIndex, RedStarLinq.Max(intIndex < destination.highLength.Length - 1
-					? destination.highLength[intIndex] : 0, bitsIndex + previousPart));
-				for (var i = intIndex + 1; i < endIntIndex; i++)
+				var previousPart = RedStarLinqMath.Min((startIntIndex < destination.highLength.Length - 1
+					? destination.highLength[startIntIndex] : fragment) - startRestIndex, length);
+				CopyToInternal(sourceIndex + length - previousPart, destination.high[startIntIndex], startRestIndex, previousPart, true);
+				destination.highLength.SetOrAdd(startIntIndex, RedStarLinqMath.Max(startIntIndex < destination.highLength.Length - 1
+					? destination.highLength[startIntIndex] : 0, startRestIndex + previousPart));
+				for (var i = startIntIndex + 1; i < endIntIndex; i++)
 				{
 					var branchLength = i < destination.highLength.Length - 1 ? destination.highLength[i] : fragment;
 					previousPart += branchLength;
@@ -755,17 +799,17 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				}
 				CopyToInternal(sourceIndex, destination.high[endIntIndex], 0, length - previousPart, true);
 				if (length != previousPart)
-					destination.highLength.SetOrAdd(endIntIndex, RedStarLinq.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
+					destination.highLength.SetOrAdd(endIntIndex, RedStarLinqMath.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
 			}
 			else if (sourceIndex >= destinationIndex || this != destination)
 			{
 				// Диапазон копируется слева направо
-				var previousPart = RedStarLinq.Min((intIndex < destination.highLength.Length - 1
-					? destination.highLength[intIndex] : fragment) - bitsIndex, length);
-				CopyToInternal(sourceIndex, destination.high[intIndex], bitsIndex, previousPart, true);
-				destination.highLength.SetOrAdd(intIndex, RedStarLinq.Max(destination.highLength.Length
-					> intIndex ? destination.highLength[intIndex] : 0, bitsIndex + previousPart));
-				for (var i = intIndex + 1; i < endIntIndex; i++)
+				var previousPart = RedStarLinqMath.Min((startIntIndex < destination.highLength.Length - 1
+					? destination.highLength[startIntIndex] : fragment) - startRestIndex, length);
+				CopyToInternal(sourceIndex, destination.high[startIntIndex], startRestIndex, previousPart, true);
+				destination.highLength.SetOrAdd(startIntIndex, RedStarLinqMath.Max(destination.highLength.Length
+					> startIntIndex ? destination.highLength[startIntIndex] : 0, startRestIndex + previousPart));
+				for (var i = startIntIndex + 1; i < endIntIndex; i++)
 				{
 					var branchLength = i < destination.highLength.Length - 1 ? destination.highLength[i] : fragment;
 					CopyToInternal(sourceIndex + previousPart, destination.high[i], 0, branchLength, true);
@@ -774,29 +818,29 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				}
 				CopyToInternal(sourceIndex + previousPart, destination.high[endIntIndex], 0, length - previousPart, true);
 				if (length != previousPart)
-					destination.highLength.SetOrAdd(endIntIndex, RedStarLinq.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
+					destination.highLength.SetOrAdd(endIntIndex, RedStarLinqMath.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
 			}
 			else
 			{
 				// Диапазон копируется справа налево
 				for (var i = destination.highLength.Length; i < endIntIndex; i++)
 					destination.highLength.Add(1);
-				var previousPart = RedStarLinq.Min(fragment - bitsIndex, length) + (endIntIndex - intIndex - 1) * fragment;
+				var previousPart = RedStarLinqMath.Min(fragment - startRestIndex, length) + (endIntIndex - startIntIndex - 1) * fragment;
 				CopyToInternal(sourceIndex + previousPart, destination.high[endIntIndex], 0, length - previousPart, true);
 				if (length != previousPart)
-					destination.highLength.SetOrAdd(endIntIndex, RedStarLinq.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
-				for (var i = endIntIndex - 1; i > intIndex; i--)
+					destination.highLength.SetOrAdd(endIntIndex, RedStarLinqMath.Max(destination.highLength.Length > endIntIndex ? destination.highLength[endIntIndex] : 0, length - previousPart));
+				for (var i = endIntIndex - 1; i > startIntIndex; i--)
 				{
 					var branchLength = i < index2Old ? destination.highLength[i] : fragment;
 					previousPart -= branchLength;
 					CopyToInternal(sourceIndex + previousPart, destination.high[i], 0, branchLength, true);
 					destination.highLength[i] = branchLength;
 				}
-				CopyToInternal(sourceIndex, destination.high[intIndex], bitsIndex, previousPart, true);
-				destination.highLength[intIndex] = RedStarLinq.Max(destination.highLength.Length > intIndex ? destination.highLength[intIndex] : 0, bitsIndex + previousPart);
+				CopyToInternal(sourceIndex, destination.high[startIntIndex], startRestIndex, previousPart, true);
+				destination.highLength[startIntIndex] = RedStarLinqMath.Max(destination.highLength.Length > startIntIndex ? destination.highLength[startIntIndex] : 0, startRestIndex + previousPart);
 			}
 #if VERIFY
-			Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndexOld + length));
+			Debug.Assert(destination.Length == RedStarLinqMath.Max(oldLength, destinationIndexOld + length));
 			Debug.Assert((this.Skip((int)(bReversed ? Length - length - sourceIndex : sourceIndex)).Take((int)length),
 				destination.Skip((int)destinationIndexOld).Take((int)length)).Wrap(x =>
 				x.Item1.Equals(x.Item2) || x.Item1.Equals(x.Item2.Reverse())));
@@ -805,8 +849,10 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 			return;
 		}
+		// Самый сложный случай: исходный список является соизмеримой или более крупной веткой,
+		// а целевой также не является листом
 		if (!(high != null && highLength != null && destination.high != null && destination.highLength != null))
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (destinationIndex > destination.Length)
 			throw new ArgumentOutOfRangeException(nameof(destinationIndex),
@@ -814,45 +860,46 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		fragment = destination.fragment;
 		var compactified = false;
 	sameFragment:
-		if (length == 0) // Если длина копируеммой последовательность ноль, то ничего делать не надо.
+		if (length == 0)
 			return;
-		var sourceEndIndex = sourceIndex + length - 1;        // Индекс последнего бита в исходном массиве.
+		var sourceEndIndex = sourceIndex + length - 1;
+		var destinationEndIndex = destinationIndex + length - 1;
+		// Если один или оба списка перевернуты, корректируем индексы
 		if (bReversed && !ignoreReversed)
 			(sourceIndex, sourceEndIndex) = (Length - 1 - sourceEndIndex, Length - 1 - sourceIndex);
-		var sourceIntIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var sourceBitsIndex);               // Целый индекс в исходном массиве.
-		var destinationEndIndex = destinationIndex + length - 1;        // Индекс последнего бита в целевом массиве.
 		if (destination.bReversed && !ignoreReversed)
 			(destinationIndex, destinationEndIndex) = (destination.Length - 1 - destinationEndIndex, destination.Length - 1 - destinationIndex);
-		var destinationIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var destinationBitsIndex);     // Целый индекс в целевом массиве.
-		var sourceEndIntIndex = highLength.IndexOfNotGreaterSum(sourceEndIndex, out var sourceEndBitsIndex);  // Индекс инта последнего бита.
-		while (sourceEndBitsIndex >= this.fragment)
+		var sourceStartIntIndex = highLength.IndexOfNotGreaterSum(sourceIndex, out var sourceStartRestIndex);
+		var destinationStartIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationIndex, out var destinationStartRestIndex);
+		var sourceEndIntIndex = highLength.IndexOfNotGreaterSum(sourceEndIndex, out var sourceEndRestIndex);
+		var destinationEndIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndRestIndex);
+		// Сохраняем значение как изменяющееся после реверса
+		MpzT destinationHighLengthOld = new(destination.highLength.Length);
+		while (sourceEndRestIndex >= this.fragment)
 		{
 			sourceEndIntIndex++;
-			sourceEndBitsIndex -= this.fragment;
+			sourceEndRestIndex -= this.fragment;
 		}
-		var destinationEndIntIndex = destination.highLength.IndexOfNotGreaterSum(destinationEndIndex, out var destinationEndBitsIndex);  // Индекс инта последнего бита.
-		// Сохраняем значение как изменяющееся после реверса
-		MpzT destinationEndIntIndexOld = new(destination.highLength.Length);
 		if (destination.highLength.Length != 0 && destinationEndIntIndex == destination.highLength.Length)
-			destinationEndBitsIndex -= fragment - destination.highLength[^1];
-		while (destinationEndBitsIndex >= fragment)
+			destinationEndRestIndex -= fragment - destination.highLength[^1];
+		while (destinationEndRestIndex >= fragment)
 		{
 			destinationEndIntIndex++;
-			destinationEndBitsIndex -= fragment;
+			destinationEndRestIndex -= fragment;
 		}
 		// Диапазон дописывается после конца списка
-		if (destinationIntIndex != 0 && destinationIntIndex == destination.highLength.Length && destinationBitsIndex == 0 && destination.highLength[destinationIntIndex - 1] != fragment)
+		if (destinationStartIntIndex != 0 && destinationStartIntIndex == destination.highLength.Length && destinationStartRestIndex == 0 && destination.highLength[destinationStartIntIndex - 1] != fragment)
 		{
-			destinationIntIndex--;
-			destinationBitsIndex = destination.highLength[^1];
+			destinationStartIntIndex--;
+			destinationStartRestIndex = destination.highLength[^1];
 		}
-		if (destinationEndIntIndex != 0 && destinationEndBitsIndex < 0)
+		if (destinationEndIntIndex != 0 && destinationEndRestIndex < 0)
 		{
 			destinationEndIntIndex--;
-			destinationEndBitsIndex += fragment;
+			destinationEndRestIndex += fragment;
 		}
 		// Если список после серии удалений стал слишком "рыхлым", уплотняем
-		if (destinationEndIntIndex >= destination.high.Length || destinationEndBitsIndex < 0
+		if (destinationEndIntIndex >= destination.high.Length || destinationEndRestIndex < 0
 			|| destination.highLength.Length != 0 && destination.highLength.ValuesSum + fragment - destination.highLength[^1]
 			+ (destination.high.Length - destination.highLength.Length - 1) * fragment
 			+ destination.high[^1].Capacity < destinationIndex + length)
@@ -864,11 +911,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		else
 		{
-			Debug.Assert(sourceIntIndex >= 0 && sourceIntIndex < highLength.Length
+			Debug.Assert(sourceStartIntIndex >= 0 && sourceStartIntIndex < highLength.Length
 				&& sourceEndIntIndex >= 0 && sourceEndIntIndex < highLength.Length
-				&& destinationIntIndex >= 0 && destinationIntIndex < destination.high.Length
+				&& destinationStartIntIndex >= 0 && destinationStartIntIndex < destination.high.Length
 				&& destinationEndIntIndex >= 0 && destinationEndIntIndex < destination.high.Length
-				&& sourceBitsIndex >= 0 && sourceEndBitsIndex >= 0 && destinationBitsIndex >= 0 && destinationEndBitsIndex >= 0);
+				&& sourceStartRestIndex >= 0 && sourceEndRestIndex >= 0 && destinationStartRestIndex >= 0 && destinationEndRestIndex >= 0);
 			if (IsReversed != destination.IsReversed)
 				goto l1;
 			else if (sourceIndex >= destinationIndex || destinationIndex >= sourceIndex + length || this != destination)
@@ -882,146 +929,146 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	l1:
 		// Диапазон "копируется в буфер" справа налево, а вставляется слева направо
-		var sourceCurrentBitsIndex = sourceEndBitsIndex + 1;
-		var destinationCurrentBitsIndex = destinationBitsIndex;
+		var sourceCurrentRestIndex = sourceEndRestIndex + 1;
+		var destinationCurrentRestIndex = destinationStartRestIndex;
 		var sourceCurrentIntIndex = sourceEndIntIndex;
-		var destinationCurrentIntIndex = destinationIntIndex;
-		var bitsIndexDiff = (sourceBitsIndex - destinationBitsIndex).Abs();
-		bitsIndexDiff = RedStarLinq.Max(bitsIndexDiff, fragment - bitsIndexDiff);
+		var destinationCurrentIntIndex = destinationStartIntIndex;
+		var startRestIndexDiff = (sourceStartRestIndex - destinationStartRestIndex).Abs();
+		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
 		MpzT step = 0;
 		var leftLength = length;
 		while (leftLength > 0)
 		{
 			var destinationMax = destination.highLength.Length > destinationCurrentIntIndex + 1
 				? destination.highLength[destinationCurrentIntIndex] : fragment;
-			step = RedStarLinq.Min(highLength[sourceCurrentIntIndex], bitsIndexDiff,
-				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : fragment) - step,
-				sourceCurrentBitsIndex, destinationMax - destinationCurrentBitsIndex, leftLength);
+			step = RedStarLinqMath.Min(highLength[sourceCurrentIntIndex], startRestIndexDiff,
+				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndRestIndex + 1 : fragment) - step,
+				sourceCurrentRestIndex, destinationMax - destinationCurrentRestIndex, leftLength);
 			if (step <= 0)
 			{
 				step = 0;
 				continue;
 			}
-			var sourceThresholdReached = (sourceCurrentBitsIndex -= step) == 0;
-			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentBitsIndex,
-				destination.high[destinationCurrentIntIndex], destinationCurrentBitsIndex, step, true);
-			var destinationThresholdReached = (destinationCurrentBitsIndex += step) == destinationMax;
+			var sourceThresholdReached = (sourceCurrentRestIndex -= step) == 0;
+			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentRestIndex,
+				destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true);
+			var destinationThresholdReached = (destinationCurrentRestIndex += step) == destinationMax;
 			leftLength -= step;
 			if (sourceThresholdReached)
 			{
 				sourceCurrentIntIndex--;
-				sourceCurrentBitsIndex = sourceCurrentIntIndex >= sourceIntIndex ? highLength[sourceCurrentIntIndex] : fragment;
+				sourceCurrentRestIndex = sourceCurrentIntIndex >= sourceStartIntIndex ? highLength[sourceCurrentIntIndex] : fragment;
 			}
 			if (destinationThresholdReached)
 			{
-				destination.highLength.SetOrAdd(destinationCurrentIntIndex, destinationCurrentBitsIndex);
+				destination.highLength.SetOrAdd(destinationCurrentIntIndex, destinationCurrentRestIndex);
 				destinationCurrentIntIndex++;
-				destinationCurrentBitsIndex = 0;
+				destinationCurrentRestIndex = 0;
 			}
 		}
-		destination.highLength.SetOrAdd(destinationEndIntIndex, RedStarLinq.Max(destination.highLength.Length
-			> destinationEndIntIndex ? destination.highLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1));
+		destination.highLength.SetOrAdd(destinationEndIntIndex, RedStarLinqMath.Max(destination.highLength.Length
+			> destinationEndIntIndex ? destination.highLength[destinationEndIntIndex] : 0, destinationEndRestIndex + 1));
 #if VERIFY
-		Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndex + length));
+		Debug.Assert(destination.Length == RedStarLinqMath.Max(oldLength, destinationIndex + length));
 		Verify();
 		destination.Verify();
 #endif
 		return;
 	l2:
 		// Диапазон копируется слева направо
-		sourceCurrentBitsIndex = sourceBitsIndex;
-		destinationCurrentBitsIndex = destinationBitsIndex;
-		sourceCurrentIntIndex = sourceIntIndex;
-		destinationCurrentIntIndex = destinationIntIndex;
-		bitsIndexDiff = (sourceBitsIndex - destinationBitsIndex).Abs();
-		bitsIndexDiff = RedStarLinq.Max(bitsIndexDiff, fragment - bitsIndexDiff);
+		sourceCurrentRestIndex = sourceStartRestIndex;
+		destinationCurrentRestIndex = destinationStartRestIndex;
+		sourceCurrentIntIndex = sourceStartIntIndex;
+		destinationCurrentIntIndex = destinationStartIntIndex;
+		startRestIndexDiff = (sourceStartRestIndex - destinationStartRestIndex).Abs();
+		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
 		step = 0;
 		leftLength = length;
 		while (leftLength > 0)
 		{
 			var destinationMax = destination.highLength.Length > destinationCurrentIntIndex + 1
 				? destination.highLength[destinationCurrentIntIndex] : fragment;
-			step = RedStarLinq.Min(highLength[sourceCurrentIntIndex] - step, bitsIndexDiff,
-				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : fragment) - step,
-				highLength[sourceCurrentIntIndex] - sourceCurrentBitsIndex, destinationMax - destinationCurrentBitsIndex, leftLength);
+			step = RedStarLinqMath.Min(highLength[sourceCurrentIntIndex] - step, startRestIndexDiff,
+				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndRestIndex + 1 : fragment) - step,
+				highLength[sourceCurrentIntIndex] - sourceCurrentRestIndex, destinationMax - destinationCurrentRestIndex, leftLength);
 			if (step <= 0)
 			{
 				step = 0;
 				continue;
 			}
-			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentBitsIndex,
-				destination.high[destinationCurrentIntIndex], destinationCurrentBitsIndex, step, true);
-			var sourceThresholdReached = (sourceCurrentBitsIndex += step) == highLength[sourceCurrentIntIndex];
-			var destinationThresholdReached = (destinationCurrentBitsIndex += step) == destinationMax;
+			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentRestIndex,
+				destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true);
+			var sourceThresholdReached = (sourceCurrentRestIndex += step) == highLength[sourceCurrentIntIndex];
+			var destinationThresholdReached = (destinationCurrentRestIndex += step) == destinationMax;
 			leftLength -= step;
 			if (sourceThresholdReached)
 			{
 				sourceCurrentIntIndex++;
-				sourceCurrentBitsIndex = 0;
+				sourceCurrentRestIndex = 0;
 			}
 			if (destinationThresholdReached)
 			{
-				destination.highLength.SetOrAdd(destinationCurrentIntIndex, destinationCurrentBitsIndex);
+				destination.highLength.SetOrAdd(destinationCurrentIntIndex, destinationCurrentRestIndex);
 				destinationCurrentIntIndex++;
-				destinationCurrentBitsIndex = 0;
+				destinationCurrentRestIndex = 0;
 			}
 		}
-		destination.highLength.SetOrAdd(destinationEndIntIndex, RedStarLinq.Max(destination.highLength.Length
-			> destinationEndIntIndex ? destination.highLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1));
+		destination.highLength.SetOrAdd(destinationEndIntIndex, RedStarLinqMath.Max(destination.highLength.Length
+			> destinationEndIntIndex ? destination.highLength[destinationEndIntIndex] : 0, destinationEndRestIndex + 1));
 #if VERIFY
-		Debug.Assert(destination.Length == RedStarLinq.Max(oldLength, destinationIndex + length));
+		Debug.Assert(destination.Length == RedStarLinqMath.Max(oldLength, destinationIndex + length));
 		Verify();
 		destination.Verify();
 #endif
 		return;
 	l3:
 		// Диапазон копируется справа налево
-		sourceCurrentBitsIndex = sourceEndBitsIndex + 1;
-		destinationCurrentBitsIndex = destinationEndBitsIndex + 1;
+		sourceCurrentRestIndex = sourceEndRestIndex + 1;
+		destinationCurrentRestIndex = destinationEndRestIndex + 1;
 		sourceCurrentIntIndex = sourceEndIntIndex;
 		destinationCurrentIntIndex = destinationEndIntIndex;
-		bitsIndexDiff = (sourceBitsIndex - destinationBitsIndex).Abs();
-		bitsIndexDiff = RedStarLinq.Max(bitsIndexDiff, fragment - bitsIndexDiff);
+		startRestIndexDiff = (sourceStartRestIndex - destinationStartRestIndex).Abs();
+		startRestIndexDiff = RedStarLinqMath.Max(startRestIndexDiff, fragment - startRestIndexDiff);
 		step = 0;
-		destination.highLength[destinationEndIntIndex] = RedStarLinq.Max(destination.highLength.Length > destinationEndIntIndex
-			? destination.highLength[destinationEndIntIndex] : 0, destinationEndBitsIndex + 1);
+		destination.highLength[destinationEndIntIndex] = RedStarLinqMath.Max(destination.highLength.Length > destinationEndIntIndex
+			? destination.highLength[destinationEndIntIndex] : 0, destinationEndRestIndex + 1);
 		leftLength = length;
 		while (leftLength > 0)
 		{
-			step = RedStarLinq.Min(highLength[sourceCurrentIntIndex] - step, bitsIndexDiff,
-				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndBitsIndex + 1 : destinationCurrentIntIndex
-					< destinationEndIntIndexOld ? destination.highLength[destinationCurrentIntIndex] : fragment)
-				- step, sourceCurrentBitsIndex, destinationCurrentBitsIndex, leftLength);
+			step = RedStarLinqMath.Min(highLength[sourceCurrentIntIndex] - step, startRestIndexDiff,
+				(destinationCurrentIntIndex == destinationEndIntIndex ? destinationEndRestIndex + 1 : destinationCurrentIntIndex
+					< destinationHighLengthOld ? destination.highLength[destinationCurrentIntIndex] : fragment)
+				- step, sourceCurrentRestIndex, destinationCurrentRestIndex, leftLength);
 			if (step <= 0)
 			{
 				step = 0;
 				continue;
 			}
-			var sourceThresholdReached = (sourceCurrentBitsIndex -= step) == 0;
-			var destinationThresholdReached = (destinationCurrentBitsIndex -= step) == 0;
+			var sourceThresholdReached = (sourceCurrentRestIndex -= step) == 0;
+			var destinationThresholdReached = (destinationCurrentRestIndex -= step) == 0;
 			// Если вставляемый блок вне допустимого для ветки диапазона, расширяем ветку
-			if (destinationCurrentBitsIndex > destination.high[destinationCurrentIntIndex].Length)
+			if (destinationCurrentRestIndex > destination.high[destinationCurrentIntIndex].Length)
 				CopyToInternal(sourceEndIndex + 1 + destination.high[destinationCurrentIntIndex].Length
-					- destinationCurrentBitsIndex, destination.high[destinationCurrentIntIndex],
+					- destinationCurrentRestIndex, destination.high[destinationCurrentIntIndex],
 					destination.high[destinationCurrentIntIndex].Length,
-					destinationCurrentBitsIndex - destination.high[destinationCurrentIntIndex].Length, true);
-			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentBitsIndex,
-				destination.high[destinationCurrentIntIndex], destinationCurrentBitsIndex, step, true);
+					destinationCurrentRestIndex - destination.high[destinationCurrentIntIndex].Length, true);
+			high[sourceCurrentIntIndex].CopyToInternal(sourceCurrentRestIndex,
+				destination.high[destinationCurrentIntIndex], destinationCurrentRestIndex, step, true);
 			leftLength -= step;
 			if (sourceThresholdReached)
 			{
 				sourceCurrentIntIndex--;
-				sourceCurrentBitsIndex = sourceCurrentIntIndex >= sourceIntIndex ? highLength[sourceCurrentIntIndex] : fragment;
+				sourceCurrentRestIndex = sourceCurrentIntIndex >= sourceStartIntIndex ? highLength[sourceCurrentIntIndex] : fragment;
 			}
 			if (destinationThresholdReached)
 			{
 				destinationCurrentIntIndex--;
-				destination.highLength[destinationCurrentIntIndex] = destinationCurrentBitsIndex = destinationCurrentIntIndex
-					< destinationEndIntIndexOld - 1 ? destination.highLength[destinationCurrentIntIndex] : fragment;
+				destination.highLength[destinationCurrentIntIndex] = destinationCurrentRestIndex = destinationCurrentIntIndex
+					< destinationHighLengthOld - 1 ? destination.highLength[destinationCurrentIntIndex] : fragment;
 			}
 		}
 #if VERIFY
-		Debug.Assert(destination.Length <= RedStarLinq.Max(oldLength, destinationIndex + length));
+		Debug.Assert(destination.Length <= RedStarLinqMath.Max(oldLength, destinationIndex + length));
 		Verify();
 		destination.Verify();
 #endif
@@ -1047,7 +1094,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
 	}
 
-	private protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
+	protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -1073,11 +1120,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[endIntIndex].CopyToInternal(0, list, destIndex, endBitsIndex + 1);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	private protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length)
 	{
 		for (var i = 0; i < length; i++)
 			array[arrayIndex + i] = GetInternal(index + i);
@@ -1096,7 +1143,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override T GetInternal(MpzT index, bool invoke = true)
+	protected override T GetInternal(MpzT index, bool invoke = true)
 	{
 		if (low != null)
 			return low[(int)(bReversed ? Length - 1 - index : index)];
@@ -1106,11 +1153,11 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return high[intIndex].GetInternal(bitsIndex, invoke);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	private protected virtual void IncreaseCapacityExponential(MpzT value, MpzT targetFragment)
+	protected virtual void IncreaseCapacityExponential(MpzT value, MpzT targetFragment)
 	{
 		var this2 = (TCertain)this;
 		Debug.Assert(high != null && highLength != null);
@@ -1119,7 +1166,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			var newFragment = fragment << SubbranchesBitLength;
 			if (_capacity < newFragment)
 				IncreaseCapacityLinear(newFragment);
-			var highCount = (int)RedStarLinq.Min(GetArrayLength(value, newFragment), Subbranches);
+			var highCount = (int)RedStarLinqMath.Min(GetArrayLength(value, newFragment), Subbranches);
 			var oldHigh = high;
 			var oldHighLength = highLength;
 			var oldLength = Length;
@@ -1156,7 +1203,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void IncreaseCapacityLinear(MpzT value)
+	protected virtual void IncreaseCapacityLinear(MpzT value)
 	{
 		var this2 = (TCertain)this;
 		Debug.Assert(high != null && highLength != null);
@@ -1192,14 +1239,14 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected override MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
+	protected override MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
 	{
 		if (length == 0)
 			return -1;
 		if (low != null)
 			return IndexOfTrivial(item, index, length, fromEnd);
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
@@ -1280,7 +1327,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected virtual MpzT IndexOfTrivial(T item, MpzT index, MpzT length, bool fromEnd)
+	protected virtual MpzT IndexOfTrivial(T item, MpzT index, MpzT length, bool fromEnd)
 	{
 		Debug.Assert(low != null);
 		Debug.Assert(index < int.MaxValue - 1);
@@ -1298,7 +1345,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return func(item, (int)index, (int)length);
 	}
 
-	private protected override void InsertInternal(MpzT index, T item)
+	protected override void InsertInternal(MpzT index, T item)
 	{
 		var this2 = (TCertain)this;
 		EnsureCapacity(Length + 1);
@@ -1315,7 +1362,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		if (high == null || highLength == null)
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (bReversed)
 		{
@@ -1394,7 +1441,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected override void InsertInternal(MpzT index, TCertain bigList)
+	protected override void InsertInternal(MpzT index, TCertain bigList)
 	{
 		var this2 = (TCertain)this;
 		var length = bigList.Length;
@@ -1412,7 +1459,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		var bReversedOld = bReversed;
@@ -1485,7 +1532,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void ReduceCapacityExponential(MpzT newFragment)
+	protected virtual void ReduceCapacityExponential(MpzT newFragment)
 	{
 		var this2 = (TCertain)this;
 		do
@@ -1518,7 +1565,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected virtual void ReduceCapacityLinear(MpzT value)
+	protected virtual void ReduceCapacityLinear(MpzT value)
 	{
 		Debug.Assert(high != null && highLength != null);
 		var highCount = (int)GetArrayLength(value, fragment);
@@ -1554,7 +1601,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		return (TCertain)this;
 	}
 
-	private protected override void RemoveAtInternal(MpzT index)
+	protected override void RemoveAtInternal(MpzT index)
 	{
 		if (low != null)
 		{
@@ -1570,7 +1617,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
 				high[^(offsetFromEnd + 1)] = temp;
-				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				temp.RemoveEndInternal(RedStarLinqMath.Min(high[^1].Length, temp.Length));
 				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 				highLength.RemoveAt(intIndex);
@@ -1582,7 +1629,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
@@ -1591,7 +1638,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected override void RemoveEndInternal(MpzT index)
+	protected override void RemoveEndInternal(MpzT index)
 	{
 		if (index == Length)
 			return;
@@ -1620,7 +1667,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
@@ -1629,7 +1676,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected override void RemoveInternal(MpzT index, MpzT length)
+	protected override void RemoveInternal(MpzT index, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -1643,7 +1690,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			return;
 		}
 		else if (high == null || highLength == null)
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		var endIndex = index + length - 1;
 		if (bReversed)
@@ -1658,7 +1705,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
 				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
 				high[^(offsetFromEnd + 1)] = temp;
-				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
+				temp.RemoveEndInternal(RedStarLinqMath.Min(high[^1].Length, temp.Length));
 				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 				if (offsetFromEnd != 0)
@@ -1690,7 +1737,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			}
 			if (tempRange.Length != 0)
 			{
-				tempRange[0].RemoveEndInternal(RedStarLinq.Min(high[^1].Length, tempRange[0].Length));
+				tempRange[0].RemoveEndInternal(RedStarLinqMath.Min(high[^1].Length, tempRange[0].Length));
 				high[^1].CopyToInternal(0, tempRange[0], 0, high[^1].Length);
 				high[^1].ClearInternal(false);
 			}
@@ -1724,7 +1771,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		return (TCertain)this;
 	}
 
-	private protected override void ReverseInternal(MpzT index, MpzT length)
+	protected override void ReverseInternal(MpzT index, MpzT length)
 	{
 		if (length == 0)
 			return;
@@ -1738,73 +1785,159 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 		Debug.Assert(high != null && highLength != null);
 		var endIndex = index + length - 1;
-		if (bReversed)
-			(index, endIndex) = (Length - 1 - endIndex, Length - 1 - index);
-		var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
-		var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
-		if (intIndex == endIntIndex)
+		var bReversedOld = bReversed;
+		if (bReversedOld)
 		{
-			if (intIndex != highLength.Length - 1 && bitsIndex == 0 && endBitsIndex == highLength[intIndex] - 1)
+			Reverse();
+			(index, endIndex) = (Length - 1 - endIndex, Length - 1 - index);
+		}
+		try
+		{
+			var intIndex = highLength.IndexOfNotGreaterSum(index, out var bitsIndex);
+			var endIntIndex = highLength.IndexOfNotGreaterSum(endIndex, out var endBitsIndex);
+			if (intIndex == endIntIndex)
 			{
-				var temp = high[intIndex];
-				var offsetFromEnd = Capacity == high.Length * fragment ? 0 : 1;
-				high.CopyRangeTo(intIndex + 1, high, intIndex, high.Length - intIndex - offsetFromEnd - 1);
-				high[^(offsetFromEnd + 1)] = temp;
-				temp.RemoveEndInternal(RedStarLinq.Min(high[^1].Length, temp.Length));
-				high[^1].CopyToInternal(0, temp, 0, high[^1].Length);
-				high[^1].ClearInternal(false);
-				if (offsetFromEnd != 0)
-					highLength[intIndex] = highLength[intIndex + 1];
-				highLength.RemoveAt(intIndex + offsetFromEnd);
+				high[intIndex].ReverseInternal(bitsIndex, length);
+				return;
+			}
+			if (bitsIndex == 0 && endBitsIndex == highLength[endIntIndex] - 1)
+			{
+				for (var i = intIndex; i < endIntIndex + 1; i++)
+					high[i].Reverse();
+				high.Reverse(intIndex, endIntIndex + 1 - intIndex);
+				highLength.Reverse(intIndex, endIntIndex + 1 - intIndex);
+				return;
+			}
+			for (var i = intIndex + 1; i < endIntIndex - 1; i++)
+				high[i].Reverse();
+			high.Reverse(intIndex + 1, endIntIndex - 1 - intIndex);
+			highLength.Reverse(intIndex + 1, endIntIndex - 1 - intIndex);
+			TCertain tempRange;
+			if (endBitsIndex + 1 == highLength[intIndex] - bitsIndex)
+			{
+				tempRange = high[intIndex].GetRange(bitsIndex);
+				high[intIndex].CopyToInternal(bitsIndex, high[endIntIndex], 0, endBitsIndex + 1, true);
+				high[endIntIndex].Reverse(0, endBitsIndex + 1);
+				tempRange.Reverse();
+				tempRange.CopyToInternal(0, high[intIndex], bitsIndex, tempRange.Length, true);
+				return;
+			}
+			var greaterAtEnd = endBitsIndex + 1 > highLength[intIndex] - bitsIndex;
+			var greaterIndex = greaterAtEnd ? endIntIndex : intIndex;
+			var lessIndex = greaterAtEnd ? intIndex : endIntIndex;
+			var greater = high[greaterIndex];
+			var less = high[lessIndex];
+			var commonLength = greaterAtEnd ? highLength[intIndex] - bitsIndex : endBitsIndex + 1;
+			var endCommonIndex = greaterAtEnd ? endBitsIndex + 1 - commonLength : 0;
+			var difference = (endBitsIndex + 1 - highLength[intIndex] + bitsIndex).Abs();
+			if (commonLength == 0)
+			{
+				if (greaterAtEnd)
+				{
+					high.CopyRangeTo(intIndex + 1, high, intIndex + 2, endIntIndex - intIndex - 2);
+					less.Reverse();
+					high[intIndex + 1] = less;
+					var movingLength = highLength[endIntIndex];
+					highLength.CopyRangeTo(intIndex + 1, highLength, intIndex + 2, endIntIndex - intIndex - 2);
+					highLength[intIndex + 1] = movingLength;
+				}
+				else
+				{
+					high.CopyRangeTo(intIndex + 1, high, intIndex, endIntIndex - intIndex - 2);
+					less.Reverse();
+					high[endIntIndex - 1] = less;
+					var movingLength = highLength[intIndex];
+					highLength.CopyRangeTo(intIndex + 1, highLength, intIndex, endIntIndex - intIndex - 2);
+					highLength[endIntIndex - 1] = movingLength;
+				}
+			}
+			tempRange = high[intIndex].GetRange(bitsIndex, commonLength);
+			high[intIndex].CopyToInternal(bitsIndex, high[endIntIndex], endCommonIndex, commonLength, true);
+			high[endIntIndex].Reverse(endCommonIndex, commonLength);
+			tempRange.Reverse();
+			tempRange.CopyToInternal(0, high[intIndex], bitsIndex, commonLength, true);
+			var takeIndex = greaterAtEnd ? 0 : bitsIndex + commonLength;
+			var insertIndex = greaterAtEnd ? less.Length : 0;
+			if (less.Length + difference <= fragment)
+			{
+				if (less.Length + difference > less.Capacity)
+					less.Capacity = fragment;
+				less.InsertInternal(insertIndex, greater.GetRange(takeIndex, difference));
+				greater.Remove(takeIndex, difference);
+				less.Reverse(insertIndex, difference);
+				highLength[greaterIndex] -= difference;
+				highLength[lessIndex] += difference;
+				return;
+			}
+			var compactified = false;
+		tryAddBranch:
+			if (highLength.Length < high.Length)
+			{
+				var offsetFromEnd = 0;
+				if (high[^1].Capacity == fragment) { }
+				else if (highLength.Length < high.Length - 1)
+					offsetFromEnd = 1;
+				else
+					high[^1].Capacity = fragment;
+				less = high[^(offsetFromEnd + 1)];
+				var shiftIndex = greaterAtEnd ? endIntIndex : intIndex + 1;
+				high.CopyRangeTo(shiftIndex, high, shiftIndex + 1, high.Length - shiftIndex - offsetFromEnd - 1);
+				less.AddRange(greater.GetRange(takeIndex, difference));
+				less.Reverse();
+				greater.Remove(takeIndex, difference);
+				high[shiftIndex] = less;
+				highLength.CopyRangeTo(shiftIndex, highLength, shiftIndex + 1,
+					RedStarLinqMath.Min(high.Length - shiftIndex - offsetFromEnd - 1, highLength.Length - shiftIndex));
+				highLength[shiftIndex] = difference;
+			}
+			else if (high.Length < Subbranches)
+			{
+				IncreaseCapacityLinear(Min(high.Length << 1, Subbranches) * fragment);
+				goto tryAddBranch;
+			}
+			else if (!compactified)
+			{
+				Compactify();
+				compactified = true;
+				goto tryAddBranch;
 			}
 			else
 			{
-				high[intIndex].RemoveInternal(bitsIndex, length);
-				highLength[intIndex] -= length;
+				IncreaseCapacityExponential(Capacity << 1, fragment << SubbranchesBitLength);
+				Debug.Assert(high != null && high.Length == 2 && highLength != null && highLength.Length == 1
+					&& high[0].low == null && high[0].high != null && high[0].highLength != null
+					&& high[0].high!.Length > 1 && high[0].highLength!.Length > 1);
+				less = high[0].high![^1];
+				high[1].AddRange(less);
+				highLength[1].Add(less.Length);
+				less.Clear();
+				var shiftIndex = greaterAtEnd ? endIntIndex : intIndex + 1;
+				high[0].high!.CopyRangeTo(shiftIndex, high[0].high!, shiftIndex + 1, high[0].high!.Length - shiftIndex - 1);
+				less.AddRange(greater.GetRange(takeIndex, difference));
+				less.Reverse();
+				greater.Remove(takeIndex, difference);
+				high[0].high![shiftIndex] = less;
+				high[0].highLength!.CopyRangeTo(shiftIndex, high[0].highLength!, shiftIndex + 1,
+					high[0].highLength!.Length - shiftIndex - 1);
+				high[0].highLength![shiftIndex] = difference;
 			}
 		}
-		else
+		finally
 		{
-			var startOffset = bitsIndex == 0 ? 0 : 1;
-			var endOffset = endBitsIndex + 1 == highLength[endIntIndex] ? 1 : 0;
-			if (startOffset == 1)
-			{
-				high[intIndex].RemoveEndInternal(bitsIndex);
-				highLength[intIndex] = bitsIndex;
-			}
-			var tempRange = high.GetRange(intIndex + startOffset, endIntIndex + endOffset - (intIndex + startOffset));
-			var tempOffset = Capacity == high.Length * fragment ? 0 : 1;
-			var copyLength = high.Length - (endIntIndex + endOffset) - tempOffset;
-			if (copyLength > 0)
-			{
-				high.CopyRangeTo(endIntIndex + endOffset, high, intIndex + startOffset, copyLength);
-				tempRange.CopyRangeTo(0, high, high.Length + intIndex + startOffset - (endIntIndex + endOffset) - tempOffset, tempRange.Length);
-			}
-			if (tempRange.Length != 0)
-			{
-				tempRange[0].RemoveEndInternal(RedStarLinq.Min(high[^1].Length, tempRange[0].Length));
-				high[^1].CopyToInternal(0, tempRange[0], 0, high[^1].Length);
-				high[^1].ClearInternal(false);
-			}
-			highLength.Remove((intIndex + startOffset)..(endIntIndex + endOffset));
-			for (var i = high.Length - tempRange.Length; i < high.Length; i++)
-				high[i].ClearInternal(false);
-			Length = highLength.ValuesSum;
-			if (endOffset == 0)
-			{
-				high[intIndex + startOffset].RemoveInternal(0, endBitsIndex + 1);
-				if (highLength.Length > intIndex + startOffset)
-					highLength[intIndex + startOffset] -= endBitsIndex + 1;
-			}
-		}
 #if VERIFY
-		if (high != null && highLength != null)
-			Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
-		Verify();
+			if (high != null && highLength != null)
+			{
+				Debug.Assert(Length == highLength.ValuesSum && Length == high.Sum(x => x.Length));
+				Debug.Assert(highLength.All((x, index) => x == high[index].Length));
+			}
+			Verify();
 #endif
+			if (bReversedOld)
+				Reverse();
+		}
 	}
 
-	private protected override void SetInternal(MpzT index, T value)
+	protected override void SetInternal(MpzT index, T value)
 	{
 		if (low != null)
 			low[(int)(bReversed ? Length - 1 - index : index)] = value;
@@ -1817,7 +1950,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			high[intIndex].SetInternal(bitsIndex, value);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 #if VERIFY
 		if (high != null && highLength != null)
@@ -1834,7 +1967,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		return SetOrAddInternal(index, value);
 	}
 
-	private protected virtual TCertain SetOrAddInternal(MpzT index, T value)
+	protected virtual TCertain SetOrAddInternal(MpzT index, T value)
 	{
 		if (index == Length)
 			return Add(value);
@@ -1848,9 +1981,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 	}
 #if VERIFY
 
-	private protected override void Verify() => Verify(Root);
+	protected override void Verify() => Verify(Root);
 
-	private protected virtual void Verify(TCertain item)
+	protected virtual void Verify(TCertain item)
 	{
 		item.VerifySingle();
 		if (item.high == null)
@@ -1862,7 +1995,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		}
 	}
 
-	private protected override void VerifySingle()
+	protected override void VerifySingle()
 	{
 		Debug.Assert(low != null ^ (high != null || highLength != null));
 		Debug.Assert(Length <= Capacity);
@@ -1878,7 +2011,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 			Debug.Assert((high.Length - 1) * fragment + high[^1].Capacity == Capacity);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 #endif

@@ -148,9 +148,9 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	void System.Collections.ICollection.CopyTo(Array array, int arrayIndex) => CopyToHelper(array, arrayIndex);
 
-	private protected abstract void CopyToHelper(Array array, int arrayIndex);
+	protected abstract void CopyToHelper(Array array, int arrayIndex);
 
-	private protected abstract void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex);
+	protected abstract void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex);
 
 	public abstract void ExceptWith(IEnumerable<(TKey Key, TValue Value)> other);
 
@@ -166,7 +166,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-	private protected abstract IDictionaryEnumerator GetEnumeratorHelper();
+	protected abstract IDictionaryEnumerator GetEnumeratorHelper();
 
 	internal abstract System.Collections.ICollection GetKeyListHelper();
 
@@ -234,7 +234,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return SymmetricExceptInternal(other);
 	}
 
-	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<(TKey Key, TValue Value)> other)
+	protected virtual TCertain SymmetricExceptInternal(IEnumerable<(TKey Key, TValue Value)> other)
 	{
 		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
 		{
@@ -244,7 +244,7 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 		return (TCertain)this;
 	}
 
-	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	protected virtual TCertain SymmetricExceptInternal(IEnumerable<KeyValuePair<TKey, TValue>> other)
 	{
 		foreach (var item in other is IDictionary<TKey, TValue> dic ? dic : other.ToDictionary())
 		{
@@ -273,9 +273,17 @@ public abstract class BaseDictionary<TKey, TValue, TCertain> : IDictionary<TKey,
 
 	public abstract bool TryGetValue(TKey key, out TValue value);
 
-	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other) => other.ForEach(x => this[x.Key] = x.Value);
+	public virtual void UnionWith(IEnumerable<KeyValuePair<TKey, TValue>> other)
+	{
+		foreach (var x in other)
+			this[x.Key] = x.Value;
+	}
 
-	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other) => other.ForEach(x => this[x.Key] = x.Value);
+	public virtual void UnionWith(IEnumerable<(TKey Key, TValue Value)> other)
+	{
+		foreach (var x in other)
+			this[x.Key] = x.Value;
+	}
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -371,7 +379,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high[key];
 			else
-				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 		set
@@ -381,7 +389,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				high[key] = value;
 			else
-				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 			if (!isHigh && low != null && Length >= _hashThreshold)
 			{
@@ -403,7 +411,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Count;
 			else
-				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
@@ -417,7 +425,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Keys;
 			else
-				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
@@ -431,7 +439,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 			else if (high != null)
 				return high.Values;
 			else
-				throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		}
 	}
@@ -443,7 +451,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Add(key, value);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		if (!isHigh && low != null && Length >= _hashThreshold)
 		{
@@ -460,7 +468,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.Clear();
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -471,29 +479,29 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.ContainsKey(key);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	private protected override void CopyToHelper(Array array, int arrayIndex)
+	protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
 			((ICollection)low).CopyTo(array, arrayIndex);
 		else if (high != null)
 			((ICollection)high).CopyTo(array, arrayIndex);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	private protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		if (!isHigh && low != null)
 			((G.ICollection<KeyValuePair<TKey, TValue>>)low).CopyTo(array, arrayIndex);
 		else if (high != null)
 			((G.ICollection<KeyValuePair<TKey, TValue>>)high).CopyTo(array, arrayIndex);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -502,9 +510,12 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-			other.ForEach(x => RemoveValue(x));
+		{
+			foreach (var x in other)
+				RemoveValue(x);
+		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -513,9 +524,12 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-			other.ForEach(x => Remove(x));
+		{
+			foreach (var x in other)
+				Remove(x);
+		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -524,9 +538,12 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		if (!isHigh && low != null)
 			low.ExceptWith(other);
 		else if (high != null)
-			other.ForEach(x => RemoveValue(x));
+		{
+			foreach (var x in other)
+				RemoveValue(x);
+		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -537,18 +554,18 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
-	private protected override IDictionaryEnumerator GetEnumeratorHelper()
+	protected override IDictionaryEnumerator GetEnumeratorHelper()
 	{
 		if (!isHigh && low != null)
 			return ((System.Collections.IDictionary)low).GetEnumerator();
 		else if (high != null)
 			return high.GetEnumerator();
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -559,7 +576,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Keys;
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -570,7 +587,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Values;
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -586,7 +603,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -602,7 +619,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -618,7 +635,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 					high.Remove(x.Key);
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -629,7 +646,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -640,7 +657,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.Remove(key, out value);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -651,7 +668,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return ((G.ICollection<KeyValuePair<TKey, TValue>>)high).Remove(keyValuePair);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -662,7 +679,7 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			high.TrimExcess();
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -673,7 +690,18 @@ public class Dictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Dictionary<
 		else if (high != null)
 			return high.TryGetValue(key, out value!);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
+	}
+
+	public static implicit operator G.Dictionary<TKey, TValue>(Dictionary<TKey, TValue> x)
+	{
+		if (!x.isHigh && x.low != null)
+			return new(x.low);
+		else if (x.high != null)
+			return x.high;
+		else
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 }
@@ -685,11 +713,17 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
-	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false) => (keys, values) = unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList ? (keyList, valueList).PRemoveDoubles() : (keyCollection, valueCollection).RemoveDoubles();
+	public UnsortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, bool unordered = false)
+	{
+		if (unordered && keyCollection is G.IReadOnlyList<TKey> keyList && valueCollection is G.IReadOnlyList<TValue> valueList)
+			(keys, values) = keyList.Zip(valueList).DistinctBy(x => x.First).Break();
+		else
+			(keys, values) = keyCollection.Zip(valueCollection).DistinctBy(x => x.First).Break();
+	}
 
-	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<(TKey Key, TValue Value)> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break();
+	public UnsortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<(TKey Key, TValue Value)> list ? list.DistinctBy(x => x.Key) : collection.DistinctBy(x => x.Key)).Break();
 
-	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<KeyValuePair<TKey, TValue>> list ? list.PRemoveDoubles(x => x.Key) : collection.RemoveDoubles(x => x.Key)).Break(x => x.Key, x => x.Value);
+	public UnsortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, bool unordered = false) => (keys, values) = (unordered && collection is G.IReadOnlyList<KeyValuePair<TKey, TValue>> list ? list.DistinctBy(x => x.Key) : collection.DistinctBy(x => x.Key)).Break(x => x.Key, x => x.Value);
 
 	public virtual TValue this[TKey key] => throw new NotSupportedException();
 
@@ -731,7 +765,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 	public virtual bool Contains(KeyValuePair<TKey, TValue> item)
 	{
 		var index = IndexOfKey(item.Key);
-		return index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), item.Value);
+		return index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], item.Value);
 	}
 
 	public virtual bool ContainsKey(TKey key) => keys.Contains(key);
@@ -757,7 +791,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		var index = IndexOfKey(key);
 		if (index >= 0)
 		{
-			value = values.GetInternal(index);
+			value = values[index];
 			return true;
 		}
 		else
@@ -786,7 +820,7 @@ internal class UnsortedDictionary<TKey, TValue> : IDictionary<TKey, TValue>
 		{
 			if (index < _dict.Length)
 			{
-				Current = new(_dict.keys.GetInternal(index), _dict.values.GetInternal(index++));
+				Current = new(_dict.keys[index], _dict.values[index++]);
 				return true;
 			}
 			else

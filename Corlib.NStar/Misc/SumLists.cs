@@ -20,7 +20,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		}
 	}
 
-	private protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
+	protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
 
 	private protected virtual Func<T, NodeColor, Node> NodeCreator => Node.GetNew;
 
@@ -83,7 +83,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		++version;
 	}
 
-	private protected virtual Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
+	protected virtual Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
 	{
 		// You're given a sorted array... say 1 2 3 4 5 6
 		// There are 2 cases:
@@ -139,7 +139,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return root;
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
+	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is T[] array2)
 			CopyToInternal(0, array2, arrayIndex, _size);
@@ -157,7 +157,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		GC.SuppressFinalize(this);
 	}
 
-	private protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the value from the successor to the matching node, and delete the successor.
@@ -321,7 +321,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 
 	public virtual bool Increase(int index) => Update(index, (dynamic?)GetInternal(index) + 1);
 
-	private protected override int IndexOfInternal(T value, int index, int length) =>
+	protected override int IndexOfInternal(T value, int index, int length) =>
 		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
 			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
 
@@ -450,14 +450,14 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 			Insert(index++, item);
 		return (TCertain)this;
 	}
 
-	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		for (var i = 0; i < span.Length; i++)
 			Insert(index++, span[i]);
@@ -497,7 +497,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	// Virtual function for TreeSubSet, which may need to do range checks.
 	internal virtual bool IsWithinRange(int index) => true;
 
-	private protected override int LastIndexOfInternal(T value, int index, int length) =>
+	protected override int LastIndexOfInternal(T value, int index, int length) =>
 		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
 			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
 
@@ -579,9 +579,37 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 #endif
 	}
 
-	private protected override TCertain ReverseInternal(int index, int length) =>
-		throw new NotSupportedException("Этот метод временно не поддерживается в этой коллекции."
-			+ " Если он нужен вам прямо сейчас, используйте другой вид списка, например, NList<int> или NList<MpzT>.");
+	protected override void ReverseInternal(int index, int length)
+	{
+		using List<Node> nodes = [];
+		var i = 0;
+		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
+		var current = root;
+		while (current != null)
+		{
+			stack.Push(current);
+			if (i++ >= index)
+				nodes.Add(current);
+			current = current.Left;
+		}
+		while (stack.Length != 0)
+		{
+			current = stack.Pop();
+			if (i >= index + length)
+				break;
+			var node = current.Right;
+			while (node != null)
+			{
+				stack.Push(node);
+				if (i++ >= index)
+					nodes.Add(node);
+				node = node.Left;
+			}
+		}
+		using var values = nodes.ToList(x => x.Value).Reverse();
+		for (i = 0; i < nodes.Length; i++)
+			nodes[i].Update(values[i]);
+	}
 
 	// Virtual function for TreeSubSet, which may need the length variable of the parent list.
 	internal virtual int TotalCount() => Length;
@@ -620,11 +648,11 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	internal virtual bool VersionUpToDate() => true;
 #endif
 
-	internal abstract class Node : IDisposable
+	protected internal abstract class Node : IDisposable
 	{
 		private protected Node? _left;
 		private protected Node? _right;
-		private protected virtual Node? Parent { get; set; }
+		protected virtual Node? Parent { get; set; }
 
 		internal virtual T Value { get; private protected set; }
 		private protected int _leavesCount;
@@ -967,11 +995,11 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		internal abstract void UpdateValuesSum(Node? newNode, Node? oldNode);
 
 #if VERIFY
-		private protected virtual int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
+		protected virtual int GetCount() => 1 + (Left?.GetCount() ?? 0) + (Right?.GetCount() ?? 0);
 
-		private protected virtual bool HasChild(Node child) => child == Left || child == Right;
+		protected virtual bool HasChild(Node child) => child == Left || child == Right;
 
-		private protected virtual bool HasChildren(Node child1, Node child2)
+		protected virtual bool HasChildren(Node child1, Node child2)
 		{
 			Debug.Assert(child1 != child2);
 			return Left == child1 && Right == child2
@@ -1028,22 +1056,22 @@ public class SumList : BaseSumList<int, SumList>
 
 	public SumList(ReadOnlySpan<int> span) : this((IEnumerable<int>)span.ToArray()) { }
 
-	private protected override Func<int, SumList> CapacityCreator => x => [];
+	protected override Func<int, SumList> CapacityCreator => x => [];
 
-	private protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<int>, SumList> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<int>, SumList> SpanCreator => x => new(x);
 
 	public virtual long ValuesSum => (root as Node)?.ValuesSum ?? 0;
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		_size += length;
 		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
 		subset.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1070,7 +1098,7 @@ public class SumList : BaseSumList<int, SumList>
 			destination.Add(en.Current);
 	}
 
-	private protected override void CopyToInternal(int index, int[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, int[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -1092,7 +1120,7 @@ public class SumList : BaseSumList<int, SumList>
 
 	public override IEnumerator<int> GetEnumerator() => new Enumerator(this);
 
-	internal override int GetInternal(int index, bool invoke = true)
+	protected override int GetInternal(int index, bool invoke = true)
 	{
 		var current = root;
 		while (current != null)
@@ -1186,7 +1214,7 @@ public class SumList : BaseSumList<int, SumList>
 		return index - 1;
 	}
 
-	private protected override void SetAllInternal(int value, int index, int length)
+	protected override void SetAllInternal(int value, int index, int length)
 	{
 		int oldLength = _size, endIndex = index + length - 1;
 		for (var i = index; i < Min(_size, endIndex); i++)
@@ -1551,7 +1579,7 @@ public class SumList : BaseSumList<int, SumList>
 			return base.FindNode(index) as Node;
 		}
 
-		internal override int GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
+		protected override int GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
 
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base
@@ -1741,11 +1769,11 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	private protected override Func<int, BigSumList> CapacityCreator => x => [];
+	protected override Func<int, BigSumList> CapacityCreator => x => [];
 
-	private protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<MpzT>, BigSumList> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<MpzT>, BigSumList> SpanCreator => x => new(x);
 
 	public override int Length
 	{
@@ -1758,14 +1786,14 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public virtual MpzT ValuesSum => new((root as Node)?.ValuesSum ?? 0);
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		_size += length;
 		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
 		subset.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -1792,7 +1820,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			destination.Add(en.Current);
 	}
 
-	private protected override void CopyToInternal(int index, MpzT[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, MpzT[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -1822,7 +1850,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	public override IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
 
-	internal override MpzT GetInternal(int index, bool invoke = true)
+	protected override MpzT GetInternal(int index, bool invoke = true)
 	{
 		var current = root;
 		while (current != null)
@@ -2302,7 +2330,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return base.FindNode(index) as Node;
 		}
 
-		internal override MpzT GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
+		protected override MpzT GetInternal(int index, bool invoke = true) => _underlying.GetInternal(_min + index, invoke);
 
 		// This passes functionality down to the underlying tree, clipping edges if necessary
 		// There's nothing gained by having a nested subset. May as well draw it from the base

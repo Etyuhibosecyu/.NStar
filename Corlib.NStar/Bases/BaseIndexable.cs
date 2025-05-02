@@ -4,7 +4,7 @@ namespace Corlib.NStar;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 {
-	private protected int _size;
+	protected int _size;
 	[NonSerialized]
 	private protected object _syncRoot = new();
 
@@ -57,7 +57,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			if (collection is G.IList<T> list2)
 				list = list2.GetSlice();
 			else
-				list = RedStarLinq.ToList(collection);
+				list = new List<T>(collection);
 		}
 		return ContainsInternal(list, index, length);
 	}
@@ -125,7 +125,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return false;
 	}
 
-	private protected virtual bool ContainsInternal(G.IReadOnlyList<T> list, int index, int length)
+	protected virtual bool ContainsInternal(G.IReadOnlyList<T> list, int index, int length)
 	{
 		var j = 0;
 		for (var i = 0; i - j <= length - list.Count; i++)
@@ -177,14 +177,14 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual void CopyTo(T[] array, int arrayIndex) => CopyTo(0, array, arrayIndex, Length);
 
-	private protected virtual void CopyToInternal(Array array, int arrayIndex)
+	protected virtual void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
 			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 		CopyToInternal(0, array2, arrayIndex, _size);
 	}
 
-	private protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int length);
+	protected abstract void CopyToInternal(int index, T[] array, int arrayIndex, int length);
 
 	public abstract void Dispose();
 
@@ -208,7 +208,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		_ => false,
 	};
 
-	private protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
+	protected virtual bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
@@ -218,7 +218,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return EqualsToNonList(collection, index, toEnd);
 	}
 
-	private protected virtual bool EqualsToList(G.IList<T> list, int index, bool toEnd = false)
+	protected virtual bool EqualsToList(G.IList<T> list, int index, bool toEnd = false)
 	{
 		if (index > _size - list.Count)
 			return false;
@@ -230,7 +230,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return true;
 	}
 
-	private protected virtual bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd = false)
+	protected virtual bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd = false)
 	{
 		if (collection.TryGetLengthEasily(out var length))
 		{
@@ -376,7 +376,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return hash;
 	}
 
-	internal abstract T GetInternal(int index, bool invoke = true);
+	protected abstract T GetInternal(int index, bool invoke = true);
 
 	public virtual Slice<T> GetSlice() => GetSlice(0, _size);
 
@@ -403,7 +403,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return GetSlice(start, length);
 	}
 
-	private protected abstract Slice<T> GetSliceInternal(int index, int length);
+	protected abstract Slice<T> GetSliceInternal(int index, int length);
 
 	public virtual int IndexOf(IEnumerable<T> collection) => IndexOf(collection, 0, _size);
 
@@ -430,7 +430,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		}
 
 		if (collection is not G.ICollection<T> c)
-			c = RedStarLinq.ToList(collection);
+			c = new List<T>(collection);
 		collectionLength = c.Count;
 		for (var i = index; i <= index + length - collectionLength; i++)
 			if (EqualsInternal(collection, i))
@@ -487,7 +487,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return -1;
 	}
 
-	private protected abstract int IndexOfInternal(T item, int index, int length);
+	protected abstract int IndexOfInternal(T item, int index, int length);
 
 	public virtual int LastIndexOf(IEnumerable<T> collection) => LastIndexOf(collection, _size - 1, _size);
 
@@ -511,7 +511,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 			return -1;
 		}
 		if (collection is not G.ICollection<T> c)
-			c = RedStarLinq.ToList(collection);
+			c = new List<T>(collection);
 		collectionLength = c.Count;
 		var startIndex = index + 1 - length;
 		for (var i = length - collectionLength; i >= 0; i--)
@@ -582,7 +582,7 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 		return -1;
 	}
 
-	private protected abstract int LastIndexOfInternal(T item, int index, int length);
+	protected abstract int LastIndexOfInternal(T item, int index, int length);
 
 	public virtual T Random() => GetInternal(random.Next(_size));
 
@@ -724,7 +724,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 
 	public virtual int Compare(TCertain other, int length) => Compare(0, other, 0, length);
 
-	private protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
+	protected virtual int CompareInternal(int index, TCertain other, int otherIndex, int length)
 	{
 		for (var i = 0; i < length; i++)
 			if (!(GetInternal(index + i)?.Equals(other.GetInternal(otherIndex + i)) ?? other.GetInternal(otherIndex + i) == null))
@@ -863,7 +863,7 @@ public abstract class BaseIndexable<T, TCertain> : BaseIndexable<T>, IEquatable<
 		return GetRange(start, length, alwaysCopy);
 	}
 
-	private protected abstract TCertain GetRangeInternal(int index, int length);
+	protected abstract TCertain GetRangeInternal(int index, int length);
 
 	public virtual int IndexOf(TCertain collection) => IndexOf((IEnumerable<T>)collection, 0, _size);
 

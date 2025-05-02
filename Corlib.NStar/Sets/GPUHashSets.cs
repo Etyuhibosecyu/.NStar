@@ -24,7 +24,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 	}
 	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
 
-	private protected override void ClearInternal()
+	protected override void ClearInternal()
 	{
 		if (_size > 0)
 		{
@@ -36,14 +36,14 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		}
 	}
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		for (var i = 0; i < length; i++)
 			SetNull(index + i);
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -57,7 +57,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		}
 	}
 
-	private protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
+	protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
 	{
 		var hashCode = hashCodes.View[sourceIndex];
 		if (hashCode < 0)
@@ -75,7 +75,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		}
 	}
 
-	private protected virtual void CopyToCommon(int index, T[] array, int arrayIndex, int length)
+	protected virtual void CopyToCommon(int index, T[] array, int arrayIndex, int length)
 	{
 		var skipped = 0;
 		for (var i = 0; i < index; i++)
@@ -124,7 +124,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		};
 	}
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var item = items.View[index];
 		if (invoke)
@@ -157,9 +157,9 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		return -1;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length) => IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF);
+	protected override int IndexOfInternal(T item, int index, int length) => IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF);
 
-	private protected virtual int IndexOfInternal(T item, int index, int length, int hashCode)
+	protected virtual int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
 		if (buckets != null)
 		{
@@ -179,7 +179,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		return -1;
 	}
 
-	private protected virtual void Initialize(int capacity, out MemoryBuffer1D<Index1D, Stride1D.Dense> buckets, out MemoryBuffer1D<int, Stride1D.Dense> hashCodes, out MemoryBuffer1D<Index1D, Stride1D.Dense> nexts, out MemoryBuffer1D<T, Stride1D.Dense> items)
+	protected virtual void Initialize(int capacity, out MemoryBuffer1D<Index1D, Stride1D.Dense> buckets, out MemoryBuffer1D<int, Stride1D.Dense> hashCodes, out MemoryBuffer1D<Index1D, Stride1D.Dense> nexts, out MemoryBuffer1D<T, Stride1D.Dense> items)
 	{
 		var size = HashHelpers.GetPrime(capacity);
 		buckets = accel.Allocate1D<Index1D>(size);
@@ -193,9 +193,9 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		VariableView<int> length, T item, VariableView<int> index, int hashCode) =>
 		GPUHashSet<T>.Insert(buckets, hashCodes, nexts, items, freeList, freeCount, length, item, index, hashCode);
 
-	private protected abstract TCertain Insert(T item, out int index, int hashCode);
+	protected abstract TCertain Insert(T item, out int index, int hashCode);
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
@@ -216,7 +216,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		return this2;
 	}
 
-	private protected virtual void RemoveAtCommon(int index, ref int tHashCode, ref T tItem)
+	protected virtual void RemoveAtCommon(int index, ref int tHashCode, ref T tItem)
 	{
 		uint collisionCount = 0;
 		var bucket = ~tHashCode % buckets.IntExtent;
@@ -241,7 +241,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		tItem = default!;
 	}
 
-	private protected virtual bool RemoveValueCommon(T item, int hashCode, RemoveValueAction action)
+	protected virtual bool RemoveValueCommon(T item, int hashCode, RemoveValueAction action)
 	{
 		uint collisionCount = 0;
 		var bucket = hashCode % buckets.IntExtent;
@@ -271,11 +271,11 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		return false;
 	}
 
-	private protected delegate void RemoveValueAction(ref int hashCode, ref Index1D next, ref T item, int i);
+	protected delegate void RemoveValueAction(ref int hashCode, ref Index1D next, ref T item, int i);
 
-	private protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
+	protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
 
-	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
+	protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		var newBuckets = accel.Allocate1D<Index1D>(newSize);
 		var newHashCodes = accel.Allocate1D<int>(newSize);
@@ -308,7 +308,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 		items = newItems;
 	}
 
-	private protected virtual void SetNull(int index)
+	protected virtual void SetNull(int index)
 	{
 		if (this is not ListHashSet<T>)
 		{
@@ -354,7 +354,7 @@ public abstract class BaseGPUHashSet<T, TCertain> : BaseSet<T, TCertain> where T
 
 	public override bool TryGetIndexOf(T item, out int index) => TryGetIndexOf(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF);
 
-	private protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
+	protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -435,13 +435,13 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 
 	public GPUHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
 
-	private protected override Func<int, GPUHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, GPUHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, GPUHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, GPUHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, GPUHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, GPUHashSet<T>> SpanCreator => x => new(x);
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
 		Changed();
@@ -455,18 +455,18 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void CopyToInternal(int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
+	protected override void CopyToInternal(int sourceIndex, GPUHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
-	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
+	protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
 	public override GPUHashSet<T> ExceptWith(IEnumerable<T> other)
 	{
 		if (other is FastDelHashSet<T> fhs)
-			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs.GetInternal(i)));
+			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs[i]));
 		else if (other is ParallelHashSet<T> phs)
-			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs.GetInternal(i)));
+			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs[i]));
 		else if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
@@ -481,13 +481,13 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 			return base.IndexOf(collection, index, length, out collectionLength);
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length, int hashCode)
+	protected override int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
 		var foundIndex = UnsafeIndexOf(item, index, length);
 		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length, hashCode);
 	}
 
-	private protected override void Initialize(int capacity, out MemoryBuffer1D<Index1D, Stride1D.Dense> buckets,
+	protected override void Initialize(int capacity, out MemoryBuffer1D<Index1D, Stride1D.Dense> buckets,
 		out MemoryBuffer1D<int, Stride1D.Dense> hashCodes, out MemoryBuffer1D<Index1D, Stride1D.Dense> nexts,
 		out MemoryBuffer1D<T, Stride1D.Dense> items)
 	{
@@ -557,7 +557,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 			UnsafeInsert(buckets, hashCodes, nexts, items, freeList, freeCount, length, item, index, hashCode);
 	}
 
-	private protected override GPUHashSet<T> Insert(T item, out int index, int hashCode)
+	protected override GPUHashSet<T> Insert(T item, out int index, int hashCode)
 	{
 		if (buckets == null)
 			Initialize(0, out buckets, out hashCodes, out nexts, out items);
@@ -651,7 +651,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		return this;
 	}
 
-	private protected override GPUHashSet<T> RemoveInternal(int index, int length)
+	protected override GPUHashSet<T> RemoveInternal(int index, int length)
 	{
 		Parallel.For(index, index + length, i => RemoveAt(i));
 		return this;
@@ -678,7 +678,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		return true;
 	}
 
-	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
+	protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
 
 	public override bool SetEquals(IEnumerable<T> other)
 	{
@@ -763,7 +763,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		Debug.Assert(IsValidIndex(index) && items.View[index].Equals(item));
 	}
 
-	private protected override GPUHashSet<T> SymmetricExceptInternal(IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
+	protected override GPUHashSet<T> SymmetricExceptInternal(IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
 
 	public override bool TryAdd(T item, out int index)
 	{
@@ -837,7 +837,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 	/// </summary>
 	public virtual int UnsafeIndexOf(T item, int index, int length) => UnsafeIndexOf(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF);
 
-	private protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
+	protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
 	{
 		var buckets = this.buckets;
 		if (buckets.IsValid)
@@ -889,7 +889,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		buckets[targetBucket] = ~index.Value;
 	}
 
-	private protected virtual GPUHashSet<T> UnsafeInsert(T item, out int index, int hashCode)
+	protected virtual GPUHashSet<T> UnsafeInsert(T item, out int index, int hashCode)
 	{
 		if (buckets == null)
 			Initialize(0, out buckets, out hashCodes, out nexts, out items);
@@ -919,7 +919,7 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		return this;
 	}
 
-	private protected virtual GPUHashSet<T> UnsafeRemoveAt(int index)
+	protected virtual GPUHashSet<T> UnsafeRemoveAt(int index)
 	{
 		if (!(buckets.IsValid && hashCodes.IsValid && nexts.IsValid && items.IsValid))
 			return this;
@@ -932,9 +932,9 @@ public class GPUHashSet<T> : BaseGPUHashSet<T, GPUHashSet<T>> where T : unmanage
 		return this;
 	}
 
-	private protected virtual void UnsafeResize() => base.Resize(HashHelpers.ExpandPrime(_size), false);
+	protected virtual void UnsafeResize() => base.Resize(HashHelpers.ExpandPrime(_size), false);
 
-	private protected virtual bool UnsafeTryAdd(T item, out int index, int hashCode)
+	protected virtual bool UnsafeTryAdd(T item, out int index, int hashCode)
 	{
 		index = UnsafeIndexOf(item);
 		if (index >= 0)

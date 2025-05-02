@@ -23,15 +23,15 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	public virtual MpzT Length { get; private protected set; }
 
-	private protected abstract Func<MpzT, TCertain> CapacityCreator { get; }
+	protected abstract Func<MpzT, TCertain> CapacityCreator { get; }
 
-	private protected abstract Func<int, TLow> CapacityLowCreator { get; }
+	protected abstract Func<int, TLow> CapacityLowCreator { get; }
 
-	private protected abstract Func<G.IEnumerable<T>, TCertain> CollectionCreator { get; }
+	protected abstract Func<G.IEnumerable<T>, TCertain> CollectionCreator { get; }
 
-	private protected abstract Func<G.IEnumerable<T>, TLow> CollectionLowCreator { get; }
+	protected abstract Func<G.IEnumerable<T>, TLow> CollectionLowCreator { get; }
 
-	private protected virtual int DefaultCapacity => 32;
+	protected virtual int DefaultCapacity => 32;
 
 	bool IBigCollection<T>.IsReadOnly => false;
 
@@ -62,9 +62,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		ClearInternal(index, length);
 	}
 
-	private protected abstract void ClearInternal(bool verify = true);
+	protected abstract void ClearInternal(bool verify = true);
 
-	private protected abstract void ClearInternal(MpzT index, MpzT length);
+	protected abstract void ClearInternal(MpzT index, MpzT length);
 
 	public virtual bool Contains(T item) => Contains(item, 0, Length);
 
@@ -174,7 +174,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	public virtual bool ContainsAnyExcluding(TCertain list, MpzT index, MpzT length) =>
 		ContainsAnyExcluding((G.IEnumerable<T>)list, index, length);
 
-	private protected virtual bool ContainsInternal(G.IEnumerable<T> collection, MpzT index, MpzT length)
+	protected virtual bool ContainsInternal(G.IEnumerable<T> collection, MpzT index, MpzT length)
 	{
 		try
 		{
@@ -213,7 +213,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	/// <returns>Клон данного списка (неглубокий).</returns>
 	public virtual TCertain Copy() => CollectionCreator(this);
 
-	private protected abstract void CopyToInternal(MpzT sourceIndex, TCertain destination,
+	protected abstract void CopyToInternal(MpzT sourceIndex, TCertain destination,
 		MpzT destinationIndex, MpzT length, bool ignoreReversed = false);
 
 	public virtual void CopyTo(Array array, int arrayIndex)
@@ -295,20 +295,20 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		CopyTo(0, array, arrayIndex, (int)Length);
 	}
 
-	private protected virtual void CopyToInternal(Array array, int arrayIndex)
+	protected virtual void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (array is not T[] array2)
 			throw new ArgumentException("Ошибка, такой тип массива не подходит для копирования этой коллекции.", nameof(array));
 		CopyToInternal(0, array2, arrayIndex, (int)Length);
 	}
 
-	private protected abstract void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length);
+	protected abstract void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length);
 
-	private protected abstract void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length);
+	protected abstract void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length);
 
 	public abstract void Dispose();
 
-	private protected virtual void EnsureCapacity(MpzT min)
+	protected virtual void EnsureCapacity(MpzT min)
 	{
 		if (Capacity < min)
 		{
@@ -332,7 +332,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		_ => false,
 	};
 
-	private protected virtual bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
+	protected virtual bool EqualsInternal(G.IEnumerable<T>? collection, MpzT index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
@@ -342,7 +342,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 			return EqualsToNonList(collection, index, toEnd);
 	}
 
-	private protected virtual bool EqualsToList(G.IList<T> list, MpzT index, bool toEnd = false)
+	protected virtual bool EqualsToList(G.IList<T> list, MpzT index, bool toEnd = false)
 	{
 		if (index > Length - list.Count)
 			return false;
@@ -354,7 +354,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return true;
 	}
 
-	private protected virtual bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
+	protected virtual bool EqualsToNonList(G.IEnumerable<T> collection, MpzT index, bool toEnd = false)
 	{
 		if (collection.TryGetLengthEasily(out var length))
 		{
@@ -386,9 +386,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return hash;
 	}
 
-	private protected abstract T GetInternal(MpzT index, bool invoke = true);
+	protected abstract T GetInternal(MpzT index, bool invoke = true);
 
-	private protected virtual MpzT GetProperCapacity(MpzT min) => min;
+	protected virtual MpzT GetProperCapacity(MpzT min) => min;
 
 	public virtual TCertain GetRange(MpzT index, bool alwaysCopy = false) => GetRange(index, Length - index, alwaysCopy);
 
@@ -401,7 +401,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return GetRangeInternal(index, length, alwaysCopy);
 	}
 
-	private protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false)
+	protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false)
 	{
 		if (length == 0)
 			return CapacityCreator(0);
@@ -439,7 +439,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return IndexOfInternal(item, index, length, false);
 	}
 
-	private protected virtual MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
+	protected virtual MpzT IndexOfInternal(T item, MpzT index, MpzT length, bool fromEnd)
 	{
 		if (fromEnd)
 		{
@@ -499,9 +499,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return (TCertain)this;
 	}
 
-	private protected abstract void InsertInternal(MpzT index, T item);
+	protected abstract void InsertInternal(MpzT index, T item);
 
-	private protected abstract void InsertInternal(MpzT index, TCertain bigList);
+	protected abstract void InsertInternal(MpzT index, TCertain bigList);
 
 	public virtual MpzT LastIndexOf(T item) => LastIndexOf(item, Length - 1, Length);
 
@@ -545,7 +545,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return (TCertain)this;
 	}
 
-	private protected abstract void RemoveInternal(MpzT index, MpzT length);
+	protected abstract void RemoveInternal(MpzT index, MpzT length);
 
 	public virtual TCertain RemoveAt(MpzT index)
 	{
@@ -557,7 +557,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 
 	void IBigList<T>.RemoveAt(MpzT index) => RemoveAt(index);
 
-	private protected virtual void RemoveAtInternal(MpzT index)
+	protected virtual void RemoveAtInternal(MpzT index)
 	{
 		var this2 = (TCertain)this;
 		Length -= 1;
@@ -584,7 +584,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return (TCertain)this;
 	}
 
-	private protected abstract void RemoveEndInternal(MpzT index);
+	protected abstract void RemoveEndInternal(MpzT index);
 
 	/// <summary>
 	/// Удаляет элемент по его значению, а не по индексу. Возвращает флаг, был ли такой элемент найден и удален.
@@ -645,9 +645,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return (TCertain)this;
 	}
 
-	private protected abstract void ReverseInternal(MpzT index, MpzT length);
+	protected abstract void ReverseInternal(MpzT index, MpzT length);
 
-	private protected abstract void SetInternal(MpzT index, T value);
+	protected abstract void SetInternal(MpzT index, T value);
 
 	/// <summary>
 	/// Заменяет диапазон, начиная с указанного индекса, на копию указанной коллекции (неглубокое копирование).
@@ -669,7 +669,7 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return SetRangeInternal(index, bigList);
 	}
 
-	private protected virtual TCertain SetRangeInternal(MpzT index, TCertain bigList)
+	protected virtual TCertain SetRangeInternal(MpzT index, TCertain bigList)
 	{
 		var length = bigList.Length;
 		if (length == 0)
@@ -706,9 +706,9 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	}
 #if VERIFY
 
-	private protected abstract void Verify();
+	protected abstract void Verify();
 
-	private protected abstract void VerifySingle();
+	protected abstract void VerifySingle();
 #endif
 
 	[Serializable]

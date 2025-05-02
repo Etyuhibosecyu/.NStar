@@ -207,11 +207,11 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 	}
 
 	public BigBitList(MpzT capacity, uint[] values, int subbranchesBitLength = -1, int leafSizeBitLength = -1)
-		: this(RedStarLinq.Max(capacity, values.Length * BitsPerInt), values.AsSpan(),
+		: this(RedStarLinqMath.Max(capacity, values.Length * BitsPerInt), values.AsSpan(),
 		subbranchesBitLength, leafSizeBitLength) { }
 
 	public BigBitList(MpzT capacity, ReadOnlySpan<uint> values, int subbranchesBitLength = -1,
-		int leafSizeBitLength = -1) : this(RedStarLinq.Max(capacity, values.Length * BitsPerInt),
+		int leafSizeBitLength = -1) : this(RedStarLinqMath.Max(capacity, values.Length * BitsPerInt),
 		subbranchesBitLength, leafSizeBitLength)
 	{
 		using BigList<uint> list = new(values);
@@ -223,17 +223,17 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 #endif
 	}
 
-	private protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<MpzT, BigBitList> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override int LeafSizeBitLength { get; init; } = 20;
+	protected override int LeafSizeBitLength { get; init; } = 20;
 
-	private protected override Func<int, BitList> CapacityLowCreator => x => new(x);
+	protected override Func<int, BitList> CapacityLowCreator => x => new(x);
 
-	private protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
+	protected override Func<G.IEnumerable<bool>, BitList> CollectionLowCreator => x => new(x);
 
-	private protected override Func<G.IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<G.IEnumerable<bool>, BigBitList> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override int DefaultCapacity => 256;
+	protected override int DefaultCapacity => 256;
 
 	public virtual BigBitList AddRange(BitArray bitArray)
 	{
@@ -269,7 +269,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.And(y))];
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
@@ -464,7 +464,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 			return result;
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -475,7 +475,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.Not());
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
@@ -490,7 +490,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Or(y))];
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
@@ -502,7 +502,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			high.ForEach(x => x.SetAll(value));
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -513,7 +513,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null)
 			return new(E.SelectMany(high, x => x.ToUIntBigList()));
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -527,7 +527,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		else if (high != null && value.high != null)
 			high = [.. high.Combine(value.high, (x, y) => x.Xor(y))];
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 		return this;
 	}
@@ -563,11 +563,11 @@ public class BigList<T> : BigList<T, BigList<T>, List<T>>
 
 	public BigList(MpzT capacity, ReadOnlySpan<T> values, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(capacity, values, subbranchesBitLength, leafSizeBitLength) { }
 
-	private protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<MpzT, BigList<T>> CapacityCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
+	protected override Func<G.IEnumerable<T>, BigList<T>> CollectionCreator => x => new(x, SubbranchesBitLength, LeafSizeBitLength);
 
-	private protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
+	protected override Func<int, List<T>> CapacityLowCreator => x => new(x);
 
-	private protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, List<T>> CollectionLowCreator => x => new(x);
 }

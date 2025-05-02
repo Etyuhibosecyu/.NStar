@@ -1,3 +1,4 @@
+global using LINQ.NStar;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Mpir.NET;
 global using System;

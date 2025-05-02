@@ -1663,14 +1663,53 @@ public class ListHashSetTests
 	public void TestToArray()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseListTests<string, HashList<string>>.TestToArray(() => new((char)random.Next(33, 127), random.Next(10)));
+		int length, capacity;
+		G.List<string> b;
+		string[] array;
+		string[] array2;
+		string elem;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			capacity = length + random.Next(151);
+			ListHashSet<string> a = new(capacity);
+			b = new(capacity);
+			for (var j = 0; j < length; j++)
+			{
+				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
+				if (!b.Contains(elem))
+					b.Add(elem);
+			}
+			array = a.ToArray();
+			array2 = [.. b];
+			Assert.IsTrue(RedStarLinq.Equals(array, array2));
+			Assert.IsTrue(E.SequenceEqual(array, array2));
+		}
 	}
 
 	[TestMethod]
 	public void TestTrimExcess()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));
-		BaseListTests<string, HashList<string>>.TestTrimExcess(() => new((char)random.Next(33, 127), random.Next(10)));
+		int length, capacity;
+		G.List<string> b;
+		string elem;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			capacity = length + random.Next(9951);
+			ListHashSet<string> a = new(capacity);
+			b = new(capacity);
+			for (var j = 0; j < length; j++)
+			{
+				a.Add(elem = new((char)random.Next(33, 127), random.Next(10)));
+				if (!b.Contains(elem))
+					b.Add(elem);
+			}
+			a.TrimExcess();
+			Assert.IsTrue(RedStarLinq.Equals(a, b));
+			Assert.IsTrue(E.SequenceEqual(a, b));
+		}
 	}
 
 	[TestMethod]

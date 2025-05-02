@@ -63,13 +63,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	private protected override Func<int, SumSet<T>> CapacityCreator => x => [];
+	protected override Func<int, SumSet<T>> CapacityCreator => x => [];
 
-	private protected override Func<IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
 
 	public override IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) => Comparer2.Compare(x.Key, y.Key));
 
-	private protected virtual IComparer<T> Comparer2 { get; }
+	protected virtual IComparer<T> Comparer2 { get; }
 
 	public override int Length
 	{
@@ -110,13 +110,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	private protected override Func<ReadOnlySpan<(T Key, int Value)>, SumSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<(T Key, int Value)>, SumSet<T>> SpanCreator => x => new(x);
 
 	public virtual long ValuesSum => root?.ValuesSum ?? 0;
 
 	public virtual SumSet<T> Add(T key, int value) => Add((key, value));
 
-	private protected virtual void AddAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual void AddAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
 		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
@@ -185,7 +185,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	private protected virtual unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
+	protected virtual unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -302,7 +302,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual bool Contains(T? item) => item != null && TryGetValue(item, out var _);
 
-	private protected virtual bool ContainsAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual bool ContainsAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
 		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
@@ -328,7 +328,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, SumSet<T> destination, int destinationIndex, int length)
 	{
 		if (length == 0)
 			return;
@@ -351,7 +351,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			destination.TryAdd(en.Current);
 	}
 
-	private protected override void CopyToInternal(int index, (T Key, int Value)[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, (T Key, int Value)[] array, int arrayIndex, int length)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
@@ -425,7 +425,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return this;
 	}
 
-	private protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
+	protected virtual void FindForRemove(int index, out Node? parent, out Node? grandParent, out Node? match, out Node? parentOfMatch)
 	{
 		// Search for a node and then find its successor.
 		// Then copy the item from the successor to the matching node, and delete the successor.
@@ -575,7 +575,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public override IEnumerator<(T Key, int Value)> GetEnumerator() => new Enumerator(this);
 
-	internal override (T Key, int Value) GetInternal(int index, bool invoke = true)
+	protected override (T Key, int Value) GetInternal(int index, bool invoke = true)
 	{
 		var current = root;
 		while (current != null)
@@ -639,7 +639,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// </summary>
 	/// <param name="other">The other <see cref="SumSet{T}"/>.</param>
 	/// <returns>A value indicating whether both sets have the same comparer.</returns>
-	private protected virtual bool HasEqualComparer(SumSet<T> other) => Comparer2 == other.Comparer2 || Comparer2.Equals(other.Comparer2);
+	protected virtual bool HasEqualComparer(SumSet<T> other) => Comparer2 == other.Comparer2 || Comparer2.Equals(other.Comparer2);
 	// Commonly, both comparers will be the default comparer (and reference-equal). Avoid a virtual method call to Equals() in that case.
 
 	public virtual bool Increase(T key)
@@ -744,7 +744,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
 	// need to split again in the next node.
 	// By the time we need to split again, everything will be correctly set.
-	private protected virtual void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
+	protected virtual void InsertionBalance(Node current, ref Node parent, Node grandParent, Node greatGrandParent)
 	{
 		Debug.Assert(parent != null);
 		Debug.Assert(grandParent != null);
@@ -925,7 +925,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	private protected virtual bool IsSubsetOfSortedSetWithSameComparer(SumSet<T> asSorted)
+	protected virtual bool IsSubsetOfSortedSetWithSameComparer(SumSet<T> asSorted)
 	{
 		var prunedOther = asSorted.GetViewBetween(Min, Max);
 		foreach (var item in this)
@@ -976,7 +976,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	private protected virtual void RemoveAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual void RemoveAllElements(IEnumerable<(T Key, int Value)> collection)
 	{
 		var min = Min;
 		var max = Max;
@@ -1123,7 +1123,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		var actuallyRemoved = 0;
 		for (var i = matches.Length - 1; i >= 0; i--)
 		{
-			if (RemoveValue(matches.GetInternal(i)))
+			if (RemoveValue(matches[i]))
 				actuallyRemoved++;
 		}
 		return actuallyRemoved;
@@ -1135,7 +1135,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// <param name="parent">The (possibly <c>null</c>) parent.</param>
 	/// <param name="child">The child node to replace.</param>
 	/// <param name="newChild">The node to replace <paramref name="child"/> with.</param>
-	private protected virtual void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
+	protected virtual void ReplaceChildOrRoot(Node? parent, Node child, Node newChild)
 	{
 		if (parent != null)
 			parent.ReplaceChild(child, newChild);
@@ -1149,7 +1149,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// <summary>
 	/// Replaces the matching node with its successor.
 	/// </summary>
-	private protected virtual void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
+	protected virtual void ReplaceNode(Node match, Node parentOfMatch, Node successor, Node parentOfSuccessor)
 	{
 		Debug.Assert(match != null);
 		if (successor == match)
@@ -1326,7 +1326,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			return this;
 	}
 
-	private protected virtual SumSet<T> SymmetricExceptWithSameComparer(SumSet<T> other)
+	protected virtual SumSet<T> SymmetricExceptWithSameComparer(SumSet<T> other)
 	{
 		Debug.Assert(other != null);
 		Debug.Assert(HasEqualComparer(other));
@@ -1421,7 +1421,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	private protected virtual bool TryToUniqueArray(IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
+	protected virtual bool TryToUniqueArray(IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
 	{
 		elements = collection is (T Key, int Value)[] array ? array : [.. collection];
 		length = elements.Length;
@@ -1541,7 +1541,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 #endif
 
 	[DebuggerDisplay("{Item.ToString()}, Left = {Left?.Item.ToString()}, Right = {Right?.Item.ToString()}, Parent = {Parent?.Item.ToString()}")]
-	internal sealed class Node : IDisposable
+	protected internal sealed class Node : IDisposable
 	{
 		private Node? _left;
 		private Node? _right;
@@ -2067,13 +2067,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		void IEnumerator.Reset() => Reset();
 	}
 
-	internal struct ElementCount
+	protected internal struct ElementCount
 	{
 		internal int UniqueCount;
 		internal int UnfoundCount;
 	}
 
-	internal sealed class TreeSubSet : SumSet<T>
+	protected internal sealed class TreeSubSet : SumSet<T>
 	{
 		private readonly SumSet<T> _underlying;
 		private readonly T? _min;

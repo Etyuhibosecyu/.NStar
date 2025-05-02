@@ -1,6 +1,8 @@
 ﻿global using BenchmarkDotNet.Attributes;
 global using BenchmarkDotNet.Running;
 global using Corlib.NStar;
+global using LINQ.NStar;
+global using MathLib.NStar;
 global using System;
 global using System.IO;
 global using System.Net.Http;

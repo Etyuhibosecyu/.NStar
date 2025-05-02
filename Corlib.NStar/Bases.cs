@@ -37,11 +37,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public abstract int Capacity { get; set; }
 
-	private protected abstract Func<int, TCertain> CapacityCreator { get; }
+	protected abstract Func<int, TCertain> CapacityCreator { get; }
 
-	private protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
+	protected abstract Func<IEnumerable<T>, TCertain> CollectionCreator { get; }
 
-	private protected virtual int DefaultCapacity => 32;
+	protected virtual int DefaultCapacity => 32;
 
 	bool System.Collections.IList.IsFixedSize => false;
 
@@ -51,7 +51,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	bool System.Collections.ICollection.IsSynchronized => false;
 
-	private protected abstract Func<ReadOnlySpan<T>, TCertain> SpanCreator { get; }
+	protected abstract Func<ReadOnlySpan<T>, TCertain> SpanCreator { get; }
 
 	object System.Collections.ICollection.SyncRoot => _syncRoot;
 
@@ -108,7 +108,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return (TCertain)this;
 	}
 
-	private protected virtual void AddSeriesInternal(T item, int length)
+	protected virtual void AddSeriesInternal(T item, int length)
 	{
 		EnsureCapacity(_size + length);
 		SetAllInternal(item, _size, length);
@@ -219,9 +219,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ClearInternal(index, length);
 	}
 
-	private protected virtual void ClearInternal() => ClearInternal(0, _size);
+	protected virtual void ClearInternal() => ClearInternal(0, _size);
 
-	private protected abstract void ClearInternal(int index, int length);
+	protected abstract void ClearInternal(int index, int length);
 
 	public virtual object Clone() => Copy();
 
@@ -252,9 +252,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		CopyToInternal(sourceIndex, destination, destinationIndex, length);
 	}
 
-	private protected abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
+	protected abstract void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length);
 
-	private protected virtual void EnsureCapacity(int min)
+	protected virtual void EnsureCapacity(int min)
 	{
 		if (Capacity < min)
 		{
@@ -417,16 +417,16 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return GetOrAddInternal(index, value);
 	}
 
-	private protected virtual T GetOrAddInternal(int index, T value) => index == _size ? Add(value).GetInternal(index) : GetInternal(index);
+	protected virtual T GetOrAddInternal(int index, T value) => index == _size ? Add(value).GetInternal(index) : GetInternal(index);
 
-	private protected override TCertain GetRangeInternal(int index, int length)
+	protected override TCertain GetRangeInternal(int index, int length)
 	{
 		var list = CapacityCreator(length);
 		CopyToInternal(index, list, 0, length);
 		return list;
 	}
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)this, index, length);
+	protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)this, index, length);
 
 	int System.Collections.IList.IndexOf(object? item)
 	{
@@ -495,7 +495,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain Insert(int index, List<T> list) => Insert(index, (IEnumerable<T>)list);
 
-	private protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected virtual TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is not TCertain list)
 			list = CollectionCreator(collection);
@@ -517,7 +517,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return this2;
 	}
 
-	private protected virtual TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected virtual TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		var this2 = (TCertain)this;
 		var length = span.Length;
@@ -707,21 +707,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain RemoveEnd(int index) => Remove(index, _size - index);
 
-	internal static TCertain RemoveIndexes(TCertain originalList, Queue<int> toRemove)
-	{
-		var toRemove2 = toRemove.ToList().Sort();
-		var result = originalList.CapacityCreator(originalList._size - toRemove2._size);
-		var pos = 0;
-		for (var i = 0; i < toRemove2._size; i++)
-		{
-			originalList.CopyToInternal(pos, result, pos - i, toRemove2.GetInternal(i) - pos);
-			pos = toRemove2.GetInternal(i) + 1;
-		}
-		result._size = originalList._size - toRemove2._size;
-		return result;
-	}
-
-	private protected virtual TCertain RemoveInternal(int index, int length)
+	protected virtual TCertain RemoveInternal(int index, int length)
 	{
 		var this2 = (TCertain)this;
 		if (length > 0)
@@ -870,7 +856,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		for (var i = length - 1; i < _size; i++)
 		{
 			queue.Enqueue(GetInternal(i));
-			if (RedStarLinq.Equals(queue, oldCollection))
+			if (Enumerable.SequenceEqual(queue, oldCollection))
 			{
 				result.AddRange(newCollection);
 				queue.Clear();
@@ -969,10 +955,11 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		ArgumentOutOfRangeException.ThrowIfNegative(length);
 		if (index + length > _size)
 			throw new ArgumentException("Диапазон выходит за текущий размер коллекции.");
-		return ReverseInternal(index, length);
+		ReverseInternal(index, length);
+		return (TCertain)this;
 	}
 
-	private protected abstract TCertain ReverseInternal(int index, int length);
+	protected abstract void ReverseInternal(int index, int length);
 
 	public virtual TCertain SetAll(T value) => SetAll(value, 0, _size);
 
@@ -992,7 +979,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return (TCertain)this;
 	}
 
-	private protected virtual void SetAllInternal(T value, int index, int length)
+	protected virtual void SetAllInternal(T value, int index, int length)
 	{
 		var endIndex = index + length - 1;
 		for (var i = index; i <= endIndex; i++)
@@ -1011,7 +998,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return SetOrAddInternal(index, value);
 	}
 
-	private protected virtual TCertain SetOrAddInternal(int index, T value)
+	protected virtual TCertain SetOrAddInternal(int index, T value)
 	{
 		if (index == _size)
 			return Add(value);
@@ -1103,7 +1090,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override TCertain AddRange(IEnumerable<T> collection) => UnionWith(collection);
 
-	private protected override void AddSeriesInternal(T item, int length)
+	protected override void AddSeriesInternal(T item, int length)
 	{
 		if (length != 0)
 			Add(item);
@@ -1111,7 +1098,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override Span<T> AsSpan(int index, int length) => List<T>.ReturnOrConstruct(this).AsSpan(index, length);
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			SetInternal(i, default!);
@@ -1119,7 +1106,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	public override bool Contains(T? item, int index, int length) => item != null && IndexOf(item, index, length) >= 0;
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -1194,7 +1181,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 		+ " Используйте IndexOfAnyExcluding() вместо него.");
 
-	private protected override int LastIndexOfInternal(T item, int index, int length) =>
+	protected override int LastIndexOfInternal(T item, int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции. Используйте IndexOf() вместо него.");
 
 	public virtual bool Overlaps(IEnumerable<T> other)
@@ -1238,7 +1225,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 
 	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) => base.ReplaceRangeInternal(index, length, collection is TCertain list ? list : CollectionCreator(collection).ExceptWith(GetSlice(0, index)).ExceptWith(GetSlice(index + length)));
 
-	private protected override TCertain ReverseInternal(int index, int length) =>
+	protected override void ReverseInternal(int index, int length) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков, а не множеств.");
 
@@ -1284,7 +1271,7 @@ public abstract class BaseSet<T, TCertain> : BaseList<T, TCertain>, ISet<T> wher
 		return SymmetricExceptInternal(other);
 	}
 
-	private protected virtual TCertain SymmetricExceptInternal(IEnumerable<T> other)
+	protected virtual TCertain SymmetricExceptInternal(IEnumerable<T> other)
 	{
 		foreach (var item in other is ISet<T> set ? set : other.ToHashSet())
 		{

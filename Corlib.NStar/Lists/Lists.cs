@@ -135,7 +135,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 
 	public override Span<T> AsSpan(int index, int length) => RedStarLinq.ToArray(GetSlice(index, length)).AsSpan();
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		if (_start + index + length < Capacity)
 			Array.Clear(_items, _start + index, length);
@@ -149,7 +149,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -160,7 +160,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		destination.Changed();
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex)
+	protected override void CopyToInternal(Array array, int arrayIndex)
 	{
 		if (_start + _size < Capacity)
 			Array.Copy(_items, _start, array, arrayIndex, _size);
@@ -171,7 +171,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		if (_start + index + length < Capacity)
 			Array.Copy(_items, _start + index, array, arrayIndex, length);
@@ -191,13 +191,13 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override void EnsureCapacity(int min) =>
+	protected override void EnsureCapacity(int min) =>
 		throw new NotSupportedException("Вы докопались до этого метода? Поздравляем, ваши знания C# выше уровня Hello world!"
 		+ " Вот только для данной коллекции он неуместен, так как при исчерпании емкости она удаляет элементы,"
 		+ " а не увеличивает емкость. Если вам нужно изменить емкость, такие извращения не нужны,"
 		+ " достаточно Capacity = value.");
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var item = _items[(_start + index) % Capacity];
 		if (invoke)
@@ -205,7 +205,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			if (GetInternal(i)?.Equals(item) ?? item == null)
@@ -236,7 +236,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -263,7 +263,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -285,7 +285,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int length)
+	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
@@ -312,7 +312,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		return this2;
 	}
 
-	private protected override TCertain ReverseInternal(int index, int length)
+	protected override void ReverseInternal(int index, int length)
 	{
 		for (var i = 0; i < length / 2; i++)
 		{
@@ -320,7 +320,6 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 			SetInternal(index + i, GetInternal(index + length - i - 1));
 			SetInternal(index + length - i - 1, temp);
 		}
-		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -349,11 +348,11 @@ public class Buffer<T> : Buffer<T, Buffer<T>>
 
 	public Buffer(ReadOnlySpan<T> span) : base(span) { }
 
-	private protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
+	protected override Func<int, Buffer<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, Buffer<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, Buffer<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, Buffer<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, Buffer<T>> SpanCreator => x => new(x);
 
 	public static implicit operator Buffer<T>(T x) => new(x);
 
@@ -566,13 +565,13 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		Array.Clear(_items, index, length);
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		Array.Copy(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -580,9 +579,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	private protected override void CopyToInternal(Array array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
+	protected override void CopyToInternal(Array array, int arrayIndex) => Array.Copy(_items, 0, array, arrayIndex, _size);
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => Array.Copy(_items, index, array, arrayIndex, length);
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => Array.Copy(_items, index, array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -591,7 +590,9 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		GC.SuppressFinalize(this);
 	}
 
-	internal override T GetInternal(int index, bool invoke = true)
+	internal static List<T> EmptyList(int length) => new(length) { _size = length };
+
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var item = _items[index];
 		if (invoke)
@@ -599,7 +600,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length) => Array.IndexOf(_items, item, index, length);
+	protected override int IndexOfInternal(T item, int index, int length) => Array.IndexOf(_items, item, index, length);
 
 	public override TCertain Insert(int index, T item)
 	{
@@ -634,7 +635,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if ((uint)index > (uint)_size)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -668,7 +669,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (collection is List<T, TCertain> list)
 		{
@@ -771,7 +772,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			return InsertInternal(index, CollectionCreator(collection));
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int length) => Array.LastIndexOf(_items, item, index, length);
+	protected override int LastIndexOfInternal(T item, int index, int length) => Array.LastIndexOf(_items, item, index, length);
 
 	public virtual TCertain NSort() => NSort(0, _size);
 
@@ -814,11 +815,10 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 
 	public static List<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) => collection is List<TList> list ? list : [.. collection];
 
-	private protected override TCertain ReverseInternal(int index, int length)
+	protected override void ReverseInternal(int index, int length)
 	{
 		Array.Reverse(_items, index, length);
 		Changed();
-		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -849,7 +849,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 	{
 		if (fasterButMoreMemory)
 		{
-			ToListEnumerable(this, function).Sort(this, index, length, comparer);
+			RedStarLinq.ToList(this, function).Sort(this, index, length, comparer);
 			return (TCertain)this;
 		}
 		else
@@ -892,11 +892,11 @@ public class List<T> : List<T, List<T>>
 
 	public List(ReadOnlySpan<T> span) : base(span) { }
 
-	private protected override Func<int, List<T>> CapacityCreator => x => new(x);
+	protected override Func<int, List<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, List<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, List<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, List<T>> SpanCreator => x => new(x);
 
 	public static implicit operator List<T>(T x) => new(x);
 

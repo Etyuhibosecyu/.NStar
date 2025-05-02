@@ -107,14 +107,14 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public virtual int Size => _size;
 
-	private protected override void ClearInternal()
+	protected override void ClearInternal()
 	{
 		base.ClearInternal();
 		freeCount = 0;
 		freeList = 0;
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -128,7 +128,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		}
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(index, array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -138,7 +138,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd)
+	protected override bool EqualsToList(G.IList<T> list, int index, bool toEnd)
 	{
 		ArgumentOutOfRangeException.ThrowIfGreaterThan(index, _size - list.Count);
 		for (var i = 0; i < list.Count; i++)
@@ -151,7 +151,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return !toEnd || index == _size;
 	}
 
-	private protected override bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd)
+	protected override bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd)
 	{
 		if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -215,11 +215,11 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
-	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
+	protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	private protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)GetRangeInternal(index, length).FixUpFakeIndexes());
+	protected override Slice<T> GetSliceInternal(int index, int length) => new((G.IList<T>)GetRangeInternal(index, length).FixUpFakeIndexes());
 
-	private protected override TCertain Insert(T? item, out int index, int hashCode)
+	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -268,7 +268,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return (TCertain)this;
 	}
 
-	private protected override TCertain RemoveInternal(int index, int length)
+	protected override TCertain RemoveInternal(int index, int length)
 	{
 		for (var i = index; i < index + length; i++)
 			RemoveAt(i);
@@ -415,11 +415,11 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 
 	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
-	private protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator => x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -477,13 +477,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	private protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator => x => new(x);
 
-	private protected override void ClearInternal()
+	protected override void ClearInternal()
 	{
 		if (_size > 0)
 		{
@@ -498,7 +498,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		Parallel.For(0, length, i => RemoveValue(GetInternal(index + i)));
 		Changed();
@@ -508,16 +508,16 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
-	private protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
+	protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
-	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
+	protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
 	public override ParallelHashSet<T> ExceptWith(IEnumerable<T> other)
 	{
 		if (other is FastDelHashSet<T> fhs)
-			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs.GetInternal(i)));
+			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs[i]));
 		else if (other is ParallelHashSet<T> phs)
-			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs.GetInternal(i)));
+			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs[i]));
 		else if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
@@ -534,13 +534,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return base.IndexOf(collection, index, length, out collectionLength);
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length, int hashCode)
+	protected override int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
 		var foundIndex = UnsafeIndexOf(item, index, length);
 		return foundIndex < 0 ? foundIndex : Lock(lockObj, UnsafeIndexOf, item, index, length, hashCode);
 	}
 
-	private protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
+	protected override void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
 		lock (lockObj)
 		{
@@ -581,7 +581,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	private protected override ParallelHashSet<T> Insert(T? item, out int index, int hashCode)
+	protected override ParallelHashSet<T> Insert(T? item, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -675,7 +675,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	private protected override ParallelHashSet<T> RemoveInternal(int index, int length)
+	protected override ParallelHashSet<T> RemoveInternal(int index, int length)
 	{
 		Parallel.For(index, index + length, i => RemoveAt(i));
 		return this;
@@ -704,7 +704,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return true;
 	}
 
-	private protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
+	protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
 
 	public override bool SetEquals(IEnumerable<T> other)
 	{
@@ -749,7 +749,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	private protected override ParallelHashSet<T> SymmetricExceptInternal(IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
+	protected override ParallelHashSet<T> SymmetricExceptInternal(IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
 
 	public override bool TryAdd(T item, out int index)
 	{
@@ -825,7 +825,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	/// </summary>
 	public virtual int UnsafeIndexOf(T item, int index, int length) => item != null ? UnsafeIndexOf(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
 
-	private protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
+	protected virtual int UnsafeIndexOf(T item, int index, int length, int hashCode)
 	{
 		var buckets = this.buckets;
 		if (buckets != null)
@@ -845,7 +845,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return -1;
 	}
 
-	private protected virtual ParallelHashSet<T> UnsafeInsert(T? item, out int index, int hashCode)
+	protected virtual ParallelHashSet<T> UnsafeInsert(T? item, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -878,7 +878,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	private protected virtual ParallelHashSet<T> UnsafeRemoveAt(int index)
+	protected virtual ParallelHashSet<T> UnsafeRemoveAt(int index)
 	{
 		if (buckets == null || entries == null)
 			return this;
@@ -892,9 +892,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	private protected virtual void UnsafeResize() => base.Resize(HashHelpers.ExpandPrime(_size), false);
+	protected virtual void UnsafeResize() => base.Resize(HashHelpers.ExpandPrime(_size), false);
 
-	private protected virtual bool UnsafeTryAdd(T item, out int index, int hashCode)
+	protected virtual bool UnsafeTryAdd(T item, out int index, int hashCode)
 	{
 		index = UnsafeIndexOf(item);
 		if (index >= 0)

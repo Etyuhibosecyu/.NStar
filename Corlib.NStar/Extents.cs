@@ -212,7 +212,7 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 		if (x.Length != y.Length)
 			return false;
 		for (var i = 0; i < x.Length; i++)
-			if (!equals(x.GetInternal(i), y.GetInternal(i)))
+			if (!equals(x[i], y[i]))
 				return false;
 		return true;
 	}
@@ -232,16 +232,6 @@ public class NListEComparer<T> : IEqualityComparer<NList<T>> where T : unmanaged
 		}
 		return hash;
 	}
-}
-
-[Serializable]
-public class ExperimentalException : Exception
-{
-	public ExperimentalException() : this("Внимание! Эта операция является экспериментальной. Используйте на свой страх и риск. Это исключение не прерывает работу программы, а служит только для оповещения. Нажмите F5 для продолжения.") { }
-
-	public ExperimentalException(string? message) : base(message) { }
-
-	public ExperimentalException(string? message, Exception? innerException) : base(message, innerException) { }
 }
 
 [Serializable]
@@ -776,7 +766,7 @@ public static unsafe partial class Extents
 			throw new ArgumentException("Множество должно иметь стандартный для int компаратор.", nameof(set));
 		if (set.Length == 0)
 			return n;
-		if (set.GetInternal(0) < 0)
+		if (set[0] < 0)
 			throw new ArgumentException("Не допускается множество, содержащее отрицательные значения.", nameof(set));
 		var lo = 0;
 		var hi = set.Length - 1;
@@ -788,7 +778,7 @@ public static unsafe partial class Extents
 			int c;
 			try
 			{
-				c = comparer.Compare(set.GetInternal(i) - i, n);
+				c = comparer.Compare(set[i] - i, n);
 			}
 			catch (Exception ex)
 			{
@@ -797,7 +787,7 @@ public static unsafe partial class Extents
 			if (c == 0)
 			{
 				var result = n + i + 1;
-				while (++i < set.Length && set.GetInternal(i) == result)
+				while (++i < set.Length && set[i] == result)
 					result++;
 				return result;
 			}
@@ -994,13 +984,4 @@ public static unsafe partial class Extents
 		PrimitiveType.ULongType => (uint)(ulong)(object)item,
 		_ => default,
 	};
-
-	public static T[] TryNSort<T>(this T[] array, IComparer<T>? comparer = null) => TryNSort(array, 0, array.Length, comparer);
-
-	public static T[] TryNSort<T>(this T[] array, int index, int length, IComparer<T>? comparer = null)
-	{
-		if (typeof(Extents).GetMethods().Find(x => x.Name == "NSort" && x.GetParameters().Wrap(y => y.Length == 3 && y[0].ParameterType.IsArray && y[1].ParameterType == typeof(int) && y[2].ParameterType == typeof(int)))?.MakeGenericMethod(typeof(T))?.Invoke(null, [array, index, length]) == null)
-			Array.Sort(array, index, length, comparer);
-		return array;
-	}
 }

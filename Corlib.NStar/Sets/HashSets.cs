@@ -4,7 +4,7 @@ namespace Corlib.NStar;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseHashSet<T, TCertain>, new()
 {
-	private protected struct Entry
+	protected struct Entry
 	{
 		internal int hashCode;
 		internal int next;
@@ -26,7 +26,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	}
 	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
 
-	private protected override void ClearInternal()
+	protected override void ClearInternal()
 	{
 		if (_size > 0)
 		{
@@ -39,14 +39,14 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		}
 	}
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		for (var i = 0; i < length; i++)
 			SetNull(index + i);
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		if (this != destination || sourceIndex >= destinationIndex)
 			for (var i = 0; i < length; i++)
@@ -59,7 +59,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		destination.Changed();
 	}
 
-	private protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
+	protected virtual void CopyOne(int sourceIndex, TCertain destination, int destinationIndex)
 	{
 		var hashCode = entries[sourceIndex].hashCode;
 		if (hashCode < 0)
@@ -77,7 +77,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		}
 	}
 
-	private protected virtual void CopyToCommon(int index, T[] array, int arrayIndex, int length)
+	protected virtual void CopyToCommon(int index, T[] array, int arrayIndex, int length)
 	{
 		var skipped = 0;
 		for (var i = 0; i < index; i++)
@@ -98,7 +98,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		GC.SuppressFinalize(this);
 	}
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var item = entries[index].item;
 		if (invoke)
@@ -106,9 +106,9 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return item;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length) => item != null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
+	protected override int IndexOfInternal(T item, int index, int length) => item != null ? IndexOfInternal(item, index, length, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
 
-	private protected virtual int IndexOfInternal(T item, int index, int length, int hashCode)
+	protected virtual int IndexOfInternal(T item, int index, int length, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -130,16 +130,16 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return -1;
 	}
 
-	private protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
+	protected virtual void Initialize(int capacity, out int[] buckets, out Entry[] entries)
 	{
 		var size = HashHelpers.GetPrime(capacity);
 		buckets = new int[size];
 		entries = new Entry[size];
 	}
 
-	private protected abstract TCertain Insert(T? item, out int index, int hashCode);
+	protected abstract TCertain Insert(T? item, out int index, int hashCode);
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
@@ -160,7 +160,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		var this2 = (TCertain)this;
 		var set = SpanCreator(span).ExceptWith(this);
@@ -179,7 +179,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return this2;
 	}
 
-	private protected virtual void RemoveAtCommon(int index, ref Entry t)
+	protected virtual void RemoveAtCommon(int index, ref Entry t)
 	{
 		uint collisionCount = 0;
 		var bucket = ~t.hashCode % buckets.Length;
@@ -204,7 +204,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		t.item = default!;
 	}
 
-	private protected virtual bool RemoveValueCommon(T? item, int hashCode, RemoveValueAction action)
+	protected virtual bool RemoveValueCommon(T? item, int hashCode, RemoveValueAction action)
 	{
 		uint collisionCount = 0;
 		var bucket = hashCode % buckets.Length;
@@ -232,11 +232,11 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		return false;
 	}
 
-	private protected delegate void RemoveValueAction(ref Entry t, int i);
+	protected delegate void RemoveValueAction(ref Entry t, int i);
 
-	private protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
+	protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_size), false);
 
-	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
+	protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		var newBuckets = new int[newSize];
 		var newEntries = new Entry[newSize];
@@ -261,7 +261,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 		entries = newEntries;
 	}
 
-	private protected virtual void SetNull(int index)
+	protected virtual void SetNull(int index)
 	{
 		if (this is not ListHashSet<T>)
 		{
@@ -289,7 +289,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 
 	public override bool TryGetIndexOf(T item, out int index) => item != null ? TryGetIndexOf(item, out index, Comparer.GetHashCode(item) & 0x7FFFFFFF) : throw new ArgumentNullException(nameof(item));
 
-	private protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
+	protected virtual bool TryGetIndexOf(T item, out int index, int hashCode) => (index = IndexOfInternal(item, 0, _size, hashCode)) >= 0;
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -364,13 +364,13 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		}
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		for (var i = 0; i < length; i++)
 			array[arrayIndex++] = entries[index++].item;
 	}
 
-	private protected override TCertain Insert(T? item, out int index, int hashCode)
+	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -474,11 +474,11 @@ public class ListHashSet<T> : ListHashSet<T, ListHashSet<T>>
 
 	public ListHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	private protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, ListHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, ListHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, ListHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, ListHashSet<T>> SpanCreator => x => new(x);
 }
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
@@ -558,13 +558,13 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public virtual int Size => _size;
 
-	private protected override void ClearInternal()
+	protected override void ClearInternal()
 	{
 		base.ClearInternal();
 		deleted.Clear();
 	}
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		int sourceIndex2 = IndexGetActual(sourceIndex), destinationIndex2 = IndexGetActual(destinationIndex);
 		if (this != destination || sourceIndex2 >= destinationIndex2)
@@ -578,7 +578,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		destination.Changed();
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(IndexGetDirect(index), array, arrayIndex, length);
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => CopyToCommon(IndexGetDirect(index), array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -633,21 +633,21 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
-	private protected virtual Enumerator GetEnumeratorInternal() => new(this);
+	protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
-	internal override T GetInternal(int index, bool invoke = true) => GetDirect(IndexGetDirect(index));
+	protected override T GetInternal(int index, bool invoke = true) => GetDirect(IndexGetDirect(index));
 
-	private protected virtual T GetDirect(int index) => base.GetInternal(index);
+	protected virtual T GetDirect(int index) => base.GetInternal(index);
 
-	private protected virtual int IndexGetActual(int direct) => direct - deleted.IndexOfNotLess(direct);
+	protected virtual int IndexGetActual(int direct) => direct - deleted.IndexOfNotLess(direct);
 
-	private protected virtual int IndexGetDirect(int actual) => deleted.NthAbsent(actual);
+	protected virtual int IndexGetDirect(int actual) => deleted.NthAbsent(actual);
 
-	private protected override int IndexOfInternal(T item, int index, int length, int hashCode) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + length) - index2, hashCode));
+	protected override int IndexOfInternal(T item, int index, int length, int hashCode) => IndexGetActual(IndexOfDirect(item, CreateVar(IndexGetDirect(index), out var index2), IndexGetDirect(index + length) - index2, hashCode));
 
-	private protected virtual int IndexOfDirect(T item, int index, int length, int hashCode) => base.IndexOfInternal(item, index, length, hashCode);
+	protected virtual int IndexOfDirect(T item, int index, int length, int hashCode) => base.IndexOfInternal(item, index, length, hashCode);
 
-	private protected override TCertain Insert(T? item, out int index, int hashCode)
+	protected override TCertain Insert(T? item, out int index, int hashCode)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -678,7 +678,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 
 	public override TCertain RemoveAt(int index) => RemoveAtDirect(IndexGetDirect(index));
 
-	private protected virtual TCertain RemoveAtDirect(int index)
+	protected virtual TCertain RemoveAtDirect(int index)
 	{
 		if (buckets == null || entries == null)
 			return (TCertain)this;
@@ -823,9 +823,9 @@ public class TreeHashSet<T> : TreeHashSet<T, TreeHashSet<T>>
 
 	public TreeHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	private protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, TreeHashSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, TreeHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, TreeHashSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, TreeHashSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, TreeHashSet<T>> SpanCreator => x => new(x);
 }

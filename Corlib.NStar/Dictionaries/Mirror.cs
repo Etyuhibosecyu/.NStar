@@ -6,7 +6,7 @@ namespace Corlib.NStar;
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IReadOnlyDictionary<TKey, TValue> where TKey : notnull where TValue : notnull
 {
-	private protected struct Entry
+	protected struct Entry
 	{
 		public uint hashCode;
 		public uint hashCodeM;
@@ -251,7 +251,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		}
 	}
 
-	private protected virtual void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
+	protected virtual void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> enumerable)
 	{
 		// It is likely that the passed-in enumerable is Mirror<TKey,TValue>. When this is the case,
 		// avoid the enumerator allocation and overhead by looping through the entries array directly.
@@ -341,7 +341,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 
 	public virtual bool ContainsValue(TValue value) => !Unsafe.IsNullRef(ref FindKey(value));
 
-	private protected virtual void CopyEntries(Entry[] entries, int length)
+	protected virtual void CopyEntries(Entry[] entries, int length)
 	{
 		Debug.Assert(_entries != null);
 		var newEntries = _entries;
@@ -366,7 +366,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		_freeCount = 0;
 	}
 
-	private protected virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
+	protected virtual void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if ((uint)index > (uint)array.Length)
@@ -420,7 +420,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	/// <summary>
 	/// Ensures that the dictionary can hold up to 'capacity' entries without any further expansion of its backing storage
 	/// </summary>
-	private protected virtual int EnsureCapacity(int capacity)
+	protected virtual int EnsureCapacity(int capacity)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		var currentCapacity = _entries == null ? 0 : _entries.Length;
@@ -589,7 +589,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private protected virtual ref int GetBucket(uint hashCode)
+	protected virtual ref int GetBucket(uint hashCode)
 	{
 		Debug.Assert(_buckets != null, "_buckets should be non-null");
 		var buckets = _buckets;
@@ -597,7 +597,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	private protected virtual ref int GetBucketM(uint hashCode)
+	protected virtual ref int GetBucketM(uint hashCode)
 	{
 		Debug.Assert(_bucketsM != null, "_bucketsM should be non-null");
 		var buckets = _bucketsM;
@@ -628,7 +628,7 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		throw new KeyNotFoundException();
 	}
 
-	private protected virtual int Initialize(int capacity)
+	protected virtual int Initialize(int capacity)
 	{
 		var size = HashHelpers.GetPrime(capacity);
 		var buckets = new int[size];
@@ -896,9 +896,9 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 		return false;
 	}
 
-	private protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_count), false);
+	protected virtual void Resize() => Resize(HashHelpers.ExpandPrime(_count), false);
 
-	private protected virtual void Resize(int newSize, bool forceNewHashCodes)
+	protected virtual void Resize(int newSize, bool forceNewHashCodes)
 	{
 		// Value types never rehash
 		Debug.Assert(!forceNewHashCodes || !typeof(TKey).IsValueType || !typeof(TValue).IsValueType);
@@ -1150,7 +1150,8 @@ public class Mirror<TKey, TValue> : IDictionary<TKey, TValue>, IDictionary, IRea
 					InsertionBehavior.None => 2,
 					InsertionBehavior.OverwriteExisting => 1,
 					InsertionBehavior.ThrowOnExisting => throw new ArgumentException("Невозможно вставить такой элемент.", mirrored ? nameof(value) : nameof(key)),
-					_ => throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна."),
+					_ => throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один словарь"
+					+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка."),
 				};
 			if (behavior == InsertionBehavior.OverwriteExisting)
 			{

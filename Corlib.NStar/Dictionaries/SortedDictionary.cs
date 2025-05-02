@@ -56,7 +56,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public SortedDictionary(G.IDictionary<TKey, TValue> dictionary, IComparer<TKey>? comparer) : this(dictionary != null ? dictionary.Count : throw new ArgumentNullException(nameof(dictionary)), comparer)
 	{
-		(keys, values) = dictionary.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
+		(keys, values) = dictionary.DistinctBy(x => x.Key).Break(x => x.Key, x => x.Value);
 		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
@@ -65,9 +65,9 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection) : this(keyCollection, valueCollection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? List<TKey>.TryGetLengthEasilyEnumerable(keyCollection, out var length) && List<TValue>.TryGetLengthEasilyEnumerable(valueCollection, out var count2) ? Min(length, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
+	public SortedDictionary(IEnumerable<TKey> keyCollection, IEnumerable<TValue> valueCollection, IComparer<TKey>? comparer) : this(keyCollection != null && valueCollection != null ? keyCollection.TryGetLengthEasily(out var length) && valueCollection.TryGetLengthEasily(out var count2) ? Min(length, count2) : _defaultCapacity : throw new ArgumentNullException(null), comparer)
 	{
-		(keys, values) = (keyCollection, valueCollection).RemoveDoubles();
+		(keys, values) = keyCollection.Zip(valueCollection).DistinctBy(x => x.First).Break();
 		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
@@ -76,9 +76,9 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection) : this(collection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
+	public SortedDictionary(IEnumerable<(TKey Key, TValue Value)> collection, IComparer<TKey>? comparer) : this(collection != null ? collection.TryGetLengthEasily(out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
-		(keys, values) = collection.RemoveDoubles(x => x.Key).Break();
+		(keys, values) = collection.DistinctBy(x => x.Key).Break();
 		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
@@ -87,9 +87,9 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection) : this(collection, G.Comparer<TKey>.Default) { }
 
-	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? List<TKey>.TryGetLengthEasilyEnumerable(collection, out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
+	public SortedDictionary(IEnumerable<KeyValuePair<TKey, TValue>> collection, IComparer<TKey>? comparer) : this(collection != null ? collection.TryGetLengthEasily(out var length) ? length : _defaultCapacity : throw new ArgumentNullException(nameof(collection)), comparer)
 	{
-		(keys, values) = collection.RemoveDoubles(x => x.Key).Break(x => x.Key, x => x.Value);
+		(keys, values) = collection.DistinctBy(x => x.Key).Break(x => x.Key, x => x.Value);
 		if (keys.Length > _sortingThreshold)
 			keys.Sort(values, comparer);
 	}
@@ -102,7 +102,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			var i = IndexOfKey(key);
 			if (i >= 0)
-				return values.GetInternal(i);
+				return values[i];
 			throw new KeyNotFoundException();
 		}
 		set
@@ -149,7 +149,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 
 	public virtual bool ContainsValue(TValue value) => IndexOfValue(value) >= 0;
 
-	private protected override void CopyToHelper(Array array, int arrayIndex)
+	protected override void CopyToHelper(Array array, int arrayIndex)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (array.Rank != 1)
@@ -162,7 +162,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		if (array is KeyValuePair<TKey, TValue>[] keyValuePairArray)
 			for (var i = 0; i < Length; i++)
-				keyValuePairArray[i + arrayIndex] = new(keys.GetInternal(i), values.GetInternal(i));
+				keyValuePairArray[i + arrayIndex] = new(keys[i], values[i]);
 		else
 		{
 			if (array is not object[] objects)
@@ -170,7 +170,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			try
 			{
 				for (var i = 0; i < Length; i++)
-					objects[i + arrayIndex] = new KeyValuePair<TKey, TValue>(keys.GetInternal(i), values.GetInternal(i));
+					objects[i + arrayIndex] = new KeyValuePair<TKey, TValue>(keys[i], values[i]);
 			}
 			catch (ArrayTypeMismatchException)
 			{
@@ -179,7 +179,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		}
 	}
 
-	private protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+	protected override void CopyToHelper(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
 	{
 		ArgumentNullException.ThrowIfNull(array);
 		if (arrayIndex < 0 || arrayIndex > array.Length)
@@ -188,7 +188,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 			throw new ArgumentException("Копируемая последовательность выходит за размер целевого массива.");
 		for (var i = 0; i < Length; i++)
 		{
-			KeyValuePair<TKey, TValue> entry = new(keys.GetInternal(i), values.GetInternal(i));
+			KeyValuePair<TKey, TValue> entry = new(keys[i], values[i]);
 			array[arrayIndex + i] = entry;
 		}
 	}
@@ -218,17 +218,17 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	{
 		if (index < 0 || index >= keys.Length)
 			throw new ArgumentOutOfRangeException(nameof(index));
-		return values.GetInternal(index);
+		return values[index];
 	}
 
 	public override IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => new Enumerator(this, Enumerator.KeyValuePair);
 
-	private protected override IDictionaryEnumerator GetEnumeratorHelper() => new Enumerator(this, Enumerator.KeyValuePair);
+	protected override IDictionaryEnumerator GetEnumeratorHelper() => new Enumerator(this, Enumerator.KeyValuePair);
 
 	public virtual TKey GetKey(int index)
 	{
 		if (index < 0 || index >= keys.Length) throw new ArgumentOutOfRangeException(nameof(index));
-		return keys.GetInternal(index);
+		return keys[index];
 	}
 
 	internal override System.Collections.ICollection GetKeyListHelper()
@@ -248,7 +248,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	public virtual int IndexOf((TKey Key, TValue Value) item)
 	{
 		var index = IndexOfKey(item.Key);
-		if (index == -1 || EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), item.Value))
+		if (index == -1 || EqualityComparer<TValue>.Default.Equals(values[index], item.Value))
 			return index;
 		return -1;
 	}
@@ -318,7 +318,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 	public override bool RemoveValue(KeyValuePair<TKey, TValue> keyValuePair)
 	{
 		var index = IndexOfKey(keyValuePair.Key);
-		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values.GetInternal(index), keyValuePair.Value))
+		if (index >= 0 && EqualityComparer<TValue>.Default.Equals(values[index], keyValuePair.Value))
 		{
 			RemoveAt(index);
 			return true;
@@ -366,7 +366,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		var i = IndexOfKey(key);
 		if (i >= 0)
 		{
-			value = values.GetInternal(i);
+			value = values[i];
 			return true;
 		}
 		value = default!;
@@ -438,8 +438,8 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				key = _sortedDictionary.keys.GetInternal(index);
-				value = _sortedDictionary.values.GetInternal(index);
+				key = _sortedDictionary.keys[index];
+				value = _sortedDictionary.values[index];
 				index++;
 				return true;
 			}
@@ -492,7 +492,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				currentKey = _sortedDictionary.keys.GetInternal(index);
+				currentKey = _sortedDictionary.keys[index];
 				index++;
 				return true;
 			}
@@ -555,7 +555,7 @@ public class SortedDictionary<TKey, TValue> : BaseDictionary<TKey, TValue, Sorte
 		{
 			if ((uint)index < (uint)_sortedDictionary.Length)
 			{
-				currentValue = _sortedDictionary.values.GetInternal(index);
+				currentValue = _sortedDictionary.values[index];
 				index++;
 				return true;
 			}

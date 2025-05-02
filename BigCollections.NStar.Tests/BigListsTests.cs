@@ -1,6 +1,8 @@
 ﻿global using Corlib.NStar;
 global using Corlib.NStar.Tests;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using LINQ.NStar;
+global using MathLib.NStar;
 global using Mpir.NET;
 global using System;
 global using System.Collections;
@@ -236,6 +238,17 @@ public static class BaseBigListTests<T, TCertain, TLow> where TCertain : BigList
 			Assert.IsTrue(bl.Equals(gl));
 			Assert.IsTrue(E.SequenceEqual(gl, bl));
 			Assert.AreEqual(bl2, bl);
+		//}, () =>
+		//{
+		//	var length = Min(random.Next(multiplier * 8 + 1), (int)bl.Length);
+		//	if (bl.Length < length)
+		//		return;
+		//	var start = random.Next((int)bl.Length - length + 1);
+		//	var bl2 = bl.Reverse(start, length);
+		//	gl.Reverse(start, length);
+		//	Assert.IsTrue(bl.Equals(gl));
+		//	Assert.IsTrue(E.SequenceEqual(gl, bl));
+		//	Assert.AreEqual(bl2, bl);
 		}, () =>
 		{
 			if (bl.Length == 0) return;

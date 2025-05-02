@@ -1023,11 +1023,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		return Mpir.MpzJacobi(x, primeY);
 	}
 
-	public static int JacobiSymbol(MpzT x, MpzT y) =>
-		//IsEven not yet implemented, so commented out.
-		//if(y.IsEven || y < 0)
-		//    throw new ArgumentException();
-		Mpir.MpzJacobi(x, y);
+	public static int JacobiSymbol(MpzT x, MpzT y)
+	{
+		if(IsEvenInteger(y) || y < 0)
+		    throw new ArgumentException(nameof(y) + " must be odd and positive");
+		return Mpir.MpzJacobi(x, y);
+	}
+
 	public static int JacobiSymbol(MpzT x, int y)
 	{
 		if ((y & 1) == 0 || y < 0)
@@ -1035,11 +1037,13 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		return Mpir.MpzKroneckerSi(x, y);
 	}
 
-	public static int JacobiSymbol(int x, MpzT y) =>
-		//IsEven not yet implemented, so commented out.
-		//if(y.IsEven || y < 0)
-		//	throw new ArgumentException();
-		Mpir.MpzSiKronecker(x, y);
+	public static int JacobiSymbol(int x, MpzT y)
+	{
+		if (IsEvenInteger(y) || y < 0)
+			throw new ArgumentException(nameof(y) + " must be odd and positive");
+		return Mpir.MpzSiKronecker(x, y);
+	}
+
 	public static int JacobiSymbol(MpzT x, uint y)
 	{
 		if ((y & 1) == 0)
@@ -1047,11 +1051,11 @@ public struct MpzT : ICloneable, IConvertible, IComparable, INumber<MpzT>
 		return Mpir.MpzKroneckerUi(x, y);
 	}
 
-	public static int JacobiSymbol(uint x, MpzT y) =>
-		//IsEven not yet implemented, so commented out.
-		//if(y.IsEven)
-		//    throw new ArgumentException();
-		Mpir.MpzUiKronecker(x, y);
+	public static int JacobiSymbol(uint x, MpzT y) {
+		if (IsEvenInteger(y) || y < 0)
+			throw new ArgumentException(nameof(y) + " must be odd and positive");
+		return Mpir.MpzUiKronecker(x, y);
+	}
 	public static int KroneckerSymbol(MpzT x, MpzT y) => Mpir.MpzKronecker(x, y);
 
 	public static int KroneckerSymbol(MpzT x, int y) => Mpir.MpzKroneckerSi(x, y);

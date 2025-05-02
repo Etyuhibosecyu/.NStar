@@ -187,15 +187,15 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public virtual int BinarySearch(T item, IComparer<T> comparer) => BinarySearch(0, _size, item, comparer);
 
-	private protected override void ClearInternal(int index, int length)
+	protected override void ClearInternal(int index, int length)
 	{
 		FillMemory(_items + index, length, 0);
 		Changed();
 	}
 
-	private protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
+	protected override int CompareInternal(int index, TCertain other, int otherIndex, int length) => CompareMemory(_items + index, other._items + otherIndex, length);
 
-	private protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
+	protected override void CopyToInternal(int sourceIndex, TCertain destination, int destinationIndex, int length)
 	{
 		CopyMemory(_items, sourceIndex, destination._items, destinationIndex, length);
 		if (destination._size < destinationIndex + length)
@@ -203,7 +203,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		Changed();
 	}
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length)
 	{
 		fixed (T* ptr = array)
 			CopyMemory(_items, index, ptr, arrayIndex, length);
@@ -222,7 +222,9 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		GC.SuppressFinalize(this);
 	}
 
-	private protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
+	internal static NList<T> EmptyList(int length) => new(length) { _size = length };
+
+	protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		if (collection == null)
@@ -261,7 +263,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return base.EqualsInternal(collection, index, toEnd);
 	}
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
 		var item = _items[index];
 		if (invoke)
@@ -297,7 +299,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		}
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		var ptr = _items + index;
 		for (var i = 0; i < length; i++)
@@ -347,7 +349,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
+	protected override TCertain InsertInternal(int index, ReadOnlySpan<T> span)
 	{
 		if (_isRange)
 			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
@@ -387,7 +389,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		return this2;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
 	{
 		if (_isRange)
 			throw new InvalidOperationException("Изменение нативного списка, являющегося диапазоном другого списка,"
@@ -514,7 +516,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 			return InsertInternal(index, CollectionCreator(collection));
 	}
 
-	private protected override int LastIndexOfInternal(T item, int index, int length)
+	protected override int LastIndexOfInternal(T item, int index, int length)
 	{
 		var endIndex = index - length + 1;
 		for (var i = index; i >= endIndex; i--)
@@ -525,12 +527,11 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 
 	public static NList<TList> ReturnOrConstruct<TList>(IEnumerable<TList> collection) where TList : unmanaged => collection is NList<TList> list ? list : [.. collection];
 
-	private protected override TCertain ReverseInternal(int index, int length)
+	protected override void ReverseInternal(int index, int length)
 	{
 		for (var i = 0; i < length / 2; i++)
 			(_items[index + i], _items[index + length - 1 - i]) = (_items[index + length - 1 - i], _items[index + i]);
 		Changed();
-		return (TCertain)this;
 	}
 
 	internal override void SetInternal(int index, T value)
@@ -603,11 +604,11 @@ public unsafe class NList<T> : NList<T, NList<T>> where T : unmanaged
 	{
 	}
 
-	private protected override Func<int, NList<T>> CapacityCreator => x => new(x);
+	protected override Func<int, NList<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, NList<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, NList<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, NList<T>> SpanCreator => x => new(x);
 
 	public static implicit operator NList<T>(T x) => new(x);
 
@@ -714,11 +715,11 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		_size = length;
 	}
 
-	private protected override Func<int, String> CapacityCreator => x => new(x);
+	protected override Func<int, String> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<char>, String> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<char>, String> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<char>, String> SpanCreator => x => new(x);
 
 	public virtual String AddRange(string s) => Insert(_size, s);
 
@@ -836,9 +837,9 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 		_ => throw new ArgumentException("Такой способ сравнения строк не существует!", nameof(comparisonType)),
 	};
 
-	private protected virtual int CompareToNotNull([NotNull] char[] other) => DefaultCompareInfo.Compare(AsSpan(), other);
+	protected virtual int CompareToNotNull([NotNull] char[] other) => DefaultCompareInfo.Compare(AsSpan(), other);
 
-	private protected virtual int CompareToNotNull([NotNull] string other) => DefaultCompareInfo.Compare(AsSpan(), other);
+	protected virtual int CompareToNotNull([NotNull] string other) => DefaultCompareInfo.Compare(AsSpan(), other);
 
 	public virtual bool Contains(char value, bool ignoreCase) => Contains(value, ignoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 

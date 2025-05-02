@@ -139,7 +139,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 			return removed;
 		}
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -152,7 +152,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return high.Peek().Peek();
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -188,7 +188,7 @@ public class BigQueue<T> : G.IEnumerable<T>, ICloneable
 		else if (high != null)
 			return E.ElementAt(high, (int)(i / fragment)).GetElement(i % fragment);
 		else
-			throw new ApplicationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
+			throw new InvalidOperationException("Произошла внутренняя ошибка. Возможно, вы пытаетесь писать в один список"
 				+ " в несколько потоков? Если нет, повторите попытку позже, возможно, какая-то аппаратная ошибка.");
 	}
 
@@ -335,41 +335,22 @@ public abstract class BigArray<T, TCertain, TLow> where TCertain : BigArray<T, T
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual MpzT ArraySize { get; init; } = 0;
-
 	public virtual MpzT Capacity { get => throw new NotSupportedException(); set => throw new NotSupportedException(); }
-
-	private protected virtual int LeafSizeBitLength { get; init; } = 16;
-
-	private protected virtual int LeafSize =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual int SubbranchesBitLength { get; init; } = 16;
-
-	private protected virtual int Subbranches =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
 	public virtual MpzT Length {
 		get =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");		private protected set => throw new NotSupportedException("Это действие не поддерживается в этой коллекции."
-			+ " Если оно нужно вам, используйте один из видов списков или множеств, а не массивов.");
+			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
+		private protected set =>
+		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
+			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 	}
 
-	public virtual TCertain Add(T item) => throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
-
-	public virtual TCertain AddRange(G.IEnumerable<T> collection) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
-
-	private protected virtual void ClearInternal(bool verify = true) =>
+	public virtual TCertain Add(T item) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual void ClearInternal(MpzT index, MpzT length) =>
+	public virtual TCertain AddRange(G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
@@ -377,57 +358,9 @@ public abstract class BigArray<T, TCertain, TLow> where TCertain : BigArray<T, T
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual void CopyToInternal(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length) =>
+	public virtual void Dispose() =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected void CheckParams(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual void CopyToInternal(MpzT index, T[] array, int arrayIndex, int length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	public virtual void Dispose()
-	{
-		GC.SuppressFinalize(this);
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-			+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-	}
-
-	private protected virtual T GetInternal(MpzT index, bool invoke = true) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual TCertain GetRangeInternal(MpzT index, MpzT length, bool alwaysCopy = false) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual void RemoveInternal(MpzT index, MpzT length) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
-
-	private protected virtual void RemoveEndInternal(MpzT index) =>
-		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
-			+ " Если он нужен вам, используйте один из видов списков или множеств, а не массивов.");
-
-	private protected virtual void SetInternal(MpzT index, T value) =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-#if VERIFY
-
-	private protected virtual void Verify() =>
-		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
-		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
-
-	private protected virtual void VerifySingle() => Debug.Assert(Length == (low?.Length ?? high?.Sum(x => x.Length)
-		?? throw new ApplicationException("Произошла серьезная ошибка при попытке выполнить действие. К сожалению, причина ошибки неизвестна.")));
-#endif
 }
 
 /// <summary>

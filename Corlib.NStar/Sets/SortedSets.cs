@@ -19,7 +19,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		return (TCertain)this;
 	}
 
-	private protected override int IndexOfInternal(T item, int index, int length)
+	protected override int IndexOfInternal(T item, int index, int length)
 	{
 		if (item == null)
 			throw new ArgumentNullException(nameof(item));
@@ -35,7 +35,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		return ret >= 0 ? ret : ~ret;
 	}
 
-	private protected override TCertain InsertInternal(int index, IEnumerable<T> collection) =>
+	protected override TCertain InsertInternal(int index, IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
@@ -127,11 +127,11 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public override int Length => items.Length;
 
-	private protected override void ClearInternal(int index, int length) => items.Clear(index, length);
+	protected override void ClearInternal(int index, int length) => items.Clear(index, length);
 
-	private protected override void CopyToInternal(Array array, int arrayIndex) => items.CopyTo(array, arrayIndex);
+	protected override void CopyToInternal(Array array, int arrayIndex) => items.CopyTo(array, arrayIndex);
 
-	private protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => items.CopyTo(index, array, arrayIndex, length);
+	protected override void CopyToInternal(int index, T[] array, int arrayIndex, int length) => items.CopyTo(index, array, arrayIndex, length);
 
 	public override void Dispose()
 	{
@@ -139,9 +139,9 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		GC.SuppressFinalize(this);
 	}
 
-	internal override T GetInternal(int index, bool invoke = true)
+	protected override T GetInternal(int index, bool invoke = true)
 	{
-		var item = items.GetInternal(index, invoke);
+		var item = items[index, invoke];
 		if (invoke)
 			Changed();
 		return item;
@@ -189,11 +189,11 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
-	private protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
+	protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
 
-	private protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
+	protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
 
-	private protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator => x => new(x);
+	protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator => x => new(x);
 }
 
 internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);
