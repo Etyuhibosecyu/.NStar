@@ -387,19 +387,19 @@ public class BigArray<T> : BigArray<T, BigArray<T>, List<T>>
 
 	public BigArray(MpzT length, G.IEnumerable<T> collection, int subbranchesBitLength = -1, int leafSizeBitLength = -1) : base(length, collection, subbranchesBitLength, leafSizeBitLength) { }
 
-	private protected virtual Func<MpzT, BigArray<T>> CapacityCreator =>
+	protected virtual Func<MpzT, BigArray<T>> CapacityCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<int, List<T>> CapacityLowCreator =>
+	protected virtual Func<int, List<T>> CapacityLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator =>
+	protected virtual Func<G.IEnumerable<T>, BigArray<T>> CollectionCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
+	protected virtual Func<G.IEnumerable<T>, List<T>> CollectionLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");}
 
@@ -454,19 +454,19 @@ public class BigBitArray : BigArray<bool, BigBitArray, BitList>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<MpzT, BigBitArray> CapacityCreator =>
+	protected virtual Func<MpzT, BigBitArray> CapacityCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<int, BitList> CapacityLowCreator =>
+	protected virtual Func<int, BitList> CapacityLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator =>
+	protected virtual Func<G.IEnumerable<bool>, BigBitArray> CollectionCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 
-	private protected virtual Func<G.IEnumerable<bool>, BitList> CollectionLowCreator =>
+	protected virtual Func<G.IEnumerable<bool>, BitList> CollectionLowCreator =>
 		throw new NotSupportedException("Этот класс никогда не был корректно работающим, хотя бы на уровне прототипа."
 		+ " Теперь он удален окончательно. Большие списки делают все то же самое и многое другое, и они уже работают.");
 

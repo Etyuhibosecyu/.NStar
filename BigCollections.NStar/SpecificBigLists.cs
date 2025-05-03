@@ -274,7 +274,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		return this;
 	}
 
-	private protected virtual void ConstructFromBitList(BitList bitList)
+	protected virtual void ConstructFromBitList(BitList bitList)
 	{
 		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
 		{
@@ -308,7 +308,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 	}
 
-	private protected virtual void ConstructFromBitListFromScratch(BitList bitList)
+	protected virtual void ConstructFromBitListFromScratch(BitList bitList)
 	{
 		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
 		if (bitList.Length <= LeafSize && high == null && highLength == null && fragment == 1)
@@ -349,7 +349,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 	}
 
-	private protected virtual void ConstructFromUIntList(BigList<uint> bigUIntList, int overrideLength = 0)
+	protected virtual void ConstructFromUIntList(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
 		if ((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0)
 		{
@@ -389,7 +389,7 @@ public class BigBitList : BigList<bool, BigBitList, BitList>
 		}
 	}
 
-	private protected virtual void ConstructFromUIntListFromScratch(BigList<uint> bigUIntList, int overrideLength = 0)
+	protected virtual void ConstructFromUIntListFromScratch(BigList<uint> bigUIntList, int overrideLength = 0)
 	{
 		Debug.Assert((low == null || low.Capacity == 0) && high == null && highLength == null && fragment == 1 && _capacity == 0);
 		ArgumentOutOfRangeException.ThrowIfNegative(overrideLength);
