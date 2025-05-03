@@ -762,7 +762,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 #pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
-	public virtual TCertain Replace(Dictionary<T, IEnumerable<T>> dic)
+	public virtual TCertain Replace(Dictionary<T, IEnumerable<T>>? dic)
 	{
 		ArgumentNullException.ThrowIfNull(dic);
 		if (_size < 2)
@@ -779,7 +779,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return result;
 	}
 
-	public virtual TCertain Replace(Dictionary<T, T> dic)
+	public virtual TCertain Replace(Dictionary<T, T>? dic)
 	{
 		ArgumentNullException.ThrowIfNull(dic);
 		var result = CollectionCreator(this);
@@ -789,10 +789,10 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return result;
 	}
 
-	public virtual TCertain Replace(Dictionary<T, TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
+	public virtual TCertain Replace(Dictionary<T, TCertain>? dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
 #pragma warning restore CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
-	public virtual TCertain Replace(Dictionary<(T, T), IEnumerable<T>> dic)
+	public virtual TCertain Replace(Dictionary<(T, T), IEnumerable<T>>? dic)
 	{
 		ArgumentNullException.ThrowIfNull(dic);
 		if (_size < 2)
@@ -815,9 +815,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return result.AddRange(buffer);
 	}
 
-	public virtual TCertain Replace(Dictionary<(T, T), TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
+	public virtual TCertain Replace(Dictionary<(T, T), TCertain>? dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
 
-	public virtual TCertain Replace(Dictionary<(T, T, T), IEnumerable<T>> dic)
+	public virtual TCertain Replace(Dictionary<(T, T, T), IEnumerable<T>>? dic)
 	{
 		ArgumentNullException.ThrowIfNull(dic);
 		if (_size < 3)
@@ -840,7 +840,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return result.AddRange(buffer);
 	}
 
-	public virtual TCertain Replace(Dictionary<(T, T, T), TCertain> dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
+	public virtual TCertain Replace(Dictionary<(T, T, T), TCertain>? dic) => Replace(dic?.ToDictionary(x => x.Key, x => (IEnumerable<T>)x.Value)!);
 
 	public virtual TCertain Replace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection)
 	{
@@ -877,9 +877,9 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 	}
 #pragma warning disable CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
-	public virtual TCertain ReplaceInPlace(Dictionary<T, IEnumerable<T>> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<T, IEnumerable<T>>? dic) => Replace(Replace(dic));
 
-	public virtual TCertain ReplaceInPlace(Dictionary<T, T> dic)
+	public virtual TCertain ReplaceInPlace(Dictionary<T, T>? dic)
 	{
 		ArgumentNullException.ThrowIfNull(dic);
 		for (var i = 0; i < _size; i++)
@@ -888,16 +888,16 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return (TCertain)this;
 	}
 
-	public virtual TCertain ReplaceInPlace(Dictionary<T, TCertain> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<T, TCertain>? dic) => Replace(Replace(dic));
 #pragma warning restore CS8714 // Тип не может быть использован как параметр типа в универсальном типе или методе. Допустимость значения NULL для аргумента типа не соответствует ограничению "notnull".
 
-	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), IEnumerable<T>> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), IEnumerable<T>>? dic) => Replace(Replace(dic));
 
-	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), TCertain> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T), TCertain>? dic) => Replace(Replace(dic));
 
-	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), IEnumerable<T>> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), IEnumerable<T>>? dic) => Replace(Replace(dic));
 
-	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), TCertain> dic) => Replace(Replace(dic));
+	public virtual TCertain ReplaceInPlace(Dictionary<(T, T, T), TCertain>? dic) => Replace(Replace(dic));
 
 	public virtual TCertain ReplaceInPlace(IEnumerable<T> oldCollection, IEnumerable<T> newCollection) => Replace(Replace(oldCollection, newCollection));
 

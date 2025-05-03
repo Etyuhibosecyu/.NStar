@@ -769,7 +769,7 @@ public static class RedStarLinqExtras
 
 		protected override int IndexOfInternal(T item, int index, int length)
 		{
-			for (var i = index; i < Math.Min(index + length, source.Count); i++)
+			for (var i = index; i < Min(index + length, source.Count); i++)
 				if (source[i - 1]?.Equals(item) ?? item == null)
 					return i;
 			if (index == _size - length && (element?.Equals(item) ?? item == null))
@@ -782,7 +782,7 @@ public static class RedStarLinqExtras
 			if (index == source.Count && (element?.Equals(item) ?? item == null))
 				return 0;
 			var endIndex = index - length + 1;
-			for (var i = Math.Min(index, source.Count - 1); i >= endIndex; i++)
+			for (var i = Min(index, source.Count - 1); i >= endIndex; i++)
 				if (source[i - 1]?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -1575,7 +1575,7 @@ public static class RedStarLinqExtras
 			this.source = source;
 			this.source2 = source2;
 			this.function = function;
-			_size = Math.Min(source.Count, source2.Count);
+			_size = Min(source.Count, source2.Count);
 		}
 
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
@@ -1633,7 +1633,7 @@ public static class RedStarLinqExtras
 			this.source = source;
 			this.source2 = source2;
 			this.function = function;
-			_size = Math.Min(source.Count, source2.Count);
+			_size = Min(source.Count, source2.Count);
 		}
 
 		public override Span<TResult> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
@@ -1687,7 +1687,7 @@ public static class RedStarLinqExtras
 			ArgumentNullException.ThrowIfNull(source2);
 			this.source = source;
 			this.source2 = source2;
-			_size = Math.Min(source.Count, source2.Count);
+			_size = Min(source.Count, source2.Count);
 		}
 
 		public override Span<(T, T2)> AsSpan(int index, int length) => GetSlice(index, length).ToArray().AsSpan();
@@ -1924,7 +1924,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
@@ -1934,7 +1934,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = array[i];
@@ -1944,7 +1944,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2_[i];
@@ -1954,7 +1954,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3_[i];
@@ -21626,34 +21626,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21665,34 +21665,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21704,34 +21704,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21743,34 +21743,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21782,34 +21782,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21821,34 +21821,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 		else
 		{
 			var list_ = source.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -21861,7 +21861,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = list.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21871,7 +21871,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21881,7 +21881,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21891,7 +21891,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21900,7 +21900,7 @@ public static class RedStarLinqExtras
 		{
 			var list_ = source.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21915,7 +21915,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = list.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21925,7 +21925,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21935,7 +21935,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21945,7 +21945,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -21954,7 +21954,7 @@ public static class RedStarLinqExtras
 		{
 			var list_ = source.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -22013,23 +22013,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return IndexOf(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return IndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return IndexOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -22038,23 +22038,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return IndexOf(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return IndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return IndexOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<uint>.ReturnOrConstruct(source);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -22063,23 +22063,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Math.Max(list.Length, 1));
+			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
 			return IndexOf(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Math.Max(array.Length, 1));
+			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
 			return IndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Math.Max(list2.Count, 1));
+			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
 			return IndexOf(list2, value);
 		}
 		else
 		{
 			var list_ = List<long>.ReturnOrConstruct(source);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexOf(list_, value);
 		}
 	}
@@ -22088,24 +22088,24 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = list.Sum() / Math.Max(list.Length, 1);
+			var value = list.Sum() / Max(list.Length, 1);
 			return IndexOf(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = array.Sum() / Math.Max(array.Length, 1);
+			var value = array.Sum() / Max(array.Length, 1);
 			return IndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = list2.Sum() / Math.Max(list2.Count, 1);
+			var value = list2.Sum() / Max(list2.Count, 1);
 			return IndexOf(list2, value);
 		}
 		else
 		{
 			var list_ = List<MpzT>.ReturnOrConstruct(source);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return IndexOf(list_, value);
@@ -27256,28 +27256,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27291,28 +27291,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27326,28 +27326,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27361,28 +27361,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27396,28 +27396,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27431,28 +27431,28 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = list.ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return LastIndexOf(list_, value);
 		}
 		else
@@ -27467,7 +27467,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = list.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27477,7 +27477,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27487,7 +27487,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27497,7 +27497,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27514,7 +27514,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = list.ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27524,7 +27524,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = array.AsSpan().ToList(function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27534,7 +27534,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = RedStarLinq.Convert(list2.GetSlice(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27544,7 +27544,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = RedStarLinq.Convert(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return -1;
 			return LastIndexOf(list_, value);
@@ -27599,17 +27599,17 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return LastIndexOf(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return LastIndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return LastIndexOf(list2, value);
 		}
 		else
@@ -27620,17 +27620,17 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return LastIndexOf(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return LastIndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return LastIndexOf(list2, value);
 		}
 		else
@@ -27641,17 +27641,17 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Math.Max(list.Length, 1));
+			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
 			return LastIndexOf(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Math.Max(array.Length, 1));
+			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
 			return LastIndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Math.Max(list2.Count, 1));
+			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
 			return LastIndexOf(list2, value);
 		}
 		else
@@ -27662,17 +27662,17 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = list.Sum() / Math.Max(list.Length, 1);
+			var value = list.Sum() / Max(list.Length, 1);
 			return LastIndexOf(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = array.Sum() / Math.Max(array.Length, 1);
+			var value = array.Sum() / Max(array.Length, 1);
 			return LastIndexOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = list2.Sum() / Math.Max(list2.Count, 1);
+			var value = list2.Sum() / Max(list2.Count, 1);
 			return LastIndexOf(list2, value);
 		}
 		else
@@ -30022,7 +30022,7 @@ public static class RedStarLinqExtras
 		{
 			if (index == 0 && (element?.Equals(item) ?? item == null))
 				return 0;
-			for (var i = Math.Max(index, 1); i < index + length; i++)
+			for (var i = Max(index, 1); i < index + length; i++)
 				if (source[i - 1]?.Equals(item) ?? item == null)
 					return i;
 			return -1;
@@ -30031,7 +30031,7 @@ public static class RedStarLinqExtras
 		protected override int LastIndexOfInternal(T item, int index, int length)
 		{
 			var endIndex = index - length + 1;
-			for (var i = index; i >= Math.Max(endIndex, 1); i++)
+			for (var i = index; i >= Max(endIndex, 1); i++)
 				if (source[i - 1]?.Equals(item) ?? item == null)
 					return i;
 			if (endIndex == 0 && (element?.Equals(item) ?? item == null))
@@ -30992,7 +30992,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31011,7 +31011,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31030,7 +31030,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31049,7 +31049,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31077,7 +31077,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31096,7 +31096,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31115,7 +31115,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31134,7 +31134,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31160,7 +31160,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<T> hs = [];
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31179,7 +31179,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31198,7 +31198,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31217,7 +31217,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31244,7 +31244,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31263,7 +31263,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31282,7 +31282,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31301,7 +31301,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31329,7 +31329,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(comparer);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31348,7 +31348,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31367,7 +31367,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31386,7 +31386,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31412,7 +31412,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<T> hs = new(comparer);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31431,7 +31431,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31450,7 +31450,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31469,7 +31469,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31496,7 +31496,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31515,7 +31515,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31534,7 +31534,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31553,7 +31553,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31581,7 +31581,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31600,7 +31600,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31619,7 +31619,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31638,7 +31638,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31664,7 +31664,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<T> hs = new(new EComparer<T>(equalFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31683,7 +31683,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31702,7 +31702,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31721,7 +31721,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31748,7 +31748,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31767,7 +31767,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31786,7 +31786,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31805,7 +31805,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31833,7 +31833,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31852,7 +31852,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31871,7 +31871,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31890,7 +31890,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31916,7 +31916,7 @@ public static class RedStarLinqExtras
 		FastDelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31935,7 +31935,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31954,7 +31954,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -31973,7 +31973,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			List<T> result = new(length);
 			List<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
@@ -32883,7 +32883,7 @@ public static class RedStarLinqExtras
 			for (var i = 0; i < length; i++)
 				if (!en.MoveNext())
 					return new();
-			List<T> result = new(source.TryGetLengthEasily(out var length2) ? Math.Max(length2 - length, 0) : 1024);
+			List<T> result = new(source.TryGetLengthEasily(out var length2) ? Max(length2 - length, 0) : 1024);
 			while (en.MoveNext())
 				result.Add(en.Current);
 			return result.GetSlice();
@@ -32898,7 +32898,7 @@ public static class RedStarLinqExtras
 			return new((G.IReadOnlyList<T>)source.ToList());
 		else if (source.TryGetLengthEasily(out var length2))
 		{
-			var end = Math.Max(length2 - length, 0);
+			var end = Max(length2 - length, 0);
 			var result = RedStarLinq.EmptyList<T>(end);
 			using var en = source.GetEnumerator();
 			var i = 0;
@@ -33361,7 +33361,7 @@ public static class RedStarLinqExtras
 				if (i >= index + index2)
 					return new();
 			}
-			var result = RedStarLinq.EmptyList<T>(Math.Min(index + index2 - i, i));
+			var result = RedStarLinq.EmptyList<T>(Min(index + index2 - i, i));
 			for (i = 0; i < result.Length; i++)
 				result[i] = queue.Dequeue();
 			return result.GetSlice();
@@ -33390,13 +33390,13 @@ public static class RedStarLinqExtras
 			return list.GetSlice(Clamp(list.Count - length, 0, list.Count));
 		else if (source.TryGetLengthEasily(out var length2))
 		{
-			var start = Math.Max(length2 - length, 0);
+			var start = Max(length2 - length, 0);
 			using var en = source.GetEnumerator();
 			var i = 0;
 			for (; i < start; i++)
 				if (!en.MoveNext())
 					return new();
-			var result = RedStarLinq.EmptyList<T>(Math.Min(length, length2));
+			var result = RedStarLinq.EmptyList<T>(Min(length, length2));
 			for (i = 0; i < result.Length && en.MoveNext(); i++)
 				result[i] = en.Current;
 			return result.GetSlice();
@@ -33677,7 +33677,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> Combine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i]);
@@ -33688,7 +33688,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> Combine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], i);
@@ -33698,7 +33698,7 @@ public static class RedStarLinqExtras
 	[Obsolete("Этот метод не рекомендуется, так как создает новый список, который потребляет очень много памяти (сравнимо с исходными Span<T>). Для устранения проблемы замените Span<T> на Slice<T> (создается методами GetSlice() и GetROLSlice()).")]
 	public static List<(T, T2)> Combine<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2)
 	{
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		List<(T, T2)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i]);
@@ -33794,7 +33794,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length != source2.Length)
 			return false;
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		for (var i = 0; i < length; i++)
 			if (!function(source[i], source2[i]))
 				return false;
@@ -33806,7 +33806,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source.Length != source2.Length)
 			return false;
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		for (var i = 0; i < length; i++)
 			if (!function(source[i], source2[i], i))
 				return false;
@@ -33817,7 +33817,7 @@ public static class RedStarLinqExtras
 	{
 		if (source.Length != source2.Length)
 			return false;
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
@@ -38016,7 +38016,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38025,7 +38025,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38034,7 +38034,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38043,7 +38043,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38052,7 +38052,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38061,7 +38061,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return IndexOf(list_, value);
 	}
 
@@ -38099,19 +38099,19 @@ public static class RedStarLinqExtras
 
 	public static int IndexOfMean(this ReadOnlySpan<int> source)
 	{
-		var value = (int)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return IndexOf(source, value);
 	}
 
 	public static int IndexOfMean(this ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return IndexOf(source, value);
 	}
 
 	public static int IndexOfMean(this ReadOnlySpan<long> source)
 	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Math.Max(source.Length, 1));
+		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
 		return IndexOf(source, value);
 	}
 
@@ -39332,7 +39332,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39341,7 +39341,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39350,7 +39350,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39359,7 +39359,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39368,7 +39368,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39377,7 +39377,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = source.ToList(function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return LastIndexOf(list_, value);
 	}
 
@@ -39415,19 +39415,19 @@ public static class RedStarLinqExtras
 
 	public static int LastIndexOfMean(this ReadOnlySpan<int> source)
 	{
-		var value = (int)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return LastIndexOf(source, value);
 	}
 
 	public static int LastIndexOfMean(this ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return LastIndexOf(source, value);
 	}
 
 	public static int LastIndexOfMean(this ReadOnlySpan<long> source)
 	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Math.Max(source.Length, 1));
+		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
 		return LastIndexOf(source, value);
 	}
 
@@ -40420,7 +40420,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -40435,7 +40435,7 @@ public static class RedStarLinqExtras
 	public static List<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T2, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -40449,7 +40449,7 @@ public static class RedStarLinqExtras
 	[Experimental("CS9216")]
 	public static List<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
 	{
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<(T, T2)>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -40863,7 +40863,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = [];
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -40888,7 +40888,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = [];
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -40911,7 +40911,7 @@ public static class RedStarLinqExtras
 	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2)
 	{
 		ParallelHashSet<T> hs = [];
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -40935,7 +40935,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(comparer);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -40960,7 +40960,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(comparer);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -40983,7 +40983,7 @@ public static class RedStarLinqExtras
 	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, G.IEqualityComparer<T> comparer)
 	{
 		ParallelHashSet<T> hs = new(comparer);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41007,7 +41007,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41032,7 +41032,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41055,7 +41055,7 @@ public static class RedStarLinqExtras
 	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41079,7 +41079,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41104,7 +41104,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ParallelHashSet<TResult> hs = new(new EComparer<TResult>(equalFunction, hashCodeFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41127,7 +41127,7 @@ public static class RedStarLinqExtras
 	public static (List<T>, List<T2>) PRemoveDoubles<T, T2>(this G.IReadOnlyList<T> source, G.IReadOnlyList<T2> source2, Func<T, T, bool> equalFunction, Func<T, int> hashCodeFunction)
 	{
 		ParallelHashSet<T> hs = new(new EComparer<T>(equalFunction, hashCodeFunction));
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.EmptyList<T>(length);
 		var result2 = RedStarLinq.EmptyList<T2>(length);
 		Parallel.For(0, length, i =>
@@ -41207,52 +41207,52 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
 			}
 			return (result, result2);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
 			}
 			return (result, result2);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
 			}
 			return (result, result2);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
 			}
 			return (result, result2);
 		}
@@ -41263,8 +41263,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result[i] = function(item);
-				result2[i] = function2(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
 				i++;
 			}
 			return (result, result2);
@@ -41278,52 +41278,52 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
 			}
 			return (result, result2);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
 			}
 			return (result, result2);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
 			}
 			return (result, result2);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
 			}
 			return (result, result2);
 		}
@@ -41334,8 +41334,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
 				i++;
 			}
 			return (result, result2);
@@ -41350,7 +41350,11 @@ public static class RedStarLinqExtras
 			NList<T> result = new(length);
 			NList<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
-				(result[i], result2[i]) = list[i];
+			{
+				var item = list[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+			}
 			return (result, result2);
 		}
 		else if (source is (T, T2)[] array)
@@ -41359,7 +41363,11 @@ public static class RedStarLinqExtras
 			NList<T> result = new(length);
 			NList<T2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
-				(result[i], result2[i]) = array[i];
+			{
+				var item = array[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+			}
 			return (result, result2);
 		}
 		else if (source is G.IList<(T, T2)> list2)
@@ -41368,7 +41376,11 @@ public static class RedStarLinqExtras
 			NList<T> result = new(length);
 			NList<T2> result2 = new(length);
 			for (var i = 0; i < length; i++)
-				(result[i], result2[i]) = list2[i];
+			{
+				var item = list2[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+			}
 			return (result, result2);
 		}
 		else
@@ -41378,7 +41390,8 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i]) = item;
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 				i++;
 			}
 			return (result, result2);
@@ -41391,48 +41404,52 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				(result[i], result2[i]) = function(item);
+				var item = function(list[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				var item = array[i];
-				(result[i], result2[i]) = function(item);
+				var item = function(array[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list2[i];
-				(result[i], result2[i]) = function(item);
+				var item = function(list2[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list3[i];
-				(result[i], result2[i]) = function(item);
+				var item = function(list3[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
@@ -41443,7 +41460,9 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i]) = function(item);
+				var x = function(item);
+				result.Add(x.Item1);
+				result2.Add(x.Item2);
 				i++;
 			}
 			return (result, result2);
@@ -41456,48 +41475,52 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				(result[i], result2[i]) = function(item, i);
+				var item = function(list[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				var item = array[i];
-				(result[i], result2[i]) = function(item, i);
+				var item = function(array[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list2[i];
-				(result[i], result2[i]) = function(item, i);
+				var item = function(list2[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list3[i];
-				(result[i], result2[i]) = function(item, i);
+				var item = function(list3[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
 			}
 			return (result, result2);
 		}
@@ -41508,7 +41531,9 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i]) = function(item, i);
+				var x = function(item, i);
+				result.Add(x.Item1);
+				result2.Add(x.Item2);
 				i++;
 			}
 			return (result, result2);
@@ -41523,60 +41548,60 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
+				result3.Add(function3(item));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
+				result3.Add(function3(item));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
+				result3.Add(function3(item));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
+				result3.Add(function3(item));
 			}
 			return (result, result2, result3);
 		}
@@ -41588,9 +41613,9 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result[i] = function(item);
-				result2[i] = function2(item);
-				result3[i] = function3(item);
+				result.Add(function(item));
+				result2.Add(function2(item));
+				result3.Add(function3(item));
 				i++;
 			}
 			return (result, result2, result3);
@@ -41601,63 +41626,64 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
+		ArgumentNullException.ThrowIfNull(function3);
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
+				result3.Add(function3(item, i));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
 				var item = array[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
+				result3.Add(function3(item, i));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list2[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
+				result3.Add(function3(item, i));
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list3[i];
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
+				result3.Add(function3(item, i));
 			}
 			return (result, result2, result3);
 		}
@@ -41669,9 +41695,9 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				result[i] = function(item, i);
-				result2[i] = function2(item, i);
-				result3[i] = function3(item, i);
+				result.Add(function(item, i));
+				result2.Add(function2(item, i));
+				result3.Add(function3(item, i));
 				i++;
 			}
 			return (result, result2, result3);
@@ -41687,7 +41713,12 @@ public static class RedStarLinqExtras
 			NList<T2> result2 = new(length);
 			NList<T3> result3 = new(length);
 			for (var i = 0; i < length; i++)
-				(result[i], result2[i], result3[i]) = list[i];
+			{
+				var item = list[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
+			}
 			return (result, result2, result3);
 		}
 		else if (source is (T, T2, T3)[] array)
@@ -41697,7 +41728,12 @@ public static class RedStarLinqExtras
 			NList<T2> result2 = new(length);
 			NList<T3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
-				(result[i], result2[i], result3[i]) = array[i];
+			{
+				var item = array[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
+			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IList<(T, T2, T3)> list2)
@@ -41707,7 +41743,12 @@ public static class RedStarLinqExtras
 			NList<T2> result2 = new(length);
 			NList<T3> result3 = new(length);
 			for (var i = 0; i < length; i++)
-				(result[i], result2[i], result3[i]) = list2[i];
+			{
+				var item = list2[i];
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
+			}
 			return (result, result2, result3);
 		}
 		else
@@ -41718,7 +41759,9 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i], result3[i]) = item;
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 				i++;
 			}
 			return (result, result2, result3);
@@ -41731,52 +41774,60 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				(result[i], result2[i], result3[i]) = function(item);
+				var item = function(list[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				var item = array[i];
-				(result[i], result2[i], result3[i]) = function(item);
+				var item = function(array[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list2[i];
-				(result[i], result2[i], result3[i]) = function(item);
+				var item = function(list2[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list3[i];
-				(result[i], result2[i], result3[i]) = function(item);
+				var item = function(list3[i]);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
@@ -41788,7 +41839,10 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i], result3[i]) = function(item);
+				var x = function(item);
+				result.Add(x.Item1);
+				result2.Add(x.Item2);
+				result3.Add(x.Item3);
 				i++;
 			}
 			return (result, result2, result3);
@@ -41801,52 +41855,60 @@ public static class RedStarLinqExtras
 		if (source is List<T> list)
 		{
 			var length = list.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
+				var item = function(list[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < array.Length; i++)
 			{
-				var item = array[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
+				var item = function(array[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list2[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
+				var item = function(list2[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
-			var result = RedStarLinq.NEmptyList<TResult>(length);
+			NList<TResult> result = new(length);
 			NList<TResult2> result2 = new(length);
 			NList<TResult3> result3 = new(length);
 			for (var i = 0; i < length; i++)
 			{
-				var item = list3[i];
-				(result[i], result2[i], result3[i]) = function(item, i);
+				var item = function(list3[i], i);
+				result.Add(item.Item1);
+				result2.Add(item.Item2);
+				result3.Add(item.Item3);
 			}
 			return (result, result2, result3);
 		}
@@ -41858,7 +41920,10 @@ public static class RedStarLinqExtras
 			var i = 0;
 			foreach (var item in source)
 			{
-				(result[i], result2[i], result3[i]) = function(item, i);
+				var x = function(item, i);
+				result.Add(x.Item1);
+				result2.Add(x.Item2);
+				result3.Add(x.Item3);
 				i++;
 			}
 			return (result, result2, result3);
@@ -41870,13 +41935,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
+			result.Add(function(item));
+			result2.Add(function2(item));
 		}
 		return (result, result2);
 	}
@@ -41886,13 +41951,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
+			result.Add(function(item, i));
+			result2.Add(function2(item, i));
 		}
 		return (result, result2);
 	}
@@ -41903,7 +41968,11 @@ public static class RedStarLinqExtras
 		NList<T> result = new(length);
 		NList<T2> result2 = new(length);
 		for (var i = 0; i < length; i++)
-			(result[i], result2[i]) = source[i];
+		{
+			var item = source[i];
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+		}
 		return (result, result2);
 	}
 
@@ -41911,12 +41980,13 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item);
+			var item = function(source[i]);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
 		}
 		return (result, result2);
 	}
@@ -41925,12 +41995,13 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item, i);
+			var item = function(source[i], i);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
 		}
 		return (result, result2);
 	}
@@ -41941,15 +42012,15 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
-			result3[i] = function3(item);
+			result.Add(function(item));
+			result2.Add(function2(item));
+			result3.Add(function3(item));
 		}
 		return (result, result2, result3);
 	}
@@ -41959,15 +42030,15 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
-			result3[i] = function3(item, i);
+			result.Add(function(item, i));
+			result2.Add(function2(item, i));
+			result3.Add(function3(item, i));
 		}
 		return (result, result2, result3);
 	}
@@ -41979,7 +42050,12 @@ public static class RedStarLinqExtras
 		NList<T2> result2 = new(length);
 		NList<T3> result3 = new(length);
 		for (var i = 0; i < length; i++)
-			(result[i], result2[i], result3[i]) = source[i];
+		{
+			var item = source[i];
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
+		}
 		return (result, result2, result3);
 	}
 
@@ -41987,13 +42063,15 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item);
+			var item = function(source[i]);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
 		}
 		return (result, result2, result3);
 	}
@@ -42002,13 +42080,15 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item, i);
+			var item = function(source[i], i);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
 		}
 		return (result, result2, result3);
 	}
@@ -42018,13 +42098,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
+			result.Add(function(item));
+			result2.Add(function2(item));
 		}
 		return (result, result2);
 	}
@@ -42034,13 +42114,13 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
+			result.Add(function(item, i));
+			result2.Add(function2(item, i));
 		}
 		return (result, result2);
 	}
@@ -42051,7 +42131,11 @@ public static class RedStarLinqExtras
 		NList<T> result = new(length);
 		NList<T2> result2 = new(length);
 		for (var i = 0; i < length; i++)
-			(result[i], result2[i]) = source[i];
+		{
+			var item = source[i];
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+		}
 		return (result, result2);
 	}
 
@@ -42059,12 +42143,13 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item);
+			var item = function(source[i]);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
 		}
 		return (result, result2);
 	}
@@ -42073,12 +42158,13 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i]) = function(item, i);
+			var item = function(source[i], i);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
 		}
 		return (result, result2);
 	}
@@ -42089,15 +42175,15 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function2);
 		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item);
-			result2[i] = function2(item);
-			result3[i] = function3(item);
+			result.Add(function(item));
+			result2.Add(function2(item));
+			result3.Add(function3(item));
 		}
 		return (result, result2, result3);
 	}
@@ -42107,15 +42193,15 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
 			var item = source[i];
-			result[i] = function(item, i);
-			result2[i] = function2(item, i);
-			result3[i] = function3(item, i);
+			result.Add(function(item, i));
+			result2.Add(function2(item, i));
+			result3.Add(function3(item, i));
 		}
 		return (result, result2, result3);
 	}
@@ -42127,7 +42213,12 @@ public static class RedStarLinqExtras
 		NList<T2> result2 = new(length);
 		NList<T3> result3 = new(length);
 		for (var i = 0; i < length; i++)
-			(result[i], result2[i], result3[i]) = source[i];
+		{
+			var item = source[i];
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
+		}
 		return (result, result2, result3);
 	}
 
@@ -42135,13 +42226,15 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item);
+			var item = function(source[i]);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
 		}
 		return (result, result2, result3);
 	}
@@ -42150,13 +42243,15 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.NEmptyList<TResult>(length);
+		NList<TResult> result = new(length);
 		NList<TResult2> result2 = new(length);
 		NList<TResult3> result3 = new(length);
 		for (var i = 0; i < length; i++)
 		{
-			var item = source[i];
-			(result[i], result2[i], result3[i]) = function(item, i);
+			var item = function(source[i], i);
+			result.Add(item.Item1);
+			result2.Add(item.Item2);
+			result3.Add(item.Item3);
 		}
 		return (result, result2, result3);
 	}
@@ -42167,7 +42262,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42179,7 +42274,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42191,7 +42286,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42203,7 +42298,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42223,7 +42318,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42235,7 +42330,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42247,7 +42342,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42259,7 +42354,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			var result = RedStarLinq.NEmptyList<TResult>(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42278,7 +42373,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(source2);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			NList<(T, T2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42290,7 +42385,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is T[] array && source2 is T2[] array2)
 		{
-			var length = Math.Min(array.Length, array2.Length);
+			var length = Min(array.Length, array2.Length);
 			NList<(T, T2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42302,7 +42397,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IList<T> list2_ && source2 is G.IList<T2> list2_2)
 		{
-			var length = Math.Min(list2_.Count, list2_2.Count);
+			var length = Min(list2_.Count, list2_2.Count);
 			NList<(T, T2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42314,7 +42409,7 @@ public static class RedStarLinqExtras
 		}
 		else if (source is G.IReadOnlyList<T> list3_ && source2 is G.IReadOnlyList<T2> list3_2)
 		{
-			var length = Math.Min(list3_.Count, list3_2.Count);
+			var length = Min(list3_.Count, list3_2.Count);
 			NList<(T, T2)> result = new(length);
 			for (var i = 0; i < length; i++)
 			{
@@ -42513,7 +42608,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i]);
@@ -42523,7 +42618,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> NCombine<T, T2, TResult>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where T2 : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], i);
@@ -42532,7 +42627,7 @@ public static class RedStarLinqExtras
 
 	public static NList<(T, T2)> NCombine<T, T2>(this ReadOnlySpan<T> source, ReadOnlySpan<T2> source2) where T : unmanaged where T2 : unmanaged
 	{
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		NList<(T, T2)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i]);
@@ -42572,7 +42667,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i]);
@@ -42583,7 +42678,7 @@ public static class RedStarLinqExtras
 	{
 		ArgumentNullException.ThrowIfNull(source2);
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], source2[i], i);
@@ -42593,7 +42688,7 @@ public static class RedStarLinqExtras
 	public static NList<(T, T2)> NCombine<T, T2>(this NList<T> source, NList<T2> source2) where T : unmanaged where T2 : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(source2);
-		var length = Math.Min(source.Length, source2.Length);
+		var length = Min(source.Length, source2.Length);
 		NList<(T, T2)> result = new(length);
 		for (var i = 0; i < length; i++)
 			result[i] = (source[i], source2[i]);
@@ -48049,23 +48144,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<int> list)
 		{
-			var value = (int)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (int)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return IndexesOf(list, value);
 		}
 		else if (source is int[] array)
 		{
-			var value = (int)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (int)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return IndexesOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<int> list2)
 		{
-			var value = (int)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (int)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return IndexesOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -48074,23 +48169,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<uint> list)
 		{
-			var value = (uint)(list.Sum(x => (long)x) / Math.Max(list.Length, 1));
+			var value = (uint)(list.Sum(x => (long)x) / Max(list.Length, 1));
 			return IndexesOf(list, value);
 		}
 		else if (source is uint[] array)
 		{
-			var value = (uint)(array.Sum(x => (long)x) / Math.Max(array.Length, 1));
+			var value = (uint)(array.Sum(x => (long)x) / Max(array.Length, 1));
 			return IndexesOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<uint> list2)
 		{
-			var value = (uint)(list2.Sum(x => (long)x) / Math.Max(list2.Count, 1));
+			var value = (uint)(list2.Sum(x => (long)x) / Max(list2.Count, 1));
 			return IndexesOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<int>.ReturnOrConstruct(source);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -48099,23 +48194,23 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<long> list)
 		{
-			var value = (long)(list.Sum(x => (MpzT)x) / Math.Max(list.Length, 1));
+			var value = (long)(list.Sum(x => (MpzT)x) / Max(list.Length, 1));
 			return IndexesOf(list, value);
 		}
 		else if (source is long[] array)
 		{
-			var value = (long)(array.Sum(x => (MpzT)x) / Math.Max(array.Length, 1));
+			var value = (long)(array.Sum(x => (MpzT)x) / Max(array.Length, 1));
 			return IndexesOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<long> list2)
 		{
-			var value = (long)(list2.Sum(x => (MpzT)x) / Math.Max(list2.Count, 1));
+			var value = (long)(list2.Sum(x => (MpzT)x) / Max(list2.Count, 1));
 			return IndexesOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<long>.ReturnOrConstruct(source);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -48124,24 +48219,24 @@ public static class RedStarLinqExtras
 	{
 		if (source is NList<MpzT> list)
 		{
-			var value = list.Sum() / Math.Max(list.Length, 1);
+			var value = list.Sum() / Max(list.Length, 1);
 			return IndexesOf(list, value);
 		}
 		else if (source is MpzT[] array)
 		{
-			var value = array.Sum() / Math.Max(array.Length, 1);
+			var value = array.Sum() / Max(array.Length, 1);
 			return IndexesOf(array.AsSpan(), value);
 		}
 		else if (source is G.IList<MpzT> list2)
 		{
-			var value = list2.Sum() / Math.Max(list2.Count, 1);
+			var value = list2.Sum() / Max(list2.Count, 1);
 			return IndexesOf(list2, value);
 		}
 		else
 		{
 			var list_ = NList<MpzT>.ReturnOrConstruct(source);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50693,34 +50788,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50732,34 +50827,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50771,34 +50866,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50810,34 +50905,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+			var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50849,34 +50944,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50888,34 +50983,34 @@ public static class RedStarLinqExtras
 		{
 			var length = list.Length;
 			var list_ = ToNList(list, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is T[] array)
 		{
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IList<T> list2)
 		{
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else if (source is G.IReadOnlyList<T> list3)
 		{
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 		else
 		{
 			var list_ = ToNList(source, function);
-			var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+			var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 			return IndexesOf(list_, value);
 		}
 	}
@@ -50928,7 +51023,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = ToNList(list, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50938,7 +51033,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50948,7 +51043,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50958,7 +51053,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50967,7 +51062,7 @@ public static class RedStarLinqExtras
 		{
 			var list_ = ToNList(source, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50982,7 +51077,7 @@ public static class RedStarLinqExtras
 			var length = list.Length;
 			var list_ = ToNList(list, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -50992,7 +51087,7 @@ public static class RedStarLinqExtras
 			var length = array.Length;
 			var list_ = ToNList(array.AsSpan(), function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -51002,7 +51097,7 @@ public static class RedStarLinqExtras
 			var length = list2.Count;
 			var list_ = ToNList(list2, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -51012,7 +51107,7 @@ public static class RedStarLinqExtras
 			var length = list3.Count;
 			var list_ = ToNList(list3, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -51021,7 +51116,7 @@ public static class RedStarLinqExtras
 		{
 			var list_ = ToNList(source, function);
 			var sum = list_.Sum();
-			var value = sum / Math.Max(list_.Length, 1);
+			var value = sum / Max(list_.Length, 1);
 			if (value * list_.Length != sum)
 				return [];
 			return IndexesOf(list_, value);
@@ -53346,7 +53441,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Math.Max(length - offset, 0) : 1024);
+			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
 			using var en = source.GetEnumerator();
@@ -53429,7 +53524,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Math.Max(length - offset, 0) : 1024);
+			NList<TResult> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
 			using var en = source.GetEnumerator();
@@ -53511,7 +53606,7 @@ public static class RedStarLinqExtras
 		}
 		else
 		{
-			NList<(T, T)> result = new(source.TryGetLengthEasily(out var length) ? Math.Max(length - offset, 0) : 1024);
+			NList<(T, T)> result = new(source.TryGetLengthEasily(out var length) ? Max(length - offset, 0) : 1024);
 			if (result.Capacity == 0)
 				return result;
 			using var en = source.GetEnumerator();
@@ -55830,7 +55925,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55839,7 +55934,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (int)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (int)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55848,7 +55943,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55857,7 +55952,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (uint)(list_.Sum(x => (long)x) / Math.Max(list_.Length, 1));
+		var value = (uint)(list_.Sum(x => (long)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55866,7 +55961,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55875,7 +55970,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
 		var list_ = ToNList(source, function);
-		var value = (long)(list_.Sum(x => (MpzT)x) / Math.Max(list_.Length, 1));
+		var value = (long)(list_.Sum(x => (MpzT)x) / Max(list_.Length, 1));
 		return IndexesOf(list_, value);
 	}
 
@@ -55911,19 +56006,19 @@ public static class RedStarLinqExtras
 
 	public static NList<int> IndexesOfMean(this ReadOnlySpan<int> source)
 	{
-		var value = (int)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (int)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return IndexesOf(source, value);
 	}
 
 	public static NList<int> IndexesOfMean(this ReadOnlySpan<uint> source)
 	{
-		var value = (uint)(source.Sum(x => (long)x) / Math.Max(source.Length, 1));
+		var value = (uint)(source.Sum(x => (long)x) / Max(source.Length, 1));
 		return IndexesOf(source, value);
 	}
 
 	public static NList<int> IndexesOfMean(this ReadOnlySpan<long> source)
 	{
-		var value = (long)(source.Sum(x => (MpzT)x) / Math.Max(source.Length, 1));
+		var value = (long)(source.Sum(x => (MpzT)x) / Max(source.Length, 1));
 		return IndexesOf(source, value);
 	}
 
@@ -56624,7 +56719,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56641,7 +56736,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56655,8 +56750,8 @@ public static class RedStarLinqExtras
 	public static (NList<T>, NList<T2>) PNBreak<T, T2>(this G.IList<(T, T2)> source) where T : unmanaged where T2 : unmanaged
 	{
 		var length = source.Count;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
+		var result = RedStarLinq.NEmptyList<T>(length);
+		var result2 = RedStarLinq.NEmptyList<T2>(length);
 		Parallel.For(0, length, i => (result[i], result2[i]) = source[i]);
 		return (result, result2);
 	}
@@ -56667,7 +56762,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56682,7 +56777,7 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56699,8 +56794,8 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function3);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
+		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56718,8 +56813,8 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function2);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
+		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56734,9 +56829,9 @@ public static class RedStarLinqExtras
 	public static (NList<T>, NList<T2>, NList<T3>) PNBreak<T, T2, T3>(this G.IList<(T, T2, T3)> source) where T : unmanaged where T2 : unmanaged where T3 : unmanaged
 	{
 		var length = source.Count;
-		NList<T> result = new(length);
-		NList<T2> result2 = new(length);
-		NList<T3> result3 = new(length);
+		var result = RedStarLinq.NEmptyList<T>(length);
+		var result2 = RedStarLinq.NEmptyList<T2>(length);
+		var result3 = RedStarLinq.NEmptyList<T3>(length);
 		Parallel.For(0, length, i => (result[i], result2[i], result3[i]) = source[i]);
 		return (result, result2, result3);
 	}
@@ -56747,8 +56842,8 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
+		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56763,8 +56858,8 @@ public static class RedStarLinqExtras
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Count;
 		var result = RedStarLinq.NEmptyList<TResult>(length);
-		NList<TResult2> result2 = new(length);
-		NList<TResult3> result3 = new(length);
+		var result2 = RedStarLinq.NEmptyList<TResult2>(length);
+		var result3 = RedStarLinq.NEmptyList<TResult3>(length);
 		Parallel.For(0, length, i =>
 		{
 			var item = source[i];
@@ -56777,7 +56872,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, TResult> function) where T : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -56792,7 +56887,7 @@ public static class RedStarLinqExtras
 	public static NList<TResult> PCombine<T, T2, TResult>(this G.IReadOnlyList<T> source, G.IList<T2> source2, Func<T, T2, int, TResult> function) where T : unmanaged where TResult : unmanaged
 	{
 		ArgumentNullException.ThrowIfNull(function);
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.NEmptyList<TResult>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -56806,7 +56901,7 @@ public static class RedStarLinqExtras
 	[Experimental("CS9216")]
 	public static NList<(T, T2)> PCombine<T, T2>(this G.IReadOnlyList<T> source, G.IList<T2> source2) where T : unmanaged where T2 : unmanaged
 	{
-		var length = Math.Min(source.Count, source2.Count);
+		var length = Min(source.Count, source2.Count);
 		var result = RedStarLinq.NEmptyList<(T, T2)>(length);
 		Parallel.For(0, length, i =>
 		{
@@ -57091,6 +57186,7 @@ public static class RedStarLinqExtras
 
 	public static bool All<T>(this T[] source, Func<T, bool> function) => E.All(source, function);
 	public static bool Any<T>(this T[] source, Func<T, bool> function) => E.Any(source, function);
+	public static G.IEnumerable<T> Append<T>(this G.IEnumerable<T> source, T element) => E.Append(source, element);
 	public static (List<T>, List<T>) BreakFilter<T>(this G.IEnumerable<T> source, Func<T, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this G.IEnumerable<T> source, Func<T, int, bool> function) => (BreakFilter(source, function, out var result2), result2);
 	public static (List<T>, List<T>) BreakFilter<T>(this ReadOnlySpan<T> source, Func<T, bool> function) => (BreakFilter(source, function, out var result2), result2);

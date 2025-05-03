@@ -2285,6 +2285,49 @@ public class RedStarLinqTestsN
 	}
 
 	[TestMethod]
+	public void TestNBreak() => Test(a =>
+	{
+		var c = a.NBreak(x => x.Item1, x => (x.Item2, x.Item3));
+		var d = (E.Select(a, x => x.Item1), E.Select(a, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.NBreak(x => (x.Item1, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = E.Select(a, x => (x.Item1, (x.Item2, x.Item3))).NBreak();
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak(x => x.Item1, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), (char, (char, char, char))>)null!));
+		c = a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d = (E.Select(a, (x, index) => (char)(x.Item1 + index)), E.Select(a, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.NBreak((x, index) => ((char)(x.Item1 + index), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((x, index) => (char)(x.Item1 + index), (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), int, (char, (char, char, char))>)null!));
+		var c2 = a.NBreak(x => x.Item1, x => x.Item3, x => (x.Item2, x.Item3));
+		var d2 = (E.Select(a, x => x.Item1), E.Select(a, x => x.Item3), E.Select(a, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.NBreak(x => (x.Item1, x.Item3, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = E.Select(a, x => (x.Item1, x.Item3, (x.Item2, x.Item3))).NBreak();
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), char>)null!, (Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak(x => x.Item1, (Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak(x => x.Item1, x => x.Item3, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), (char, char, (char, char, char))>)null!));
+		c2 = a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d2 = (E.Select(a, (x, index) => (char)(x.Item1 + index)), E.Select(a, (x, index) => (char)(x.Item3 * index + 5)), E.Select(a, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.NBreak((x, index) => ((char)(x.Item1 + index), (char)(x.Item3 * index + 5), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((x, index) => (char)(x.Item1 + index), (Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.NBreak((Func<(char, char, char), int, (char, char, (char, char, char))>)null!));
+	});
+
+	[TestMethod]
 	public void TestNFill()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));

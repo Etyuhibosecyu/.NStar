@@ -11,7 +11,7 @@ using System.Text;
 using G = System.Collections.Generic;
 using String = Corlib.NStar.String;
 
-namespace EasyEvalLib;
+namespace EasyEvalLib.NStar;
 
 public static class EasyEval
 {

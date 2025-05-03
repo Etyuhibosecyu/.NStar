@@ -1,6 +1,4 @@
-﻿global using ILGPU;
-global using ILGPU.Runtime;
-global using Mpir.NET;
+﻿global using Mpir.NET;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
@@ -372,12 +370,6 @@ public static unsafe partial class Extents
 	/// <returns>Количество бит в числе.</returns>
 	public static int BitLength(this uint x) => ((MpzT)x).BitLength;
 
-	public static void Clear<T>(this ArrayView<T> source, Accelerator accel) where T : unmanaged =>
-		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>>((i, view) => view[i] = default)(source.IntExtent, source);
-
-	public static void Clear<T>(this MemoryBuffer1D<T, Stride1D.Dense> source, Accelerator accel) where T : unmanaged =>
-		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>>((i, view) => view[i] = default)(source.IntExtent, source.View);
-
 	public static int CompareMemory<T>(T* left, T* right, int length) where T : unmanaged => new Span<T>(left, length).CommonPrefixLength(new Span<T>(right, length));
 
 	public static int CompareMemory<T>(T* left, int leftIndex, T* right, int rightIndex, int length) where T : unmanaged => CompareMemory(left + leftIndex, right + rightIndex, length);
@@ -395,14 +387,6 @@ public static unsafe partial class Extents
 		fixed (T* right2 = right)
 			return CompareMemory(left2 + leftIndex, right2 + rightIndex, length);
 	}
-
-	public static void CopyGPUMemory<T>(ArrayView<T> source, ArrayView<T> destination, int length, Accelerator accel) where T : unmanaged =>
-		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>, ArrayView<T>>((i, src, dest) => dest[i] = src[i])
-		((Index1D)length, source, destination);
-
-	public static void CopyGPUMemory<T>(MemoryBuffer1D<T, Stride1D.Dense> source, MemoryBuffer1D<T, Stride1D.Dense> destination, int length, Accelerator accel) where T : unmanaged =>
-		accel.LoadAutoGroupedStreamKernel<Index1D, ArrayView<T>, ArrayView<T>>((i, src, dest) => dest[i] = src[i])
-		((Index1D)length, source.View, destination.View);
 
 	public static void CopyMemory<T>(T* source, T* destination, int length) where T : unmanaged => new Span<T>(source, length).CopyTo(new Span<T>(destination, length));
 

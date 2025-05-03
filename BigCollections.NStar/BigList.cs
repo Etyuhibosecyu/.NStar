@@ -1,6 +1,4 @@
 ﻿global using Corlib.NStar;
-global using ILGPU;
-global using ILGPU.Runtime;
 global using LINQ.NStar;
 global using MathLib.NStar;
 global using Mpir.NET;
@@ -597,46 +595,7 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 		// Тривиальный случай - оба списка являются листьями дерева
 		if (low != null && destination.low != null)
 		{
-			var bReversedOld = bReversed && !ignoreReversed; // Сохраняем значения переменных, потому что после первого
-			var destinationReversedOld = destination.bReversed && !ignoreReversed; // реверса они изменяются
-			if (bReversedOld)
-			{
-				Reverse();
-				sourceIndex = Length - length - sourceIndex;
-			}
-			// Если копируемый диапазон не помещается в целевой список, расширяем его
-			if (destination.low.Length < destinationIndex + length)
-				if (destinationReversedOld)
-				{
-					// Если список был перевернут, расширяем слева
-					using var toInsert = RedStarLinq.EmptyList<T>((int)(destinationIndex + length - destination.Length));
-					destination.low.Insert(0, toInsert);
-				}
-				else // Иначе справа
-					destination.low.Resize((int)(destinationIndex + length));
-			MpzT destinationIndexOld = new(destinationIndex); // Сохраняем также и целевой индекс
-			if (destinationReversedOld)
-			{
-				destination.Reverse();
-				destinationIndex = destination.Length - length - destinationIndex;
-			}
-			// Если оба списка направлены одинаково, копируем напрямую
-			if (IsReversed == destination.IsReversed ^ bReversedOld ^ destinationReversedOld)
-				low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
-			else // Иначе используем срезы для предотвращения лишних проходов
-				CollectionLowCreator(low.Skip((int)sourceIndex).Take((int)length).Reverse())
-					.CopyRangeTo(0, destination.low, (int)destinationIndex, (int)length);
-			// Если список был расширен, фиксируем это
-			destination.Length = RedStarLinqMath.Max(destination.Length, destinationIndexOld + length);
-			// И, наконец, возвращаем направление следования списков к тому, что было до этого вызова
-			if (bReversedOld)
-				Reverse();
-			if (destinationReversedOld)
-				destination.Reverse();
-#if VERIFY
-			Verify();
-			destination.Verify();
-#endif
+			CopyToTrivial(sourceIndex, destination, destinationIndex, length, ignoreReversed);
 			return;
 		}
 		// Только целевой список является листом дерева
@@ -1074,7 +1033,52 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	private protected void CheckParams(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
+	private protected virtual void CopyToTrivial(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed)
+	{
+		Debug.Assert(low != null && destination.low != null);
+		var bReversedOld = bReversed && !ignoreReversed; // Сохраняем значения переменных, потому что после первого
+		var destinationReversedOld = destination.bReversed && !ignoreReversed; // реверса они изменяются
+		if (bReversedOld)
+		{
+			Reverse();
+			sourceIndex = Length - length - sourceIndex;
+		}
+		// Если копируемый диапазон не помещается в целевой список, расширяем его
+		if (destination.low.Length < destinationIndex + length)
+			if (destinationReversedOld)
+			{
+				// Если список был перевернут, расширяем слева
+				using var toInsert = RedStarLinq.EmptyList<T>((int)(destinationIndex + length - destination.Length));
+				destination.low.Insert(0, toInsert);
+			}
+			else // Иначе справа
+				destination.low.Resize((int)(destinationIndex + length));
+		MpzT destinationIndexOld = new(destinationIndex); // Сохраняем также и целевой индекс
+		if (destinationReversedOld)
+		{
+			destination.Reverse();
+			destinationIndex = destination.Length - length - destinationIndex;
+		}
+		// Если оба списка направлены одинаково, копируем напрямую
+		if (IsReversed == destination.IsReversed ^ bReversedOld ^ destinationReversedOld)
+			low.CopyRangeTo((int)sourceIndex, destination.low, (int)destinationIndex, (int)length);
+		else // Иначе используем срезы для предотвращения лишних проходов
+			CollectionLowCreator(low.Skip((int)sourceIndex).Take((int)length).Reverse())
+				.CopyRangeTo(0, destination.low, (int)destinationIndex, (int)length);
+		// Если список был расширен, фиксируем это
+		destination.Length = RedStarLinqMath.Max(destination.Length, destinationIndexOld + length);
+		// И, наконец, возвращаем направление следования списков к тому, что было до этого вызова
+		if (bReversedOld)
+			Reverse();
+		if (destinationReversedOld)
+			destination.Reverse();
+#if VERIFY
+		Verify();
+		destination.Verify();
+#endif
+	}
+
+	private protected virtual void CheckParams(MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length)
 	{
 		if (Capacity == 0)
 			throw new ArgumentException("Исходный массив не может быть пустым.");

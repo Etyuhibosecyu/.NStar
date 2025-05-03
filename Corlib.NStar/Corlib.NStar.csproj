@@ -19,7 +19,6 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="ILGPU" Version="1.5.1" />
 		<ProjectReference Include="..\Mpir.NET\Mpir.NET.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
