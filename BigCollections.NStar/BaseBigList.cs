@@ -633,6 +633,20 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 		return (TCertain)this;
 	}
 
+	public virtual TCertain Resize(MpzT newSize)
+	{
+		if (newSize == Length)
+			return (TCertain)this;
+		EnsureCapacity(newSize);
+		if (newSize > Length)
+		{
+			Length = newSize;
+			return (TCertain)this;
+		}
+		else
+			return RemoveEnd(newSize);
+	}
+
 	public abstract TCertain Reverse();
 
 	public virtual TCertain Reverse(MpzT index, MpzT length)

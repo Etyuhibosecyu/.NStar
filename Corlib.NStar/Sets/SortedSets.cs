@@ -43,7 +43,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
-	internal abstract void InsertInternal(int index, T item);
+	protected internal abstract void InsertInternal(int index, T item);
 
 	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
@@ -147,13 +147,13 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 		return item;
 	}
 
-	internal override void InsertInternal(int index, T item) => items.Insert(index, item);
+	protected internal override void InsertInternal(int index, T item) => items.Insert(index, item);
 
 	public override int Search(T item) => items.BinarySearch(item, Comparer);
 
-	internal override void SetInternal(int index, T value)
+	protected override void SetInternal(int index, T value)
 	{
-		items.SetInternal(index, value);
+		items[index] = value;
 		Changed();
 	}
 }
@@ -197,52 +197,3 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 }
 
 internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);
-
-internal enum NodeColor : byte
-{
-	Black,
-	Red
-}
-
-internal enum TreeRotation
-{
-	Left = 1,
-	Right = 2,
-	RightLeft = 3,
-	LeftRight = 4,
-}
-
-internal ref struct BitHelper
-{
-	private const int IntSize = sizeof(int) * 8;
-	private readonly Span<int> _span;
-
-	internal BitHelper(Span<int> span, bool clear)
-	{
-		if (clear)
-			span.Clear();
-		_span = span;
-	}
-
-	internal readonly bool IsMarked(int bitPosition)
-	{
-		Debug.Assert(bitPosition >= 0);
-		var bitArrayIndex = (uint)bitPosition / IntSize;
-		// Workaround for https://github.com/dotnet/runtime/issues/72004
-		var span = _span;
-		return bitArrayIndex < (uint)span.Length && (span[(int)bitArrayIndex] & (1 << ((int)((uint)bitPosition % IntSize)))) != 0;
-	}
-
-	internal readonly void MarkBit(int bitPosition)
-	{
-		Debug.Assert(bitPosition >= 0);
-		var bitArrayIndex = (uint)bitPosition / IntSize;
-		// Workaround for https://github.com/dotnet/runtime/issues/72004
-		var span = _span;
-		if (bitArrayIndex < (uint)span.Length)
-			span[(int)bitArrayIndex] |= 1 << (int)((uint)bitPosition % IntSize);
-	}
-
-	/// <summary>How many ints must be allocated to represent n bits. Returns (n+31)/32, but avoids overflow.</summary>
-	internal static int ToIntArrayLength(int n) => n > 0 ? ((n - 1) / IntSize + 1) : 0;
-}

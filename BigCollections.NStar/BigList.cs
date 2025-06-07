@@ -2,6 +2,7 @@
 global using LINQ.NStar;
 global using MathLib.NStar;
 global using Mpir.NET;
+global using SumCollections.NStar;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
@@ -561,9 +562,25 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected override void CopyToInternal(MpzT sourceIndex, TCertain destination,
-		MpzT destinationIndex, MpzT length, bool ignoreReversed = false) =>
-		CopyRange((TCertain)this, sourceIndex, destination, destinationIndex, length, ignoreReversed);
+	protected static void CheckParams(CopyRangeContext context)
+	{
+		if (context.Source.Capacity == 0)
+			throw new ArgumentException("Исходный массив не может быть пустым.");
+		if (context.Destination == null)
+			throw new ArgumentNullException(nameof(context.Destination), "Целевой массив не может быть нулевым.");
+		if (context.Destination.Capacity == 0)
+			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(context.Destination));
+		if (context.SourceIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(context.SourceIndex), "Индекс не может быть отрицательным.");
+		if (context.DestinationIndex < 0)
+			throw new ArgumentOutOfRangeException(nameof(context.DestinationIndex), "Индекс не может быть отрицательным.");
+		if (context.Length < 0)
+			throw new ArgumentOutOfRangeException(nameof(context.Length), "Длина не может быть отрицательной.");
+		if (context.SourceIndex + context.Length > context.Source.Length)
+			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
+		if (context.DestinationIndex + context.Length > context.Destination.Capacity)
+			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
+	}
 
 	protected static void CopyRange(TCertain source, MpzT sourceIndex, TCertain destination, MpzT destinationIndex, MpzT length, bool ignoreReversed = false)
 	{
@@ -1088,25 +1105,9 @@ public abstract class BigList<T, TCertain, TLow> : BaseBigList<T, TCertain, TLow
 #endif
 	}
 
-	protected static void CheckParams(CopyRangeContext context)
-	{
-		if (context.Source.Capacity == 0)
-			throw new ArgumentException("Исходный массив не может быть пустым.");
-		if (context.Destination == null)
-			throw new ArgumentNullException(nameof(context.Destination), "Целевой массив не может быть нулевым.");
-		if (context.Destination.Capacity == 0)
-			throw new ArgumentException("Целевой массив не может быть пустым.", nameof(context.Destination));
-		if (context.SourceIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(context.SourceIndex), "Индекс не может быть отрицательным.");
-		if (context.DestinationIndex < 0)
-			throw new ArgumentOutOfRangeException(nameof(context.DestinationIndex), "Индекс не может быть отрицательным.");
-		if (context.Length < 0)
-			throw new ArgumentOutOfRangeException(nameof(context.Length), "Длина не может быть отрицательной.");
-		if (context.SourceIndex + context.Length > context.Source.Length)
-			throw new ArgumentException("Копируемая последовательность выходит за размер исходного массива.");
-		if (context.DestinationIndex + context.Length > context.Destination.Capacity)
-			throw new ArgumentException("Копируемая последовательность не помещается в размер целевого массива.");
-	}
+	protected override void CopyToInternal(MpzT sourceIndex, TCertain destination,
+		MpzT destinationIndex, MpzT length, bool ignoreReversed = false) =>
+		CopyRange((TCertain)this, sourceIndex, destination, destinationIndex, length, ignoreReversed);
 
 	protected override void CopyToInternal(MpzT index, IBigList<T> list, MpzT listIndex, MpzT length)
 	{

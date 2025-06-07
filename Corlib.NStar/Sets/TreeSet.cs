@@ -645,7 +645,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	internal override void InsertInternal(int index, T item) => Add(item);
+	protected internal override void InsertInternal(int index, T item) => Add(item);
 
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
@@ -1160,7 +1160,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return result.UniqueCount == Length && result.UnfoundCount == 0;
 	}
 
-	internal override void SetInternal(int index, T value)
+	protected override void SetInternal(int index, T value)
 	{
 		var current = root;
 		while (current != null)

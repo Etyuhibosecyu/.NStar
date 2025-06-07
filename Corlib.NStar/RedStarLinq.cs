@@ -4,8 +4,8 @@ namespace Corlib.NStar;
 
 public static class RedStarLinq
 {
-	public static bool Any<T>(this G.IEnumerable<T> source) => Enumerable.Any(source);
-	public static bool Any<T>(this G.IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
+	public static bool Any<T>(this IEnumerable<T> source) => Enumerable.Any(source);
+	public static bool Any<T>(this IEnumerable<T> source, Func<T, bool> function) => Enumerable.Any(source, function);
 	public static IEnumerable<T> AsEnumerable<T>(this IEnumerable<T> source) => source;
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source) => source is BaseIndexable<T> collection ? collection.AsSpan() : source is T[] array ? MemoryExtensions.AsSpan(array) : List<T>.ReturnOrConstruct(source).AsSpan();
 	public static Span<T> AsSpan<T>(this IEnumerable<T> source, Index index) => source is BaseIndexable<T> collection ? collection.AsSpan(index) : source is T[] array ? MemoryExtensions.AsSpan(array, index) : List<T>.ReturnOrConstruct(source).AsSpan(index);
@@ -250,7 +250,7 @@ public static class RedStarLinq
 
 	public static List<T> EmptyList<T>(int length) => List<T>.EmptyList(length);
 
-	public static bool Equals<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2, Func<T, T2, bool> function)
+	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2, Func<T, T2, bool> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
@@ -323,7 +323,7 @@ public static class RedStarLinq
 		}
 	}
 
-	public static bool Equals<T, T2>(this G.IEnumerable<T> source, G.IEnumerable<T2> source2)
+	public static bool Equals<T, T2>(this IEnumerable<T> source, IEnumerable<T2> source2)
 	{
 		if (source is List<T> list && source2 is List<T2> list2)
 		{

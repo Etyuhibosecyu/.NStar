@@ -199,7 +199,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 		return (TCertain)this;
 	}
 
-	private protected void Changed() => ListChanged?.Invoke((TCertain)this);
+	protected void Changed() => ListChanged?.Invoke((TCertain)this);
 
 	public virtual void Clear() => Clear(true);
 
@@ -988,7 +988,7 @@ public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, IClone
 
 	public virtual TCertain SetAll(T value, Range range) => SetAll(value, CreateVar(range.GetOffsetAndLength(_size), out var range2).Offset, range2.Length);
 
-	internal abstract void SetInternal(int index, T value);
+	protected abstract void SetInternal(int index, T value);
 
 	public virtual TCertain SetOrAdd(int index, T value)
 	{

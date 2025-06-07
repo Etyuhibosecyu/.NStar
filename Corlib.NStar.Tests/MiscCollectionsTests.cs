@@ -488,18 +488,7 @@ public class SliceTests
 		ProcessA(a);
 		a = new((G.IList<string>)E.ToList(list.ToList().Insert(0, "XXX")), 1);
 		ProcessA(a);
-		void ProcessA(Slice<string> a)
-		{
-			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(6, b);
-			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(2, b);
-			b = a.LastIndexOfAny(["LLL", "NNN", "EEE"], 4);
-			Assert.AreEqual(-1, b);
-			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOfAny();
 	}
 
 	[TestMethod]

@@ -313,24 +313,144 @@ public record class BaseStringIndexableTests<TCertain>(TCertain TestCollection, 
 		Assert.ThrowsException<ArgumentNullException>(() => TestCollection.Equals(null!, 1000));
 	}
 
+	public void TestFind()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int start, length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.Find(x => x.Length != 3), a.Find(x => x.Length != 3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.Find(x => !x.All(y => y is >= 'A' and <= 'Y')), a.Find(x => !x.All(y => y is >= 'A' and <= 'Y')));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			start = random.Next(a.Length + 1);
+			Assert.IsTrue(start <= b.Count);
+		}
+	}
+
 	public void TestFindAll()
 	{
-		var b = TestCollection.FindAll(x => x.Length != 3);
-		var c = new G.List<string>(OriginalCollection);
-		c.InsertRange(3, ["$", "###"]);
-		var d = c.FindAll(x => x.Length != 3);
-		Assert.IsTrue(TestCollection.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, TestCollection));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
-		b = TestCollection.FindAll(x => !x.All(y => y is >= 'A' and <= 'Z'));
-		c = new G.List<string>(OriginalCollection);
-		c.InsertRange(3, ["$", "###"]);
-		d = c.FindAll(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-		Assert.IsTrue(TestCollection.Equals(c));
-		Assert.IsTrue(E.SequenceEqual(c, TestCollection));
-		Assert.IsTrue(b.Equals(d));
-		Assert.IsTrue(E.SequenceEqual(d, b));
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int start, length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.IsTrue(E.SequenceEqual(b.FindAll(x => x.Length != 3), a.FindAll(x => x.Length != 3)));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.IsTrue(E.SequenceEqual(b.FindAll(x => !x.All(y => y is >= 'A' and <= 'Y')), a.FindAll(x => !x.All(y => y is >= 'A' and <= 'Y'))));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			start = random.Next(a.Length + 1);
+			Assert.IsTrue(start <= b.Count);
+		}
+	}
+
+	public void TestFindIndex()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int start, length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.FindIndex(x => x.Length != 3), a.FindIndex(x => x.Length != 3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Y')), a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Y')));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			start = random.Next(a.Length + 1);
+			Assert.IsTrue(start <= b.Count);
+		}
+	}
+
+	public void TestFindLast()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int start, length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.FindLast(x => x.Length != 3), a.FindLast(x => x.Length != 3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.FindLast(x => !x.All(y => y is >= 'A' and <= 'Y')), a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Y')));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			start = random.Next(a.Length + 1);
+			Assert.IsTrue(start <= b.Count);
+		}
+	}
+
+	public void TestFindLastIndex()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		int start, length;
+		G.List<string> b;
+		string elem, elem2;
+		for (var i = 0; i < 1000; i++)
+		{
+			length = random.Next(51);
+			var array = new string[length];
+			for (var j = 0; j < length; j++)
+				array[j] = new((char)random.Next('A', 'Z' + 1), 3);
+			elem = new((char)random.Next('A', 'Z' + 1), 3);
+			var method = typeof(TCertain).GetConstructor([typeof(string[])]);
+			var a = method?.Invoke([array]) as TCertain ?? throw new InvalidOperationException();
+			b = [.. array];
+			Assert.AreEqual(b.FindLastIndex(x => x.Length != 3), a.FindLastIndex(x => x.Length != 3));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			elem2 = new((char)random.Next('A', 'Z' + 1), 3);
+			Assert.AreEqual(b.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Y')), a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Y')));
+			Assert.IsTrue(a.Equals(b));
+			Assert.IsTrue(E.SequenceEqual(b, a));
+			start = random.Next(a.Length + 1);
+			Assert.IsTrue(start <= b.Count);
+		}
 	}
 
 	public void TestIndexOf()

@@ -122,25 +122,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.Find(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			var d = c.Find(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.Find(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			d = c.Find(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a.Reverse(), list, defaultString, defaultCollection).TestFind();
 	}
 
 	[TestMethod]
@@ -168,25 +150,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindIndex(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			var d = c.FindIndex(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a.Reverse(), list, defaultString, defaultCollection).TestFindIndex();
 	}
 
 	[TestMethod]
@@ -200,25 +164,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindLast(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			var d = c.FindLast(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a.Reverse(), list, defaultString, defaultCollection).TestFindLast();
 	}
 
 	[TestMethod]
@@ -232,25 +178,7 @@ public class ReverseTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Reverse<string>().GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindLastIndex(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			var d = c.FindLastIndex(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			c.Reverse();
-			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a.Reverse(), list, defaultString, defaultCollection).TestFindLastIndex();
 	}
 
 	[TestMethod]

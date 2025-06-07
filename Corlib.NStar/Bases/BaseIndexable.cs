@@ -304,8 +304,6 @@ public abstract class BaseIndexable<T> : IReadOnlyList<T>, IDisposable
 
 	public virtual int FindLastIndex(int startIndex, int length, Predicate<T> match)
 	{
-		if ((uint)startIndex >= (uint)_size)
-			throw new ArgumentOutOfRangeException(nameof(startIndex));
 		if (length < 0 || startIndex - length + 1 < 0)
 			throw new ArgumentOutOfRangeException(nameof(length));
 		ArgumentNullException.ThrowIfNull(match);

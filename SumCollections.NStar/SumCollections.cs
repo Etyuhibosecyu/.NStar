@@ -1,6 +1,18 @@
-﻿using System.Numerics;
+﻿global using Corlib.NStar;
+global using Mpir.NET;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Reflection;
+global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+global using E = System.Linq.Enumerable;
+global using String = Corlib.NStar.String;
+using System.Numerics;
 
-namespace Corlib.NStar;
+namespace SumCollections.NStar;
 
 internal delegate bool SumWalkPredicate<T>(SumSet<T>.Node node);
 
@@ -21,13 +33,13 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public SumSet() => Comparer2 = G.Comparer<T>.Default;
 
-	public SumSet(IComparer<T>? comparer) => Comparer2 = comparer ?? G.Comparer<T>.Default;
+	public SumSet(G.IComparer<T>? comparer) => Comparer2 = comparer ?? G.Comparer<T>.Default;
 
 	public SumSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
-	public SumSet(IEnumerable<(T Key, int Value)> collection) : this(collection, G.Comparer<T>.Default) { }
+	public SumSet(G.IEnumerable<(T Key, int Value)> collection) : this(collection, G.Comparer<T>.Default) { }
 
-	public SumSet(IEnumerable<(T Key, int Value)> collection, IComparer<T>? comparer) : this(comparer)
+	public SumSet(G.IEnumerable<(T Key, int Value)> collection, G.IComparer<T>? comparer) : this(comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
@@ -49,11 +61,11 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 	}
 
-	public SumSet(IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
+	public SumSet(G.IEnumerable<(T Key, int Value)> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
 
-	public SumSet(params (T Key, int Value)[] array) : this((IEnumerable<(T Key, int Value)>)array) { }
+	public SumSet(params (T Key, int Value)[] array) : this((G.IEnumerable<(T Key, int Value)>)array) { }
 
-	public SumSet(ReadOnlySpan<(T Key, int Value)> span) : this((IEnumerable<(T Key, int Value)>)span.ToArray()) { }
+	public SumSet(ReadOnlySpan<(T Key, int Value)> span) : this((G.IEnumerable<(T Key, int Value)>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -65,11 +77,11 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	protected override Func<int, SumSet<T>> CapacityCreator => x => [];
 
-	protected override Func<IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<(T Key, int Value)>, SumSet<T>> CollectionCreator => x => new(x);
 
-	public override IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) => Comparer2.Compare(x.Key, y.Key));
+	public override G.IComparer<(T Key, int Value)> Comparer => new Comparer<(T Key, int Value)>((x, y) => Comparer2.Compare(x.Key, y.Key));
 
-	protected virtual IComparer<T> Comparer2 { get; }
+	protected virtual G.IComparer<T> Comparer2 { get; }
 
 	public override int Length
 	{
@@ -116,7 +128,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual SumSet<T> Add(T key, int value) => Add((key, value));
 
-	protected virtual void AddAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual void AddAllElements(G.IEnumerable<(T Key, int Value)> collection)
 	{
 		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
@@ -185,7 +197,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	protected virtual unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
+	protected virtual unsafe ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<(T Key, int Value)> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -302,7 +314,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public virtual bool Contains(T? item) => item != null && TryGetValue(item, out var _);
 
-	protected virtual bool ContainsAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual bool ContainsAllElements(G.IEnumerable<(T Key, int Value)> collection)
 	{
 		if (!(collection is SumSet<T> asSorted && HasEqualComparer(asSorted)))
 		{
@@ -372,14 +384,14 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	}
 
 	/// <summary>
-	/// Returns an <see cref="IEqualityComparer{T}"/> object that can be used to create a collection that contains individual sets.
+	/// Returns an <see cref="G.IEqualityComparer{T}"/> object that can be used to create a collection that contains individual sets.
 	/// </summary>
-	public static IEqualityComparer<SumSet<T>> CreateSetComparer() => CreateSetComparer(memberEqualityComparer: null);
+	public static G.IEqualityComparer<SumSet<T>> CreateSetComparer() => CreateSetComparer(memberEqualityComparer: null);
 
 	/// <summary>
-	/// Returns an <see cref="IEqualityComparer{T}"/> object, according to a specified comparer, that can be used to create a collection that contains individual sets.
+	/// Returns an <see cref="G.IEqualityComparer{T}"/> object, according to a specified comparer, that can be used to create a collection that contains individual sets.
 	/// </summary>
-	public static IEqualityComparer<SumSet<T>> CreateSetComparer(IEqualityComparer<T>? memberEqualityComparer) => new SumSetEqualityComparer<T>(memberEqualityComparer);
+	public static G.IEqualityComparer<SumSet<T>> CreateSetComparer(G.IEqualityComparer<T>? memberEqualityComparer) => new SumSetEqualityComparer<T>(memberEqualityComparer);
 
 	public virtual bool Decrease(T key) => TryGetValue(key, out var value) && Update(key, value - 1);
 
@@ -392,7 +404,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		GC.SuppressFinalize(this);
 	}
 
-	public override SumSet<T> ExceptWith(IEnumerable<(T Key, int Value)> other)
+	public override SumSet<T> ExceptWith(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (_size == 0)
@@ -573,7 +585,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return found;
 	}
 
-	public override IEnumerator<(T Key, int Value)> GetEnumerator() => new Enumerator(this);
+	public override G.IEnumerator<(T Key, int Value)> GetEnumerator() => new Enumerator(this);
 
 	protected override (T Key, int Value) GetInternal(int index, bool invoke = true)
 	{
@@ -716,7 +728,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
+		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		Debug.Assert(stack != null);
 		var current = root;
 		while (current != null)
 		{
@@ -738,7 +751,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	internal override void InsertInternal(int index, (T Key, int Value) item) => Add(item);
+	protected override void InsertInternal(int index, (T Key, int Value) item) => Add(item);
 
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
@@ -799,7 +812,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return -1;
 	}
 
-	public override SumSet<T> IntersectWith(IEnumerable<(T Key, int Value)> other)
+	public override SumSet<T> IntersectWith(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -847,7 +860,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return this;
 	}
 
-	internal virtual void IntersectWithEnumerable(IEnumerable<(T Key, int Value)> other)
+	internal virtual void IntersectWithEnumerable(G.IEnumerable<(T Key, int Value)> other)
 	{
 		// TODO: Perhaps a more space-conservative way to do this
 		List<(T Key, int Value)> toSave = new(Length);
@@ -861,7 +874,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			TryAdd(item);
 	}
 
-	public override bool IsProperSubsetOf(IEnumerable<(T Key, int Value)> other)
+	public override bool IsProperSubsetOf(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is System.Collections.ICollection c)
@@ -881,7 +894,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return result.UniqueCount == Length && result.UnfoundCount > 0;
 	}
 
-	public override bool IsProperSupersetOf(IEnumerable<(T Key, int Value)> other)
+	public override bool IsProperSupersetOf(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -906,7 +919,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return result.UniqueCount < Length && result.UnfoundCount == 0;
 	}
 
-	public override bool IsSubsetOf(IEnumerable<(T Key, int Value)> other)
+	public override bool IsSubsetOf(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -934,7 +947,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	public override bool IsSupersetOf(IEnumerable<(T Key, int Value)> other)
+	public override bool IsSupersetOf(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is System.Collections.ICollection c && c.Count == 0)
@@ -961,7 +974,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	// Used for set checking operations (using enumerables) that rely on counting
 	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
 
-	public override bool Overlaps(IEnumerable<(T Key, int Value)> other)
+	public override bool Overlaps(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -976,7 +989,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	protected virtual void RemoveAllElements(IEnumerable<(T Key, int Value)> collection)
+	protected virtual void RemoveAllElements(G.IEnumerable<(T Key, int Value)> collection)
 	{
 		var min = Min;
 		var max = Max;
@@ -1206,7 +1219,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 
 	public override int Search((T Key, int Value) item) => Search(item.Key);
 
-	public override bool SetEquals(IEnumerable<(T Key, int Value)> other)
+	public override bool SetEquals(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is SumSet<T> asSorted && HasEqualComparer(asSorted))
@@ -1229,7 +1242,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return result.UniqueCount == Length && result.UnfoundCount == 0;
 	}
 
-	internal override void SetInternal(int index, (T Key, int Value) value)
+	protected override void SetInternal(int index, (T Key, int Value) value)
 	{
 		if (value.Value == 0)
 		{
@@ -1269,7 +1282,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 	/// <param name="set2">The second set.</param>
 	/// <param name="comparer">The fallback comparer to use if the sets do not have equal comparers.</param>
 	/// <returns><c>true</c> if the sets have equal contents; otherwise, <c>false</c>.</returns>
-	internal static bool SortedSetEquals(SumSet<T>? set1, SumSet<T>? set2, IComparer<T> comparer)
+	internal static bool SortedSetEquals(SumSet<T>? set1, SumSet<T>? set2, G.IComparer<T> comparer)
 	{
 		if (set1 == null)
 			return set2 == null;
@@ -1298,7 +1311,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return true;
 	}
 
-	public override SumSet<T> SymmetricExceptWith(IEnumerable<(T Key, int Value)> other)
+	public override SumSet<T> SymmetricExceptWith(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -1421,7 +1434,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	protected virtual bool TryToUniqueArray(IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
+	protected virtual bool TryToUniqueArray(G.IEnumerable<(T Key, int Value)> collection, out (T Key, int Value)[] elements, out int length)
 	{
 		elements = collection is (T Key, int Value)[] array ? array : [.. collection];
 		length = elements.Length;
@@ -1444,7 +1457,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		return false;
 	}
 
-	public override SumSet<T> UnionWith(IEnumerable<(T Key, int Value)> other)
+	public override SumSet<T> UnionWith(G.IEnumerable<(T Key, int Value)> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		var asSorted = other as SumSet<T>;
@@ -1646,7 +1659,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
+			using var pendingNodes = (Stack<(Node source, Node target)>?)typeof(Stack<(Node source, Node target)>)
+				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(length + 1)]);
+			Debug.Assert(pendingNodes != null);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -1954,7 +1969,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 #endif
 	}
 
-	public new struct Enumerator : IEnumerator<(T Key, int Value)>
+	public new struct Enumerator : G.IEnumerator<(T Key, int Value)>
 	{
 		private readonly SumSet<T> _tree;
 		private readonly int _version;
@@ -1974,7 +1989,8 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			set.VersionCheck();
 			_version = set.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = Stack<Node>.GetNew(2 * Log2(set.TotalCount() + 1));
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(set.TotalCount() + 1)])!;
+			Debug.Assert(_stack != null);
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -2226,7 +2242,9 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null,
+				[2 * Log2(_size + 1)]); // this is not exactly right if length is out of date, but the stack can grow
+			Debug.Assert(stack != null);
 			var current = root;
 			while (current != null)
 			{
@@ -2280,7 +2298,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		}
 
 #if DEBUG
-		internal override void IntersectWithEnumerable(IEnumerable<(T Key, int Value)> other)
+		internal override void IntersectWithEnumerable(G.IEnumerable<(T Key, int Value)> other)
 		{
 			base.IntersectWithEnumerable(other);
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2362,29 +2380,29 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 /// equality defined by the G.IComparer for this SortedSet be consistent with the default G.IEqualityComparer
 /// for the type T. If not, such an G.IEqualityComparer should be provided through the constructor.
 /// </summary>    
-internal class SumSetEqualityComparer<T> : IEqualityComparer<SumSet<T>>
+internal class SumSetEqualityComparer<T> : G.IEqualityComparer<SumSet<T>>
 {
-	private protected readonly IComparer<T> comparer;
-	private protected readonly IEqualityComparer<T> e_comparer;
+	private protected readonly G.IComparer<T> comparer;
+	private protected readonly G.IEqualityComparer<T> e_comparer;
 
 	public SumSetEqualityComparer() : this(null, null) { }
 
-	public SumSetEqualityComparer(IComparer<T>? comparer) : this(comparer, null) { }
+	public SumSetEqualityComparer(G.IComparer<T>? comparer) : this(comparer, null) { }
 
-	public SumSetEqualityComparer(IEqualityComparer<T>? memberEqualityComparer) : this(null, memberEqualityComparer) { }
+	public SumSetEqualityComparer(G.IEqualityComparer<T>? memberEqualityComparer) : this(null, memberEqualityComparer) { }
 
 	/// <summary>
 	/// Create a new SetEqualityComparer, given a comparer for member order and another for member equality (these
 	/// must be consistent in their definition of equality)
 	/// </summary>        
-	public SumSetEqualityComparer(IComparer<T>? comparer, IEqualityComparer<T>? memberEqualityComparer)
+	public SumSetEqualityComparer(G.IComparer<T>? comparer, G.IEqualityComparer<T>? memberEqualityComparer)
 	{
 		if (comparer == null)
 			this.comparer = G.Comparer<T>.Default;
 		else
 			this.comparer = comparer;
 		if (memberEqualityComparer == null)
-			e_comparer = EqualityComparer<T>.Default;
+			e_comparer = G.EqualityComparer<T>.Default;
 		else
 			e_comparer = memberEqualityComparer;
 	}

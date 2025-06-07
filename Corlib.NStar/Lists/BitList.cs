@@ -978,7 +978,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		}
 	}
 
-	internal override void SetInternal(int index, bool value)
+	protected override void SetInternal(int index, bool value)
 	{
 		if (value)
 			_items[index / BitsPerInt] |= 1u << index % BitsPerInt;

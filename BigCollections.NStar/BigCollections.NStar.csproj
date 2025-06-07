@@ -11,5 +11,6 @@
 	<ItemGroup>
     <ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
     <ProjectReference Include="..\LINQ.NStar\LINQ.NStar.csproj" />
+    <ProjectReference Include="..\SumCollections.NStar\SumCollections.NStar.csproj" />
   </ItemGroup>
 </Project>

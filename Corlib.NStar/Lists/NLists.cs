@@ -534,7 +534,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 		Changed();
 	}
 
-	internal override void SetInternal(int index, T value)
+	protected override void SetInternal(int index, T value)
 	{
 		_items[index] = value;
 		Changed();

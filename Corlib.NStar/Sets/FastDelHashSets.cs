@@ -290,7 +290,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		});
 	}
 
-	internal override void SetInternal(int index, T item)
+	protected override void SetInternal(int index, T item)
 	{
 		if (entries[index].hashCode < 0)
 			RemoveAt(index);

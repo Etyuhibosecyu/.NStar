@@ -322,7 +322,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		}
 	}
 
-	internal override void SetInternal(int index, T value)
+	protected override void SetInternal(int index, T value)
 	{
 		_items[(_start + index) % Capacity] = value;
 		Changed();
@@ -821,7 +821,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		Changed();
 	}
 
-	internal override void SetInternal(int index, T value)
+	protected override void SetInternal(int index, T value)
 	{
 		_items[index] = value;
 		Changed();

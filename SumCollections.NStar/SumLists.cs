@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Reflection;
 
-namespace Corlib.NStar;
+namespace SumCollections.NStar;
 
 internal delegate bool BaseSumWalkPredicate<T, TCertain>(BaseSumList<T, TCertain>.Node node) where T : INumber<T> where TCertain : BaseSumList<T, TCertain>, new();
 
@@ -20,7 +20,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		}
 	}
 
-	protected virtual IComparer<int> Comparer => G.Comparer<int>.Default;
+	protected virtual G.IComparer<int> Comparer => G.Comparer<int>.Default;
 
 	private protected virtual Func<T, NodeColor, Node> NodeCreator => Node.GetNew;
 
@@ -341,7 +341,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
+		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		Debug.Assert(stack != null);
 		var current = root;
 		while (current != null)
 		{
@@ -450,7 +451,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		return this2;
 	}
 
-	protected override TCertain InsertInternal(int index, IEnumerable<T> collection)
+	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 			Insert(index++, item);
@@ -583,7 +584,8 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 	{
 		using List<Node> nodes = [];
 		var i = 0;
-		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
+		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		Debug.Assert(stack != null);
 		var current = root;
 		while (current != null)
 		{
@@ -1028,7 +1030,7 @@ public class SumList : BaseSumList<int, SumList>
 {
 	public SumList() { }
 
-	public SumList(IEnumerable<int> collection) : this()
+	public SumList(G.IEnumerable<int> collection) : this()
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
@@ -1052,13 +1054,13 @@ public class SumList : BaseSumList<int, SumList>
 		}
 	}
 
-	public SumList(params int[] array) : this((IEnumerable<int>)array) { }
+	public SumList(params int[] array) : this((G.IEnumerable<int>)array) { }
 
-	public SumList(ReadOnlySpan<int> span) : this((IEnumerable<int>)span.ToArray()) { }
+	public SumList(ReadOnlySpan<int> span) : this((G.IEnumerable<int>)span.ToArray()) { }
 
 	protected override Func<int, SumList> CapacityCreator => x => [];
 
-	protected override Func<IEnumerable<int>, SumList> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<int>, SumList> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<int>, SumList> SpanCreator => x => new(x);
 
@@ -1118,7 +1120,7 @@ public class SumList : BaseSumList<int, SumList>
 		});
 	}
 
-	public override IEnumerator<int> GetEnumerator() => new Enumerator(this);
+	public override G.IEnumerator<int> GetEnumerator() => new Enumerator(this);
 
 	protected override int GetInternal(int index, bool invoke = true)
 	{
@@ -1224,7 +1226,7 @@ public class SumList : BaseSumList<int, SumList>
 		_size = oldLength;
 	}
 
-	internal override void SetInternal(int index, int value)
+	protected override void SetInternal(int index, int value)
 	{
 		if (value == 0)
 		{
@@ -1287,7 +1289,9 @@ public class SumList : BaseSumList<int, SumList>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
+			using var pendingNodes = (Stack<(Node source, Node target)>?)typeof(Stack<(Node source, Node target)>)
+				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(length + 1)]);
+			Debug.Assert(pendingNodes != null);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -1340,7 +1344,7 @@ public class SumList : BaseSumList<int, SumList>
 #endif
 	}
 
-	public new struct Enumerator : IEnumerator<int>
+	public new struct Enumerator : G.IEnumerator<int>
 	{
 		private readonly SumList _list;
 		private readonly int _version;
@@ -1360,7 +1364,8 @@ public class SumList : BaseSumList<int, SumList>
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = Stack<Node>.GetNew(2 * Log2(list.TotalCount() + 1));
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(list.TotalCount() + 1)])!;
+			Debug.Assert(_stack != null);
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -1600,11 +1605,14 @@ public class SumList : BaseSumList<int, SumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(stack != null);
 			var current = root;
-			using var indexStack = Stack<int>.GetNew(2 * Log2(_size + 1));
+			using var indexStack = (Stack<int>?)typeof(Stack<int>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(indexStack != null);
 			var index = current.Left?.LeavesCount ?? 0;
-			using var flagStack = Stack<bool>.GetNew(2 * Log2(_size + 1));
+			using var flagStack = (Stack<bool>?)typeof(Stack<bool>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(flagStack != null);
 			while (current != null)
 			{
 				if (IsWithinRange(index))
@@ -1685,7 +1693,7 @@ public class SumList : BaseSumList<int, SumList>
 			return comp >= 0;
 		}
 
-		internal override void SetInternal(int index, int value) => _underlying.SetInternal(_min + index, value);
+		protected override void SetInternal(int index, int value) => _underlying.SetInternal(_min + index, value);
 
 		/// <summary>
 		/// Returns the number of elements <c>length</c> of the parent list.
@@ -1731,7 +1739,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 {
 	public BigSumList() { }
 
-	public BigSumList(IEnumerable<MpzT> collection) : this()
+	public BigSumList(G.IEnumerable<MpzT> collection) : this()
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
@@ -1755,9 +1763,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		}
 	}
 
-	public BigSumList(params MpzT[] array) : this((IEnumerable<MpzT>)array) { }
+	public BigSumList(params MpzT[] array) : this((G.IEnumerable<MpzT>)array) { }
 
-	public BigSumList(ReadOnlySpan<MpzT> span) : this((IEnumerable<MpzT>)span.ToArray()) { }
+	public BigSumList(ReadOnlySpan<MpzT> span) : this((G.IEnumerable<MpzT>)span.ToArray()) { }
 
 	public override MpzT this[Index index, bool invoke = true]
 	{
@@ -1771,7 +1779,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 
 	protected override Func<int, BigSumList> CapacityCreator => x => [];
 
-	protected override Func<IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<MpzT>, BigSumList> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<MpzT>, BigSumList> SpanCreator => x => new(x);
 
@@ -1848,7 +1856,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		GC.SuppressFinalize(this);
 	}
 
-	public override IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
+	public override G.IEnumerator<MpzT> GetEnumerator() => new Enumerator(this);
 
 	protected override MpzT GetInternal(int index, bool invoke = true)
 	{
@@ -1948,7 +1956,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		return index - 1;
 	}
 
-	internal override void SetInternal(int index, MpzT value)
+	protected override void SetInternal(int index, MpzT value)
 	{
 		if (value == 0)
 		{
@@ -2011,7 +2019,9 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
+			using var pendingNodes = (Stack<(Node source, Node target)>?)typeof(Stack<(Node source, Node target)>)
+				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(length + 1)]);
+			Debug.Assert(pendingNodes != null);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -2091,7 +2101,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 #endif
 	}
 
-	public new struct Enumerator : IEnumerator<MpzT>
+	public new struct Enumerator : G.IEnumerator<MpzT>
 	{
 		private readonly BigSumList _list;
 		private readonly int _version;
@@ -2111,7 +2121,8 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			list.VersionCheck();
 			_version = list.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = Stack<Node>.GetNew(2 * Log2(list.TotalCount() + 1));
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(list.TotalCount() + 1)])!;
+			Debug.Assert(_stack != null);
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -2351,11 +2362,14 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(stack != null);
 			var current = root;
-			using var indexStack = Stack<int>.GetNew(2 * Log2(_size + 1));
+			using var indexStack = (Stack<int>?)typeof(Stack<int>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(indexStack != null);
 			var index = current.Left?.LeavesCount ?? 0;
-			using var flagStack = Stack<bool>.GetNew(2 * Log2(_size + 1));
+			using var flagStack = (Stack<bool>?)typeof(Stack<bool>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(_size + 1)]);
+			Debug.Assert(flagStack != null);
 			while (current != null)
 			{
 				if (IsWithinRange(index))
@@ -2436,7 +2450,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			return comp >= 0;
 		}
 
-		internal override void SetInternal(int index, MpzT value) => _underlying.SetInternal(_min + index, value);
+		protected override void SetInternal(int index, MpzT value) => _underlying.SetInternal(_min + index, value);
 
 		/// <summary>
 		/// Returns the number of elements <c>length</c> of the parent list.

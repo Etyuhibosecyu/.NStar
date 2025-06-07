@@ -407,7 +407,7 @@ public abstract class ListHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		return this2;
 	}
 
-	internal override void SetInternal(int index, T item)
+	protected override void SetInternal(int index, T item)
 	{
 		var hashCode = item == null ? 0 : Comparer.GetHashCode(item) & 0x7FFFFFFF;
 		var bucket = hashCode % buckets.Length;
@@ -709,7 +709,7 @@ public abstract class TreeHashSet<T, TCertain> : BaseHashSet<T, TCertain> where 
 		});
 	}
 
-	internal override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item, index);
+	protected override void SetInternal(int index, T item) => SetDirect(IndexGetDirect(index), item, index);
 
 	internal virtual void SetDirect(int index, T item, int actualIndex)
 	{

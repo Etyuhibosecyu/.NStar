@@ -174,23 +174,7 @@ public class PrependTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Prepend("XXX").GetRange(1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindIndex(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			var d = c.FindIndex(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			d = c.FindIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindIndex();
 	}
 
 	[TestMethod]
@@ -204,23 +188,7 @@ public class PrependTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Prepend("XXX").GetRange(1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindLast(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			var d = c.FindLast(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindLast(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			d = c.FindLast(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindLast();
 	}
 
 	[TestMethod]
@@ -234,23 +202,7 @@ public class PrependTests
 		ProcessA(a);
 		a = list.ToList().Insert(3, new List<string>("$", "###")).Prepend("XXX").GetRange(1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.FindLastIndex(x => x.Length != 3);
-			var c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			var d = c.FindLastIndex(x => x.Length != 3);
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-			b = a.FindLastIndex(x => !x.All(y => y is >= 'A' and <= 'Z'));
-			c = new G.List<string>(list);
-			c.InsertRange(3, ["$", "###"]);
-			d = c.FindLastIndex(x => !E.All(x, y => y is >= 'A' and <= 'Z'));
-			Assert.IsTrue(a.Equals(c));
-			Assert.IsTrue(E.SequenceEqual(c, a));
-			Assert.AreEqual(d, b);
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestFindLastIndex();
 	}
 
 	[TestMethod]
@@ -476,18 +428,7 @@ public class PrependTests
 		ProcessA(a);
 		a = list.ToList().Prepend("XXX").GetRange(1).GetSlice();
 		ProcessA(a);
-		static void ProcessA(Slice<string> a)
-		{
-			var b = a.LastIndexOfAny(new List<string>("PPP", "DDD", "MMM"));
-			Assert.AreEqual(6, b);
-			b = a.LastIndexOfAny(new List<string>("LLL", "NNN", "PPP"));
-			Assert.AreEqual(2, b);
-			b = a.LastIndexOfAny(["LLL", "NNN", "EEE"], 4);
-			Assert.AreEqual(-1, b);
-			b = a.LastIndexOfAny(new List<string>("XXX", "YYY", "ZZZ"));
-			Assert.AreEqual(-1, b);
-			Assert.ThrowsException<ArgumentNullException>(() => a.LastIndexOfAny((G.IEnumerable<string>)null!));
-		}
+		static void ProcessA(Slice<string> a) => new BaseStringIndexableTests<Slice<string>>(a, list, defaultString, defaultCollection).TestLastIndexOfAny();
 	}
 
 	[TestMethod]

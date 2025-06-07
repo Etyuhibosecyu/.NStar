@@ -2,6 +2,7 @@ global using Dictionaries.NStar;
 global using LINQ.NStar;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Mpir.NET;
+global using SumCollections.NStar;
 global using System;
 global using System.Collections;
 global using System.Collections.Immutable;
