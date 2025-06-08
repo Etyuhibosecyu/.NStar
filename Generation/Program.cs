@@ -1,4 +1,3 @@
-
 namespace Generation;
 
 internal static class Program

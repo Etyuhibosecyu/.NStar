@@ -6,9 +6,7 @@ global using System.Diagnostics;
 global using System.Reflection;
 global using System.Runtime.InteropServices;
 global using G = System.Collections.Generic;
-global using static Corlib.NStar.Extents;
 global using static System.Math;
-global using E = System.Linq.Enumerable;
 global using String = Corlib.NStar.String;
 using System.Numerics;
 

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Corlib.NStar.Tests;
+﻿namespace Corlib.NStar.Tests;
 
 public static class BaseDictionaryTests<TKey, TValue, TCertain> where TKey : notnull where TValue : IEquatable<TValue> where TCertain : BaseDictionary<TKey, TValue, TCertain>, new()
 {

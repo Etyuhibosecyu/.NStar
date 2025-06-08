@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public readonly struct Chain : IReadOnlyCollection<int>

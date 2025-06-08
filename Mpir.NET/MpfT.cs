@@ -1,5 +1,4 @@
-﻿
-namespace Mpir.NET;
+﻿namespace Mpir.NET;
 
 public struct MpfT
 {

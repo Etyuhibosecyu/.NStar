@@ -1,5 +1,4 @@
-﻿
-namespace BigCollections.NStar;
+﻿namespace BigCollections.NStar;
 
 /// <summary>
 /// Представляет компактный строго типизированный список бит (true или false), упорядоченных по индексу.

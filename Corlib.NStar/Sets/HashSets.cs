@@ -1,18 +1,17 @@
-﻿
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseHashSet<T, TCertain>, new()
 {
 	protected struct Entry
 	{
-		internal int hashCode;
-		internal int next;
-		internal T item;
+		public int hashCode;
+		public int next;
+		public T item;
 	}
 
-	private protected int[] buckets = default!;
-	private protected Entry[] entries = default!;
+	protected int[] buckets = default!;
+	protected Entry[] entries = default!;
 
 	public override int Capacity
 	{
@@ -24,7 +23,7 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 			Changed();
 		}
 	}
-	public virtual IEqualityComparer<T> Comparer { get; private protected set; } = EqualityComparer<T>.Default;
+	public virtual IEqualityComparer<T> Comparer { get; protected set; } = EqualityComparer<T>.Default;
 
 	protected override void ClearInternal()
 	{
@@ -143,10 +142,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		var this2 = (TCertain)this;
 		var set = CollectionCreator(collection).ExceptWith(this);
-		if (set is FastDelHashSet<T> fhs)
-			fhs.FixUpFakeIndexes();
-		else if (set is ParallelHashSet<T> phs)
-			phs.FixUpFakeIndexes();
+		if (CreateVar(set.GetType(), out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet"))
+			(type.GetMethod("FixUpFakeIndexes") ?? throw new MissingMethodException()).Invoke(set, null);
 		var length = set.Length;
 		if (length > 0)
 		{
@@ -164,10 +161,8 @@ public abstract class BaseHashSet<T, TCertain> : BaseSet<T, TCertain> where TCer
 	{
 		var this2 = (TCertain)this;
 		var set = SpanCreator(span).ExceptWith(this);
-		if (set is FastDelHashSet<T> fhs)
-			fhs.FixUpFakeIndexes();
-		else if (set is ParallelHashSet<T> phs)
-			phs.FixUpFakeIndexes();
+		if (CreateVar(set.GetType(), out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet"))
+			(type.GetMethod("FixUpFakeIndexes") ?? throw new MissingMethodException()).Invoke(set, null);
 		var length = set.Length;
 		if (length > 0)
 		{

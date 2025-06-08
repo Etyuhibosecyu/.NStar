@@ -1,5 +1,4 @@
-﻿
-namespace BigCollections.NStar.Tests;
+﻿namespace BigCollections.NStar.Tests;
 
 [TestClass]
 public class BigQueueTests

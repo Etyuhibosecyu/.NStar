@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar.Tests;
+﻿namespace Corlib.NStar.Tests;
 
 [TestClass]
 public class RedStarLinqTests
@@ -2580,6 +2579,62 @@ public class RedStarLinqTestsN
 		c = E.ToList(E.Select(a, (x, index) => (x.Item2, x.Item3, (char)index)));
 		Assert.IsTrue(E.SequenceEqual(b, c));
 		Assert.ThrowsException<ArgumentNullException>(() => a.ToNList((Func<(char, char, char), int, (char, char, char)>)null!));
+	});
+
+	[TestMethod]
+	public void TestPNBreak() => Test2(a =>
+	{
+		var c = a.PNBreak(x => x.Item1, x => (x.Item2, x.Item3));
+		var d = (E.Select(a, x => x.Item1), E.Select(a, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.PNBreak(x => (x.Item1, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = RedStarLinq.Convert(a, x => (x.Item1, (x.Item2, x.Item3))).PNBreak();
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak(x => x.Item1, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), (char, (char, char, char))>)null!));
+		c = a.PNBreak((x, index) => (char)(x.Item1 + index), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d = (E.Select(a, (x, index) => (char)(x.Item1 + index)), E.Select(a, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		c = a.PNBreak((x, index) => ((char)(x.Item1 + index), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c.Item1, d.Item1) && E.SequenceEqual(c.Item2, d.Item2));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((x, index) => (char)(x.Item1 + index), (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), int, (char, (char, char, char))>)null!));
+		var c2 = a.PNBreak(x => x.Item1, x => x.Item3, x => (x.Item2, x.Item3));
+		var d2 = (E.Select(a, x => x.Item1), E.Select(a, x => x.Item3), E.Select(a, x => (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.PNBreak(x => (x.Item1, x.Item3, (x.Item2, x.Item3)));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = RedStarLinq.Convert(a, x => (x.Item1, x.Item3, (x.Item2, x.Item3))).PNBreak();
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), char>)null!, (Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak(x => x.Item1, (Func<(char, char, char), char>)null!, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak(x => x.Item1, x => x.Item3, (Func<(char, char, char), (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), (char, char, (char, char, char))>)null!));
+		c2 = a.PNBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (x, index) => (x.Item2, (char)(x.Item3 + index)));
+		d2 = (E.Select(a, (x, index) => (char)(x.Item1 + index)), E.Select(a, (x, index) => (char)(x.Item3 * index + 5)), E.Select(a, (x, index) => (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		c2 = a.PNBreak((x, index) => ((char)(x.Item1 + index), (char)(x.Item3 * index + 5), (x.Item2, (char)(x.Item3 + index))));
+		Assert.IsTrue(E.SequenceEqual(c2.Item1, d2.Item1) && E.SequenceEqual(c2.Item2, d2.Item2) && E.SequenceEqual(c2.Item3, d2.Item3));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((x, index) => (char)(x.Item1 + index), (Func<(char, char, char), int, char>)null!, (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((x, index) => (char)(x.Item1 + index), (x, index) => (char)(x.Item3 * index + 5), (Func<(char, char, char), int, (char, char, char)>)null!));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNBreak((Func<(char, char, char), int, (char, char, (char, char, char))>)null!));
+	});
+
+	[TestMethod]
+	public void TestPNConvert() => Test2(a =>
+	{
+		var b = a.ToNList(x => (x.Item2, x.Item3, (char)(x.Item3 + 123)));
+		var c = E.ToList(E.Select(a, x => (x.Item2, x.Item3, (char)(x.Item3 + 123))));
+		Assert.IsTrue(E.SequenceEqual(b, c));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNConvert((Func<(char, char, char), (char, char, char)>)null!));
+		b = a.ToNList((x, index) => (x.Item2, x.Item3, (char)index));
+		c = E.ToList(E.Select(a, (x, index) => (x.Item2, x.Item3, (char)index)));
+		Assert.IsTrue(E.SequenceEqual(b, c));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PNConvert((Func<(char, char, char), int, (char, char, char)>)null!));
 	});
 
 	[TestMethod]

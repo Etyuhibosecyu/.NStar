@@ -1,5 +1,15 @@
-﻿
-namespace Corlib.NStar;
+﻿global using Corlib.NStar;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Runtime.InteropServices;
+global using System.Threading.Tasks;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+global using String = Corlib.NStar.String;
+
+namespace ParallelHS.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 /// <summary>
@@ -18,13 +28,13 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 	private protected int freeCount;
 	private protected int freeList;
 
-	public FastDelHashSet() : this(0, (IEqualityComparer<T>?)null) { }
+	public FastDelHashSet() : this(0, (G.IEqualityComparer<T>?)null) { }
 
-	public FastDelHashSet(int capacity) : this(capacity, (IEqualityComparer<T>?)null) { }
+	public FastDelHashSet(int capacity) : this(capacity, (G.IEqualityComparer<T>?)null) { }
 
-	public FastDelHashSet(IEqualityComparer<T>? comparer) : this(0, comparer) { }
+	public FastDelHashSet(G.IEqualityComparer<T>? comparer) : this(0, comparer) { }
 
-	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer)
+	public FastDelHashSet(int capacity, G.IEqualityComparer<T>? comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		if (capacity > 0)
@@ -34,34 +44,34 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 			buckets = default!;
 			entries = default!;
 		}
-		Comparer = comparer ?? EqualityComparer<T>.Default;
+		Comparer = comparer ?? G.EqualityComparer<T>.Default;
 	}
 
-	public FastDelHashSet(IEnumerable<T> collection) : this(collection, null) { }
+	public FastDelHashSet(G.IEnumerable<T> collection) : this(collection, null) { }
 
-	public FastDelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public FastDelHashSet(G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public FastDelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public FastDelHashSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public FastDelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public FastDelHashSet(int capacity, G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		foreach (var item in collection)
 			TryAdd(item);
 	}
 
-	public FastDelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+	public FastDelHashSet(params T[] array) : this((G.IEnumerable<T>)array) { }
 
-	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
+	public FastDelHashSet(int capacity, params T[] array) : this(capacity, (G.IEnumerable<T>)array) { }
 
-	public FastDelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
+	public FastDelHashSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
-	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true] { get => this[index, invoke, false]; set => this[index, invoke, false] = value; }
 
@@ -151,7 +161,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return !toEnd || index == _size;
 	}
 
-	protected override bool EqualsToNonList(IEnumerable<T> collection, int index, bool toEnd)
+	protected override bool EqualsToNonList(G.IEnumerable<T> collection, int index, bool toEnd)
 	{
 		if (collection.TryGetLengthEasily(out var length) && index > _size - length)
 			throw new ArgumentOutOfRangeException(nameof(index));
@@ -213,7 +223,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		return (TCertain)this;
 	}
 
-	public override IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
+	public override G.IEnumerator<T> GetEnumerator() => GetEnumeratorInternal();
 
 	protected virtual Enumerator GetEnumeratorInternal() => new(this);
 
@@ -333,7 +343,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		Debug.Assert(IsValidIndex(index) && (entries[index].item?.Equals(item) ?? item == null));
 	}
 
-	public new struct Enumerator : IEnumerator<T>
+	public new struct Enumerator : G.IEnumerator<T>
 	{
 		private readonly FastDelHashSet<T, TCertain> hashSet;
 		private int index;
@@ -395,29 +405,29 @@ public class FastDelHashSet<T> : FastDelHashSet<T, FastDelHashSet<T>>
 
 	public FastDelHashSet(int capacity) : base(capacity) { }
 
-	public FastDelHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
+	public FastDelHashSet(G.IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public FastDelHashSet(IEnumerable<T> set) : base(set) { }
+	public FastDelHashSet(G.IEnumerable<T> set) : base(set) { }
 
-	public FastDelHashSet(int capacity, IEnumerable<T> set) : base(capacity, set) { }
+	public FastDelHashSet(int capacity, G.IEnumerable<T> set) : base(capacity, set) { }
 
 	public FastDelHashSet(int capacity, params T[] array) : base(capacity, array) { }
 
 	public FastDelHashSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public FastDelHashSet(int capacity, IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(capacity, set, comparer) { }
+	public FastDelHashSet(int capacity, G.IEnumerable<T> set, G.IEqualityComparer<T>? comparer) : base(capacity, set, comparer) { }
 
 	public FastDelHashSet(params T[] array) : base(array) { }
 
 	public FastDelHashSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public FastDelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
+	public FastDelHashSet(int capacity, G.IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public FastDelHashSet(IEnumerable<T> set, IEqualityComparer<T>? comparer) : base(set, comparer) { }
+	public FastDelHashSet(G.IEnumerable<T> set, G.IEqualityComparer<T>? comparer) : base(set, comparer) { }
 
 	protected override Func<int, FastDelHashSet<T>> CapacityCreator => x => new(x);
 
-	protected override Func<IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, FastDelHashSet<T>> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<T>, FastDelHashSet<T>> SpanCreator => x => new(x);
 }
@@ -431,11 +441,11 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public ParallelHashSet(int capacity) : base(capacity) { }
 
-	public ParallelHashSet(IEqualityComparer<T>? comparer) : base(comparer) { }
+	public ParallelHashSet(G.IEqualityComparer<T>? comparer) : base(comparer) { }
 
-	public ParallelHashSet(IEnumerable<T> collection) : this(collection, null) { }
+	public ParallelHashSet(G.IEnumerable<T> collection) : this(collection, null) { }
 
-	public ParallelHashSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public ParallelHashSet(G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.IList<T> list)
@@ -445,9 +455,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				TryAdd(item);
 	}
 
-	public ParallelHashSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public ParallelHashSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public ParallelHashSet(int capacity, IEnumerable<T> collection, IEqualityComparer<T>? comparer) : this(capacity, comparer)
+	public ParallelHashSet(int capacity, G.IEnumerable<T> collection, G.IEqualityComparer<T>? comparer) : this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		if (collection is G.IList<T> list)
@@ -457,15 +467,15 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 				TryAdd(item);
 	}
 
-	public ParallelHashSet(int capacity, IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
+	public ParallelHashSet(int capacity, G.IEqualityComparer<T>? comparer) : base(capacity, comparer) { }
 
-	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
+	public ParallelHashSet(int capacity, params T[] array) : this(capacity, (G.IEnumerable<T>)array) { }
 
-	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+	public ParallelHashSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
-	public ParallelHashSet(params T[] array) : this((IEnumerable<T>)array) { }
+	public ParallelHashSet(params T[] array) : this((G.IEnumerable<T>)array) { }
 
-	public ParallelHashSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
+	public ParallelHashSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
 	public override T this[Index index, bool invoke = true, bool suppressException = false]
 	{
@@ -479,7 +489,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	protected override Func<int, ParallelHashSet<T>> CapacityCreator => x => new(x);
 
-	protected override Func<IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, ParallelHashSet<T>> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<T>, ParallelHashSet<T>> SpanCreator => x => new(x);
 
@@ -506,13 +516,13 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override bool Contains(T? item, int index, int length) => UnsafeContains(item, index, length) || Lock(lockObj, UnsafeContains, item, index, length);
 
-	public override bool Contains(IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
+	public override bool Contains(G.IEnumerable<T> collection, int index, int length) => Lock(lockObj, base.Contains, collection, index, length);
 
 	protected override void CopyToInternal(int sourceIndex, ParallelHashSet<T> destination, int destinationIndex, int length) => Lock(lockObj, base.CopyToInternal, sourceIndex, destination, destinationIndex, length);
 
-	protected override bool EqualsInternal(IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
+	protected override bool EqualsInternal(G.IEnumerable<T>? collection, int index, bool toEnd = false) => Lock(lockObj, base.EqualsInternal, collection, index, toEnd);
 
-	public override ParallelHashSet<T> ExceptWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> ExceptWith(G.IEnumerable<T> other)
 	{
 		if (other is FastDelHashSet<T> fhs)
 			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs[i]));
@@ -528,7 +538,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	public override ParallelHashSet<T> FixUpFakeIndexes() => Lock(lockObj, base.FixUpFakeIndexes);
 
-	public override int IndexOf(IEnumerable<T> collection, int index, int length, out int collectionLength)
+	public override int IndexOf(G.IEnumerable<T> collection, int index, int length, out int collectionLength)
 	{
 		lock (lockObj)
 			return base.IndexOf(collection, index, length, out collectionLength);
@@ -572,7 +582,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return this;
 	}
 
-	public override ParallelHashSet<T> Insert(int index, IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
+	public override ParallelHashSet<T> Insert(int index, G.IEnumerable<T> collection) => Lock(lockObj, base.Insert, index, collection);
 
 	public override ParallelHashSet<T> Insert(int index, ReadOnlySpan<T> span)
 	{
@@ -608,12 +618,12 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			return UnsafeInsert(item, out index, hashCode);
 	}
 
-	public override ParallelHashSet<T> IntersectWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> IntersectWith(G.IEnumerable<T> other)
 	{
-		if (other is ISet<T> set)
+		if (other is G.ISet<T> set)
 			return Do(set);
 		return Do(new ParallelHashSet<T>(other));
-		ParallelHashSet<T> Do(ISet<T> set)
+		ParallelHashSet<T> Do(G.ISet<T> set)
 		{
 			Parallel.For(0, _size, i =>
 			{
@@ -625,7 +635,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	public override bool IsSupersetOf(IEnumerable<T> other)
+	public override bool IsSupersetOf(G.IEnumerable<T> other)
 	{
 		var result = true;
 		if (other is G.IList<T> list)
@@ -644,7 +654,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return result;
 	}
 
-	public override bool Overlaps(IEnumerable<T> other)
+	public override bool Overlaps(G.IEnumerable<T> other)
 	{
 		var result = false;
 		if (other is G.IList<T> list)
@@ -706,7 +716,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 
 	protected override void Resize(int newSize, bool forceNewHashCodes) => Lock(lockObj, base.Resize, newSize, forceNewHashCodes);
 
-	public override bool SetEquals(IEnumerable<T> other)
+	public override bool SetEquals(G.IEnumerable<T> other)
 	{
 		var result = true;
 		if (other is G.IList<T> list)
@@ -749,7 +759,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		}
 	}
 
-	protected override ParallelHashSet<T> SymmetricExceptInternal(IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
+	protected override ParallelHashSet<T> SymmetricExceptInternal(G.IEnumerable<T> other) => Lock(lockObj, base.SymmetricExceptInternal, other);
 
 	public override bool TryAdd(T item, out int index)
 	{
@@ -767,7 +777,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		return true;
 	}
 
-	public override ParallelHashSet<T> UnionWith(IEnumerable<T> other)
+	public override ParallelHashSet<T> UnionWith(G.IEnumerable<T> other)
 	{
 		if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => TryAdd(list[i]));

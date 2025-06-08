@@ -336,7 +336,8 @@ public abstract class BaseBigList<T, TCertain, TLow> : IBigList<T>, ICloneable, 
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(index);
 		ArgumentNullException.ThrowIfNull(collection);
-		if (collection is G.IList<T> list && list is not (FastDelHashSet<T> or ParallelHashSet<T>))
+		if (collection is G.IList<T> list && !(CreateVar(list.GetType(),
+			out var type).Name.Contains("FastDelHashSet") || type.Name.Contains("ParallelHashSet")))
 			return EqualsToList(list, index, toEnd);
 		else
 			return EqualsToNonList(collection, index, toEnd);

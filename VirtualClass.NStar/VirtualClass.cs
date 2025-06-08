@@ -1,5 +1,4 @@
-﻿
-namespace VirtualClasses.NStar;
+﻿namespace VirtualClasses.NStar;
 
 public enum ClassAttributes
 {

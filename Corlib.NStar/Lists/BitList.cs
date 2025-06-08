@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public unsafe class BitList : BaseList<bool, BitList>, ICloneable

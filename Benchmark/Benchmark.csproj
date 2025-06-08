@@ -11,5 +11,6 @@
     <ProjectReference Include="..\BigCollections.NStar\BigCollections.NStar.csproj" />
     <ProjectReference Include="..\Dictionaries.NStar\Dictionaries.NStar.csproj" />
     <ProjectReference Include="..\LINQ.NStar\LINQ.NStar.csproj" />
+    <ProjectReference Include="..\ParallelHS.NStar\ParallelHS.NStar.csproj" />
   </ItemGroup>
 </Project>

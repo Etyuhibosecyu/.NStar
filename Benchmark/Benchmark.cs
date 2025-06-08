@@ -1,4 +1,5 @@
-﻿
+﻿using ParallelHS.NStar;
+
 namespace Benchmark;
 
 [MemoryDiagnoser]

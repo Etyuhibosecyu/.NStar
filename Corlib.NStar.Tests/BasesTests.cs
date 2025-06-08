@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar.Tests;
+﻿namespace Corlib.NStar.Tests;
 
 public record class BaseIndexableTests<T, TCertain>(TCertain TestCollection, ImmutableArray<T> OriginalCollection, T DefaultString, G.IEnumerable<T> DefaultCollection) where TCertain : BaseIndexable<T, TCertain>, new()
 {

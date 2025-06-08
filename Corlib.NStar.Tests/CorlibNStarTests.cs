@@ -2,6 +2,8 @@ global using Dictionaries.NStar;
 global using LINQ.NStar;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Mpir.NET;
+global using ParallelHS.NStar;
+global using RemoveDoubles.NStar;
 global using SumCollections.NStar;
 global using System;
 global using System.Collections;

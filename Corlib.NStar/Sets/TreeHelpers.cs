@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 internal enum NodeColor : byte
 {

@@ -1,5 +1,4 @@
-﻿
-namespace BigCollections.NStar;
+﻿namespace BigCollections.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class BigQueue<T> : G.IEnumerable<T>, ICloneable

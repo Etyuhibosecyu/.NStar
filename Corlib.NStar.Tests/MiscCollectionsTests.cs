@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar.Tests;
+﻿namespace Corlib.NStar.Tests;
 
 [TestClass]
 public class SliceTests

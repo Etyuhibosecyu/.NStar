@@ -22,7 +22,6 @@
 	
 	<ItemGroup>
 		<ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
-		<ProjectReference Include="..\RemoveDoubles.NStar\RemoveDoubles.NStar.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

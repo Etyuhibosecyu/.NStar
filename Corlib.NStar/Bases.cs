@@ -1,5 +1,4 @@
-﻿
-namespace Corlib.NStar;
+﻿namespace Corlib.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseList<T, TCertain> : BaseIndexable<T, TCertain>, ICloneable, IList<T>, IList where TCertain : BaseList<T, TCertain>, new()
