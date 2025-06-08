@@ -2026,6 +2026,19 @@ public class RedStarLinqTests
 	});
 
 	[TestMethod]
+	public void TestPConvert() => TestROL(a =>
+	{
+		var c = a.PConvert(x => x[1..]);
+		var d = E.Select(a, x => x[1..]);
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PConvert((Func<string, string>)null!));
+		c = a.PConvert((x, index) => x[1..] + index.ToString("D2"));
+		d = E.Select(a, (x, index) => x[1..] + index.ToString("D2"));
+		Assert.IsTrue(E.SequenceEqual(c, d));
+		Assert.ThrowsException<ArgumentNullException>(() => a.PConvert((Func<string, int, string>)null!));
+	});
+
+	[TestMethod]
 	public void TestPRemoveDoubles()
 	{
 		var random = Lock(lockObj, () => new Random(Global.random.Next()));

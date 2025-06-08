@@ -38596,7 +38596,6 @@ public static class RedStarLinqExtras
 		return result;
 	}
 
-	[Experimental("CS9216")]
 	public static List<TResult> PConvert<T, TResult>(this G.IReadOnlyList<T> source, Func<T, int, TResult> function)
 	{
 		ArgumentNullException.ThrowIfNull(function);
