@@ -439,6 +439,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 					CopyMemory(list._items, 0, _items, index, length);
 			}
 			_size += length;
+			Changed();
 			return this2;
 		}
 		else if (collection is T[] array)
@@ -474,6 +475,7 @@ public abstract unsafe partial class NList<T, TCertain> : BaseList<T, TCertain> 
 					CopyMemory(ptr, 0, _items, index, length);
 			}
 			_size += length;
+			Changed();
 			return this2;
 		}
 		else if (collection is G.ICollection<T> list2)
@@ -918,6 +920,7 @@ public unsafe class String : NList<char, String>, IComparable, IComparable<char[
 				CopyMemory(ptr, 0, _items, index, length);
 		}
 		_size += length;
+		Changed();
 		return this;
 	}
 

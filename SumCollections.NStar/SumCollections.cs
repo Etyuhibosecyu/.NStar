@@ -1,10 +1,12 @@
 ﻿global using Corlib.NStar;
 global using Mpir.NET;
+global using SortedSets.NStar;
 global using System;
 global using System.Collections;
 global using System.Diagnostics;
 global using System.Reflection;
 global using System.Runtime.InteropServices;
+global using TreeSets.NStar;
 global using G = System.Collections.Generic;
 global using static System.Math;
 global using String = Corlib.NStar.String;
@@ -252,6 +254,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		root = null;
 		_size = 0;
 		++version;
+		Changed();
 	}
 
 	private protected static Node? ConstructRootFromSortedArray((T Key, int Value)[] arr, int startIndex, int endIndex, Node? redNode)
@@ -572,6 +575,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			found = match.Item;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if VERIFY
@@ -852,6 +856,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
 			version++;
+			Changed();
 		}
 		else
 			IntersectWithEnumerable(other);
@@ -1008,6 +1013,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if VERIFY
@@ -1107,6 +1113,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 #if VERIFY
 		if (_size != (root?.LeavesCount ?? 0))
@@ -1360,6 +1367,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			root = Node.GetNew(item, NodeColor.Black);
 			_size = 1;
 			version++;
+			Changed();
 			return true;
 		}
 		// Search for a node at bottom to insert the new node.
@@ -1415,6 +1423,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 		// The root node is always black.
 		root.ColorBlack();
 		++_size;
+		Changed();
 		return true;
 	}
 
@@ -1467,6 +1476,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			root = asSorted.root?.DeepClone(asSorted._size);
 			_size = asSorted._size;
 			version++;
+			Changed();
 			return this;
 		}
 		// This actually hurts if N is much greater than M. The / 2 is arbitrary.
@@ -1512,6 +1522,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
 			version++;
+			Changed();
 		}
 		else
 			AddAllElements(other);
@@ -2199,6 +2210,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 			root = null;
 			_size = 0;
 			version = _underlying.version;
+			Changed();
 		}
 
 		public override bool Contains(T? item)
@@ -2364,6 +2376,7 @@ public class SumSet<T> : BaseSortedSet<(T Key, int Value), SumSet<T>>
 				_size = 0;
 				InOrderTreeWalk(n => { _size++; return true; });
 				_countVersion = _underlying.version;
+				Changed();
 			}
 		}
 

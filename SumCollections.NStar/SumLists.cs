@@ -81,6 +81,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		root = null;
 		_size = 0;
 		++version;
+		Changed();
 	}
 
 	protected virtual Node? ConstructRootFromSortedArray(T[] arr, int startIndex, int endIndex, Node? redNode)
@@ -308,6 +309,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			found = match.Value;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if VERIFY
@@ -376,6 +378,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 			root = NodeCreator(value, NodeColor.Black);
 			_size = 1;
 			version++;
+			Changed();
 			return this2;
 		}
 		// Search for a node at bottom to insert the new node.
@@ -448,6 +451,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		// The root node is always black.
 		root.ColorBlack();
 		++_size;
+		Changed();
 		return this2;
 	}
 
@@ -516,6 +520,7 @@ public abstract class BaseSumList<T, TCertain> : BaseList<T, TCertain> where T :
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if VERIFY
@@ -1071,6 +1076,7 @@ public class SumList : BaseSumList<int, SumList>
 		_size += length;
 		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
 		subset.Clear();
+		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, SumList destination, int destinationIndex, int length)
@@ -1723,6 +1729,7 @@ public class SumList : BaseSumList<int, SumList>
 				_size = 0;
 				InOrderTreeWalk(n => { _size++; return true; });
 				_countVersion = _underlying.version;
+				Changed();
 			}
 		}
 
@@ -1799,6 +1806,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 		_size += length;
 		using var subset = new TreeSubSet(this, index, index + length - 1, true, true);
 		subset.Clear();
+		Changed();
 	}
 
 	protected override void CopyToInternal(int sourceIndex, BigSumList destination, int destinationIndex, int length)
@@ -2328,6 +2336,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 			root = null;
 			_size = 0;
 			version = _underlying.version;
+			Changed();
 		}
 
 		internal override Node? FindNode(int index)
@@ -2480,6 +2489,7 @@ public class BigSumList : BaseSumList<MpzT, BigSumList>
 				_size = 0;
 				InOrderTreeWalk(n => { _size++; return true; });
 				_countVersion = _underlying.version;
+				Changed();
 			}
 		}
 

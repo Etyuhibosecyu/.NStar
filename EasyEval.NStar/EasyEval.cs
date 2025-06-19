@@ -24,7 +24,12 @@ public static class EasyEval
 		var sb = new StringBuilder();
 		var errors = new StringWriter(sb);
 		var assembly = CompileAndGetAssembly(((String)@"using Corlib.NStar;
+using Dictionaries.NStar;
+using LINQ.NStar;
+using MathLib.NStar;
 using Mpir.NET;
+using RemoveDoubles.NStar;
+using SumCollections.NStar;
 using System;
 using System.Dynamic;
 using System.Threading;
@@ -77,8 +82,10 @@ public static void Main()
 		var codeString = SourceText.From(sourceCode.ToString());
 		var options = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.Latest);
 		var parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, options);
-		var references = new ListHashSet<String>("Corlib.NStar", "Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard",
-			"System", "System.Console", "System.Core", "System.Linq.Expressions", "System.Private.CoreLib", "System.Runtime")
+		var references = new ListHashSet<String>("Corlib.NStar", "Dictionaries.NStar", "LINQ.NStar", "MathLib.NStar",
+			"Microsoft.CSharp", "mscorlib", "Mpir.NET", "netstandard", "ParallelHS.NStar", "RemoveDoubles.NStar",
+			"SumCollections.NStar", "System", "System.Console", "System.Core", "System.Linq.Expressions",
+			"System.Private.CoreLib", "System.Runtime")
 			.UnionWith(extraAssemblies).ToList(x =>
 			MetadataReference.CreateFromFile(Assembly.Load(x.Replace(".dll", []).ToString()).Location));
 		return CSharpCompilation.Create("MyProject.dll",

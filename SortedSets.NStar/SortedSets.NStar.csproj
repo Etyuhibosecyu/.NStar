@@ -18,8 +18,7 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-	  <Compile Include="..\TreeSets.NStar\TreeHelpers.cs" Link="TreeHelpers.cs" />
-	  <ProjectReference Include="..\TreeSets.NStar\TreeSets.NStar.csproj" />
+		<ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

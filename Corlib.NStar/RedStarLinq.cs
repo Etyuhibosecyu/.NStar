@@ -255,7 +255,7 @@ public static class RedStarLinq
 		ArgumentNullException.ThrowIfNull(function);
 		if (source is List<T> list && source2 is List<T2> list2)
 		{
-			var length = Math.Min(list.Length, list2.Length);
+			var length = Min(list.Length, list2.Length);
 			for (var i = 0; i < length; i++)
 			{
 				var item = list[i];
@@ -766,7 +766,7 @@ public static class RedStarLinq
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.EmptyList<TResult>(length);
+		var result = EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i]);
 		return result;
@@ -776,7 +776,7 @@ public static class RedStarLinq
 	{
 		ArgumentNullException.ThrowIfNull(function);
 		var length = source.Length;
-		var result = RedStarLinq.EmptyList<TResult>(length);
+		var result = EmptyList<TResult>(length);
 		for (var i = 0; i < length; i++)
 			result[i] = function(source[i], i);
 		return result;

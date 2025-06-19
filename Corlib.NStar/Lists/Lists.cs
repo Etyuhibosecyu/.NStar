@@ -259,6 +259,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if (index2 != 0)
 			_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
 		_size = Min(_size + length - toSkip, Capacity);
+		Changed();
 		return this2;
 	}
 
@@ -281,6 +282,7 @@ public abstract partial class Buffer<T, TCertain> : BaseList<T, TCertain> where 
 		if (index2 != 0)
 			_start = (_start + Max(0, _size + length - Capacity - toSkip)) % Capacity;
 		_size = Min(_size + length - toSkip, Capacity);
+		Changed();
 		return this2;
 	}
 
@@ -608,7 +610,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (_size == Capacity)
 		{
 			var min = _size + 1;
-			var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
 			if ((uint)newCapacity > int.MaxValue)
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
@@ -644,7 +646,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 		if (Capacity < _size + length)
 		{
 			var min = _size + length;
-			var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+			var newCapacity = Max(DefaultCapacity, Capacity * 2);
 			if ((uint)newCapacity > int.MaxValue)
 				newCapacity = int.MaxValue;
 			if (newCapacity < min)
@@ -678,7 +680,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
 				if ((uint)newCapacity > int.MaxValue)
 					newCapacity = int.MaxValue;
 				if (newCapacity < min)
@@ -704,6 +706,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 					Array.Copy(list._items, 0, _items, index, length);
 			}
 			_size += length;
+			Changed();
 			return (TCertain)this;
 		}
 		else if (collection is T[] array)
@@ -714,7 +717,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
 				if ((uint)newCapacity > int.MaxValue)
 					newCapacity = int.MaxValue;
 				if (newCapacity < min)
@@ -734,6 +737,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 				Array.Copy(array, 0, _items, index, length);
 			}
 			_size += length;
+			Changed();
 			return (TCertain)this;
 		}
 		else if (collection is G.ICollection<T> list2)
@@ -744,7 +748,7 @@ public abstract partial class List<T, TCertain> : BaseList<T, TCertain> where TC
 			if (Capacity < _size + length)
 			{
 				var min = _size + length;
-				var newCapacity = Math.Max(DefaultCapacity, Capacity * 2);
+				var newCapacity = Max(DefaultCapacity, Capacity * 2);
 				if ((uint)newCapacity > int.MaxValue)
 					newCapacity = int.MaxValue;
 				if (newCapacity < min)

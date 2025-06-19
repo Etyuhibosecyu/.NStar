@@ -1,4 +1,13 @@
-﻿namespace Corlib.NStar;
+﻿global using Corlib.NStar;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+
+namespace SortedSets.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TCertain : BaseSortedSet<T, TCertain>, new()
@@ -10,7 +19,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 			+ " Если оно нужно вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 	}
 
-	public abstract IComparer<T> Comparer { get; }
+	public abstract G.IComparer<T> Comparer { get; }
 
 	public override TCertain Add(T item)
 	{
@@ -34,7 +43,7 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		return ret >= 0 ? ret : ~ret;
 	}
 
-	protected override TCertain InsertInternal(int index, IEnumerable<T> collection) =>
+	protected override TCertain InsertInternal(int index, G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
@@ -42,15 +51,15 @@ public abstract class BaseSortedSet<T, TCertain> : BaseSet<T, TCertain> where TC
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
-	protected internal abstract void InsertInternal(int index, T item);
+	protected abstract void InsertInternal(int index, T item);
 
-	internal override TCertain ReplaceRangeInternal(int index, int length, IEnumerable<T> collection) =>
+	protected override TCertain ReplaceRangeInternal(int index, int length, G.IEnumerable<T> collection) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
 	public abstract int Search(T item);
 
-	internal override TCertain SetRangeInternal(int index, int length, TCertain list) =>
+	protected override TCertain SetRangeInternal(int index, int length, TCertain list) =>
 		throw new NotSupportedException("Этот метод не поддерживается в этой коллекции."
 			+ " Если он нужен вам, используйте один из видов списков или хэш-множеств, а не отсортированных множеств.");
 
@@ -79,52 +88,75 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	public SortedSet(int capacity) : this(capacity, G.Comparer<T>.Default) { }
 
-	public SortedSet(IComparer<T>? comparer)
+	public SortedSet(G.IComparer<T>? comparer)
 	{
 		items = [];
+		items.ListChanged += list =>
+		{
+			if (_size != list.Length)
+			{
+				_size = list.Length;
+				Changed();
+			}
+		};
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
 
 	public SortedSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
-	public SortedSet(int capacity, IComparer<T>? comparer)
+	public SortedSet(int capacity, G.IComparer<T>? comparer)
 	{
 		ArgumentOutOfRangeException.ThrowIfNegative(capacity);
 		items = new(capacity);
+		items.ListChanged += list =>
+		{
+			if (_size != list.Length)
+			{
+				_size = list.Length;
+				Changed();
+			}
+		};
 		Comparer = comparer ?? G.Comparer<T>.Default;
 	}
 
 	public SortedSet(int capacity, Func<T, T, int> compareFunction) : this(capacity, new Comparer<T>(compareFunction)) { }
 
-	public SortedSet(IEnumerable<T> collection) : this(collection, null) { }
+	public SortedSet(G.IEnumerable<T> collection) : this(collection, null) { }
 
-	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(collection is ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
+	public SortedSet(G.IEnumerable<T> collection, G.IComparer<T>? comparer) : this(collection is G.ISet<T> set ? set.Count : typeof(T).Equals(typeof(byte)) ? ValuesInByte : collection.TryGetLengthEasily(out var length) ? (int)(Sqrt(length) * 10) : 0, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
-		items.AddRange(collection).Sort(Comparer);
+		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0))).Sort(Comparer);
 	}
 
-	public SortedSet(int capacity, IEnumerable<T> collection) : this(capacity, collection, null) { }
+	public SortedSet(int capacity, G.IEnumerable<T> collection) : this(capacity, collection, null) { }
 
-	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : this(capacity, comparer)
+	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer) : this(capacity, comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
-		items.AddRange(collection).Sort(Comparer);
+		items.AddRange(new ListHashSet<T>(collection, new EComparer<T>((x, y) => Comparer.Compare(x, y) == 0))).Sort(Comparer);
 	}
 
-	public SortedSet(params T[] array) : this((IEnumerable<T>)array) { }
+	public SortedSet(params T[] array) : this((G.IEnumerable<T>)array) { }
 
-	public SortedSet(int capacity, params T[] array) : this(capacity, (IEnumerable<T>)array) { }
+	public SortedSet(int capacity, params T[] array) : this(capacity, (G.IEnumerable<T>)array) { }
 
-	public SortedSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
+	public SortedSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
-	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (IEnumerable<T>)span.ToArray()) { }
+	public SortedSet(int capacity, ReadOnlySpan<T> span) : this(capacity, (G.IEnumerable<T>)span.ToArray()) { }
 
 	public override int Capacity { get => items.Capacity; set => items.Capacity = value; }
 
-	public override IComparer<T> Comparer { get; }
+	public override G.IComparer<T> Comparer { get; }
 
 	public override int Length => items.Length;
+
+	protected override void Changed()
+	{
+		base.Changed();
+		if (_size != items.Length)
+			items.Resize(_size);
+	}
 
 	protected override void ClearInternal(int index, int length) => items.Clear(index, length);
 
@@ -140,19 +172,22 @@ public abstract class SortedSet<T, TCertain> : BaseSortedSet<T, TCertain> where 
 
 	protected override T GetInternal(int index, bool invoke = true)
 	{
-		var item = items[index, invoke];
+		var item = (T?)items.GetType().GetMethod("GetInternal", System.Reflection.BindingFlags.Instance
+			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, invoke])
+			?? throw new InvalidCastException();
 		if (invoke)
 			Changed();
 		return item;
 	}
 
-	protected internal override void InsertInternal(int index, T item) => items.Insert(index, item);
+	protected override void InsertInternal(int index, T item) => items.Insert(index, item);
 
 	public override int Search(T item) => items.BinarySearch(item, Comparer);
 
 	protected override void SetInternal(int index, T value)
 	{
-		items[index] = value;
+		items.GetType().GetMethod("SetInternal", System.Reflection.BindingFlags.Instance
+			| System.Reflection.BindingFlags.NonPublic)?.Invoke(items, [index, value]);
 		Changed();
 	}
 }
@@ -164,35 +199,33 @@ public class SortedSet<T> : SortedSet<T, SortedSet<T>>
 
 	public SortedSet(int capacity) : base(capacity) { }
 
-	public SortedSet(IComparer<T>? comparer) : base(comparer) { }
+	public SortedSet(G.IComparer<T>? comparer) : base(comparer) { }
 
 	public SortedSet(Func<T, T, int> compareFunction) : base(compareFunction) { }
 
-	public SortedSet(IEnumerable<T> collection) : base(collection) { }
+	public SortedSet(G.IEnumerable<T> collection) : base(collection) { }
 
 	public SortedSet(params T[] array) : base(array) { }
 
 	public SortedSet(ReadOnlySpan<T> span) : base(span) { }
 
-	public SortedSet(int capacity, IComparer<T>? comparer) : base(capacity, comparer) { }
+	public SortedSet(int capacity, G.IComparer<T>? comparer) : base(capacity, comparer) { }
 
 	public SortedSet(int capacity, Func<T, T, int> compareFunction) : base(capacity, compareFunction) { }
 
-	public SortedSet(IEnumerable<T> collection, IComparer<T>? comparer) : base(collection, comparer) { }
+	public SortedSet(G.IEnumerable<T> collection, G.IComparer<T>? comparer) : base(collection, comparer) { }
 
-	public SortedSet(int capacity, IEnumerable<T> collection) : base(capacity, collection) { }
+	public SortedSet(int capacity, G.IEnumerable<T> collection) : base(capacity, collection) { }
 
 	public SortedSet(int capacity, params T[] array) : base(capacity, array) { }
 
 	public SortedSet(int capacity, ReadOnlySpan<T> span) : base(capacity, span) { }
 
-	public SortedSet(int capacity, IEnumerable<T> collection, IComparer<T>? comparer) : base(capacity, collection, comparer) { }
+	public SortedSet(int capacity, G.IEnumerable<T> collection, G.IComparer<T>? comparer) : base(capacity, collection, comparer) { }
 
 	protected override Func<int, SortedSet<T>> CapacityCreator => x => new(x);
 
-	protected override Func<IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, SortedSet<T>> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<T>, SortedSet<T>> SpanCreator => x => new(x);
 }
-
-internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);

@@ -22,8 +22,8 @@
     <ProjectReference Include="..\Dictionaries.NStar\Dictionaries.NStar.csproj" />
     <ProjectReference Include="..\LINQ.NStar\LINQ.NStar.csproj" />
     <ProjectReference Include="..\ParallelHS.NStar\ParallelHS.NStar.csproj" />
-    <ProjectReference Include="..\SumCollections.NStar\SumCollections.NStar.csproj" />
-    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+		<ProjectReference Include="..\SumCollections.NStar\SumCollections.NStar.csproj" />
+		<Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
   </ItemGroup>
 
 </Project>

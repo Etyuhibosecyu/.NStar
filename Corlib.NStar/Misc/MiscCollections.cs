@@ -617,7 +617,7 @@ public class Stack<T> : IEnumerable<T>, ICollection, IReadOnlyCollection<T>, IDi
 	public virtual bool Contains(T? item)
 	{
 		var length = _size;
-		var c = G.EqualityComparer<T>.Default;
+		var c = EqualityComparer<T>.Default;
 		while (length-- > 0)
 			if (item == null)
 			{

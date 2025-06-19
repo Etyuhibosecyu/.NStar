@@ -259,6 +259,7 @@ public abstract class FastDelHashSet<T, TCertain> : BaseHashSet<T, TCertain> whe
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
+		Changed();
 		return (TCertain)this;
 	}
 
@@ -505,6 +506,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 			freeList = 0;
 			_size = 0;
 			freeCount = 0;
+			Changed();
 		}
 	}
 
@@ -525,9 +527,9 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 	public override ParallelHashSet<T> ExceptWith(G.IEnumerable<T> other)
 	{
 		if (other is FastDelHashSet<T> fhs)
-			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs[i]));
+			Parallel.For(0, fhs.Size, i => _ = fhs.IsValidIndex(i) && RemoveValue(fhs[i, true, true]));
 		else if (other is ParallelHashSet<T> phs)
-			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs[i]));
+			Parallel.For(0, phs.Size, i => _ = phs.IsValidIndex(i) && RemoveValue(phs[i, true, true]));
 		else if (other is G.IList<T> list)
 			Parallel.For(0, list.Count, i => RemoveValue(list[i]));
 		else
@@ -885,6 +887,7 @@ public class ParallelHashSet<T> : FastDelHashSet<T, ParallelHashSet<T>>
 		t.next = buckets[targetBucket];
 		t.item = item;
 		buckets[targetBucket] = ~index;
+		Changed();
 		return this;
 	}
 

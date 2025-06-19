@@ -54651,9 +54651,11 @@ public static class RedStarLinqExtras
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) => Shuffle(source, function, random);
 	public static List<TResult> Shuffle<T, TResult>(this G.IEnumerable<T> source, Func<T, int, TResult> function) => Shuffle(source, function, random);
 	public static List<T> Shuffle<T>(this G.IReadOnlyList<T> source) => Shuffle(source, random);
+	public static G.IEnumerable<T> Sort<T>(this G.IEnumerable<T> source) => E.Order(source);
 	public static G.IEnumerable<T> Sort<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) => E.OrderBy(source, function);
 	public static G.IEnumerable<T> Sort<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IComparer<TResult> comparer) => E.OrderBy(source, function, comparer);
 	public static G.IEnumerable<T> Sort<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, int> compareFunction) => E.OrderBy(source, function, new Comparer<TResult>(compareFunction));
+	public static G.IEnumerable<T> SortDesc<T>(this G.IEnumerable<T> source) => E.OrderDescending(source);
 	public static G.IEnumerable<T> SortDesc<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function) => E.OrderByDescending(source, function);
 	public static G.IEnumerable<T> SortDesc<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, G.IComparer<TResult> comparer) => E.OrderByDescending(source, function, comparer);
 	public static G.IEnumerable<T> SortDesc<T, TResult>(this G.IEnumerable<T> source, Func<T, TResult> function, Func<TResult, TResult, int> compareFunction) => E.OrderByDescending(source, function, new Comparer<TResult>(compareFunction));
@@ -54695,6 +54697,8 @@ public static class RedStarLinqExtras
 	public static string ToString(this ReadOnlySpan<char> source) => new(source.ToArray());
 	public static string ToString(this Span<char> source) => new((ReadOnlySpan<char>)source.ToArray());
 	public static string ToString(this char[] source) => new(source);
+	public static List<List<T>> Transpose<T>(this List<List<T>> source, bool widen = false) => List<T>.Transpose(source, widen);
+	public static List<NList<T>> Transpose<T>(this List<NList<T>> source, bool widen = false) where T : unmanaged => NList<T>.Transpose(source, widen);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2) => E.Union(source, source2);
 	public static G.IEnumerable<T> Union<T>(this G.IEnumerable<T> source, G.IEnumerable<T> source2, G.IEqualityComparer<T> comparer) => E.Union(source, source2, comparer);
 	[Obsolete("Этот метод не имеет смысла, так как без использования функций сравнения или вычисления ключа все элементы в каждой группе будут в точности одинаковыми, и такая группировка будет впустую расходовать память. Если вы хотите узнать количество вхождений каждого элемента в последовательности, используйте экстент FrequencyTable(). Если вы по ошибке не добавили функцию сравнения или функцию ключа, добавьте их.", true)]

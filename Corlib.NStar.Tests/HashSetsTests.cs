@@ -1682,57 +1682,62 @@ public class ParallelHashSetTests
 	[TestMethod]
 	public void CrashTest()
 	{
-		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var random = RedStarLinq.FillArray(Environment.ProcessorCount, _ =>
+			Lock(lockObj, () => new Random(Global.random.Next())));
 		var counter = 0;
 	l1:
-		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+		var arr = RedStarLinq.FillArray(16, _ => random[0].Next(16));
 		var toInsert = Array.Empty<int>();
 		ParallelHashSet<int> phs = new(arr);
 		var collectionActions = new[] { (int[] arr) => phs.ExceptWith(arr), phs.IntersectWith, phs.SymmetricExceptWith, phs.UnionWith };
-		var collectionActions2 = new[] { () =>
+		var collectionActions2 = new[] { (int tn) =>
 		{
-			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
 			phs.AddRange(toInsert);
-		}, () =>
+		}, tn =>
 		{
-			var n = random.Next(phs.Length);
-			toInsert = RedStarLinq.FillArray(random.Next(6), _ => random.Next(16));
+			var n = random[tn].Next(phs.Length);
+			toInsert = RedStarLinq.FillArray(random[tn].Next(6), _ => random[tn].Next(16));
 			phs.Insert(n, toInsert);
-		}, () =>
+		}, tn =>
 		{
-			var length = Min(random.Next(9), phs.Length);
+			var length = Min(random[tn].Next(9), phs.Length);
 			if (phs.Length < length)
 				return;
-			var start = random.Next(phs.Length - length + 1);
+			var start = random[tn].Next(phs.Length - length + 1);
 			phs.Remove(start, length);
 		} };
-		var actions = new[] { () =>
+		var actions = new[] { (int tn) =>
 		{
-			var n = random.Next(16);
+			var n = random[tn].Next(16);
 			phs.Add(n);
-		}, () =>
+		}, tn =>
 		{
 			if (phs.Length == 0) return;
-			if (random.Next(2) == 0)
+			if (random[tn].Next(2) == 0)
 			{
 				int n;
 				do
-					n = random.Next(phs.Size);
+					n = random[tn].Next(phs.Size);
 				while (!phs.IsValidIndex(n));
 				phs.RemoveAt(n);
 			}
 			else
 			{
-				var n = random.Next(16);
+				var n = random[tn].Next(16);
 				phs.RemoveValue(n);
 			}
-		}, () =>
+		}, tn =>
 		{
-			var arr = RedStarLinq.FillArray(5, _ => random.Next(16));
-			collectionActions.Random(random)(arr);
-		}, () => collectionActions2.Random(random)() };
-		Parallel.For(0, 1000, i => actions.Random(random)());
-		if (counter++ < 10000)
+			var arr = RedStarLinq.FillArray(5, _ => random[tn].Next(16));
+			collectionActions.Random(random[tn])(arr);
+		}, tn => collectionActions2.Random(random[tn])(tn) };
+		Parallel.For(0, 1000, i =>
+		{
+			var tn = i % random.Length;
+			actions.Random(random[tn])(tn);
+		});
+		if (counter++ < 1000)
 			goto l1;
 	}
 }

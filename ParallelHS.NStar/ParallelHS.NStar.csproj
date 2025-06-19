@@ -18,9 +18,6 @@
 	</PropertyGroup>
 	<ItemGroup>
 	  <Compile Include="..\Corlib.NStar\Misc\HashHelpers.cs" Link="HashHelpers.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<ProjectReference Include="..\Corlib.NStar\Corlib.NStar.csproj" />
 		<None Update="xmpir64.dll">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

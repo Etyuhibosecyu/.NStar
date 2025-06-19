@@ -8,7 +8,7 @@ global using SumCollections.NStar;
 global using System;
 global using System.Collections;
 global using System.Collections.Immutable;
-global using System.Runtime.InteropServices;
+global using TreeSets.NStar;
 global using E = System.Linq.Enumerable;
 global using G = System.Collections.Generic;
 global using static Corlib.NStar.Extents;

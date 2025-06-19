@@ -1,7 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿global using Corlib.NStar;
+global using SortedSets.NStar;
+global using System;
+global using System.Collections;
+global using System.Diagnostics;
+global using System.Runtime.InteropServices;
+global using G = System.Collections.Generic;
+global using static Corlib.NStar.Extents;
+global using static System.Math;
+using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using System.Reflection;
 
-namespace Corlib.NStar;
+namespace TreeSets.NStar;
 
 [ComVisible(true), DebuggerDisplay("Length = {Length}"), Serializable]
 public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
@@ -18,13 +28,13 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	public TreeSet() => Comparer = G.Comparer<T>.Default;
 
-	public TreeSet(IComparer<T>? comparer) => Comparer = comparer ?? G.Comparer<T>.Default;
+	public TreeSet(G.IComparer<T>? comparer) => Comparer = comparer ?? G.Comparer<T>.Default;
 
 	public TreeSet(Func<T, T, int> compareFunction) : this(new Comparer<T>(compareFunction)) { }
 
-	public TreeSet(IEnumerable<T> collection) : this(collection, G.Comparer<T>.Default) { }
+	public TreeSet(G.IEnumerable<T> collection) : this(collection, G.Comparer<T>.Default) { }
 
-	public TreeSet(IEnumerable<T> collection, IComparer<T>? comparer) : this(comparer)
+	public TreeSet(G.IEnumerable<T> collection, G.IComparer<T>? comparer) : this(comparer)
 	{
 		ArgumentNullException.ThrowIfNull(collection);
 		// These are explicit type checks in the mold of HashSet. It would have worked better with
@@ -44,7 +54,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		length = elements.Length;
 		if (length > 0)
 		{
-			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.IComparer<T> constructor.
+			// If `comparer` == null, sets it to G.Comparer<T>.Default. We checked for this condition in the G.G.IComparer<T> constructor.
 			// Array.Sort handles null comparers, but we need this later when we use `comparer.Compare` directly.
 			comparer = Comparer;
 			elements.Sort(0, length, Comparer);
@@ -62,11 +72,11 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	public TreeSet(IEnumerable<T> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
+	public TreeSet(G.IEnumerable<T> collection, Func<T, T, int> compareFunction) : this(collection, new Comparer<T>(compareFunction)) { }
 
-	public TreeSet(params T[] array) : this((IEnumerable<T>)array) { }
+	public TreeSet(params T[] array) : this((G.IEnumerable<T>)array) { }
 
-	public TreeSet(ReadOnlySpan<T> span) : this((IEnumerable<T>)span.ToArray()) { }
+	public TreeSet(ReadOnlySpan<T> span) : this((G.IEnumerable<T>)span.ToArray()) { }
 
 	public override int Capacity
 	{
@@ -78,11 +88,11 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 
 	protected override Func<int, TreeSet<T>> CapacityCreator => x => [];
 
-	protected override Func<IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
+	protected override Func<G.IEnumerable<T>, TreeSet<T>> CollectionCreator => x => new(x);
 
 	protected override Func<ReadOnlySpan<T>, TreeSet<T>> SpanCreator => x => new(x);
 
-	public override IComparer<T> Comparer { get; }
+	public override G.IComparer<T> Comparer { get; }
 
 	public override int Length
 	{
@@ -123,7 +133,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 	}
 
-	private protected void AddAllElements(IEnumerable<T> collection)
+	private protected void AddAllElements(G.IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 		{
@@ -183,7 +193,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// An earlier implementation used delegates to perform these checks rather than returning
 	/// an ElementCount struct; however this was changed due to the perf overhead of delegates.
 	/// </summary>
-	private protected unsafe ElementCount CheckUniqueAndUnfoundElements(IEnumerable<T> other, bool returnIfUnfound)
+	private protected unsafe ElementCount CheckUniqueAndUnfoundElements(G.IEnumerable<T> other, bool returnIfUnfound)
 	{
 		ElementCount result;
 		// need special case in case this has no elements.
@@ -239,6 +249,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		root = null;
 		_size = 0;
 		++version;
+		Changed();
 	}
 
 	private protected static Node? ConstructRootFromSortedArray(G.IList<T> arr, int startIndex, int endIndex, Node? redNode)
@@ -303,7 +314,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return root;
 	}
 
-	private protected bool ContainsAllElements(IEnumerable<T> collection)
+	private protected bool ContainsAllElements(G.IEnumerable<T> collection)
 	{
 		foreach (var item in collection)
 		{
@@ -359,12 +370,12 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// <summary>
 	/// Returns an <see cref="IEqualityComparer{T}"/> object that can be used to create a collection that contains individual sets.
 	/// </summary>
-	public static IEqualityComparer<TreeSet<T>> CreateSetComparer() => CreateSetComparer(memberEqualityComparer: null);
+	public static G.IEqualityComparer<TreeSet<T>> CreateSetComparer() => CreateSetComparer(memberEqualityComparer: null);
 
 	/// <summary>
 	/// Returns an <see cref="IEqualityComparer{T}"/> object, according to a specified comparer, that can be used to create a collection that contains individual sets.
 	/// </summary>
-	public static IEqualityComparer<TreeSet<T>> CreateSetComparer(IEqualityComparer<T>? memberEqualityComparer) => new TreeSetEqualityComparer<T>(memberEqualityComparer);
+	public static G.IEqualityComparer<TreeSet<T>> CreateSetComparer(G.IEqualityComparer<T>? memberEqualityComparer) => new TreeSetEqualityComparer<T>(memberEqualityComparer);
 
 	public override void Dispose()
 	{
@@ -374,7 +385,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		GC.SuppressFinalize(this);
 	}
 
-	public override TreeSet<T> ExceptWith(IEnumerable<T> other)
+	public override TreeSet<T> ExceptWith(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (_size == 0)
@@ -542,6 +553,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			found = match.Item;
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if DEBUG
@@ -562,7 +574,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return found;
 	}
 
-	public override IEnumerator<T> GetEnumerator() => new Enumerator(this);
+	public override G.IEnumerator<T> GetEnumerator() => new Enumerator(this);
 
 	protected override T GetInternal(int index, bool invoke = true)
 	{
@@ -623,7 +635,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
 		// Note: It's not strictly necessary to provide the stack capacity, but we don't
 		// want the stack to unnecessarily allocate arrays as it grows.
-		using var stack = Stack<Node>.GetNew(2 * Log2(Length + 1));
+		using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(Length + 1)]);
+		Debug.Assert(stack != null);
 		var current = root;
 		while (current != null)
 		{
@@ -645,7 +658,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	protected internal override void InsertInternal(int index, T item) => Add(item);
+	protected override void InsertInternal(int index, T item) => Add(item);
 
 	// After calling InsertionBalance, we need to make sure `current` and `parent` are up-to-date.
 	// It doesn't matter if we keep `grandParent` and `greatGrandParent` up-to-date, because we won't
@@ -715,7 +728,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return -1;
 	}
 
-	public override TreeSet<T> IntersectWith(IEnumerable<T> other)
+	public override TreeSet<T> IntersectWith(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -756,13 +769,14 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
 			version++;
+			Changed();
 		}
 		else
 			IntersectWithEnumerable(other);
 		return this;
 	}
 
-	internal virtual void IntersectWithEnumerable(IEnumerable<T> other)
+	internal virtual void IntersectWithEnumerable(G.IEnumerable<T> other)
 	{
 		// TODO: Perhaps a more space-conservative way to do this
 		List<T> toSave = new(Length);
@@ -776,7 +790,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			TryAdd(item);
 	}
 
-	public override bool IsProperSubsetOf(IEnumerable<T> other)
+	public override bool IsProperSubsetOf(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is System.Collections.ICollection c)
@@ -792,7 +806,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return result.UniqueCount == Length && result.UnfoundCount > 0;
 	}
 
-	public override bool IsProperSupersetOf(IEnumerable<T> other)
+	public override bool IsProperSupersetOf(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -819,7 +833,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return result.UniqueCount < Length && result.UnfoundCount == 0;
 	}
 
-	public override bool IsSubsetOf(IEnumerable<T> other)
+	public override bool IsSubsetOf(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -845,7 +859,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	public override bool IsSupersetOf(IEnumerable<T> other)
+	public override bool IsSupersetOf(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is System.Collections.ICollection c && c.Count == 0)
@@ -872,7 +886,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	// Used for set checking operations (using enumerables) that rely on counting
 	private protected static int Log2(int value) => BitOperations.Log2((uint)value);
 
-	public override bool Overlaps(IEnumerable<T> other)
+	public override bool Overlaps(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -887,7 +901,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return false;
 	}
 
-	private protected void RemoveAllElements(IEnumerable<T> collection)
+	private protected void RemoveAllElements(G.IEnumerable<T> collection)
 	{
 		var min = Min;
 		var max = Max;
@@ -908,6 +922,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 		root?.ColorBlack();
 #if DEBUG
@@ -1015,6 +1030,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		{
 			ReplaceNode(match, parentOfMatch!, parent!, grandParent!);
 			--_size;
+			Changed();
 		}
 #if DEBUG
 		if (_size != (root?.LeavesCount ?? 0))
@@ -1137,7 +1153,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return ~n;
 	}
 
-	public override bool SetEquals(IEnumerable<T> other)
+	public override bool SetEquals(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (other is TreeSet<T> asSorted && HasEqualComparer(asSorted))
@@ -1194,7 +1210,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 	/// <param name="set2">The second set.</param>
 	/// <param name="comparer">The fallback comparer to use if the sets do not have equal comparers.</param>
 	/// <returns><c>true</c> if the sets have equal contents; otherwise, <c>false</c>.</returns>
-	internal static bool SortedSetEquals(TreeSet<T>? set1, TreeSet<T>? set2, IComparer<T> comparer)
+	internal static bool SortedSetEquals(TreeSet<T>? set1, TreeSet<T>? set2, G.IComparer<T> comparer)
 	{
 		if (set1 == null)
 			return set2 == null;
@@ -1223,7 +1239,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return true;
 	}
 
-	public override TreeSet<T> SymmetricExceptWith(IEnumerable<T> other)
+	public override TreeSet<T> SymmetricExceptWith(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		if (Length == 0)
@@ -1291,6 +1307,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			root = new Node(item, NodeColor.Black);
 			_size = 1;
 			version++;
+			Changed();
 			return true;
 		}
 		// Search for a node at bottom to insert the new node.
@@ -1355,6 +1372,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		// The root node is always black.
 		root.ColorBlack();
 		++_size;
+		Changed();
 		return true;
 	}
 
@@ -1382,7 +1400,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		return false;
 	}
 
-	public override TreeSet<T> UnionWith(IEnumerable<T> other)
+	public override TreeSet<T> UnionWith(G.IEnumerable<T> other)
 	{
 		ArgumentNullException.ThrowIfNull(other);
 		var asSorted = other as TreeSet<T>;
@@ -1395,6 +1413,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			root = dummy.root;
 			_size = dummy._size;
 			version++;
+			Changed();
 			return this;
 		}
 		// This actually hurts if N is much greater than M. The / 2 is arbitrary.
@@ -1439,6 +1458,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			root = ConstructRootFromSortedArray(merged, 0, c - 1, null);
 			_size = c;
 			version++;
+			Changed();
 		}
 		else
 			AddAllElements(other);
@@ -1559,7 +1579,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			Debug.Assert(length == GetCount());
 #endif
 			var newRoot = ShallowClone();
-			using var pendingNodes = Stack<(Node source, Node target)>.GetNew(2 * Log2(length) + 2);
+			using var pendingNodes = (Stack<(Node source, Node target)>?)typeof(Stack<(Node source, Node target)>)
+				.GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(length + 1)]);
+			Debug.Assert(pendingNodes != null);
 			pendingNodes.Push((this, newRoot));
 			while (pendingNodes.TryPop(out var next))
 			{
@@ -1796,7 +1818,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 #endif
 	}
 
-	public new struct Enumerator : IEnumerator<T>
+	public new struct Enumerator : G.IEnumerator<T>
 	{
 		private readonly TreeSet<T> _set;
 		private readonly int _version;
@@ -1816,7 +1838,8 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			set.VersionCheck();
 			_version = set.version;
 			// 2 log(n + 1) is the maximum height.
-			_stack = Stack<Node>.GetNew(2 * Log2(set.TotalCount() + 1));
+			_stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null, [2 * Log2(set.TotalCount() + 1)])!;
+			Debug.Assert(_stack != null);
 			_current = null;
 			_reverse = reverse;
 			Initialize();
@@ -2027,6 +2050,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 			root = null;
 			_size = 0;
 			version = _underlying.version;
+			Changed();
 		}
 
 		public override bool Contains(T? item)
@@ -2068,7 +2092,9 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 				return true;
 			// The maximum height of a red-black tree is 2*lg(n+1).
 			// See page 264 of "Introduction to algorithms" by Thomas H. Cormen
-			using var stack = Stack<Node>.GetNew(2 * Log2(_size + 1)); // this is not exactly right if length is out of date, but the stack can grow
+			using var stack = (Stack<Node>?)typeof(Stack<Node>).GetMethod("GetNew", BindingFlags.Static | BindingFlags.NonPublic)?.Invoke(null,
+				[2 * Log2(_size + 1)]); // this is not exactly right if length is out of date, but the stack can grow
+			Debug.Assert(stack != null);
 			var current = root;
 			while (current != null)
 			{
@@ -2122,7 +2148,7 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 		}
 
 #if DEBUG
-		internal override void IntersectWithEnumerable(IEnumerable<T> other)
+		internal override void IntersectWithEnumerable(G.IEnumerable<T> other)
 		{
 			base.IntersectWithEnumerable(other);
 			Debug.Assert(VersionUpToDate() && root == _underlying.FindRange(_min, _max));
@@ -2204,29 +2230,29 @@ public class TreeSet<T> : BaseSortedSet<T, TreeSet<T>>
 /// equality defined by the G.IComparer for this SortedSet be consistent with the default G.IEqualityComparer
 /// for the type T. If not, such an G.IEqualityComparer should be provided through the constructor.
 /// </summary>    
-internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
+internal class TreeSetEqualityComparer<T> : G.IEqualityComparer<TreeSet<T>>
 {
-	private protected readonly IComparer<T> comparer;
-	private protected readonly IEqualityComparer<T> e_comparer;
+	private protected readonly G.IComparer<T> comparer;
+	private protected readonly G.IEqualityComparer<T> e_comparer;
 
 	public TreeSetEqualityComparer() : this(null, null) { }
 
-	public TreeSetEqualityComparer(IComparer<T>? comparer) : this(comparer, null) { }
+	public TreeSetEqualityComparer(G.IComparer<T>? comparer) : this(comparer, null) { }
 
-	public TreeSetEqualityComparer(IEqualityComparer<T>? memberEqualityComparer) : this(null, memberEqualityComparer) { }
+	public TreeSetEqualityComparer(G.IEqualityComparer<T>? memberEqualityComparer) : this(null, memberEqualityComparer) { }
 
 	/// <summary>
 	/// Create a new SetEqualityComparer, given a comparer for member order and another for member equality (these
 	/// must be consistent in their definition of equality)
 	/// </summary>        
-	public TreeSetEqualityComparer(IComparer<T>? comparer, IEqualityComparer<T>? memberEqualityComparer)
+	public TreeSetEqualityComparer(G.IComparer<T>? comparer, G.IEqualityComparer<T>? memberEqualityComparer)
 	{
 		if (comparer == null)
 			this.comparer = G.Comparer<T>.Default;
 		else
 			this.comparer = comparer;
 		if (memberEqualityComparer == null)
-			e_comparer = EqualityComparer<T>.Default;
+			e_comparer = G.EqualityComparer<T>.Default;
 		else
 			e_comparer = memberEqualityComparer;
 	}
@@ -2257,3 +2283,5 @@ internal class TreeSetEqualityComparer<T> : IEqualityComparer<TreeSet<T>>
 
 	public override int GetHashCode() => comparer.GetHashCode() ^ e_comparer.GetHashCode();
 }
+
+internal delegate bool TreeWalkPredicate<T>(TreeSet<T>.Node node);

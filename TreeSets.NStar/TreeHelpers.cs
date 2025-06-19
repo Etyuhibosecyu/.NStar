@@ -1,4 +1,4 @@
-﻿namespace Corlib.NStar;
+﻿namespace TreeSets.NStar;
 
 internal enum NodeColor : byte
 {

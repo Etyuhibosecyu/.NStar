@@ -1,4 +1,79 @@
-﻿namespace Corlib.NStar.Tests;
+﻿using SortedSets.NStar;
+
+namespace Corlib.NStar.Tests;
+
+[TestClass]
+public class SortedSetTests
+{
+	[TestMethod]
+	public void ComplexTest()
+	{
+		var random = Lock(lockObj, () => new Random(Global.random.Next()));
+		var counter = 0;
+	l1:
+		var arr = RedStarLinq.FillArray(16, _ => random.Next(16));
+		SortedSet<int> ss = new(arr);
+		G.SortedSet<int> gs = new(arr);
+		var collectionActions = new[] { (int[] arr) =>
+		{
+			ss.ExceptWith(arr);
+			gs.ExceptWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, arr =>
+		{
+			ss.IntersectWith(arr);
+			gs.IntersectWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, arr =>
+		{
+			ss.SymmetricExceptWith(arr);
+			gs.SymmetricExceptWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, arr =>
+		{
+			ss.UnionWith(arr);
+			gs.UnionWith(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		} };
+		var actions = new[] { () =>
+		{
+			var n = random.Next(16);
+			ss.Add(n);
+			gs.Add(n);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, () =>
+		{
+			if (ss.Length == 0) return;
+			if (random.Next(2) == 0)
+			{
+				var n = random.Next(ss.Length);
+				gs.Remove(ss[n]);
+				ss.RemoveAt(n);
+			}
+			else
+			{
+				var n = random.Next(16);
+				ss.RemoveValue(n);
+				gs.Remove(n);
+			}
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, () =>
+		{
+			var arr = RedStarLinq.FillArray(5, _ => random.Next(16));
+			collectionActions.Random(random)(arr);
+			Assert.IsTrue(RedStarLinq.Equals(ss, gs));
+		}, () =>
+		{
+			if (ss.Length == 0) return;
+			var n = random.Next(ss.Length);
+			Assert.AreEqual(ss.IndexOf(ss[n]), n);
+		} };
+		for (var i = 0; i < 1000; i++)
+			actions.Random(random)();
+		if (counter++ < 1000)
+			goto l1;
+	}
+}
 
 [TestClass]
 public class SumSetTests

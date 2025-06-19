@@ -766,6 +766,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (int* intPtr = intNList.AsSpan())
 				CopyBits((uint*)intPtr, intNList.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else if (ints is List<int> intList)
@@ -778,6 +779,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (int* intPtr = intList.AsSpan())
 				CopyBits((uint*)intPtr, intList.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else if (ints is int[] intArray)
@@ -790,6 +792,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (int* intPtr = intArray)
 				CopyBits((uint*)intPtr, intArray.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else
@@ -811,6 +814,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (uint* uintPtr = uintNList.AsSpan())
 				CopyBits(uintPtr, uintNList.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else if (uints is List<uint> uintList)
@@ -823,6 +827,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (uint* uintPtr = uintList.AsSpan())
 				CopyBits(uintPtr, uintList.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else if (uints is uint[] uintArray)
@@ -835,6 +840,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 			fixed (uint* uintPtr = uintArray)
 				CopyBits(uintPtr, uintArray.Length, 0, _items, _capacity, index, length);
 			_size += length;
+			Changed();
 			return this;
 		}
 		else
@@ -853,6 +859,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		fixed (int* intPtr = ints)
 			CopyBits((uint*)intPtr, ints.Length, 0, _items, _capacity, index, length);
 		_size += length;
+		Changed();
 		return this;
 	}
 
@@ -868,6 +875,7 @@ public unsafe class BitList : BaseList<bool, BitList>, ICloneable
 		fixed (uint* uintPtr = uints)
 			CopyBits(uintPtr, uints.Length, 0, _items, _capacity, index, length);
 		_size += length;
+		Changed();
 		return this;
 	}
 
